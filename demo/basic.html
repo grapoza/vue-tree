@@ -1,0 +1,29 @@
+﻿<meta charset="utf-8">
+<title>Basic Usage</title>
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/jquery"></script>
+<script src="../dist/vue-tree.umd.js"></script>
+<link rel="stylesheet" href="demo.css">
+<link rel="stylesheet" href="../dist/vue-tree.css">
+
+<div class="container">
+  <h1>Basic Treeview Demo</h1>
+  <div id="app">
+    <tree id="customtree" :model="model"></tree>
+  </div>
+</div>
+
+<script type='module'>
+import basicData from './basic.js';
+
+new Vue({
+  components: {
+    tree: window['vue-tree']
+  },
+  data() {
+    return {
+      model: basicData
+    };
+  }
+}).$mount('#app')
+</script>

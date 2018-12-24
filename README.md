@@ -1,2 +1,21 @@
 # vue-tree
-Yet another Vue treeview implementation.
+
+## Project setup
+```
+yarn
+```
+
+### Compiles and hot-reloads for development
+```
+yarn watch
+```
+
+### Compiles and minifies for production
+```
+yarn build
+```
+
+### Run your tests
+```
+yarn test
+```
