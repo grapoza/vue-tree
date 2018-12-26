@@ -31,7 +31,6 @@
       this.$set(this, 'treeData', this.createNodeData(this.model));
     },
     mounted() {
-      // TODO can this be a computed? Maybe just skip setting IDs if no tree elem ID is provided?
       this.$set(this, 'uniqueId', this.$el.id ? this.$el.id : null);
     },
     methods: {
@@ -45,12 +44,12 @@
       createNodeData(data, depth = 0) {
         const self = this;
 
-        $.each(data, (index, currentObj) => {
-
+        for (var index = 0; index < data.length; index++) {
+          var currentObj = data[index];
           currentObj.depth = depth;
 
           // Set expected properties if not provided
-          if ($.isArray(currentObj.children)) {
+          if (Array.isArray(currentObj.children)) {
             self.createNodeData(currentObj.children, depth + 1);
           }
           else {
@@ -77,7 +76,7 @@
           if (typeof currentObj.state.selected !== 'boolean') {
             currentObj.state.selected = false;
           }
-        });
+        }
 
         return data;
       },
