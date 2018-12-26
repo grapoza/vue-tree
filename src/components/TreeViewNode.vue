@@ -80,7 +80,7 @@
     methods: {
       toggle(e) {
         // TODO All behaviors need to be overridable
-        if (this.model.children.length > 0 && !$(e.target).is("input[type='checkbox']")) {
+        if (this.model.children.length > 0 && !e.target.matches("input[type='checkbox']")) {
           this.model.state.expanded = !this.model.state.expanded;
         }
       },
