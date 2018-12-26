@@ -1,13 +1,19 @@
 {
-  "name": "vue-tree",
+  "name": "@grapoza/vue-tree",
+  "description": "Yet another Vue treeview component.",
+  "author": "Gregg Rapoza <grapoza@gmail.com>",
+  "license": "MIT",
   "version": "0.1.0",
-  "main": "dist/vue-tree.umd.min.js",
-  "private": true,
+  "browser": "vue-tree.umd.min.js",
+  "repository": {
+    "url": "https://github.com/grapoza/vue-tree",
+    "type": "git"
+  },
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue",
-    "watch": "vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --watch",
-    "test": "vue-cli-service test:unit"
+    "serve": "./node_modules/.bin/vue-cli-service serve",
+    "build": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue",
+    "watch": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --watch",
+    "test": "./node_modules/.bin/vue-cli-service test:unit"
   },
   "dependencies": {
     "vue": "^2.5.17"
@@ -18,8 +24,8 @@
     "@vue/cli-service": "^3.2.0",
     "@vue/test-utils": "^1.0.0-beta.20",
     "chai": "^4.1.2",
-    "node-sass": "^4.9.0",
-    "sass-loader": "^7.0.1",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.5.17",
     "webpack": "^4.28.2"
   }
