@@ -18,17 +18,17 @@
     props: {
       model: {
         type: Array,
-        required: true,
+        required: true
       }
     },
     data() {
       return {
         treeData: [],
-        uniqueId: '',
+        uniqueId: null,
       };
     },
     created() {
-      this.$set(this, 'treeData', this.createNodeData(this.model));
+      this.$set(this, 'treeData', this.$_treeView_createNodeData(this.model));
     },
     mounted() {
       this.$set(this, 'uniqueId', this.$el.id ? this.$el.id : null);
@@ -36,12 +36,13 @@
     methods: {
       /*
        * Given a set of raw data, converts it to objects consumable by TreeViewNode.
+       * TODO Do this in the node instead of a loop in the treeview? Would probably help with data model changes.
        *
        * @param {Array} data The object to convert to nodes
        * @param {Number} depth The depth of the current nodes (0 indexed).
        * @return {Array} The updated tree
        */
-      createNodeData(data, depth = 0) {
+      $_treeView_createNodeData(data, depth = 0) {
         const self = this;
 
         for (var index = 0; index < data.length; index++) {
@@ -50,7 +51,7 @@
 
           // Set expected properties if not provided
           if (Array.isArray(currentObj.children)) {
-            self.createNodeData(currentObj.children, depth + 1);
+            self.$_treeView_createNodeData(currentObj.children, depth + 1);
           }
           else {
             currentObj.children = [];
@@ -79,12 +80,12 @@
         }
 
         return data;
-      },
+      }
     },
   };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
   .tree-view {
     margin: 0;
