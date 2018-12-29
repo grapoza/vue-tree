@@ -6,7 +6,6 @@
         id: string,              // An ID that uniquely identifies this node within the tree
         label: string,           // The text to show in the treeview
         children: Array<Object>  // The child nodes of this node
-        depth: Number,           // The depth of the node in the tree
         expandable: boolean,     // True to show a toggle for expanding nodes' subnode lists
         checkable: boolean,      // True to show a checkbox for the node
         selectable: boolean,     // True to allow the node to be selected
@@ -24,7 +23,7 @@
               v-if="model.children.length > 0 && model.expandable"
               class="tree-view-node-expander"
               :class="{ 'tree-view-node-expanded': model.state.expanded }"
-              @click="$_treeViewNode_toggle">
+              @click="$_treeViewNode_toggleExpanded">
               <i class="tree-view-node-expanded-indicator"></i></button>
       <span v-else class="spacer"></span>
 
@@ -47,9 +46,10 @@
     <ul v-show="model.state.expanded" 
         v-if="model.children.length > 0 && model.expandable" 
         class="tree-view-node-children">
-      <TreeViewNode v-for="(model, index) in model.children"
-                      :key="index"
-                      :model="model"
+      <TreeViewNode v-for="(nodeModel) in model.children"
+                      :key="nodeModel.id"
+                      :depth="depth + 1"
+                      :model="nodeModel"
                       :tree-id="treeId">
       </TreeViewNode>
     </ul>
@@ -63,14 +63,26 @@
       model: {
         type: Object,
         required: true,
+        validator: function (value) {
+          // id and label are required
+          return value.id !== null && typeof value.id !== 'undefined' 
+              && value.label !== null && typeof value.label !== 'undefined';
+        }
+      },
+      depth: {
+        type: Number,
+        required: true
       },
       treeId: {
         type: String,
-        required: false,
+        required: false
       },
     },
     data() {
       return {};
+    },
+    created() {
+      this.$_treeViewNode_normalizeNodeData();
     },
     computed: {
       nodeId() {
@@ -81,7 +93,38 @@
       }
     },
     methods: {
-      $_treeViewNode_toggle(e) {
+      /*
+       * Normalizes the raw data model to the format consumable by TreeViewNode.
+       */
+      $_treeViewNode_normalizeNodeData() {
+
+        // Set expected properties if not provided
+        if (!Array.isArray(this.model.children)) {
+          this.model.children = [];
+        }
+        if (typeof this.model.expandable !== 'boolean') {
+          this.model.expandable = true;
+        }
+        if (typeof this.model.checkable !== 'boolean') {
+          this.model.checkable = false;
+        }
+        if (typeof this.model.selectable !== 'boolean') {
+          this.model.selectable = false;
+        }
+        if (this.model.state === null || typeof this.model.state !== 'object') {
+          this.model.state = {};
+        }
+        if (typeof this.model.state.expanded !== 'boolean') {
+          this.model.state.expanded = false;
+        }
+        if (typeof this.model.state.checked !== 'boolean') {
+          this.model.state.checked = false;
+        }
+        if (typeof this.model.state.selected !== 'boolean') {
+          this.model.state.selected = false;
+        }
+      },
+      $_treeViewNode_toggleExpanded(e) {
         // TODO All behaviors need to be overridable
         if (this.model.children.length > 0 && !e.target.matches("input[type='checkbox']")) {
           this.model.state.expanded = !this.model.state.expanded;

@@ -2,7 +2,6 @@ export default [
   {
     id: 'node1',
     label: 'My First Node',
-    children: [],
     expandable: true,
     checkable: true,
     selectable: true,
@@ -10,16 +9,24 @@ export default [
       checked: false,
       expanded: false,
       selected: false
-    }
+    },
+    children: []
   },
   {
     id: 'node2',
     label: 'My Second Node',
+    expandable: true,
+    checkable: true,
+    selectable: true,
+    state: {
+      checked: false,
+      expanded: true,
+      selected: false
+    },
     children: [
       {
         id: 'subnode1',
         label: 'This is a subnode',
-        children: [],
         expandable: true,
         checkable: false,
         selectable: true,
@@ -27,11 +34,20 @@ export default [
           checked: false,
           expanded: false,
           selected: false
-        }
+        },
+        children: []
       },
       {
         id: 'subnode2',
         label: 'This is a checkable, checked subnode',
+        expandable: true,
+        checkable: true,
+        selectable: true,
+        state: {
+          checked: true,
+          expanded: false,
+          selected: false
+        },
         children: [
           {
             id: 'subsubnode1',
@@ -46,24 +62,8 @@ export default [
               selected: false
             }
           }
-        ],
-        expandable: true,
-        checkable: true,
-        selectable: true,
-        state: {
-          checked: true,
-          expanded: false,
-          selected: false
-        }
+        ]
       }
-    ],
-    expandable: true,
-    checkable: true,
-    selectable: true,
-    state: {
-      checked: false,
-      expanded: false,
-      selected: false
-    }
+    ]
   }
 ];
