@@ -4,7 +4,11 @@
                     :key="nodeModel.id"
                     :model="nodeModel"
                     :depth="0"
-                    :tree-id="uniqueId">
+                    :tree-id="uniqueId"
+                    @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
+                    @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
+                    @treeViewNodeCheckedChange="(t, e)=>$emit('treeViewNodeCheckedChange', t, e)"
+                    @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)">
     </tree-view-node>
   </ul>
 </template>
@@ -29,6 +33,23 @@
     },
     mounted() {
       this.$set(this, 'uniqueId', this.$el.id ? this.$el.id : null);
+    },
+    methods: {
+      getChecked() {
+        let checked = [];
+        let toCheck = this.model.slice();
+
+        while (toCheck.length > 0) {
+          let current = toCheck.pop();
+          toCheck = toCheck.concat(current.children);
+
+          if (current.state.checked) {
+            checked.push(current);
+          }
+        }
+
+        return checked;
+      }
     }
   };
 </script>

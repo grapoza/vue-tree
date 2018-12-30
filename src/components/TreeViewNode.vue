@@ -17,13 +17,16 @@
       }
   -->
   <li :id="nodeId" class="tree-view-node">
-    <div class="tree-view-node-self">
+    <div class="tree-view-node-self"
+         @click="onClick"
+         @dblclick="onDblclick">
+
       <!-- Expander -->
       <button type="button"
               v-if="model.children.length > 0 && model.expandable"
               class="tree-view-node-expander"
               :class="{ 'tree-view-node-expanded': model.state.expanded }"
-              @click="$_treeViewNode_toggleExpanded">
+              @click="onExpandedChange">
               <i class="tree-view-node-expanded-indicator"></i></button>
       <span v-else class="spacer"></span>
 
@@ -34,7 +37,8 @@
         <input :id="checkboxId"
               class="tree-view-node-checkbox"
               type="checkbox"
-              v-model="model.state.checked" />
+              v-model="model.state.checked"
+              @change="onCheckedChange" />
         {{ model.label }}
       </label>
 
@@ -46,11 +50,15 @@
     <ul v-show="model.state.expanded" 
         v-if="model.children.length > 0 && model.expandable" 
         class="tree-view-node-children">
-      <TreeViewNode v-for="(nodeModel) in model.children"
+      <TreeViewNode v-for="nodeModel in model.children"
                       :key="nodeModel.id"
                       :depth="depth + 1"
                       :model="nodeModel"
-                      :tree-id="treeId">
+                      :tree-id="treeId"
+                      @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
+                      @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
+                      @treeViewNodeCheckedChange="(t, e)=>$emit('treeViewNodeCheckedChange', t, e)"
+                      @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)">
       </TreeViewNode>
     </ul>
   </li>
@@ -65,8 +73,16 @@
         required: true,
         validator: function (value) {
           // id and label are required
-          return value.id !== null && typeof value.id !== 'undefined' 
-              && value.label !== null && typeof value.label !== 'undefined';
+          if (typeof value.id !== 'number' && typeof value.id !== 'string') {
+            console.error("model.id is required and must be a number or string.");
+            return false;
+          } 
+          else if(typeof value.label !== 'string') {
+            console.error("model.label is required and must be a string.");
+            return false;
+          }
+
+          return true;
         }
       },
       depth: {
@@ -94,7 +110,7 @@
     },
     methods: {
       /*
-       * Normalizes the raw data model to the format consumable by TreeViewNode.
+       * Normalizes the data model to the format consumable by TreeViewNode.
        */
       $_treeViewNode_normalizeNodeData() {
 
@@ -124,12 +140,27 @@
           this.model.state.selected = false;
         }
       },
-      $_treeViewNode_toggleExpanded(e) {
-        // TODO All behaviors need to be overridable
-        if (this.model.children.length > 0 && !e.target.matches("input[type='checkbox']")) {
+      onExpandedChange(event) {
+        if (this.model.children.length > 0) {
           this.model.state.expanded = !this.model.state.expanded;
+          this.$emit('treeViewNodeExpandedChange', this.model, event);
         }
       },
+      onClick(event) {
+        // Don't fire this if the target is the checkbox or expander, which have their own events
+        if (!event.target.matches(".tree-view-node-checkbox, .tree-view-node-expander")) {
+          this.$emit('treeViewNodeClick', this.model, event);
+        }
+      },
+      onDblclick(event) {
+        // Don't fire this if the target is the checkbox or expander, which have their own events
+        if (!event.target.matches(".tree-view-node-checkbox, .tree-view-node-expander")) {
+          this.$emit('treeViewNodeDblclick', this.model, event);
+        }
+      },
+      onCheckedChange(event) {
+        this.$emit('treeViewNodeCheckedChange', this.model, event);
+      }
     },
   };
 </script>
