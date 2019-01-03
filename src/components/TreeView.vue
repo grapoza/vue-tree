@@ -12,6 +12,7 @@
     </tree-view-node>
   </ul>
 </template>
+
 <script>
   import TreeViewNode from './TreeViewNode.vue';
 
