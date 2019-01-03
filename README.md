@@ -93,7 +93,7 @@ export default {
 
 ## Demos
 
-To se it in action, try out the [Demos](demo/basic.html).
+To see it in action, try out the [Demos](demo/basic.html).
 
 ## Props
 
