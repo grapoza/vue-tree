@@ -10,7 +10,6 @@
     "type": "git"
   },
   "scripts": {
-    "serve": "./node_modules/.bin/vue-cli-service serve",
     "build": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue",
     "watch": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --watch",
     "test": "./node_modules/.bin/vue-cli-service test:unit"

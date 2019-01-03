@@ -1,20 +1,7 @@
 <template>
   <!--
-      A Component meant to be used internally by the TreeView component.
-      Node objects should be of the form
-      {
-        id: string,              // An ID that uniquely identifies this node within the tree
-        label: string,           // The text to show in the treeview
-        children: Array<Object>  // The child nodes of this node
-        expandable: boolean,     // True to show a toggle for expanding nodes' subnode lists
-        checkable: boolean,      // True to show a checkbox for the node
-        selectable: boolean,     // True to allow the node to be selected
-        state: {
-          checked: boolean,      // True if this node's checkbox is checked
-          expanded: boolean,     // True if this node's subnode list is expanded
-          selected: boolean      // True if the node is selected
-        }
-      }
+      A Component meant to be used internally by the TreeView component. See README.md
+      for a description of the expected data format.
   -->
   <li :id="nodeId" class="tree-view-node">
     <div class="tree-view-node-self"
@@ -24,18 +11,18 @@
       <!-- Expander -->
       <button type="button"
               v-if="model.children.length > 0 && model.expandable"
-              class="tree-view-node-expander"
-              :class="{ 'tree-view-node-expanded': model.state.expanded }"
+              class="tree-view-node-self-expander"
+              :class="{ 'tree-view-node-self-expanded': model.state.expanded }"
               @click="onExpandedChange">
-              <i class="tree-view-node-expanded-indicator"></i></button>
-      <span v-else class="spacer"></span>
+              <i class="tree-view-node-self-expanded-indicator"></i></button>
+      <span v-else class="tree-view-node-self-spacer"></span>
 
       <!-- Checkbox and label -->
       <label v-if="model.checkable"
              :for="checkboxId"
-             class="tree-view-node-label">
+             class="tree-view-node-self-label">
         <input :id="checkboxId"
-              class="tree-view-node-checkbox"
+              class="tree-view-node-self-checkbox"
               type="checkbox"
               v-model="model.state.checked"
               @change="onCheckedChange" />
@@ -43,7 +30,7 @@
       </label>
 
       <!-- Text (if not checkable) -->
-      <span v-else class="tree-view-node-text">{{ model.label }}</span>
+      <span v-else class="tree-view-node-self-text">{{ model.label }}</span>
     </div>
 
     <!-- Children -->
@@ -148,13 +135,13 @@
       },
       onClick(event) {
         // Don't fire this if the target is the checkbox or expander, which have their own events
-        if (!event.target.matches(".tree-view-node-checkbox, .tree-view-node-expander")) {
+        if (!event.target.matches(".tree-view-node-self-checkbox, .tree-view-node-self-expander")) {
           this.$emit('treeViewNodeClick', this.model, event);
         }
       },
       onDblclick(event) {
         // Don't fire this if the target is the checkbox or expander, which have their own events
-        if (!event.target.matches(".tree-view-node-checkbox, .tree-view-node-expander")) {
+        if (!event.target.matches(".tree-view-node-self-checkbox, .tree-view-node-self-expander")) {
           this.$emit('treeViewNodeDblclick', this.model, event);
         }
       },
@@ -180,12 +167,12 @@
         align-items: center;
         line-height: 1.2rem;
 
-        .tree-view-node-expander {
+        .tree-view-node-self-expander {
           padding: 0;
           background: none;
           border: none;
 
-          i.tree-view-node-expanded-indicator {
+          i.tree-view-node-self-expanded-indicator {
             font-style: normal;
             
             &::before {
@@ -193,9 +180,9 @@
             }
           }
 
-          &.tree-view-node-expanded {
+          &.tree-view-node-self-expanded {
 
-            i.tree-view-node-expanded-indicator {
+            i.tree-view-node-self-expanded-indicator {
 
               &::before {
                 content: '-';
@@ -204,12 +191,12 @@
           }
         }
 
-        .tree-view-node-expander, .tree-view-node-checkbox, .spacer {
+        .tree-view-node-self-expander, .tree-view-node-self-checkbox, .tree-view-node-self-spacer {
           min-width: 1rem;
           margin: 0;
         }
 
-        .tree-view-node-text {
+        .tree-view-node-self-text {
           margin-left: 1.2rem;
         }
       }
