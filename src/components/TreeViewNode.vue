@@ -5,15 +5,16 @@
   -->
   <li :id="nodeId" class="tree-view-node">
     <div class="tree-view-node-self"
-         @click="onClick"
-         @dblclick="onDblclick">
+         @click="$_treeViewNode_onClick"
+         @dblclick="$_treeViewNode_onDblclick">
 
       <!-- Expander -->
-      <button type="button"
+      <button :id="expanderId"
+              type="button"
               v-if="model.children.length > 0 && model.expandable"
               class="tree-view-node-self-expander"
               :class="{ 'tree-view-node-self-expanded': model.state.expanded }"
-              @click="onExpandedChange">
+              @click="$_treeViewNode_onExpandedChange">
               <i class="tree-view-node-self-expanded-indicator"></i></button>
       <span v-else class="tree-view-node-self-spacer"></span>
 
@@ -25,7 +26,7 @@
               class="tree-view-node-self-checkbox"
               type="checkbox"
               v-model="model.state.checked"
-              @change="onCheckedChange" />
+              @change="$_treeViewNode_onCheckedChange" />
         {{ model.label }}
       </label>
 
@@ -34,8 +35,8 @@
     </div>
 
     <!-- Children -->
-    <ul v-show="model.state.expanded" 
-        v-if="model.children.length > 0 && model.expandable" 
+    <ul v-show="model.state.expanded"
+        v-if="model.children.length > 0 && model.expandable"
         class="tree-view-node-children">
       <TreeViewNode v-for="nodeModel in model.children"
                       :key="nodeModel.id"
@@ -63,7 +64,7 @@
           if (typeof value.id !== 'number' && typeof value.id !== 'string') {
             console.error("model.id is required and must be a number or string.");
             return false;
-          } 
+          }
           else if(typeof value.label !== 'string') {
             console.error("model.label is required and must be a string.");
             return false;
@@ -93,6 +94,9 @@
       },
       checkboxId() {
         return this.nodeId ? `${this.nodeId}-cbx` : null;
+      },
+      expanderId() {
+        return this.nodeId ? `${this.nodeId}-exp` : null;
       }
     },
     methods: {
@@ -105,11 +109,11 @@
         if (!Array.isArray(this.model.children)) {
           this.model.children = [];
         }
-        if (typeof this.model.expandable !== 'boolean') {
-          this.model.expandable = true;
-        }
         if (typeof this.model.checkable !== 'boolean') {
           this.model.checkable = false;
+        }
+        if (typeof this.model.expandable !== 'boolean') {
+          this.model.expandable = true;
         }
         if (typeof this.model.selectable !== 'boolean') {
           this.model.selectable = false;
@@ -117,36 +121,34 @@
         if (this.model.state === null || typeof this.model.state !== 'object') {
           this.model.state = {};
         }
-        if (typeof this.model.state.expanded !== 'boolean') {
-          this.model.state.expanded = false;
-        }
         if (typeof this.model.state.checked !== 'boolean') {
           this.model.state.checked = false;
+        }
+        if (typeof this.model.state.expanded !== 'boolean') {
+          this.model.state.expanded = false;
         }
         if (typeof this.model.state.selected !== 'boolean') {
           this.model.state.selected = false;
         }
       },
-      onExpandedChange(event) {
-        if (this.model.children.length > 0) {
-          this.model.state.expanded = !this.model.state.expanded;
-          this.$emit('treeViewNodeExpandedChange', this.model, event);
-        }
+      $_treeViewNode_onCheckedChange(event) {
+        this.$emit('treeViewNodeCheckedChange', this.model, event);
       },
-      onClick(event) {
+      $_treeViewNode_onExpandedChange(event) {
+        this.model.state.expanded = !this.model.state.expanded;
+        this.$emit('treeViewNodeExpandedChange', this.model, event);
+      },
+      $_treeViewNode_onClick(event) {
         // Don't fire this if the target is the checkbox or expander, which have their own events
         if (!event.target.matches(".tree-view-node-self-checkbox, .tree-view-node-self-expander")) {
           this.$emit('treeViewNodeClick', this.model, event);
         }
       },
-      onDblclick(event) {
+      $_treeViewNode_onDblclick(event) {
         // Don't fire this if the target is the checkbox or expander, which have their own events
         if (!event.target.matches(".tree-view-node-self-checkbox, .tree-view-node-self-expander")) {
           this.$emit('treeViewNodeDblclick', this.model, event);
         }
-      },
-      onCheckedChange(event) {
-        this.$emit('treeViewNodeCheckedChange', this.model, event);
       }
     },
   };
@@ -174,7 +176,7 @@
 
           i.tree-view-node-self-expanded-indicator {
             font-style: normal;
-            
+
             &::before {
               content: '+';
             }
