@@ -3,7 +3,7 @@
   "description": "Yet another Vue treeview component.",
   "author": "Gregg Rapoza <grapoza@gmail.com>",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "browser": "vue-tree.umd.min.js",
   "repository": {
     "url": "https://github.com/grapoza/vue-tree",
