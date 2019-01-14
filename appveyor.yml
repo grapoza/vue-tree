@@ -32,7 +32,8 @@ deploy_script:
   - ps: |
       if ($env:APPVEYOR_REPO_TAG -eq "true")
       {
-        #TODO Remove --dry-run when we're good to go here.
-        npm publish package/ --access public --dry-run
+        # npm_auth_token defined in the appveyor project on the site. https://www.appveyor.com/docs/lang/nodejs-iojs/#authenticating-npm-for-publishing-packages
+        '"//registry.npmjs.org/:_authToken=$env:npm_auth_token`n" | out-file "$env:userprofile\.npmrc" -Encoding ASCII'
+        npm publish package/ --access public
       }
 ...
