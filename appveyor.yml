@@ -1,10 +1,14 @@
---- 
+---
 version: '1.0.{build}'
 image: Ubuntu
-      
+
 init:
   - sh: git config --global core.autocrlf true
   - sh: nvm use 8
+
+install:
+  - ps: $env:package_version = (Get-Content -Raw -Path package.json | ConvertFrom-Json).version
+  - ps: Update-AppveyorBuild -Version "$env:package_version-$env:APPVEYOR_BUILD_NUMBER"
 
 before_build:
   - sh: yarn
@@ -14,7 +18,6 @@ build_script:
 
 after_build:
   # Copy anything that goes into the final package into '/package'
-  - sh: ls
   - sh: mkdir -p package && cp dist/*.js dist/*.css package.json LICENSE README.md package
   # Zip up the package files, along with the .map files for debugging
   - sh: 7z a -tzip artifacts.zip ./package/* ./dist/*.map
@@ -27,9 +30,10 @@ artifacts:
 
 deploy_script:
   - ps: |
-      if ($env:APPVEYOR_REPO_TAG -eq "true") 
+      if ($env:APPVEYOR_REPO_TAG -eq "true")
       {
-        #TODO Remove --dry-run when we're good to go here.
-        npm publish package/ --tag {version} --access public --dry-run
+        # npm_auth_token defined in the appveyor project on the site. https://www.appveyor.com/docs/lang/nodejs-iojs/#authenticating-npm-for-publishing-packages
+        '"//registry.npmjs.org/:_authToken=$env:npm_auth_token`n" | out-file "$env:userprofile\.npmrc" -Encoding ASCII'
+        npm publish package/ --access public
       }
 ...
