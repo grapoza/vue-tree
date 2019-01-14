@@ -9,6 +9,13 @@
     "url": "https://github.com/grapoza/vue-tree",
     "type": "git"
   },
+  "bugs": "https://github.com/grapoza/vue-tree/issues",
+  "keywords": [
+    "vue",
+    "vuejs",
+    "tree",
+    "treeview"
+  ],
   "scripts": {
     "build": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue",
     "watch": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --watch",
