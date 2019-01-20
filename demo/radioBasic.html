@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Basic Usage</title>
+    <title>Basic Radio Button Usage</title>
     <script src="https://unpkg.com/vue"></script>
     <script src="../dist/vue-tree.umd.js"></script>
     <link rel="stylesheet" href="demo.css">
@@ -10,9 +10,9 @@
   </head>
   <body>
     <div class="container">
-      <h1>Basic Treeview Demo</h1>
+      <h1>Basic Treeview Radiobutton Demo</h1>
       <div id="app">
-        <tree id="customtree" :model="model" ref="tree"></tree>
+        <tree id="customtree" :model="model" :radio-group-values="radioGroupValues" ref="tree"></tree>
         <section id="checkedStuff">
           <button type="button" @click="refreshCheckedList">What's been checked?</button>
           <ul id="checkedList">
@@ -23,7 +23,7 @@
     </div>
 
     <script type='module'>
-    import basicData from './basic.js';
+    import basicRadioData from './radioBasic.js';
 
     new Vue({
       components: {
@@ -31,13 +31,15 @@
       },
       data() {
         return {
-          model: basicData,
-          checkedNodes: []
+          model: basicRadioData,
+          checkedNodes: [],
+          radioGroupValues: { 'radio1': 'aValueToSubmit' }
         };
       },
       methods: {
         refreshCheckedList() {
-          this.$set(this, 'checkedNodes', this.$refs.tree.getCheckedCheckboxes());
+          let nodes = this.$refs.tree.getCheckedRadioButtons();
+          this.$set(this, 'checkedNodes', nodes);
         }
       }
     }).$mount('#app')

@@ -46,14 +46,27 @@ describe('TreeView.vue', () => {
     });
   });
 
-  describe('when getChecked() is called', () => {
+  describe('when getCheckedCheckboxes() is called', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ model: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]) });
+      wrapper = createWrapper({ model: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']], {}) });
     });
 
-    it('should return checked nodes', () => {
-      let nodes = wrapper.vm.getChecked();
+    it('should return checked checkbox nodes', () => {
+      let nodes = wrapper.vm.getCheckedCheckboxes();
+      expect(nodes.length).to.equal(2);
+    });
+  });
+
+  describe('when getCheckedRadioButtons() is called', () => {
+
+    beforeEach(() => {
+      let radioGroupValues = {};
+      wrapper = createWrapper({ model: generateNodes(['ers', 'eRs', ['eRs', 'ers']], radioGroupValues), radioGroupValues });
+    });
+
+    it('should return checked radiobutton nodes', () => {
+      let nodes = wrapper.vm.getCheckedRadioButtons();
       expect(nodes.length).to.equal(2);
     });
   });

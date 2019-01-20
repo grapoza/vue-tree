@@ -5,9 +5,11 @@
                     :model="nodeModel"
                     :depth="0"
                     :tree-id="uniqueId"
+                    :radio-group-values="radioGroupValues"
                     @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
                     @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
-                    @treeViewNodeCheckedChange="(t, e)=>$emit('treeViewNodeCheckedChange', t, e)"
+                    @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
+                    @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
                     @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)">
     </tree-view-node>
   </ul>
@@ -25,6 +27,11 @@
       model: {
         type: Array,
         required: true
+      },
+      radioGroupValues: {
+        type: Object,
+        required: false,
+        default: {}
       }
     },
     data() {
@@ -36,7 +43,7 @@
       this.$set(this, 'uniqueId', this.$el.id ? this.$el.id : null);
     },
     methods: {
-      getChecked() {
+      getCheckedCheckboxes() {
         let checked = [];
         let toCheck = this.model.slice();
 
@@ -44,7 +51,22 @@
           let current = toCheck.pop();
           toCheck = toCheck.concat(current.children);
 
-          if (current.state.checked) {
+          if (current.input && current.input.type === 'checkbox' && current.state.input.value) {
+            checked.push(current);
+          }
+        }
+
+        return checked;
+      },
+      getCheckedRadioButtons() {
+        let checked = [];
+        let toCheck = this.model.slice();
+
+        while (toCheck.length > 0) {
+          let current = toCheck.pop();
+          toCheck = toCheck.concat(current.children);
+
+          if (current.input && current.input.type === 'radio' && this.radioGroupValues[current.input.name] === current.input.value) {
             checked.push(current);
           }
         }

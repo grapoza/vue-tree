@@ -5,15 +5,19 @@ import { generateNodes } from '../data/node-generator.js';
 
 const localVue = createLocalVue();
 
-const defaultPropsData = {
-    model: generateNodes(['ces'])[0],
-    depth: 0,
-    treeId: 'tree-id'
+const getDefaultPropsData = function () {
+    let radioState = {};
+    return {
+        model: generateNodes(['ces'], radioState)[0],
+        depth: 0,
+        treeId: 'tree-id',
+        radioGroupValues: radioState
+    }
 };
 
 function createWrapper(customPropsData, customAttrs) {
     return shallowMount(TreeViewNode, {
-        propsData: customPropsData || defaultPropsData,
+        propsData: customPropsData || getDefaultPropsData(),
         localVue,
         attrs: customAttrs
     });
@@ -37,20 +41,21 @@ describe('TreeViewNode.vue', () => {
 
             wrapper = createWrapper({
                 depth: 0,
-                model
+                model,
+                radioGroupValues: {}
             });
         });
 
         it('normalizes model data on the original object', () => {
             expect(model.id).to.equal('my-node');
             expect(model.label).to.equal('My Node');
-            expect(model.checkable).to.be.false;
             expect(model.expandable).to.be.true;
             expect(model.selectable).to.be.false;
             expect(model.state).to.exist;
-            expect(model.state.checked).to.be.false;
             expect(model.state.expanded).to.be.false;
             expect(model.state.selected).to.be.false;
+            expect(model.input).to.be.null;
+            expect(model.state.input).to.not.exist;
         });
     });
 
@@ -64,21 +69,26 @@ describe('TreeViewNode.vue', () => {
             expect(wrapper.vm.nodeId).to.equal(wrapper.vm.treeId + '-' + wrapper.vm.model.id);
         });
 
-        it('has a checkboxId made of the node ID and -cbx', () => {
-            expect(wrapper.vm.checkboxId).to.equal(wrapper.vm.nodeId + '-cbx');
-        });
-
         it('has an expanderId made of the node ID and -exp', () => {
             expect(wrapper.vm.expanderId).to.equal(wrapper.vm.nodeId + '-exp');
+        });
+
+        describe('and the node has an input', () => {
+
+            it('has an inputId made of the node ID and -input', () => {
+                expect(wrapper.vm.inputId).to.equal(wrapper.vm.nodeId + '-input');
+            });
         });
     });
 
     describe('when not passed a tree ID', () => {
 
         beforeEach(() => {
+            let radioState = {};
             wrapper = createWrapper({
-                model: generateNodes(['ces'])[0],
-                depth: 0
+                model: generateNodes(['ces'], radioState)[0],
+                depth: 0,
+                radioGroupValues: radioState
             });
         });
 
@@ -86,8 +96,8 @@ describe('TreeViewNode.vue', () => {
             expect(wrapper.vm.nodeId).to.be.null;
         });
 
-        it('has a null checkboxId', () => {
-            expect(wrapper.vm.checkboxId).to.be.null;
+        it('has a null inputId', () => {
+            expect(wrapper.vm.inputId).to.be.null;
         });
 
         it('has a null expanderId', () => {
@@ -125,45 +135,17 @@ describe('TreeViewNode.vue', () => {
         });
     });
 
-    describe('when the node\'s checkbox is toggled', () => {
-
-        let checkbox = null;
-
-        beforeEach(() => {
-            wrapper = createWrapper();
-            checkbox = wrapper.find('#' + wrapper.vm.checkboxId);
-        });
-
-        it('should toggle the checked state', () => {
-            checkbox.trigger('click');
-            expect(wrapper.vm.model.state.checked).to.be.true;
-        });
-
-        it('should emit the treeViewNodeCheckedChange event', () => {
-            checkbox.trigger('click');
-            expect(wrapper.emitted().treeViewNodeCheckedChange.length).to.equal(1);
-        });
-
-        it('should not emit the treeViewNodeClick event', () => {
-            checkbox.trigger('click');
-            expect(wrapper.emitted().treeViewNodeClick).to.be.undefined;
-        });
-
-        it('should not emit the treeViewNodeDblclick event', () => {
-            checkbox.trigger('dblclick');
-            expect(wrapper.emitted().treeViewNodeDblclick).to.be.undefined;
-        });
-    });
-
     describe('when the node\'s expander is toggled', () => {
 
         let expander = null;
 
         beforeEach(() => {
+            let radioState = {};
             wrapper = createWrapper({
-                model: generateNodes(['ces', ['ces']])[0],
+                model: generateNodes(['ces', ['ces']], radioState)[0],
                 depth: 0,
-                treeId: 'tree'
+                treeId: 'tree',
+                radioGroupValues: radioState
             });
 
             expander = wrapper.find('#' + wrapper.vm.expanderId);
@@ -186,6 +168,75 @@ describe('TreeViewNode.vue', () => {
 
         it('should not emit the treeViewNodeDblclick event', () => {
             expander.trigger('dblclick');
+            expect(wrapper.emitted().treeViewNodeDblclick).to.be.undefined;
+        });
+    });
+
+    describe('when the node\'s checkbox is toggled', () => {
+
+        let checkbox = null;
+
+        beforeEach(() => {
+            wrapper = createWrapper();
+            checkbox = wrapper.find('#' + wrapper.vm.inputId);
+        });
+
+        it('should toggle the input value state', () => {
+            checkbox.trigger('click');
+            expect(wrapper.vm.model.state.input.value).to.be.true;
+        });
+
+        it('should emit the treeViewNodeCheckboxChange event', () => {
+            checkbox.trigger('click');
+            expect(wrapper.emitted().treeViewNodeCheckboxChange.length).to.equal(1);
+        });
+
+        it('should not emit the treeViewNodeClick event', () => {
+            checkbox.trigger('click');
+            expect(wrapper.emitted().treeViewNodeClick).to.be.undefined;
+        });
+
+        it('should not emit the treeViewNodeDblclick event', () => {
+            checkbox.trigger('dblclick');
+            expect(wrapper.emitted().treeViewNodeDblclick).to.be.undefined;
+        });
+    });
+
+    describe('when the node\'s radiobutton is toggled', () => {
+
+        let radioButton = null;
+        let radioState = null;
+
+        beforeEach(() => {
+            radioState = {};
+            wrapper = createWrapper({
+                model: generateNodes(['res'], radioState)[0],
+                depth: 0,
+                treeId: 'tree',
+                radioGroupValues: radioState
+            });
+
+            radioButton = wrapper.find('#' + wrapper.vm.inputId);
+        });
+
+        it('should toggle the input value state', () => {
+            radioButton.trigger('click');
+            let model = wrapper.vm.model;
+            expect(wrapper.vm.radioGroupValues[model.input.name]).to.equal(model.input.value);
+        });
+
+        it('should emit the treeViewNodeRadioChange event', () => {
+            radioButton.trigger('click');
+            expect(wrapper.emitted().treeViewNodeRadioChange.length).to.equal(1);
+        });
+
+        it('should not emit the treeViewNodeClick event', () => {
+            radioButton.trigger('click');
+            expect(wrapper.emitted().treeViewNodeClick).to.be.undefined;
+        });
+
+        it('should not emit the treeViewNodeDblclick event', () => {
+            radioButton.trigger('dblclick');
             expect(wrapper.emitted().treeViewNodeDblclick).to.be.undefined;
         });
     });
