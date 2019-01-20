@@ -5,15 +5,13 @@ export default [
     expandable: true,
     selectable: true,
     input: {
-      type: 'checkbox',
-      name: 'checkbox1'
+      type: 'radio',
+      name: 'radio1',
+      value: 'aValueToSubmit'
     },
     state: {
       expanded: false,
-      selected: false,
-      input: {
-        value: false
-      }
+      selected: false
     },
     children: []
   },
@@ -23,15 +21,12 @@ export default [
     expandable: true,
     selectable: true,
     input: {
-      type: 'checkbox',
-      name: 'checkbox2'
+      type: 'radio',
+      name: 'radio1'
     },
     state: {
       expanded: true,
-      selected: false,
-      input: {
-        value: false
-      }
+      selected: false
     },
     children: [
       {
@@ -39,6 +34,10 @@ export default [
         label: 'This is a subnode',
         expandable: true,
         selectable: true,
+        input: {
+          type: 'radio',
+          name: 'radio2'
+        },
         state: {
           expanded: false,
           selected: false
@@ -51,29 +50,14 @@ export default [
         expandable: true,
         selectable: true,
         input: {
-          type: 'checkbox',
-          name: 'checkbox3'
+          type: 'radio',
+          name: 'radio2'
         },
         state: {
           expanded: false,
-          selected: false,
-          input: {
-            value: true
-          }
+          selected: false
         },
-        children: [
-          {
-            id: 'subsubnode1',
-            label: 'An even deeper node',
-            children: [],
-            expandable: true,
-            selectable: true,
-            state: {
-              expanded: false,
-              selected: false
-            }
-          }
-        ]
+        children: []
       }
     ]
   }

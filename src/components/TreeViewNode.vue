@@ -18,15 +18,27 @@
               <i class="tree-view-node-self-expanded-indicator"></i></button>
       <span v-else class="tree-view-node-self-spacer"></span>
 
-      <!-- Checkbox and label -->
-      <label v-if="model.checkable"
-             :for="checkboxId"
+      <!-- Input and label -->
+      <label v-if="model.input"
+             :for="inputId"
              class="tree-view-node-self-label">
-        <input :id="checkboxId"
-              class="tree-view-node-self-checkbox"
-              type="checkbox"
-              v-model="model.state.checked"
-              @change="$_treeViewNode_onCheckedChange" />
+
+        <input v-if="model.input.type === 'checkbox'"
+              :id="inputId"
+              :class="inputClass"
+              :type="model.input.type"
+              v-model="model.state.input.value"
+              @change="$_treeViewNode_onCheckboxChange" />
+
+        <input v-if="model.input.type === 'radio'"
+              :id="inputId"
+              :class="inputClass"
+              :type="model.input.type"
+              :name="model.input.name"
+              :value="model.input.value"
+              v-model="radioGroupValues[model.input.name]"
+              @change="$_treeViewNode_onRadioChange" />
+
         {{ model.label }}
       </label>
 
@@ -42,10 +54,13 @@
                       :key="nodeModel.id"
                       :depth="depth + 1"
                       :model="nodeModel"
+                      :parent-id="model.id"
                       :tree-id="treeId"
+                      :radio-group-values="radioGroupValues"
                       @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
                       @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
-                      @treeViewNodeCheckedChange="(t, e)=>$emit('treeViewNodeCheckedChange', t, e)"
+                      @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
+                      @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
                       @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)">
       </TreeViewNode>
     </ul>
@@ -77,10 +92,18 @@
         type: Number,
         required: true
       },
-      treeId: {
+      radioGroupValues: {
+        type: Object,
+        required: true
+      },
+      parentId: {
         type: String,
         required: false
       },
+      treeId: {
+        type: String,
+        required: false
+      }
     },
     data() {
       return {};
@@ -92,8 +115,26 @@
       nodeId() {
         return this.treeId ? `${this.treeId}-${this.model.id}` : null;
       },
-      checkboxId() {
-        return this.nodeId ? `${this.nodeId}-cbx` : null;
+      inputId() {
+        return this.nodeId ? `${this.nodeId}-input` : null;
+      },
+      inputClass() {
+        if (!this.input || typeof this.input !== 'object') {
+          return null;
+        }
+
+        let nodeInputClass = 'tree-view-node-self-input ';
+
+        switch (this.input.type) {
+          case 'checkbox':
+            nodeInputClass += 'tree-view-node-self-checkbox';
+          case 'radio':
+            nodeInputClass += 'tree-view-node-self-radio';
+          default:
+            nodeInputClass = null;
+        }
+
+        return nodeInputClass;
       },
       expanderId() {
         return this.nodeId ? `${this.nodeId}-exp` : null;
@@ -109,44 +150,93 @@
         if (!Array.isArray(this.model.children)) {
           this.model.children = [];
         }
-        if (typeof this.model.checkable !== 'boolean') {
-          this.model.checkable = false;
-        }
+
+        // Set basic node options
         if (typeof this.model.expandable !== 'boolean') {
           this.model.expandable = true;
         }
         if (typeof this.model.selectable !== 'boolean') {
           this.model.selectable = false;
         }
+
+        this.$_treeViewNode_normalizeNodeInputData();
+        this.$_treeViewNode_normalizeNodeStateData();
+      },
+      /**
+       * Normalizes the data model's data related to input element generation.
+       */
+      $_treeViewNode_normalizeNodeInputData() {
+
+        let input = this.model.input;
+
+        // For nodes that are inputs, they must specify at least a type.
+        // Only a subset of types are accepted.
+        if (input === null || typeof input !== 'object' || !['checkbox', 'radio'].includes(input.type)) {
+          this.model.input = null;
+        }
+        else {
+          if (typeof input.name !== 'string' || input.name.trim().length === 0) {
+            input.name = null;
+          }
+
+          if (input.type === 'radio') {
+            if (typeof input.name !== 'string' || input.name.trim().length === 0) {
+              input.name = 'unspecifiedRadioName';
+            }
+            if (typeof input.value !== 'string' || input.value.trim().length === 0) {
+              input.value = this.model.label.replace(/[\s&<>"'\/]/g, '');
+            }
+            if (!this.radioGroupValues.hasOwnProperty(input.name)) {
+              this.radioGroupValues[input.name] = '';
+            }
+          }
+        }
+      },
+      /**
+       * Normalizes the data model's data related to the node's state.
+       */
+      $_treeViewNode_normalizeNodeStateData() {
         if (this.model.state === null || typeof this.model.state !== 'object') {
           this.model.state = {};
         }
-        if (typeof this.model.state.checked !== 'boolean') {
-          this.model.state.checked = false;
+
+        let state = this.model.state;
+
+        if (typeof state.expanded !== 'boolean') {
+          state.expanded = false;
         }
-        if (typeof this.model.state.expanded !== 'boolean') {
-          this.model.state.expanded = false;
+        if (typeof state.selected !== 'boolean') {
+          state.selected = false;
         }
-        if (typeof this.model.state.selected !== 'boolean') {
-          this.model.state.selected = false;
+
+        if (this.model.input && this.model.input.type === 'checkbox') {
+          if (state.input === null || typeof state.input !== 'object') {
+            state.input = {};
+          }
+          if (typeof state.input.value !== 'boolean') {
+            state.input.value = false;
+          }
         }
       },
-      $_treeViewNode_onCheckedChange(event) {
-        this.$emit('treeViewNodeCheckedChange', this.model, event);
+      $_treeViewNode_onCheckboxChange(event) {
+        this.$emit('treeViewNodeCheckboxChange', this.model, event);
+      },
+      $_treeViewNode_onRadioChange(event) {
+        this.$emit('treeViewNodeRadioChange', this.model, event);
       },
       $_treeViewNode_onExpandedChange(event) {
         this.model.state.expanded = !this.model.state.expanded;
         this.$emit('treeViewNodeExpandedChange', this.model, event);
       },
       $_treeViewNode_onClick(event) {
-        // Don't fire this if the target is the checkbox or expander, which have their own events
-        if (!event.target.matches(".tree-view-node-self-checkbox, .tree-view-node-self-expander")) {
+        // Don't fire this if the target is the input or expander, which have their own events
+        if (!event.target.matches("input, .tree-view-node-self-expander")) {
           this.$emit('treeViewNodeClick', this.model, event);
         }
       },
       $_treeViewNode_onDblclick(event) {
-        // Don't fire this if the target is the checkbox or expander, which have their own events
-        if (!event.target.matches(".tree-view-node-self-checkbox, .tree-view-node-self-expander")) {
+        // Don't fire this if the target is the input or expander, which have their own events
+        if (!event.target.matches("input, .tree-view-node-self-expander")) {
           this.$emit('treeViewNodeDblclick', this.model, event);
         }
       }
