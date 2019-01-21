@@ -12,7 +12,8 @@ export default [
       expanded: false,
       selected: false,
       input: {
-        value: false
+        value: false,
+        disabled: false
       }
     },
     children: []
@@ -30,7 +31,8 @@ export default [
       expanded: true,
       selected: false,
       input: {
-        value: false
+        value: false,
+        disabled: false
       }
     },
     children: [
@@ -58,7 +60,8 @@ export default [
           expanded: false,
           selected: false,
           input: {
-            value: true
+            value: true,
+            disabled: true
           }
         },
         children: [

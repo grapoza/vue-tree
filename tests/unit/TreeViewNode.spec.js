@@ -240,4 +240,38 @@ describe('TreeViewNode.vue', () => {
             expect(wrapper.emitted().treeViewNodeDblclick).to.be.undefined;
         });
     });
+
+    describe('when a node\'s model is disabled', () => {
+
+        beforeEach(() => {
+            let radioState = {};
+            let model = generateNodes(['ces!'], radioState)[0];
+
+            console.debug(model);
+
+            wrapper = createWrapper({
+                model,
+                depth: 0,
+                treeId: 'tree',
+                radioGroupValues: radioState
+            });
+        });
+
+        it('has a disabled input', () => {
+            let input = wrapper.find('#' + wrapper.vm.inputId);
+            expect(input.element.disabled).to.be.true;
+        });
+    });
+
+    describe('when a node\'s model is not disabled', () => {
+
+        beforeEach(() => {
+            wrapper = createWrapper();
+        });
+
+        it('has an enabled input', () => {
+            let input = wrapper.find('#' + wrapper.vm.inputId);
+            expect(input.element.disabled).to.be.false;
+        });
+    });
 });
