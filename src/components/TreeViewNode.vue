@@ -27,6 +27,7 @@
               :id="inputId"
               :class="inputClass"
               :type="model.input.type"
+              :disabled="model.state.input.disabled"
               v-model="model.state.input.value"
               @change="$_treeViewNode_onCheckboxChange" />
 
@@ -36,6 +37,7 @@
               :type="model.input.type"
               :name="model.input.name"
               :value="model.input.value"
+              :disabled="model.state.input.disabled"
               v-model="radioGroupValues[model.input.name]"
               @change="$_treeViewNode_onRadioChange" />
 
@@ -119,19 +121,22 @@
         return this.nodeId ? `${this.nodeId}-input` : null;
       },
       inputClass() {
-        if (!this.input || typeof this.input !== 'object') {
+        if (!this.model.input || typeof this.model.input !== 'object') {
           return null;
         }
 
         let nodeInputClass = 'tree-view-node-self-input ';
 
-        switch (this.input.type) {
+        switch (this.model.input.type) {
           case 'checkbox':
             nodeInputClass += 'tree-view-node-self-checkbox';
+            break;
           case 'radio':
             nodeInputClass += 'tree-view-node-self-radio';
+            break;
           default:
             nodeInputClass = null;
+            break;
         }
 
         return nodeInputClass;
@@ -209,12 +214,20 @@
           state.selected = false;
         }
 
-        if (this.model.input && this.model.input.type === 'checkbox') {
+        if (this.model.input) {
           if (state.input === null || typeof state.input !== 'object') {
             state.input = {};
           }
-          if (typeof state.input.value !== 'boolean') {
-            state.input.value = false;
+
+          if (state.input.disabled === null || typeof state.input.disabled !== 'boolean') {
+            state.input.disabled = false;
+          }
+
+          if (this.model.input.type === 'checkbox') {
+
+            if (typeof state.input.value !== 'boolean') {
+              state.input.value = false;
+            }
           }
         }
       },
@@ -283,7 +296,10 @@
           }
         }
 
-        .tree-view-node-self-expander, .tree-view-node-self-checkbox, .tree-view-node-self-spacer {
+        .tree-view-node-self-expander,
+        .tree-view-node-self-checkbox,
+        .tree-view-node-self-radio,
+        .tree-view-node-self-spacer {
           min-width: 1rem;
           margin: 0;
         }
