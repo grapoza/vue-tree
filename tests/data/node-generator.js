@@ -5,10 +5,10 @@
  * buttons will be added to the radioState parameter.
  *
  * The node spec's node string should be in the format:
- *  [eE]?[sS]?[cCrR]?
+ *  `[eE]?[sS]?[cCrR!?]?`
  * The presence of e, s or c|r indicate the node is expandable, selectable, and a checkbox or radio buttton
  * respectively. If it is capitalized, then the related state should be True. In the case of inputs,
- * the capitalization means the input will be selected.
+ * the capitalization means the input will be selected. The `!` indicates the input will be disabled.
  *
  * @param {Array<String, Array>} nodeSpec The node specification array.
  * @param {Object} radioState An object in which the state of radio button groups is generated. Essentially an "out".
@@ -20,6 +20,7 @@ export function generateNodes(nodeSpec, radioState, baseId = "") {
 
     nodeSpec.forEach(function (item, index) {
         if (Array.isArray(item)) {
+            // Generate child nodes for Arrays
             if (prevNode === null) {
                 return;
             }
@@ -46,19 +47,30 @@ export function generateNodes(nodeSpec, radioState, baseId = "") {
                 children: []
             };
 
-            if (lowerItem.includes('c')) {
-                prevNode.state.input = { value: item.includes('C') };
-            }
+            // Set up input state if needed
+            if (prevNode.input) {
 
-            if (lowerItem.includes('r')) {
-                if (!radioState.hasOwnProperty(prevNode.input.name)) {
-                    radioState[prevNode.input.name] = null;
+                // Disable inputs
+                prevNode.state.input = {
+                    disabled: item.includes('!')
+                };
+
+                // Set up checkbox state
+                if (lowerItem.includes('c')) {
+                    prevNode.state.input.value = item.includes('C')
                 }
 
-                // Radio button selectedness can also be specified in the normal way by providing
-                // the radio button data to the TreeView's radioGroupValues prop.
-                if (item.includes('R')) {
-                    radioState[prevNode.input.name] = prevNode.input.value;
+                // Set up the radiobutton state in the radioState
+                if (lowerItem.includes('r')) {
+                    if (!radioState.hasOwnProperty(prevNode.input.name)) {
+                        radioState[prevNode.input.name] = null;
+                    }
+
+                    // Radio button selectedness can also be specified in the normal way by providing
+                    // the radio button data to the TreeView's radioGroupValues prop.
+                    if (item.includes('R')) {
+                        radioState[prevNode.input.name] = prevNode.input.value;
+                    }
                 }
             }
 

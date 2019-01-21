@@ -119,7 +119,8 @@ The data passed to the treeview should be an array of nodes, where each node has
     expanded: true,
     selected: false,
     input: {
-      value: false
+      value: false,
+      disabled: false
     }
   },
   children: []
@@ -137,28 +138,29 @@ The data passed to the treeview should be an array of nodes, where each node has
   state: {
     expanded: true,
     selected: false
-    // No input state here; to let complex radio button groupings work, state is bound to a tree-level property
+    // No input state here; to let complex radio button groupings work, state value is bound to a tree-level property. disabled, however, is valid here for radio buttons.
   },
   children: []
 }
 ```
 
-| Prop              | Type            | Description                                              | Default value                     | Required |
-|:------------------|:----------------|:---------------------------------------------------------|:----------------------------------|:---------|
-| id                | Number/String   | An ID that uniquely identifies this node within the tree | -                                 | Yes      |
-| label             | String          | The text to show in the treeview                         | -                                 | Yes      |
-| expandable        | Boolean         | True to show a toggle for expanding nodes' subnode lists | `true`                            |          |
-| selectable        | Boolean         | True to allow the node to be selected*                   | `false`                           |          |
-| input             | Object          | Contains data specific to the node's `input` element     | `null`                            |          |
-| input.type        | String          | The type of input; valid values are `checkbox` or `radio`| -                                 | Yes**    |
-| input.name        | String          | The name attribute of the input; used with `radio` type  | `'unspecifiedRadioName'`          |          |
-| input.value       | String          | The value attribute of the input; used with `radio` type | `label`'s value***                |          |
-| state             | Object          | Contains the current state of the node                   | -                                 |          |
-| state.expanded    | Boolean         | True if this node's subnode list is expanded             | `false`                           |          |
-| state.selected    | Boolean         | True if the node is selected*                            | `false`                           |          |
-| state.input       | Object          | Contains any state related to the input field            | `{}` for checkbox, otherwise -    |          |
-| state.input.value | Boolean         | Contains the value of the input                          | `false` for checkbox, otherwise - |          |
-| children          | Array\<Object\> | The child nodes of this node                             | `[]`                              |          |
+| Prop                 | Type            | Description                                              | Default value                     | Required |
+|:---------------------|:----------------|:---------------------------------------------------------|:----------------------------------|:---------|
+| id                   | Number/String   | An ID that uniquely identifies this node within the tree | -                                 | Yes      |
+| label                | String          | The text to show in the treeview                         | -                                 | Yes      |
+| expandable           | Boolean         | True to show a toggle for expanding nodes' subnode lists | `true`                            |          |
+| selectable           | Boolean         | True to allow the node to be selected*                   | `false`                           |          |
+| input                | Object          | Contains data specific to the node's `input` element     | `null`                            |          |
+| input.type           | String          | The type of input; valid values are `checkbox` or `radio`| -                                 | Yes**    |
+| input.name           | String          | The name attribute of the input; used with `radio` type  | `'unspecifiedRadioName'`          |          |
+| input.value          | String          | The value attribute of the input; used with `radio` type | `label`'s value***                |          |
+| state                | Object          | Contains the current state of the node                   | -                                 |          |
+| state.expanded       | Boolean         | True if this node's subnode list is expanded             | `false`                           |          |
+| state.selected       | Boolean         | True if the node is selected*                            | `false`                           |          |
+| state.input          | Object          | Contains any state related to the input field            | `{}` for checkbox, otherwise -    |          |
+| state.input.value    | Boolean         | Contains the value of the input                          | `false` for checkbox, otherwise - |          |
+| state.input.disabled | Boolean         | True if the node's input field is disabled               | `false`                           |          |
+| children             | Array\<Object\> | The child nodes of this node                             | `[]`                              |          |
 
 \* Selection props are unused; see [#5](https://github.com/grapoza/vue-tree/issues/5).
 

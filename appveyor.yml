@@ -33,7 +33,7 @@ deploy_script:
       if ($env:APPVEYOR_REPO_TAG -eq "true")
       {
         # npm_auth_token defined in the appveyor project on the site. https://www.appveyor.com/docs/lang/nodejs-iojs/#authenticating-npm-for-publishing-packages
-        "//registry.npmjs.org/:_authToken=$env:npm_auth_token`n" | out-file "$env:userprofile\.npmrc" -Encoding ASCII
+        "//registry.npmjs.org/:_authToken=$env:npm_auth_token`n" | out-file (Join-Path $Home "/.npmrc") -Encoding ASCII
         npm publish package/ --access public
       }
 ...

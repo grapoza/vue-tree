@@ -31,7 +31,7 @@
       radioGroupValues: {
         type: Object,
         required: false,
-        default: {}
+        default: function () { return {}; }
       }
     },
     data() {
