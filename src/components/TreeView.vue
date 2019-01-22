@@ -40,8 +40,7 @@
       };
     },
     mounted() {
-      // Force the uniqueId to be a string if present
-      this.$set(this, 'uniqueId', this.$el.id ? this.$el.id + '' : null);
+      this.$set(this, 'uniqueId', this.$el.id ? this.$el.id : null);
     },
     methods: {
       getCheckedCheckboxes() {
