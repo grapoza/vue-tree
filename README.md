@@ -75,7 +75,7 @@ Vue.use(TreeView)
 ```
 Then add the component:
 ```html
-<tree-view  id="my-tree" :model="dataModel"></tree-view>
+<tree-view id="my-tree" :model="dataModel"></tree-view>
 ```
 ```javascript
 export default {
