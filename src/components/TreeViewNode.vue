@@ -99,7 +99,7 @@
         required: true
       },
       parentId: {
-        type: String,
+        type: [String, Number],
         required: false
       },
       treeId: {
