@@ -238,7 +238,7 @@
         this.$emit('treeViewNodeRadioChange', this.model, event);
       },
       $_treeViewNode_onExpandedChange(event) {
-        this.$set(this.model.state, 'expanded', !this.model.state.expanded);
+        this.model.state.expanded = !this.model.state.expanded;
         this.$emit('treeViewNodeExpandedChange', this.model, event);
       },
       $_treeViewNode_onClick(event) {
