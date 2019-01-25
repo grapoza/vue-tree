@@ -153,15 +153,15 @@
 
         // Set expected properties if not provided
         if (!Array.isArray(this.model.children)) {
-          this.model.children = [];
+          this.$set(this.model, 'children', []);
         }
 
         // Set basic node options
         if (typeof this.model.expandable !== 'boolean') {
-          this.model.expandable = true;
+          this.$set(this.model, 'expandable', true);
         }
         if (typeof this.model.selectable !== 'boolean') {
-          this.model.selectable = false;
+          this.$set(this.model, 'selectable', false);
         }
 
         this.$_treeViewNode_normalizeNodeInputData();
@@ -177,22 +177,22 @@
         // For nodes that are inputs, they must specify at least a type.
         // Only a subset of types are accepted.
         if (input === null || typeof input !== 'object' || !['checkbox', 'radio'].includes(input.type)) {
-          this.model.input = null;
+          this.$set(this.model, 'input', null);
         }
         else {
           if (typeof input.name !== 'string' || input.name.trim().length === 0) {
-            input.name = null;
+            this.$set(input, 'name', null);
           }
 
           if (input.type === 'radio') {
             if (typeof input.name !== 'string' || input.name.trim().length === 0) {
-              input.name = 'unspecifiedRadioName';
+              this.$set(input, 'name', 'unspecifiedRadioName');
             }
             if (typeof input.value !== 'string' || input.value.trim().length === 0) {
-              input.value = this.model.label.replace(/[\s&<>"'\/]/g, '');
+              this.$set(input, 'value', this.model.label.replace(/[\s&<>"'\/]/g, ''));
             }
             if (!this.radioGroupValues.hasOwnProperty(input.name)) {
-              this.radioGroupValues[input.name] = '';
+              this.$set(this.radioGroupValues, input.name, '');
             }
           }
         }
@@ -202,31 +202,31 @@
        */
       $_treeViewNode_normalizeNodeStateData() {
         if (this.model.state === null || typeof this.model.state !== 'object') {
-          this.model.state = {};
+          this.$set(this.model, 'state', {});
         }
 
         let state = this.model.state;
 
         if (typeof state.expanded !== 'boolean') {
-          state.expanded = false;
+          this.$set(state, 'expanded', false);
         }
         if (typeof state.selected !== 'boolean') {
-          state.selected = false;
+          this.$set(state, 'selected', false);
         }
 
         if (this.model.input) {
           if (state.input === null || typeof state.input !== 'object') {
-            state.input = {};
+            this.$set(state, 'input', {});
           }
 
           if (state.input.disabled === null || typeof state.input.disabled !== 'boolean') {
-            state.input.disabled = false;
+            this.$set(state.input, 'disabled', false);
           }
 
           if (this.model.input.type === 'checkbox') {
 
             if (typeof state.input.value !== 'boolean') {
-              state.input.value = false;
+              this.$set(state.input, 'value', false);
             }
           }
         }
