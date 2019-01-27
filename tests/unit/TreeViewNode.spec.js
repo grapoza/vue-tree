@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
 
@@ -11,12 +11,13 @@ const getDefaultPropsData = function () {
         model: generateNodes(['ces'], radioState)[0],
         depth: 0,
         treeId: 'tree-id',
-        radioGroupValues: radioState
+        radioGroupValues: radioState,
+        customizations: {}
     }
 };
 
 function createWrapper(customPropsData, customAttrs) {
-    return shallowMount(TreeViewNode, {
+    return mount(TreeViewNode, {
         propsData: customPropsData || getDefaultPropsData(),
         localVue,
         attrs: customAttrs
@@ -42,7 +43,8 @@ describe('TreeViewNode.vue', () => {
             wrapper = createWrapper({
                 depth: 0,
                 model,
-                radioGroupValues: {}
+                radioGroupValues: {},
+                customizations: {}
             });
         });
 
@@ -88,7 +90,8 @@ describe('TreeViewNode.vue', () => {
             wrapper = createWrapper({
                 model: generateNodes(['ces'], radioState)[0],
                 depth: 0,
-                radioGroupValues: radioState
+                radioGroupValues: radioState,
+                customizations: {}
             });
         });
 
@@ -145,7 +148,8 @@ describe('TreeViewNode.vue', () => {
                 model: generateNodes(['ces', ['ces']], radioState)[0],
                 depth: 0,
                 treeId: 'tree',
-                radioGroupValues: radioState
+                radioGroupValues: radioState,
+                customizations: {}
             });
 
             expander = wrapper.find('#' + wrapper.vm.expanderId);
@@ -213,7 +217,8 @@ describe('TreeViewNode.vue', () => {
                 model: generateNodes(['res'], radioState)[0],
                 depth: 0,
                 treeId: 'tree',
-                radioGroupValues: radioState
+                radioGroupValues: radioState,
+                customizations: {}
             });
 
             radioButton = wrapper.find('#' + wrapper.vm.inputId);
@@ -247,13 +252,12 @@ describe('TreeViewNode.vue', () => {
             let radioState = {};
             let model = generateNodes(['ces!'], radioState)[0];
 
-            console.debug(model);
-
             wrapper = createWrapper({
                 model,
                 depth: 0,
                 treeId: 'tree',
-                radioGroupValues: radioState
+                radioGroupValues: radioState,
+                customizations: {}
             });
         });
 
@@ -272,6 +276,112 @@ describe('TreeViewNode.vue', () => {
         it('has an enabled input', () => {
             let input = wrapper.find('#' + wrapper.vm.inputId);
             expect(input.element.disabled).to.be.false;
+        });
+    });
+
+
+    describe('when given custom classes', () => {
+
+        let customizations = {
+            classes: {
+                treeViewNode: 'customnodeclass',
+                treeViewNodeSelf: 'customnodeselfclass',
+                treeViewNodeSelfExpander: 'customnodeselfexpanderclass',
+                treeViewNodeSelfExpanded: 'customnodeselfexpandedclass',
+                treeViewNodeSelfExpandedIndicator: 'customnodeselfexpandedindicatorclass',
+                treeViewNodeSelfSpacer: 'customnodeselfspacerclass',
+                treeViewNodeSelfLabel: 'customnodeselflabelclass',
+                treeViewNodeSelfInput: 'customnodeselfinputclass',
+                treeViewNodeSelfCheckbox: 'customnodeselfcheckboxclass',
+                treeViewNodeSelfRadio: 'customnodeselfradioclass',
+                treeViewNodeSelfText: 'customnodeselftextclass',
+                treeViewNodeChildren: 'customnodechildrenclass'
+            }
+        };
+
+        beforeEach(() => {
+            let radioState = {};
+            let model = generateNodes(['cEs', ['res', 'es']], radioState)[0];
+
+            wrapper = createWrapper({
+                model,
+                depth: 0,
+                treeId: 'tree',
+                radioGroupValues: radioState,
+                customizations
+            });
+        });
+
+        it('adds the custom class to the tree view node\'s root element', () => {
+            let target = wrapper.find('.tree-view-node');
+
+            expect(target.is('.' + customizations.classes.treeViewNode)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s self element', () => {
+            let target = wrapper.find('.tree-view-node-self');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeSelf)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s expander element', () => {
+            let target = wrapper.find('.tree-view-node-self-expander');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeSelfExpander)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s expanded element', () => {
+            let target = wrapper.find('.tree-view-node-self-expanded');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeSelfExpanded)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s expanded indicator element', () => {
+            let target = wrapper.find('.tree-view-node-self-expanded-indicator');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeSelfExpandedIndicator)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s spacer element', () => {
+            let target = wrapper.find('.tree-view-node-self-spacer');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeSelfSpacer)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s label element', () => {
+            let target = wrapper.find('.tree-view-node-self-label');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeSelfLabel)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s input element', () => {
+            let target = wrapper.find('.tree-view-node-self-input');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeSelfInput)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s checkbox element', () => {
+            let target = wrapper.find('.tree-view-node-self-checkbox');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeSelfCheckbox)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s radio button element', () => {
+            let target = wrapper.find('.tree-view-node-self-radio');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeSelfRadio)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s text element', () => {
+            let target = wrapper.find('.tree-view-node-self-text');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeSelfText)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s children element', () => {
+            let target = wrapper.find('.tree-view-node-children');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeChildren)).to.be.true;
         });
     });
 });
