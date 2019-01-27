@@ -6,6 +6,7 @@
                     :depth="0"
                     :tree-id="uniqueId"
                     :radio-group-values="radioGroupValues"
+                    :customizations="customizations"
                     @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
                     @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
                     @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
@@ -27,6 +28,11 @@
       model: {
         type: Array,
         required: true
+      },
+      customizations: {
+        type: Object,
+        required: false,
+        default: function () { return {}; }
       },
       radioGroupValues: {
         type: Object,

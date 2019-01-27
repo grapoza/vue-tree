@@ -102,6 +102,7 @@ To see it in action, try out the Demos (coming soon; [#32](https://github.com/gr
 | Prop             | Type     | Description                                                                    | Default value  | Required |
 |:-----------------|:---------|:-------------------------------------------------------------------------------|:---------------|:---------|
 | model            | Array    | The data model containing [tree data](#tree-data)                              | -              | Yes      |
+| customizations   | Object   | A [customizations](#customizing-treeviewnode-markup) object                    | `{}`           |          |
 | radioGroupValues | Object   | An object, the properties of which correspond to radio button group selections | `{}`           |          |
 
 ## Tree Data
@@ -146,23 +147,24 @@ The data passed to the treeview should be an array of nodes, where each node has
 }
 ```
 
-| Prop                 | Type            | Description                                              | Default value                     | Required |
-|:---------------------|:----------------|:---------------------------------------------------------|:----------------------------------|:---------|
-| id                   | Number/String   | An ID that uniquely identifies this node within the tree | -                                 | Yes      |
-| label                | String          | The text to show in the treeview                         | -                                 | Yes      |
-| expandable           | Boolean         | True to show a toggle for expanding nodes' subnode lists | `true`                            |          |
-| selectable           | Boolean         | True to allow the node to be selected*                   | `false`                           |          |
-| input                | Object          | Contains data specific to the node's `input` element     | `null`                            |          |
-| input.type           | String          | The type of input; valid values are `checkbox` or `radio`| -                                 | Yes**    |
-| input.name           | String          | The name attribute of the input; used with `radio` type  | `'unspecifiedRadioName'`          |          |
-| input.value          | String          | The value attribute of the input; used with `radio` type | `label`'s value***                |          |
-| state                | Object          | Contains the current state of the node                   | -                                 |          |
-| state.expanded       | Boolean         | True if this node's subnode list is expanded             | `false`                           |          |
-| state.selected       | Boolean         | True if the node is selected*                            | `false`                           |          |
-| state.input          | Object          | Contains any state related to the input field            | `{}` for checkbox, otherwise -    |          |
-| state.input.value    | Boolean         | Contains the value of the input                          | `false` for checkbox, otherwise - |          |
-| state.input.disabled | Boolean         | True if the node's input field is disabled               | `false`                           |          |
-| children             | Array\<Object\> | The child nodes of this node                             | `[]`                              |          |
+| Prop                 | Type            | Description                                                 | Default value                     | Required |
+|:---------------------|:----------------|:------------------------------------------------------------|:----------------------------------|:---------|
+| id                   | Number/String   | An ID that uniquely identifies this node within the tree    | -                                 | Yes      |
+| label                | String          | The text to show in the treeview                            | -                                 | Yes      |
+| expandable           | Boolean         | True to show a toggle for expanding nodes' subnode lists    | `true`                            |          |
+| selectable           | Boolean         | True to allow the node to be selected*                      | `false`                           |          |
+| input                | Object          | Contains data specific to the node's `input` element        | `null`                            |          |
+| input.type           | String          | The type of input; valid values are `checkbox` or `radio`   | -                                 | Yes**    |
+| input.name           | String          | The name attribute of the input; used with `radio` type     | `'unspecifiedRadioName'`          |          |
+| input.value          | String          | The value attribute of the input; used with `radio` type    | `label`'s value***                |          |
+| state                | Object          | Contains the current state of the node                      | -                                 |          |
+| state.expanded       | Boolean         | True if this node's subnode list is expanded                | `false`                           |          |
+| state.selected       | Boolean         | True if the node is selected*                               | `false`                           |          |
+| state.input          | Object          | Contains any state related to the input field               | `{}` for checkbox, otherwise -    |          |
+| state.input.value    | Boolean         | Contains the value of the input                             | `false` for checkbox, otherwise - |          |
+| state.input.disabled | Boolean         | True if the node's input field is disabled                  | `false`                           |          |
+| children             | Array\<Object\> | The child nodes of this node                                | `[]`                              |          |
+| customizations       | Object          | A [customizations](#customizing-treeviewnode-markup) object | `{}`                              |          |
 
 \* Selection props are unused; see [#5](https://github.com/grapoza/vue-tree/issues/5).
 
@@ -201,8 +203,30 @@ The display of the treeview can be customized via CSS using the following classe
 | `tree-view-node-self-expanded-indicator` | The `<i>` element containing the expansion indicator                             |
 | `tree-view-node-self-spacer`             | An empty spacer to replace fixed-width elements, _e.g._ the expander or checkbox |
 | `tree-view-node-self-label`              | The label for the checkbox of checkable nodes                                    |
-| `tree-view-node-self-input`              | Any type of input node within the tree node                                      |
+| `tree-view-node-self-input`              | Any type of input field within the tree node                                     |
 | `tree-view-node-self-checkbox`           | The checkbox                                                                     |
 | `tree-view-node-self-radio`              | The radio button                                                                 |
 | `tree-view-node-self-text`               | The text for a non-input node                                                    |
 | `tree-view-node-children`                | The list of child nodes                                                          |
+
+## Customizing TreeViewNode Markup
+
+It's often helpful to be able to make adjustments to the markup for the tree. You can provide an object to the `customizations` property of the tree to set a customization affecting all nodes, or to the `customizations` property of a single node. Node-specific customizations will either add to or replace tree-level customizations (see Override Behavior in the table below for specifics).
+
+A customizations object may have the following properties:
+
+| Prop                                      | Type   | Description                                                            | Override Behavior |
+|:------------------------------------------|:-------|:-----------------------------------------------------------------------|:------------------|
+| classes                                   | Object | Properties are classes to add for various parts of a node              |                   |
+| classes.treeViewNode                      | String | Classes to add to a node's list item                                   | Add               |
+| classes.treeViewNodeSelf                  | String | Classes to add to the div containing the current node's UI             | Add               |
+| classes.treeViewNodeSelfExpander          | String | Classes to add to the button used to expand the children               | Add               |
+| classes.treeViewNodeSelfExpanded          | String | Classes to add to the expander button when the node is expanded        | Add               |
+| classes.treeViewNodeSelfExpandedIndicator | String | Classes to add to the `<i>` element containing the expansion indicator | Add               |
+| classes.treeViewNodeSelfSpacer            | String | Classes to add to the fixed-width spacer                               | Add               |
+| classes.treeViewNodeSelfLabel             | String | Classes to add to the label for the checkbox of checkable nodes        | Add               |
+| classes.treeViewNodeSelfInput             | String | Classes to add to an input field                                       | Add               |
+| classes.treeViewNodeSelfCheckbox          | String | Classes to add to the checkbox                                         | Add               |
+| classes.treeViewNodeSelfRadio             | String | Classes to add to the radio button                                     | Add               |
+| classes.treeViewNodeSelfText              | String | Classes to add to the text for a non-input node                        | Add               |
+| classes.treeViewNodeChildren              | String | Classes to add to the list of child nodes                              | Add               |

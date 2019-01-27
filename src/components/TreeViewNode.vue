@@ -3,8 +3,11 @@
       A Component meant to be used internally by the TreeView component. See README.md
       for a description of the expected data format.
   -->
-  <li :id="nodeId" class="tree-view-node">
+  <li :id="nodeId"
+      class="tree-view-node"
+      :class="customClasses.treeViewNode">
     <div class="tree-view-node-self"
+         :class="customClasses.treeViewNodeSelf"
          @click="$_treeViewNode_onClick"
          @dblclick="$_treeViewNode_onDblclick">
 
@@ -13,19 +16,26 @@
               type="button"
               v-if="model.children.length > 0 && model.expandable"
               class="tree-view-node-self-expander"
-              :class="{ 'tree-view-node-self-expanded': model.state.expanded }"
+              :class="[customClasses.treeViewNodeSelfExpander,
+                       model.state.expanded ? 'tree-view-node-self-expanded' : '',
+                       model.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
               @click="$_treeViewNode_onExpandedChange">
-              <i class="tree-view-node-self-expanded-indicator"></i></button>
-      <span v-else class="tree-view-node-self-spacer"></span>
+              <i class="tree-view-node-self-expanded-indicator"
+                 :class="customClasses.treeViewNodeSelfExpandedIndicator"></i></button>
+      <span v-else
+            class="tree-view-node-self-spacer"
+            :class="customClasses.treeViewNodeSelfSpacer"></span>
 
       <!-- Input and label -->
       <label v-if="model.input"
              :for="inputId"
-             class="tree-view-node-self-label">
+             class="tree-view-node-self-label"
+             :class="customClasses.treeViewNodeSelfLabel">
 
         <input v-if="model.input.type === 'checkbox'"
               :id="inputId"
-              :class="inputClass"
+              class="tree-view-node-self-input tree-view-node-self-checkbox"
+              :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfCheckbox]"
               :type="model.input.type"
               :disabled="model.state.input.disabled"
               v-model="model.state.input.value"
@@ -33,7 +43,8 @@
 
         <input v-if="model.input.type === 'radio'"
               :id="inputId"
-              :class="inputClass"
+              class="tree-view-node-self-input tree-view-node-self-radio"
+              :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfRadio]"
               :type="model.input.type"
               :name="model.input.name"
               :value="model.input.value"
@@ -44,14 +55,19 @@
         {{ model.label }}
       </label>
 
-      <!-- Text (if not checkable) -->
-      <span v-else class="tree-view-node-self-text">{{ model.label }}</span>
+      <!-- Text (if not an input) -->
+      <span v-else
+            class="tree-view-node-self-text"
+            :class="customClasses.treeViewNodeSelfText">
+        {{ model.label }}
+      </span>
     </div>
 
     <!-- Children -->
     <ul v-show="model.state.expanded"
         v-if="model.children.length > 0 && model.expandable"
-        class="tree-view-node-children">
+        class="tree-view-node-children"
+        :class="customClasses.treeViewNodeChildren">
       <TreeViewNode v-for="nodeModel in model.children"
                       :key="nodeModel.id"
                       :depth="depth + 1"
@@ -59,6 +75,7 @@
                       :parent-id="model.id"
                       :tree-id="treeId"
                       :radio-group-values="radioGroupValues"
+                      :customizations="customizations"
                       @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
                       @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
                       @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
@@ -98,6 +115,10 @@
         type: Object,
         required: true
       },
+      customizations: {
+        type: Object,
+        required: true
+      },
       parentId: {
         type: [String, Number],
         required: false
@@ -114,35 +135,17 @@
       this.$_treeViewNode_normalizeNodeData();
     },
     computed: {
+      customClasses() {
+        return Object.assign({}, this.customizations.classes, (this.model.customizations || {}).classes);
+      },
+      expanderId() {
+        return this.nodeId ? `${this.nodeId}-exp` : null;
+      },
       nodeId() {
         return this.treeId ? `${this.treeId}-${this.model.id}` : null;
       },
       inputId() {
         return this.nodeId ? `${this.nodeId}-input` : null;
-      },
-      inputClass() {
-        if (!this.model.input || typeof this.model.input !== 'object') {
-          return null;
-        }
-
-        let nodeInputClass = 'tree-view-node-self-input ';
-
-        switch (this.model.input.type) {
-          case 'checkbox':
-            nodeInputClass += 'tree-view-node-self-checkbox';
-            break;
-          case 'radio':
-            nodeInputClass += 'tree-view-node-self-radio';
-            break;
-          default:
-            nodeInputClass = null;
-            break;
-        }
-
-        return nodeInputClass;
-      },
-      expanderId() {
-        return this.nodeId ? `${this.nodeId}-exp` : null;
       }
     },
     methods: {
