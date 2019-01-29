@@ -36,7 +36,7 @@
               :id="inputId"
               class="tree-view-node-self-input tree-view-node-self-checkbox"
               :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfCheckbox]"
-              :type="model.input.type"
+              type="checkbox"
               :disabled="model.state.input.disabled"
               v-model="model.state.input.value"
               @change="$_treeViewNode_onCheckboxChange" />
@@ -45,7 +45,7 @@
               :id="inputId"
               class="tree-view-node-self-input tree-view-node-self-radio"
               :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfRadio]"
-              :type="model.input.type"
+              type="radio"
               :name="model.input.name"
               :value="model.input.value"
               :disabled="model.state.input.disabled"
