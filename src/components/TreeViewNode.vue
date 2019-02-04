@@ -272,7 +272,7 @@
 
       .tree-view-node-self {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         line-height: 1.2rem;
 
         .tree-view-node-self-expander {
@@ -304,10 +304,20 @@
         .tree-view-node-self-radio,
         .tree-view-node-self-spacer {
           min-width: 1rem;
+        }
+
+        .tree-view-node-self-expander,
+        .tree-view-node-self-spacer {
           margin: 0;
         }
 
-        .tree-view-node-self-text {
+        .tree-view-node-self-checkbox,
+        .tree-view-node-self-radio {
+          margin: 0 0 0 -1.2rem;
+        }
+
+        .tree-view-node-self-text,
+        .tree-view-node-self-label {
           margin-left: 1.2rem;
         }
       }
