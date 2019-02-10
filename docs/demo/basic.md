@@ -4,6 +4,7 @@ layout: demo
 
 ## Basic Treeview Checkbox Demo
 
+{% raw  %}
 <div id="app">
     <tree id="customtree" :model="model" ref="tree"></tree>
     <section id="checkedStuff">
@@ -13,6 +14,7 @@ layout: demo
         </ul>
     </section>
 </div>
+{% endraw  %}
 
 <script type='module'>
     import basicData from './basic.js';

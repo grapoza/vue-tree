@@ -4,6 +4,7 @@ layout: demo
 
 ## Basic Treeview Radio Button Demo
 
+{% raw  %}
 <div id="app">
     <tree id="customtree" :model="model" :radio-group-values="radioGroupValues" ref="tree"></tree>
     <section id="checkedStuff">
@@ -13,6 +14,7 @@ layout: demo
         </ul>
     </section>
 </div>
+{% endraw  %}
 
 <script type='module'>
     import basicRadioData from './radioBasic.js';
