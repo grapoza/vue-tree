@@ -95,7 +95,7 @@ export default {
 
 To see it in action, try out the [demos](demo/demos.html).
 
-## Props
+## Tree Props
 
 | Prop             | Type     | Description                                                                    | Default value  | Required |
 |:-----------------|:---------|:-------------------------------------------------------------------------------|:---------------|:---------|
@@ -103,9 +103,9 @@ To see it in action, try out the [demos](demo/demos.html).
 | customizations   | Object   | A [customizations](#customizing-treeviewnode-markup) object                    | `{}`           |          |
 | radioGroupValues | Object   | An object, the properties of which correspond to radio button group selections | `{}`           |          |
 
-## Tree Data
+## Model Data
 
-The data passed to the treeview should be an array of nodes, where each node has the following structure. The data model passed to the treeview may be updated to include missing properties.
+The data passed to the treeview's `model` prop should be an array of nodes, where each node has the following structure. The data model passed to the treeview may be updated to include missing properties.
 
 ```javascript
 {
@@ -139,11 +139,14 @@ The data passed to the treeview should be an array of nodes, where each node has
   state: {
     expanded: true,
     selected: false
-    // No input state here; to let complex radio button groupings work, state value is bound to a tree-level property. disabled, however, is valid here for radio buttons.
+    // No input state here; to let complex radio button groupings work, state value is
+    // bound to a tree-level property. disabled, however, is valid here for radio buttons.
   },
   children: []
 }
 ```
+
+The properties below can be specified for each node.
 
 | Prop                 | Type            | Description                                                 | Default value                     | Required |
 |:---------------------|:----------------|:------------------------------------------------------------|:----------------------------------|:---------|
