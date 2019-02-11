@@ -8,9 +8,9 @@ layout: demo
 <div id="app">
     <tree id="customtree" :model="model" ref="tree"></tree>
     <section id="checkedStuff">
-        <button type="button" @click="refreshCheckedList">What's been checked?</button>
+        <button type="button" v-on:click="refreshCheckedList">What's been checked?</button>
         <ul id="checkedList">
-        <li v-for="checkedNode in checkedNodes">{{ checkedNode.id }}</li>
+            <li v-for="checkedNode in checkedNodes">{{ checkedNode.id }}</li>
         </ul>
     </section>
 </div>
