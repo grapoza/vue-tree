@@ -4,11 +4,13 @@ layout: demo
 
 ## Basic Treeview Checkbox Demo
 
+This page demonstrates a basic treeview using checkboxes, with some nodes that are expanded, checked, and/or disabled by default. [See the data used](./basic.js).
+
 {% raw  %}
 <div id="app">
     <tree id="customtree" :model="model" ref="tree"></tree>
     <section id="checkedStuff">
-        <button type="button" v-on:click="refreshCheckedList">What's been checked?</button>
+        <button type="button" class="treeProcessTrigger" v-on:click="refreshCheckedList">What's been checked?</button>
         <ul id="checkedList">
             <li v-for="checkedNode in checkedNodes">{{ checkedNode.id }}</li>
         </ul>
