@@ -4,11 +4,13 @@ layout: demo
 
 ## Basic Treeview Radio Button Demo
 
+This page demonstrates a basic treeview using radio buttons, with some nodes expanded or selected by default and multiple button groups. [See the data used](./radioBasic.js).
+
 {% raw  %}
 <div id="app">
     <tree id="customtree" :model="model" :radio-group-values="radioGroupValues" ref="tree"></tree>
     <section id="checkedStuff">
-        <button type="button" v-on:click="refreshCheckedList">What's been checked?</button>
+        <button type="button" class="treeProcessTrigger" v-on:click="refreshCheckedList">What's been checked?</button>
         <ul id="checkedList">
             <li v-for="checkedNode in checkedNodes">{{ checkedNode.id }}</li>
         </ul>
