@@ -72,6 +72,7 @@
                       :key="nodeModel.id"
                       :depth="depth + 1"
                       :model="nodeModel"
+                      :model-defaults="modelDefaults"
                       :parent-id="model.id"
                       :tree-id="treeId"
                       :radio-group-values="radioGroupValues"
@@ -106,6 +107,10 @@
 
           return true;
         }
+      },
+      modelDefaults: {
+        type: Object,
+        required: true
       },
       depth: {
         type: Number,
@@ -153,6 +158,14 @@
        * Normalizes the data model to the format consumable by TreeViewNode.
        */
       $_treeViewNode_normalizeNodeData() {
+
+        if (Object.getOwnPropertyNames(this.modelDefaults).length > 0) {
+          // Copy the defaults object.
+          // Then, write the defaults into model, overriding them with anything model specifies.
+          const defaultsCopy = Object.assign({}, this.modelDefaults);
+          Object.assign(defaultsCopy, this.model);
+          Object.assign(this.model, defaultsCopy);
+        }
 
         // Set expected properties if not provided
         if (!Array.isArray(this.model.children)) {

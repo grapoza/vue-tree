@@ -3,6 +3,7 @@
     <tree-view-node v-for="(nodeModel) in model"
                     :key="nodeModel.id"
                     :model="nodeModel"
+                    :model-defaults="modelDefaults"
                     :depth="0"
                     :tree-id="uniqueId"
                     :radio-group-values="radioGroupValues"
@@ -30,6 +31,11 @@
         required: true
       },
       customizations: {
+        type: Object,
+        required: false,
+        default: function () { return {}; }
+      },
+      modelDefaults: {
         type: Object,
         required: false,
         default: function () { return {}; }
