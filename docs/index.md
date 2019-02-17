@@ -19,8 +19,6 @@ Planned:
 - Node selection ([#5](https://github.com/grapoza/vue-tree/issues/5))
 - Async loading ([#13](https://github.com/grapoza/vue-tree/issues/13))
 - Adding/deleting nodes ([#24](https://github.com/grapoza/vue-tree/issues/24), [#16](https://github.com/grapoza/vue-tree/issues/16))
-- Setting node enabled state ([#15](https://github.com/grapoza/vue-tree/issues/15))
-- Slots for full node customization ([#10](https://github.com/grapoza/vue-tree/issues/10))
 - Icons ([#22](https://github.com/grapoza/vue-tree/issues/22))
 - Searching ([#4](https://github.com/grapoza/vue-tree/issues/4))
 - Drag n' Drop ([#6](https://github.com/grapoza/vue-tree/issues/6))
@@ -97,11 +95,12 @@ To see it in action, try out the [demos](demo/demos.html).
 
 ## Tree Props
 
-| Prop             | Type     | Description                                                                    | Default value  | Required |
-|:-----------------|:---------|:-------------------------------------------------------------------------------|:---------------|:---------|
-| model            | Array    | The data model containing [tree data](#tree-data)                              | -              | Yes      |
-| customizations   | Object   | A [customizations](#customizing-treeviewnode-markup) object                    | `{}`           |          |
-| radioGroupValues | Object   | An object, the properties of which correspond to radio button group selections | `{}`           |          |
+| Prop             | Type     | Description                                                                         | Default value  | Required |
+|:-----------------|:---------|:------------------------------------------------------------------------------------|:---------------|:---------|
+| model            | Array    | The data model containing [tree data](#tree-data)                                   | -              | Yes      |
+| modelDefaults    | Object   | An object containing defaults for all nodes that do no specify the given properties | `{}`           |          |
+| customizations   | Object   | A [customizations](#customizing-treeviewnode-markup) object                         | `{}`           |          |
+| radioGroupValues | Object   | An object, the properties of which correspond to radio button group selections      | `{}`           |          |
 
 ## Model Data
 
@@ -173,6 +172,28 @@ The properties below can be specified for each node.
 
 \*\*\* For `input.value`, `label`'s value is replaced with `label.replace(/[\s&<>"'\/]/g, '')`
 
+## Default Data
+
+If specified, the `modelDefaults` property of the treeview will be merged with node model data such that any data not explicitly specified for the node will be set to the value from `modelDefaults`. This is useful for situations where all (or most) nodes will use the same values. For instance, in a treeview that is all enabled, collapsed, unchecked checkboxes the user could use a `modelDefaults` of
+
+```javascript
+{
+  expandable: true,
+  selectable: true,
+  input: {
+    type: 'checkbox',
+  },
+  state: {
+    expanded: false,
+    selected: false,
+    input: {
+      value: false,
+      disabled: false
+    }
+  }
+}
+```
+
 ## Methods
 
 | Method                 | Description                            | Parameters | Returns                                                     |
@@ -195,7 +216,7 @@ The properties below can be specified for each node.
 The display of the treeview can be customized via CSS using the following classes. Class names are organized in a hierarchy, so a containing node's class is the prefix of its child classes.
 
 | Class                                    | Affects                                                                          |
-|------------------------------------------|----------------------------------------------------------------------------------|
+|:-----------------------------------------|:---------------------------------------------------------------------------------|
 | `tree-view`                              | The top-level tree view list                                                     |
 | `tree-view-node`                         | A single node's list item                                                        |
 | `tree-view-node-self`                    | The div containing the current node's UI                                         |

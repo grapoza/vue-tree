@@ -9,6 +9,7 @@ const getDefaultPropsData = function () {
     let radioState = {};
     return {
         model: generateNodes(['ces'], radioState)[0],
+        modelDefaults: {},
         depth: 0,
         treeId: 'tree-id',
         radioGroupValues: radioState,
@@ -43,6 +44,7 @@ describe('TreeViewNode.vue', () => {
             wrapper = createWrapper({
                 depth: 0,
                 model,
+                modelDefaults: {},
                 radioGroupValues: {},
                 customizations: {}
             });
@@ -58,6 +60,38 @@ describe('TreeViewNode.vue', () => {
             expect(model.state.selected).to.be.false;
             expect(model.input).to.be.null;
             expect(model.state.input).to.not.exist;
+        });
+    });
+
+    describe('when given default model data', () => {
+
+        let model;
+
+        beforeEach(() => {
+            model = { id: 'my-node', label: 'My Node', expandable: true };
+
+            wrapper = createWrapper({
+                depth: 0,
+                model,
+                modelDefaults: {
+                    expandable: false,
+                    selectable: true,
+                    state: {
+                        selected: true
+                    }
+                },
+                radioGroupValues: {},
+                customizations: {}
+            });
+        });
+
+        it('should incorporate the default data into the model for unspecified properties', () => {
+            expect(model.selectable).to.be.true;
+            expect(model.state.selected).to.be.true;
+        });
+
+        it('should use the model\'s data over the default data for specified properties', () => {
+            expect(model.expandable).to.be.true;
         });
     });
 
@@ -89,6 +123,7 @@ describe('TreeViewNode.vue', () => {
             let radioState = {};
             wrapper = createWrapper({
                 model: generateNodes(['ces'], radioState)[0],
+                modelDefaults: {},
                 depth: 0,
                 radioGroupValues: radioState,
                 customizations: {}
@@ -146,6 +181,7 @@ describe('TreeViewNode.vue', () => {
             let radioState = {};
             wrapper = createWrapper({
                 model: generateNodes(['ces', ['ces']], radioState)[0],
+                modelDefaults: {},
                 depth: 0,
                 treeId: 'tree',
                 radioGroupValues: radioState,
@@ -215,6 +251,7 @@ describe('TreeViewNode.vue', () => {
             radioState = {};
             wrapper = createWrapper({
                 model: generateNodes(['res'], radioState)[0],
+                modelDefaults: {},
                 depth: 0,
                 treeId: 'tree',
                 radioGroupValues: radioState,
@@ -254,6 +291,7 @@ describe('TreeViewNode.vue', () => {
 
             wrapper = createWrapper({
                 model,
+                modelDefaults: {},
                 depth: 0,
                 treeId: 'tree',
                 radioGroupValues: radioState,
@@ -305,6 +343,7 @@ describe('TreeViewNode.vue', () => {
 
             wrapper = createWrapper({
                 model,
+                modelDefaults: {},
                 depth: 0,
                 treeId: 'tree',
                 radioGroupValues: radioState,
