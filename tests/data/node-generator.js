@@ -5,8 +5,8 @@
  * buttons will be added to the radioState parameter.
  *
  * The node spec's node string should be in the format:
- *  `[eE]?[sS]?[cCrR!?]?`
- * The presence of e, s or c|r indicate the node is expandable, selectable, and a checkbox or radio buttton
+ *  `[eE]?[sS]?[d]?[[cCrR]!?]?`
+ * The presence of e, s, d, or c|r indicate the node is expandable, selectable, deletable and a checkbox or radio buttton
  * respectively. If it is capitalized, then the related state should be True. In the case of inputs,
  * the capitalization means the input will be selected. The `!` indicates the input will be disabled.
  *
@@ -35,6 +35,7 @@ export function generateNodes(nodeSpec, radioState, baseId = "") {
                 label: 'Node ' + index,
                 expandable: lowerItem.includes('e'),
                 selectable: lowerItem.includes('s'),
+                deletable: lowerItem.includes('d'),
                 input: lowerItem.includes('c')
                     ? { type: 'checkbox', name: `${idString}-cbx` }
                     : lowerItem.includes('r')

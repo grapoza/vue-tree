@@ -12,7 +12,8 @@
                     @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
                     @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
                     @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
-                    @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)">
+                    @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
+                    @treeViewNodeDelete="(t, e)=>$_treeViewNode_handleChildDeletion(t, e)">
     </tree-view-node>
   </ul>
 </template>
@@ -84,6 +85,16 @@
         }
 
         return checked;
+      },
+      $_treeViewNode_handleChildDeletion(node, event) {
+        // Remove the node from the array of children if this is an immediate child.
+        // Note that only the node that was deleted fires these, not any subnode.
+        let targetIndex = this.model.indexOf(node);
+        if (targetIndex > -1) {
+          this.model.splice(targetIndex, 1);
+        }
+
+        this.$emit('treeViewNodeDelete', node, event);
       }
     }
   };
