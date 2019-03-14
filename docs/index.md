@@ -18,7 +18,7 @@ Planned:
 
 - Node selection ([#5](https://github.com/grapoza/vue-tree/issues/5))
 - Async loading ([#13](https://github.com/grapoza/vue-tree/issues/13))
-- Adding/deleting nodes ([#24](https://github.com/grapoza/vue-tree/issues/24), [#16](https://github.com/grapoza/vue-tree/issues/16))
+- Adding nodes ([#24](https://github.com/grapoza/vue-tree/issues/24))
 - Icons ([#22](https://github.com/grapoza/vue-tree/issues/22))
 - Searching ([#4](https://github.com/grapoza/vue-tree/issues/4))
 - Drag n' Drop ([#6](https://github.com/grapoza/vue-tree/issues/6))
@@ -153,6 +153,7 @@ The properties below can be specified for each node.
 | label                | String          | The text to show in the treeview                            | -                                 | Yes      |
 | expandable           | Boolean         | True to show a toggle for expanding nodes' subnode lists    | `true`                            |          |
 | selectable           | Boolean         | True to allow the node to be selected*                      | `false`                           |          |
+| deletable            | Boolean         | True to allow the node to be deleted                        | `false`                           |          |
 | input                | Object          | Contains data specific to the node's `input` element        | `null`                            |          |
 | input.type           | String          | The type of input; valid values are `checkbox` or `radio`   | -                                 | Yes**    |
 | input.name           | String          | The name attribute of the input; used with `radio` type     | `'unspecifiedRadioName'`          |          |
@@ -207,6 +208,7 @@ If specified, the `modelDefaults` property of the treeview will be merged with n
 |:----------------------------|:--------------------------------------------------------|:-----------------------------------------------------------------------|
 | treeViewNodeClick           | Emitted when a node is clicked                          | `target` The model of the target node <br/> `event` The original event |
 | treeViewNodeDblclick        | Emitted when a node is double clicked                   | `target` The model of the target node <br/> `event` The original event |
+| treeViewNodeDelete          | Emitted when a node is deleted                          | `target` The model of the target node <br/> `event` The original event |
 | treeViewNodeCheckboxChange  | Emitted when a node's checkbox emits a change event     | `target` The model of the target node <br/> `event` The original event |
 | treeViewNodeRadioChange     | Emitted when a node's radio button emits a change event | `target` The model of the target node <br/> `event` The original event |
 | treeViewNodeExpandedChange  | Emitted when a node is expanded or collapsed            | `target` The model of the target node <br/> `event` The original event |
@@ -229,6 +231,8 @@ The display of the treeview can be customized via CSS using the following classe
 | `tree-view-node-self-checkbox`           | The checkbox                                                                     |
 | `tree-view-node-self-radio`              | The radio button                                                                 |
 | `tree-view-node-self-text`               | The text for a non-input node                                                    |
+| `tree-view-node-self-delete`             | The delete button                                                                |
+| `tree-view-node-self-delete-icon`        | The `<i>` element containing the delete icon                                     |
 | `tree-view-node-children`                | The list of child nodes                                                          |
 
 ## Customizing TreeViewNode Markup
@@ -251,4 +255,6 @@ A customizations object may have the following properties:
 | classes.treeViewNodeSelfCheckbox          | String | Classes to add to the checkbox                                         | Add               |
 | classes.treeViewNodeSelfRadio             | String | Classes to add to the radio button                                     | Add               |
 | classes.treeViewNodeSelfText              | String | Classes to add to the text for a non-input node                        | Add               |
+| classes.treeViewNodeSelfDelete            | String | Classes to add to the delete button                                    | Add               |
+| classes.treeViewNodeSelfDeleteIcon        | String | Classes to add to the `<i>` element containing the delete icon         | Add               |
 | classes.treeViewNodeChildren              | String | Classes to add to the list of child nodes                              | Add               |

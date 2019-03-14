@@ -55,6 +55,7 @@ describe('TreeViewNode.vue', () => {
             expect(model.label).to.equal('My Node');
             expect(model.expandable).to.be.true;
             expect(model.selectable).to.be.false;
+            expect(model.deletable).to.be.false;
             expect(model.state).to.exist;
             expect(model.state.expanded).to.be.false;
             expect(model.state.selected).to.be.false;
@@ -283,6 +284,36 @@ describe('TreeViewNode.vue', () => {
         });
     });
 
+    describe('when a node\'s delete button is clicked', () => {
+
+        let deleteButton = null;
+
+
+        beforeEach(() => {
+            let radioState = {};
+            wrapper = createWrapper({
+                model: generateNodes(['es', ['ds']], radioState)[0],
+                modelDefaults: {},
+                depth: 0,
+                treeId: 'tree',
+                radioGroupValues: radioState,
+                customizations: {}
+            });
+
+            deleteButton = wrapper.find('#' + wrapper.vm.$children[0].nodeId + '-delete');
+        });
+
+        it('should emit the treeViewNodeDelete event', () => {
+            deleteButton.trigger('click');
+            expect(wrapper.emitted().treeViewNodeDelete.length).to.equal(1);
+        });
+
+        it('should remove the target node from the model', () => {
+            deleteButton.trigger('click');
+            expect(wrapper.vm.model.children.length).to.equal(0);
+        });
+    });
+
     describe('when a node\'s model is disabled', () => {
 
         beforeEach(() => {
@@ -333,13 +364,15 @@ describe('TreeViewNode.vue', () => {
                 treeViewNodeSelfCheckbox: 'customnodeselfcheckboxclass',
                 treeViewNodeSelfRadio: 'customnodeselfradioclass',
                 treeViewNodeSelfText: 'customnodeselftextclass',
+                treeViewNodeSelfDelete: 'customnodeselfdeleteclass',
+                treeViewNodeSelfDeleteIcon: 'customnodeselfdeleteiconclass',
                 treeViewNodeChildren: 'customnodechildrenclass'
             }
         };
 
         beforeEach(() => {
             let radioState = {};
-            let model = generateNodes(['cEs', ['res', 'es']], radioState)[0];
+            let model = generateNodes(['cEds', ['res', 'es']], radioState)[0];
 
             wrapper = createWrapper({
                 model,
@@ -415,6 +448,18 @@ describe('TreeViewNode.vue', () => {
             let target = wrapper.find('.tree-view-node-self-text');
 
             expect(target.is('.' + customizations.classes.treeViewNodeSelfText)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s delete element', () => {
+            let target = wrapper.find('.tree-view-node-self-delete');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeSelfDelete)).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s delete icon element', () => {
+            let target = wrapper.find('.tree-view-node-self-delete-icon');
+
+            expect(target.is('.' + customizations.classes.treeViewNodeSelfDeleteIcon)).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s children element', () => {

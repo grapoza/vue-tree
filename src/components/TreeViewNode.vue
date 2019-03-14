@@ -61,6 +61,17 @@
             :class="customClasses.treeViewNodeSelfText">
         {{ model.label }}
       </span>
+
+      <!-- Delete button -->
+      <button :id="nodeId + '-delete'"
+              type="button"
+              v-if="model.deletable"
+              class="tree-view-node-self-delete"
+              :class="customClasses.treeViewNodeSelfDelete"
+              @click="$_treeViewNode_onDelete">
+        <i class="tree-view-node-self-delete-icon"
+            :class="customClasses.treeViewNodeSelfDeleteIcon"></i>
+      </button>
     </div>
 
     <!-- Children -->
@@ -81,7 +92,8 @@
                       @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
                       @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
                       @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
-                      @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)">
+                      @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
+                      @treeViewNodeDelete="(t, e)=>$_treeViewNode_handleChildDeletion(t, e)">
       </TreeViewNode>
     </ul>
   </li>
@@ -171,13 +183,14 @@
         if (!Array.isArray(this.model.children)) {
           this.$set(this.model, 'children', []);
         }
-
-        // Set basic node options
         if (typeof this.model.expandable !== 'boolean') {
           this.$set(this.model, 'expandable', true);
         }
         if (typeof this.model.selectable !== 'boolean') {
           this.$set(this.model, 'selectable', false);
+        }
+        if (typeof this.model.deletable !== 'boolean') {
+          this.$set(this.model, 'deletable', false);
         }
 
         this.$_treeViewNode_normalizeNodeInputData();
@@ -258,22 +271,38 @@
         this.$emit('treeViewNodeExpandedChange', this.model, event);
       },
       $_treeViewNode_onClick(event) {
-        // Don't fire this if the target is the input or expander, which have their own events
-        if (!event.target.matches("input, .tree-view-node-self-expander")) {
+        // Don't fire this if the target is an element which has its own events
+        if (!event.target.matches("input, .tree-view-node-self-expander, .tree-view-node-self-delete")) {
           this.$emit('treeViewNodeClick', this.model, event);
         }
       },
       $_treeViewNode_onDblclick(event) {
-        // Don't fire this if the target is the input or expander, which have their own events
-        if (!event.target.matches("input, .tree-view-node-self-expander")) {
+        // Don't fire this if the target is an element which has its own events
+        if (!event.target.matches("input, .tree-view-node-self-expander, .tree-view-node-self-delete")) {
           this.$emit('treeViewNodeDblclick', this.model, event);
         }
+      },
+      $_treeViewNode_onDelete(event) {
+        this.$emit('treeViewNodeDelete', this.model, event);
+      },
+      $_treeViewNode_handleChildDeletion(node, event) {
+        // Remove the node from the array of children if this is an immediate child.
+        // Note that only the node that was deleted fires these, not any subnode.
+        let targetIndex = this.model.children.indexOf(node);
+        if (targetIndex > -1) {
+          this.model.children.splice(targetIndex, 1);
+        }
+
+        this.$emit('treeViewNodeDelete', node, event);
       }
     },
   };
 </script>
 
 <style lang="scss">
+  $baseHeight: 1.2rem;
+  $itemSpacing: 1.2rem;
+
   .tree-view {
 
     .tree-view-node {
@@ -286,7 +315,7 @@
       .tree-view-node-self {
         display: flex;
         align-items: flex-start;
-        line-height: 1.2rem;
+        line-height: $baseHeight;
 
         .tree-view-node-self-expander {
           padding: 0;
@@ -315,7 +344,8 @@
         .tree-view-node-self-expander,
         .tree-view-node-self-checkbox,
         .tree-view-node-self-radio,
-        .tree-view-node-self-spacer {
+        .tree-view-node-self-spacer,
+        .tree-view-node-self-delete {
           min-width: 1rem;
         }
 
@@ -326,17 +356,32 @@
 
         .tree-view-node-self-checkbox,
         .tree-view-node-self-radio {
-          margin: 0 0 0 -1.2rem;
+          margin: 0 0 0 (-$itemSpacing);
         }
 
         .tree-view-node-self-text,
         .tree-view-node-self-label {
-          margin-left: 1.2rem;
+          margin-left: $itemSpacing;
+        }
+        
+        .tree-view-node-self-delete {
+          padding: 0;
+          background: none;
+          border: none;
+          height: $baseHeight;
+
+          i.tree-view-node-self-delete-icon {
+            font-style: normal;
+
+            &::before {
+              content: 'x';
+            }
+          }
         }
       }
 
       .tree-view-node-children {
-        margin: 0 0 0 2.2rem;
+        margin: 0 0 0 (1rem + $itemSpacing);
         padding: 0;
         list-style: none;
       }
