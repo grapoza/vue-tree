@@ -29,6 +29,7 @@
       <!-- Input and label -->
       <label v-if="model.input"
              :for="inputId"
+             :title="model.title"
              class="tree-view-node-self-label"
              :class="customClasses.treeViewNodeSelfLabel">
 
@@ -57,6 +58,7 @@
 
       <!-- Text (if not an input) -->
       <span v-else
+            :title="model.title"
             class="tree-view-node-self-text"
             :class="customClasses.treeViewNodeSelfText">
         {{ model.label }}
@@ -191,6 +193,10 @@
         }
         if (typeof this.model.deletable !== 'boolean') {
           this.$set(this.model, 'deletable', false);
+        }
+
+        if (typeof this.model.title !== 'string' || this.model.title.trim().length === 0) {
+          this.$set(this.model, 'title', null);
         }
 
         this.$_treeViewNode_normalizeNodeInputData();
@@ -363,7 +369,7 @@
         .tree-view-node-self-label {
           margin-left: $itemSpacing;
         }
-        
+
         .tree-view-node-self-delete {
           padding: 0;
           background: none;

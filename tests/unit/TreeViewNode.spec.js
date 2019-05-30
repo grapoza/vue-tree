@@ -53,6 +53,7 @@ describe('TreeViewNode.vue', () => {
         it('normalizes model data on the original object', () => {
             expect(model.id).to.equal('my-node');
             expect(model.label).to.equal('My Node');
+            expect(model.title).to.be.null;
             expect(model.expandable).to.be.true;
             expect(model.selectable).to.be.false;
             expect(model.deletable).to.be.false;
@@ -93,6 +94,39 @@ describe('TreeViewNode.vue', () => {
 
         it('should use the model\'s data over the default data for specified properties', () => {
             expect(model.expandable).to.be.true;
+        });
+    });
+
+    describe('when given a title in the model data for a text node', () => {
+
+        beforeEach(() => {
+            wrapper = createWrapper({
+                depth: 0,
+                model: { id: 'my-node', label: 'My Node', title: 'My Title' },
+                modelDefaults: {},
+                radioGroupValues: {},
+                customizations: {}
+            });
+        });
+
+        it('should have a title attribute on the node\'s text', () => {
+            let elem = wrapper.find(`.tree-view-node-self-text`).element;
+            expect(elem.getAttribute("title")).to.equal("My Title");
+        });
+    });
+
+    describe('when given a title in the model data for an input node', () => {
+
+        beforeEach(() => {
+            let data = getDefaultPropsData();
+            data.model.title = "My Title";
+
+            wrapper = createWrapper(data);
+        });
+
+        it('should have a title attribute on the node\'s label', () => {
+            let elem = wrapper.find(`.tree-view-node-self-label`).element;
+            expect(elem.getAttribute("title")).to.equal("My Title");
         });
     });
 

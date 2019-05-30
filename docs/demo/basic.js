@@ -21,6 +21,7 @@ export default [
   {
     id: 'node2',
     label: 'My Second Node',
+    title: 'You can add a title to an input node.',
     expandable: true,
     selectable: true,
     input: {
@@ -39,6 +40,7 @@ export default [
       {
         id: 'subnode1',
         label: 'This is a subnode',
+        title: 'You can add a title to a text node.',
         expandable: true,
         selectable: true,
         state: {
