@@ -110,6 +110,7 @@ The data passed to the treeview's `model` prop should be an array of nodes, wher
 {
   id: "node0",
   label: "A checkbox node",
+  title: "This will be the value of the node text/label's 'title' attribute.",
   expandable: true,
   selectable: false,
   input: {
@@ -151,6 +152,7 @@ The properties below can be specified for each node.
 |:---------------------|:----------------|:------------------------------------------------------------|:----------------------------------|:---------|
 | id                   | Number/String   | An ID that uniquely identifies this node within the tree    | -                                 | Yes      |
 | label                | String          | The text to show in the treeview                            | -                                 | Yes      |
+| title                | String          | The text of the node's text or label's title attribute      | `null`                            |          |
 | expandable           | Boolean         | True to show a toggle for expanding nodes' subnode lists    | `true`                            |          |
 | selectable           | Boolean         | True to allow the node to be selected*                      | `false`                           |          |
 | deletable            | Boolean         | True to allow the node to be deleted                        | `false`                           |          |
