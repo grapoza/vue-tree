@@ -3,7 +3,7 @@
   "description": "Yet another Vue treeview component.",
   "author": "Gregg Rapoza <grapoza@gmail.com>",
   "license": "MIT",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "browser": "index.js",
   "repository": {
     "url": "https://github.com/grapoza/vue-tree",
@@ -25,14 +25,14 @@
     "vue": "^2.6.10"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.7.0",
-    "@vue/cli-plugin-unit-mocha": "^3.7.0",
-    "@vue/cli-service": "^3.7.0",
+    "@vue/cli-plugin-babel": "^3.8.0",
+    "@vue/cli-plugin-unit-mocha": "^3.8.0",
+    "@vue/cli-service": "^3.8.4",
     "@vue/test-utils": "^1.0.0-beta.29",
     "chai": "^4.2.0",
     "node-sass": "^4.12.0",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.6.10",
-    "webpack": "^4.31.0"
+    "webpack": "^4.35.0"
   }
 }
