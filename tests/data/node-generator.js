@@ -1,20 +1,23 @@
 /**
- * Generates nodes, one per array element that is not an array.
+ * Generates nodes, one per array element that is not itself an array.
  * Array elements that are arrays recursively generate child nodes
  * of the last created node. Additionally, the initial state for radio
  * buttons will be added to the radioState parameter.
  *
- * The node spec's node string should be in the format:
- *  `[eE]?[sS]?[d]?[[cCrR]!?]?`
- * The presence of e, s, d, or c|r indicate the node is expandable, selectable, deletable and a checkbox or radio buttton
- * respectively. If it is capitalized, then the related state should be True. In the case of inputs,
+ * The node spec's node string should be matched by the regex:
+ *  `[eE]?[sS]?[d]?[a]?[[cCrR]!?]?`
+ * The presence of e, s, d, a, or c|r indicate the node is expandable, selectable, deletable,
+ * addable (subnodes can be added), and a checkbox or radio buttton respectively.
+ * If it is capitalized, then the related state should be True. In the case of inputs,
  * the capitalization means the input will be selected. The `!` indicates the input will be disabled.
+ * A node that allows adds will use the callback function passed to generateNodes.
  *
  * @param {Array<String, Array>} nodeSpec The node specification array.
  * @param {Object} radioState An object in which the state of radio button groups is generated. Essentially an "out".
  * @param {String} baseId The base string used in the node IDs.
+ * @param {Function} addChildCallback A method that returns a Promise that resolves to the node data to add as a subnode.
  */
-export function generateNodes(nodeSpec, radioState, baseId = "") {
+export function generateNodes(nodeSpec, radioState, baseId = "", addChildCallback = null) {
     let nodes = [];
     let prevNode = null;
 
@@ -24,7 +27,7 @@ export function generateNodes(nodeSpec, radioState, baseId = "") {
             if (prevNode === null) {
                 return;
             }
-            prevNode.children = generateNodes(item, radioState, prevNode.id);
+            prevNode.children = generateNodes(item, radioState, prevNode.id, addChildCallback);
         }
         else {
             let lowerItem = item.toLowerCase();
@@ -45,6 +48,7 @@ export function generateNodes(nodeSpec, radioState, baseId = "") {
                     expanded: item.includes('E'),
                     selected: item.includes('S')
                 },
+                addChildCallback: item.includes('a') ? addChildCallback : null,
                 children: []
             };
 

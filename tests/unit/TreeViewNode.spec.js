@@ -348,6 +348,113 @@ describe('TreeViewNode.vue', () => {
         });
     });
 
+
+    describe('when there is not an addChildCallback method', () => {
+
+        let addChildButton = null;
+
+        beforeEach(() => {
+            let radioState = {};
+
+            wrapper = createWrapper({
+                model: generateNodes(['es'], radioState)[0],
+                modelDefaults: {},
+                depth: 0,
+                treeId: 'tree',
+                radioGroupValues: radioState,
+                customizations: {}
+            });
+
+            addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
+        });
+
+        it('should not include an add button', async () => {
+            expect(addChildButton.exists()).to.be.false;
+        });
+    });
+
+    describe('and there is an addChildCallback method', () => {
+
+        let addChildButton = null;
+
+        describe('when a node\'s add child button is clicked', () => {
+
+            describe('and the callback resolves to node data', () => {
+
+                beforeEach(() => {
+                    let radioState = {};
+                    let addChildCallback = () => {
+                        return Promise.resolve({ id: 'newId', label: 'new label' });
+                    };
+
+                    wrapper = createWrapper({
+                        model: generateNodes(['esa'], radioState, "", addChildCallback)[0],
+                        modelDefaults: {},
+                        depth: 0,
+                        treeId: 'tree',
+                        radioGroupValues: radioState,
+                        customizations: {}
+                    });
+
+                    addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
+                });
+
+                it('should emit the treeViewNodeAdd event', async () => {
+                    addChildButton.trigger('click');
+
+                    await Promise.resolve(); // This just lets the callback resolve before the expect.
+
+                    expect(wrapper.emitted().treeViewNodeAdd.length).to.equal(1);
+                });
+
+                it('should add a subnode to the target node from the model', async () => {
+                    addChildButton.trigger('click');
+
+                    await Promise.resolve(); // This just lets the callback resolve before the expect.
+
+                    expect(wrapper.vm.model.children.length).to.equal(1);
+                });
+            });
+
+            describe('and the callback does not resolve to node data', () => {
+
+                beforeEach(() => {
+                    let radioState = {};
+                    let addChildCallback = () => {
+                        return Promise.resolve(null);
+                    };
+
+                    wrapper = createWrapper({
+                        model: generateNodes(['esa'], radioState, "", addChildCallback)[0],
+                        modelDefaults: {},
+                        depth: 0,
+                        treeId: 'tree',
+                        radioGroupValues: radioState,
+                        customizations: {}
+                    });
+
+                    addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
+                });
+
+                it('should not emit the treeViewNodeAdd event', async () => {
+                    addChildButton.trigger('click');
+
+                    await Promise.resolve(); // This just lets the callback resolve before the expect.
+
+                    expect(wrapper.emitted().treeViewNodeAdd).to.be.undefined;
+                });
+
+                it('should add a subnode to the target node from the model', async () => {
+                    addChildButton.trigger('click');
+
+                    await Promise.resolve(); // This just lets the callback resolve before the expect.
+
+                    expect(wrapper.vm.model.children.length).to.equal(0);
+                });
+            });
+        });
+    });
+
     describe('when a node\'s model is disabled', () => {
 
         beforeEach(() => {
@@ -385,7 +492,7 @@ describe('TreeViewNode.vue', () => {
 
     describe('when given custom classes', () => {
 
-        let customizations = {
+        const customizations = {
             classes: {
                 treeViewNode: 'customnodeclass',
                 treeViewNodeSelf: 'customnodeselfclass',
@@ -398,6 +505,9 @@ describe('TreeViewNode.vue', () => {
                 treeViewNodeSelfCheckbox: 'customnodeselfcheckboxclass',
                 treeViewNodeSelfRadio: 'customnodeselfradioclass',
                 treeViewNodeSelfText: 'customnodeselftextclass',
+                treeViewNodeSelfAction: 'customnodeselfactionclass',
+                treeViewNodeSelfAddChild: 'customnodeselfaddchildclass',
+                treeViewNodeSelfAddChildIcon: 'customnodeselfaddchildiconclass',
                 treeViewNodeSelfDelete: 'customnodeselfdeleteclass',
                 treeViewNodeSelfDeleteIcon: 'customnodeselfdeleteiconclass',
                 treeViewNodeChildren: 'customnodechildrenclass'
@@ -406,7 +516,7 @@ describe('TreeViewNode.vue', () => {
 
         beforeEach(() => {
             let radioState = {};
-            let model = generateNodes(['cEds', ['res', 'es']], radioState)[0];
+            let model = generateNodes(['cEds', ['res', 'esa']], radioState, "", () => Promise.resolve())[0];
 
             wrapper = createWrapper({
                 model,
@@ -419,87 +529,93 @@ describe('TreeViewNode.vue', () => {
         });
 
         it('adds the custom class to the tree view node\'s root element', () => {
-            let target = wrapper.find('.tree-view-node');
-
-            expect(target.is('.' + customizations.classes.treeViewNode)).to.be.true;
+            let target = wrapper.find('.tree-view-node.' + customizations.classes.treeViewNode);
+            expect(target.exists()).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s self element', () => {
-            let target = wrapper.find('.tree-view-node-self');
-
-            expect(target.is('.' + customizations.classes.treeViewNodeSelf)).to.be.true;
+            let target = wrapper.find('.tree-view-node-self.' + customizations.classes.treeViewNodeSelf);
+            expect(target.exists()).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s expander element', () => {
-            let target = wrapper.find('.tree-view-node-self-expander');
-
-            expect(target.is('.' + customizations.classes.treeViewNodeSelfExpander)).to.be.true;
+            let target = wrapper.find('.tree-view-node-self-expander.' + customizations.classes.treeViewNodeSelfExpander);
+            expect(target.exists()).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s expanded element', () => {
-            let target = wrapper.find('.tree-view-node-self-expanded');
-
-            expect(target.is('.' + customizations.classes.treeViewNodeSelfExpanded)).to.be.true;
+            let target = wrapper.find('.tree-view-node-self-expanded.' + customizations.classes.treeViewNodeSelfExpanded);
+            expect(target.exists()).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s expanded indicator element', () => {
-            let target = wrapper.find('.tree-view-node-self-expanded-indicator');
-
-            expect(target.is('.' + customizations.classes.treeViewNodeSelfExpandedIndicator)).to.be.true;
+            let target = wrapper.find('.tree-view-node-self-expanded-indicator.' + customizations.classes.treeViewNodeSelfExpandedIndicator);
+            expect(target.exists()).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s spacer element', () => {
-            let target = wrapper.find('.tree-view-node-self-spacer');
-
-            expect(target.is('.' + customizations.classes.treeViewNodeSelfSpacer)).to.be.true;
+            let target = wrapper.find('.tree-view-node-self-spacer.' + customizations.classes.treeViewNodeSelfSpacer);
+            expect(target.exists()).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s label element', () => {
-            let target = wrapper.find('.tree-view-node-self-label');
-
-            expect(target.is('.' + customizations.classes.treeViewNodeSelfLabel)).to.be.true;
+            let target = wrapper.find('.tree-view-node-self-label.' + customizations.classes.treeViewNodeSelfLabel);
+            expect(target.exists()).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s input element', () => {
-            let target = wrapper.find('.tree-view-node-self-input');
-
-            expect(target.is('.' + customizations.classes.treeViewNodeSelfInput)).to.be.true;
+            let target = wrapper.find('.tree-view-node-self-input.' + customizations.classes.treeViewNodeSelfInput);
+            expect(target.exists()).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s checkbox element', () => {
-            let target = wrapper.find('.tree-view-node-self-checkbox');
-
-            expect(target.is('.' + customizations.classes.treeViewNodeSelfCheckbox)).to.be.true;
+            let target = wrapper.find('.tree-view-node-self-checkbox.' + customizations.classes.treeViewNodeSelfCheckbox);
+            expect(target.exists()).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s radio button element', () => {
-            let target = wrapper.find('.tree-view-node-self-radio');
-
-            expect(target.is('.' + customizations.classes.treeViewNodeSelfRadio)).to.be.true;
+            let target = wrapper.find('.tree-view-node-self-radio.' + customizations.classes.treeViewNodeSelfRadio);
+            expect(target.exists()).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s text element', () => {
-            let target = wrapper.find('.tree-view-node-self-text');
-
-            expect(target.is('.' + customizations.classes.treeViewNodeSelfText)).to.be.true;
+            let target = wrapper.find('.tree-view-node-self-text.' + customizations.classes.treeViewNodeSelfText);
+            expect(target.exists()).to.be.true;
         });
 
-        it('adds the custom class to the tree view node\'s delete element', () => {
-            let target = wrapper.find('.tree-view-node-self-delete');
+        it('adds the custom add child class to the tree view node\'s add child element', () => {
+            let target = wrapper.find('.tree-view-node-self-action.' + customizations.classes.treeViewNodeSelfAddChild);
+            expect(target.exists()).to.be.true;
+        });
 
-            expect(target.is('.' + customizations.classes.treeViewNodeSelfDelete)).to.be.true;
+        it('adds the custom action class to the tree view node\'s add child element', () => {
+            let target = wrapper.find('.tree-view-node-self-action.' + customizations.classes.treeViewNodeSelfAddChild + '.' + customizations.classes.treeViewNodeSelfAction);
+            expect(target.exists()).to.be.true;
+        });
+
+        it('adds the custom class to the tree view node\'s add child icon element', () => {
+            let target = wrapper.find('.tree-view-node-self-add-child-icon.' + customizations.classes.treeViewNodeSelfAddChildIcon);
+            expect(target.exists()).to.be.true;
+        });
+
+        it('adds the custom delete class to the tree view node\'s delete element', () => {
+            let target = wrapper.find('.tree-view-node-self-action.' + customizations.classes.treeViewNodeSelfDelete);
+            expect(target.exists()).to.be.true;
+        });
+
+        it('adds the custom action class to the tree view node\'s delete element', () => {
+            let target = wrapper.find('.tree-view-node-self-action.' + customizations.classes.treeViewNodeSelfDelete + '.' + customizations.classes.treeViewNodeSelfAction);
+            expect(target.exists()).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s delete icon element', () => {
-            let target = wrapper.find('.tree-view-node-self-delete-icon');
-
-            expect(target.is('.' + customizations.classes.treeViewNodeSelfDeleteIcon)).to.be.true;
+            let target = wrapper.find('.tree-view-node-self-delete-icon.' + customizations.classes.treeViewNodeSelfDeleteIcon);
+            expect(target.exists()).to.be.true;
         });
 
         it('adds the custom class to the tree view node\'s children element', () => {
-            let target = wrapper.find('.tree-view-node-children');
-
-            expect(target.is('.' + customizations.classes.treeViewNodeChildren)).to.be.true;
+            let target = wrapper.find('.tree-view-node-children.' + customizations.classes.treeViewNodeChildren);
+            expect(target.exists()).to.be.true;
         });
     });
 });
