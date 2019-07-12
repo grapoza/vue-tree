@@ -13,12 +13,12 @@ Features include:
 - Expandable nodes
 - Checkboxes
 - Radio buttons
+- Addition and removal of nodes
 
 Planned:
 
 - Node selection ([#5](https://github.com/grapoza/vue-tree/issues/5))
 - Async loading ([#13](https://github.com/grapoza/vue-tree/issues/13))
-- Adding nodes ([#24](https://github.com/grapoza/vue-tree/issues/24))
 - Icons ([#22](https://github.com/grapoza/vue-tree/issues/22))
 - Searching ([#4](https://github.com/grapoza/vue-tree/issues/4))
 - Drag n' Drop ([#6](https://github.com/grapoza/vue-tree/issues/6))
@@ -104,7 +104,7 @@ To see it in action, try out the [demos](demo/demos.html).
 
 ## Model Data
 
-The data passed to the treeview's `model` prop should be an array of nodes, where each node has the following structure. The data model passed to the treeview may be updated to include missing properties.
+The data passed to the treeview's `model` prop should be an array of nodes, where each node has the following structure. The data model passed to the treeview may be updated by the treeview nodes themselves on creation to include missing properties.
 
 ```javascript
 {
@@ -139,10 +139,11 @@ The data passed to the treeview's `model` prop should be an array of nodes, wher
   state: {
     expanded: true,
     selected: false
-    // No input state here; to let complex radio button groupings work, state value is
-    // bound to a tree-level property. disabled, however, is valid here for radio buttons.
+    // No input.value here; to let complex radio button groupings work, state value is
+    // bound to a tree-level property. input.disabled, however, is valid here for radio buttons.
   },
-  children: []
+  children: [],
+  addChildCallback: () => Promise.resolve({ id: '1', label: 'label' })
 }
 ```
 
@@ -168,6 +169,7 @@ The properties below can be specified for each node.
 | state.input.disabled | Boolean         | True if the node's input field is disabled                  | `false`                           |          |
 | children             | Array\<Object\> | The child nodes of this node                                | `[]`                              |          |
 | customizations       | Object          | A [customizations](#customizing-treeviewnode-markup) object | `{}`                              |          |
+| addChildCallback     | Function        | An async function that resolves to a new node model         | `null`                            |          |
 
 \* Selection props are unused; see [#5](https://github.com/grapoza/vue-tree/issues/5).
 
@@ -208,6 +210,7 @@ If specified, the `modelDefaults` property of the treeview will be merged with n
 
 | Event                       | Description                                             | Handler Parameters                                                     |
 |:----------------------------|:--------------------------------------------------------|:-----------------------------------------------------------------------|
+| treeViewNodeAdd             | Emitted when a node is added                            | `target` The model of the target (child) node <br/> `parent` The model of the parent node <br/> `event` The original event |
 | treeViewNodeClick           | Emitted when a node is clicked                          | `target` The model of the target node <br/> `event` The original event |
 | treeViewNodeDblclick        | Emitted when a node is double clicked                   | `target` The model of the target node <br/> `event` The original event |
 | treeViewNodeDelete          | Emitted when a node is deleted                          | `target` The model of the target node <br/> `event` The original event |
@@ -233,7 +236,8 @@ The display of the treeview can be customized via CSS using the following classe
 | `tree-view-node-self-checkbox`           | The checkbox                                                                     |
 | `tree-view-node-self-radio`              | The radio button                                                                 |
 | `tree-view-node-self-text`               | The text for a non-input node                                                    |
-| `tree-view-node-self-delete`             | The delete button                                                                |
+| `tree-view-node-self-action`             | The action buttons (e.g., add child or delete)                                   |
+| `tree-view-node-self-add-child-icon`     | The `<i>` element containing the add child icon                                  |
 | `tree-view-node-self-delete-icon`        | The `<i>` element containing the delete icon                                     |
 | `tree-view-node-children`                | The list of child nodes                                                          |
 
@@ -257,6 +261,9 @@ A customizations object may have the following properties:
 | classes.treeViewNodeSelfCheckbox          | String | Classes to add to the checkbox                                         | Add               |
 | classes.treeViewNodeSelfRadio             | String | Classes to add to the radio button                                     | Add               |
 | classes.treeViewNodeSelfText              | String | Classes to add to the text for a non-input node                        | Add               |
+| classes.treeViewNodeSelfAction            | String | Classes to add to the action buttons                                   | Add               |
+| classes.treeViewNodeSelfAddChild          | String | Classes to add to the add child buttons                                | Add               |
+| classes.treeViewNodeSelfAddChildIcon      | String | Classes to add to the `<i>` element containing the add child icon      | Add               |
 | classes.treeViewNodeSelfDelete            | String | Classes to add to the delete button                                    | Add               |
 | classes.treeViewNodeSelfDeleteIcon        | String | Classes to add to the `<i>` element containing the delete icon         | Add               |
 | classes.treeViewNodeChildren              | String | Classes to add to the list of child nodes                              | Add               |

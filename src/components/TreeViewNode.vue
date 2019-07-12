@@ -64,12 +64,23 @@
         {{ model.label }}
       </span>
 
+      <!-- Add Child button -->
+      <button :id="addChildId"
+              type="button"
+              v-if="model.addChildCallback"
+              class="tree-view-node-self-action"
+              :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfAddChild]"
+              @click="$_treeViewNode_onAddChild">
+        <i class="tree-view-node-self-add-child-icon"
+            :class="customClasses.treeViewNodeSelfAddChildIcon"></i>
+      </button>
+
       <!-- Delete button -->
-      <button :id="nodeId + '-delete'"
+      <button :id="deleteId"
               type="button"
               v-if="model.deletable"
-              class="tree-view-node-self-delete"
-              :class="customClasses.treeViewNodeSelfDelete"
+              class="tree-view-node-self-action"
+              :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfDelete]"
               @click="$_treeViewNode_onDelete">
         <i class="tree-view-node-self-delete-icon"
             :class="customClasses.treeViewNodeSelfDeleteIcon"></i>
@@ -95,6 +106,7 @@
                       @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
                       @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
                       @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
+                      @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
                       @treeViewNodeDelete="(t, e)=>$_treeViewNode_handleChildDeletion(t, e)">
       </TreeViewNode>
     </ul>
@@ -154,8 +166,14 @@
       this.$_treeViewNode_normalizeNodeData();
     },
     computed: {
+      addChildId() {
+        return this.nodeId ? `${this.nodeId}-add-child` : null;
+      },
       customClasses() {
         return Object.assign({}, this.customizations.classes, (this.model.customizations || {}).classes);
+      },
+      deleteId() {
+        return this.nodeId ? `${this.nodeId}-delete` : null;
       },
       expanderId() {
         return this.nodeId ? `${this.nodeId}-exp` : null;
@@ -193,6 +211,9 @@
         }
         if (typeof this.model.deletable !== 'boolean') {
           this.$set(this.model, 'deletable', false);
+        }
+        if (typeof this.model.addChildCallback !== 'function') {
+          this.$set(this.model, 'addChildCallback', null);
         }
 
         if (typeof this.model.title !== 'string' || this.model.title.trim().length === 0) {
@@ -288,6 +309,20 @@
           this.$emit('treeViewNodeDblclick', this.model, event);
         }
       },
+      /*
+       * Add a child node to the end of the child nodes list. The child node data is
+       * supplied by an async callback which is the addChildCallback parameter of this node's model.
+       */
+      async $_treeViewNode_onAddChild(event) {
+        if (this.model.addChildCallback) {
+          var childModel = await this.model.addChildCallback(this.model);
+
+          if (childModel) {
+            this.model.children.push(childModel);
+            this.$emit('treeViewNodeAdd', this.childModel, this.model, event);
+          }
+        }
+      },
       $_treeViewNode_onDelete(event) {
         this.$emit('treeViewNodeDelete', this.model, event);
       },
@@ -370,11 +405,19 @@
           margin-left: $itemSpacing;
         }
 
-        .tree-view-node-self-delete {
+        .tree-view-node-self-action {
           padding: 0;
           background: none;
           border: none;
           height: $baseHeight;
+
+          i.tree-view-node-self-add-child-icon {
+            font-style: normal;
+
+            &::before {
+              content: '+';
+            }
+          }
 
           i.tree-view-node-self-delete-icon {
             font-style: normal;

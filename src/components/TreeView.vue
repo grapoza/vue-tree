@@ -13,6 +13,7 @@
                     @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
                     @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
                     @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
+                    @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
                     @treeViewNodeDelete="(t, e)=>$_treeViewNode_handleChildDeletion(t, e)">
     </tree-view-node>
   </ul>
