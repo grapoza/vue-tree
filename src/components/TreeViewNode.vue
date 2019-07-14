@@ -100,7 +100,6 @@
                       :parent-id="model.id"
                       :tree-id="treeId"
                       :radio-group-values="radioGroupValues"
-                      :customizations="customizations"
                       @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
                       @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
                       @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
@@ -146,10 +145,6 @@
         type: Object,
         required: true
       },
-      customizations: {
-        type: Object,
-        required: true
-      },
       parentId: {
         type: [String, Number],
         required: false
@@ -170,7 +165,7 @@
         return this.nodeId ? `${this.nodeId}-add-child` : null;
       },
       customClasses() {
-        return Object.assign({}, this.customizations.classes, (this.model.customizations || {}).classes);
+        return (this.model.customizations || {}).classes || {};
       },
       deleteId() {
         return this.nodeId ? `${this.nodeId}-delete` : null;
@@ -212,12 +207,17 @@
         if (typeof this.model.deletable !== 'boolean') {
           this.$set(this.model, 'deletable', false);
         }
+
         if (typeof this.model.addChildCallback !== 'function') {
           this.$set(this.model, 'addChildCallback', null);
         }
 
         if (typeof this.model.title !== 'string' || this.model.title.trim().length === 0) {
           this.$set(this.model, 'title', null);
+        }
+
+        if (this.model.customizations == null || typeof this.model.customizations !== 'object') {
+          this.$set(this.model, 'customizations', {});
         }
 
         this.$_treeViewNode_normalizeNodeInputData();
