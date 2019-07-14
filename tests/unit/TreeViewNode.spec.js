@@ -12,8 +12,7 @@ const getDefaultPropsData = function () {
         modelDefaults: {},
         depth: 0,
         treeId: 'tree-id',
-        radioGroupValues: radioState,
-        customizations: {}
+        radioGroupValues: radioState
     }
 };
 
@@ -45,8 +44,7 @@ describe('TreeViewNode.vue', () => {
                 depth: 0,
                 model,
                 modelDefaults: {},
-                radioGroupValues: {},
-                customizations: {}
+                radioGroupValues: {}
             });
         });
 
@@ -82,8 +80,7 @@ describe('TreeViewNode.vue', () => {
                         selected: true
                     }
                 },
-                radioGroupValues: {},
-                customizations: {}
+                radioGroupValues: {}
             });
         });
 
@@ -104,8 +101,7 @@ describe('TreeViewNode.vue', () => {
                 depth: 0,
                 model: { id: 'my-node', label: 'My Node', title: 'My Title' },
                 modelDefaults: {},
-                radioGroupValues: {},
-                customizations: {}
+                radioGroupValues: {}
             });
         });
 
@@ -160,8 +156,7 @@ describe('TreeViewNode.vue', () => {
                 model: generateNodes(['ces'], radioState)[0],
                 modelDefaults: {},
                 depth: 0,
-                radioGroupValues: radioState,
-                customizations: {}
+                radioGroupValues: radioState
             });
         });
 
@@ -219,8 +214,7 @@ describe('TreeViewNode.vue', () => {
                 modelDefaults: {},
                 depth: 0,
                 treeId: 'tree',
-                radioGroupValues: radioState,
-                customizations: {}
+                radioGroupValues: radioState
             });
 
             expander = wrapper.find('#' + wrapper.vm.expanderId);
@@ -289,8 +283,7 @@ describe('TreeViewNode.vue', () => {
                 modelDefaults: {},
                 depth: 0,
                 treeId: 'tree',
-                radioGroupValues: radioState,
-                customizations: {}
+                radioGroupValues: radioState
             });
 
             radioButton = wrapper.find('#' + wrapper.vm.inputId);
@@ -330,8 +323,7 @@ describe('TreeViewNode.vue', () => {
                 modelDefaults: {},
                 depth: 0,
                 treeId: 'tree',
-                radioGroupValues: radioState,
-                customizations: {}
+                radioGroupValues: radioState
             });
 
             deleteButton = wrapper.find('#' + wrapper.vm.$children[0].nodeId + '-delete');
@@ -361,8 +353,7 @@ describe('TreeViewNode.vue', () => {
                 modelDefaults: {},
                 depth: 0,
                 treeId: 'tree',
-                radioGroupValues: radioState,
-                customizations: {}
+                radioGroupValues: radioState
             });
 
             addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
@@ -392,8 +383,7 @@ describe('TreeViewNode.vue', () => {
                         modelDefaults: {},
                         depth: 0,
                         treeId: 'tree',
-                        radioGroupValues: radioState,
-                        customizations: {}
+                        radioGroupValues: radioState
                     });
 
                     addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
@@ -429,8 +419,7 @@ describe('TreeViewNode.vue', () => {
                         modelDefaults: {},
                         depth: 0,
                         treeId: 'tree',
-                        radioGroupValues: radioState,
-                        customizations: {}
+                        radioGroupValues: radioState
                     });
 
                     addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
@@ -466,8 +455,7 @@ describe('TreeViewNode.vue', () => {
                 modelDefaults: {},
                 depth: 0,
                 treeId: 'tree',
-                radioGroupValues: radioState,
-                customizations: {}
+                radioGroupValues: radioState
             });
         });
 
@@ -520,11 +508,10 @@ describe('TreeViewNode.vue', () => {
 
             wrapper = createWrapper({
                 model,
-                modelDefaults: {},
+                modelDefaults: { customizations },
                 depth: 0,
                 treeId: 'tree',
-                radioGroupValues: radioState,
-                customizations
+                radioGroupValues: radioState
             });
         });
 

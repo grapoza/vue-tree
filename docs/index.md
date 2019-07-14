@@ -50,7 +50,7 @@ import TreeView from "@grapoza/vue-tree"
 
 export default {
   components: {
-	  TreeView
+    TreeView
   },
   data() {
     return {
@@ -95,12 +95,11 @@ To see it in action, try out the [demos](demo/demos.html).
 
 ## Tree Props
 
-| Prop             | Type     | Description                                                                         | Default value  | Required |
-|:-----------------|:---------|:------------------------------------------------------------------------------------|:---------------|:---------|
-| model            | Array    | The data model containing [tree data](#tree-data)                                   | -              | Yes      |
-| modelDefaults    | Object   | An object containing defaults for all nodes that do no specify the given properties | `{}`           |          |
-| customizations   | Object   | A [customizations](#customizing-treeviewnode-markup) object                         | `{}`           |          |
-| radioGroupValues | Object   | An object, the properties of which correspond to radio button group selections      | `{}`           |          |
+| Prop             | Type     | Description                                                                          | Default value | Required |
+|:-----------------|:---------|:-------------------------------------------------------------------------------------|:--------------|:---------|
+| model            | Array    | The data model containing [tree data](#tree-data)                                    | -             | Yes      |
+| modelDefaults    | Object   | An object containing defaults for all nodes that do not specify the given properties | `{}`          |          |
+| radioGroupValues | Object   | An object, the properties of which correspond to radio button group selections       | `{}`          |          |
 
 ## Model Data
 
@@ -241,29 +240,29 @@ The display of the treeview can be customized via CSS using the following classe
 | `tree-view-node-self-delete-icon`        | The `<i>` element containing the delete icon                                     |
 | `tree-view-node-children`                | The list of child nodes                                                          |
 
-## Customizing TreeViewNode Markup
+## Customizing TreeViewNodes
 
-It's often helpful to be able to make adjustments to the markup for the tree. You can provide an object to the `customizations` property of the tree to set a customization affecting all nodes, or to the `customizations` property of a single node. Node-specific customizations will either add to or replace tree-level customizations (see Override Behavior in the table below for specifics).
+It's often helpful to be able to make adjustments to the markup or styles for the tree. You can provide an object to the `modelDefaults.customizations` property of the tree to set a customization affecting all nodes, or to the `customizations` property of a single node. Node-specific customizations will override `modelDefault` customizations.
 
 A customizations object may have the following properties:
 
-| Prop                                      | Type   | Description                                                            | Override Behavior |
-|:------------------------------------------|:-------|:-----------------------------------------------------------------------|:------------------|
-| classes                                   | Object | Properties are classes to add for various parts of a node              |                   |
-| classes.treeViewNode                      | String | Classes to add to a node's list item                                   | Add               |
-| classes.treeViewNodeSelf                  | String | Classes to add to the div containing the current node's UI             | Add               |
-| classes.treeViewNodeSelfExpander          | String | Classes to add to the button used to expand the children               | Add               |
-| classes.treeViewNodeSelfExpanded          | String | Classes to add to the expander button when the node is expanded        | Add               |
-| classes.treeViewNodeSelfExpandedIndicator | String | Classes to add to the `<i>` element containing the expansion indicator | Add               |
-| classes.treeViewNodeSelfSpacer            | String | Classes to add to the fixed-width spacer                               | Add               |
-| classes.treeViewNodeSelfLabel             | String | Classes to add to the label for the checkbox of checkable nodes        | Add               |
-| classes.treeViewNodeSelfInput             | String | Classes to add to an input field                                       | Add               |
-| classes.treeViewNodeSelfCheckbox          | String | Classes to add to the checkbox                                         | Add               |
-| classes.treeViewNodeSelfRadio             | String | Classes to add to the radio button                                     | Add               |
-| classes.treeViewNodeSelfText              | String | Classes to add to the text for a non-input node                        | Add               |
-| classes.treeViewNodeSelfAction            | String | Classes to add to the action buttons                                   | Add               |
-| classes.treeViewNodeSelfAddChild          | String | Classes to add to the add child buttons                                | Add               |
-| classes.treeViewNodeSelfAddChildIcon      | String | Classes to add to the `<i>` element containing the add child icon      | Add               |
-| classes.treeViewNodeSelfDelete            | String | Classes to add to the delete button                                    | Add               |
-| classes.treeViewNodeSelfDeleteIcon        | String | Classes to add to the `<i>` element containing the delete icon         | Add               |
-| classes.treeViewNodeChildren              | String | Classes to add to the list of child nodes                              | Add               |
+| Prop                                      | Type   | Description                                                            |
+|:------------------------------------------|:-------|:-----------------------------------------------------------------------|
+| classes                                   | Object | Properties are classes to add for various parts of a node              |
+| classes.treeViewNode                      | String | Classes to add to a node's list item                                   |
+| classes.treeViewNodeSelf                  | String | Classes to add to the div containing the current node's UI             |
+| classes.treeViewNodeSelfExpander          | String | Classes to add to the button used to expand the children               |
+| classes.treeViewNodeSelfExpanded          | String | Classes to add to the expander button when the node is expanded        |
+| classes.treeViewNodeSelfExpandedIndicator | String | Classes to add to the `<i>` element containing the expansion indicator |
+| classes.treeViewNodeSelfSpacer            | String | Classes to add to the fixed-width spacer                               |
+| classes.treeViewNodeSelfLabel             | String | Classes to add to the label for the checkbox of checkable nodes        |
+| classes.treeViewNodeSelfInput             | String | Classes to add to an input field                                       |
+| classes.treeViewNodeSelfCheckbox          | String | Classes to add to the checkbox                                         |
+| classes.treeViewNodeSelfRadio             | String | Classes to add to the radio button                                     |
+| classes.treeViewNodeSelfText              | String | Classes to add to the text for a non-input node                        |
+| classes.treeViewNodeSelfAction            | String | Classes to add to the action buttons                                   |
+| classes.treeViewNodeSelfAddChild          | String | Classes to add to the add child buttons                                |
+| classes.treeViewNodeSelfAddChildIcon      | String | Classes to add to the `<i>` element containing the add child icon      |
+| classes.treeViewNodeSelfDelete            | String | Classes to add to the delete button                                    |
+| classes.treeViewNodeSelfDeleteIcon        | String | Classes to add to the `<i>` element containing the delete icon         |
+| classes.treeViewNodeChildren              | String | Classes to add to the list of child nodes                              |
