@@ -16,11 +16,11 @@ const getDefaultPropsData = function () {
     }
 };
 
-function createWrapper(customPropsData, customAttrs) {
+function createWrapper(customPropsData, slotsData) {
     return mount(TreeViewNode, {
         propsData: customPropsData || getDefaultPropsData(),
         localVue,
-        attrs: customAttrs
+        scopedSlots: slotsData
     });
 }
 
@@ -477,7 +477,6 @@ describe('TreeViewNode.vue', () => {
         });
     });
 
-
     describe('when given custom classes', () => {
 
         const customizations = {
@@ -603,6 +602,143 @@ describe('TreeViewNode.vue', () => {
         it('adds the custom class to the tree view node\'s children element', () => {
             let target = wrapper.find('.tree-view-node-children.' + customizations.classes.treeViewNodeChildren);
             expect(target.exists()).to.be.true;
+        });
+    });
+
+    describe('when using slots', () => {
+
+        describe('and rendering a text node', () => {
+
+            const customClasses = { treeViewNode: 'customnodeclass' };
+
+            beforeEach(() => {
+                let radioState = {};
+                let model = generateNodes([''], radioState, "baseId")[0];
+
+                wrapper = createWrapper(
+                    {
+                        model,
+                        modelDefaults: { customizations: { classes: customClasses } },
+                        depth: 0,
+                        treeId: 'tree',
+                        radioGroupValues: radioState
+                    },
+                    {
+                        text: '<span :id="props.model.id" class="text-slot-content"><span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span></span>',
+                    }
+                );
+            });
+
+            it('should render the slot template', () => {
+                expect(wrapper.find('.text-slot-content').exists()).to.be.true;
+            });
+
+            it('should have model data', () => {
+                expect(wrapper.find('span#baseIdn0.text-slot-content').exists()).to.be.true;
+            });
+
+            it('should have custom classes data', () => {
+                expect(wrapper.find('span.slot-custom-classes').text()).to.equal(JSON.stringify(customClasses));
+            });
+        });
+
+        describe('and rendering a checkbox node', () => {
+
+            const customClasses = { treeViewNode: 'customnodeclass' };
+
+            beforeEach(() => {
+                let radioState = {};
+                let model = generateNodes(['c'], radioState, "baseId")[0];
+
+                wrapper = createWrapper(
+                    {
+                        model,
+                        modelDefaults: { customizations: { classes: customClasses } },
+                        depth: 0,
+                        treeId: 'tree',
+                        radioGroupValues: radioState
+                    },
+                    {
+                        checkbox: `<span :id="props.model.id" class="text-slot-content">
+                                     <span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span>
+                                     <span class="slot-input-id">{{ props.inputId }}</span>
+                                     <span class="slot-has-handler">{{ typeof props.checkboxChangeHandler == 'function' }}</span>
+                                  </span>`,
+                    }
+                );
+            });
+
+            it('should render the slot template', () => {
+                expect(wrapper.find('.text-slot-content').exists()).to.be.true;
+            });
+
+            it('should get a model property', () => {
+                expect(wrapper.find('span#baseIdn0.text-slot-content').exists()).to.be.true;
+            });
+
+            it('should get a customClasses property', () => {
+                expect(wrapper.find('span.slot-custom-classes').text()).to.equal(JSON.stringify(customClasses));
+            });
+
+            it('should get an inputId property', () => {
+                expect(wrapper.find('span.slot-input-id').text()).to.equal('tree-baseIdn0-input');
+            });
+
+            it('should get a checkboxChangeHandler property function', () => {
+                expect(wrapper.find('span.slot-has-handler').text()).to.equal('true');
+            });
+        });
+
+        describe('and rendering a radiobutton node', () => {
+
+            const customClasses = { treeViewNode: 'customnodeclass' };
+
+            beforeEach(() => {
+                let radioState = {};
+                let model = generateNodes(['R'], radioState, "baseId")[0];
+
+                wrapper = createWrapper(
+                    {
+                        model,
+                        modelDefaults: { customizations: { classes: customClasses } },
+                        depth: 0,
+                        treeId: 'tree',
+                        radioGroupValues: radioState
+                    },
+                    {
+                        radio: `<span :id="props.model.id" class="text-slot-content">
+                                  <span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span>
+                                  <span class="slot-input-id">{{ props.inputId }}</span>
+                                  <span class="slot-has-handler">{{ typeof props.radioChangeHandler == 'function' }}</span>
+                                  <span class="slot-input-model">{{ JSON.stringify(props.inputModel) }}</span>
+                                </span>`,
+                    }
+                );
+            });
+
+            it('should render the slot template', () => {
+                expect(wrapper.find('.text-slot-content').exists()).to.be.true;
+            });
+
+            it('should get a model property', () => {
+                expect(wrapper.find('span#baseIdn0.text-slot-content').exists()).to.be.true;
+            });
+
+            it('should get a customClasses property', () => {
+                expect(wrapper.find('span.slot-custom-classes').text()).to.equal(JSON.stringify(customClasses));
+            });
+
+            it('should get an inputId property', () => {
+                expect(wrapper.find('span.slot-input-id').text()).to.equal('tree-baseIdn0-input');
+            });
+
+            it('should get an inputModel property', () => {
+                expect(wrapper.find('span.slot-input-model').text()).to.equal('"baseIdn0-val"');
+            });
+
+            it('should get a radioChangeHandler property function', () => {
+                expect(wrapper.find('span.slot-has-handler').text()).to.equal('true');
+            });
         });
     });
 });
