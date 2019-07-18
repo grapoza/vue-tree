@@ -14,22 +14,25 @@ This page demonstrates slotted content. [See the data used](./slots.js).
         </template>
         <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
             <label :for="inputId" :title="model.title">
-                <input :id="inputId"
-                        type="checkbox"
-                        :disabled="model.state.input.disabled" v-model="model.state.input.value"
-                        @change="checkboxChangeHandler" />
+                <input markdown="0"
+                       :id="inputId"
+                       type="checkbox"
+                       :disabled="model.state.input.disabled"
+                       v-model="model.state.input.value"
+                       @change="checkboxChangeHandler" />
                 <marquee style="max-width: 6rem">{{ model.label }}. Custom Classes: {{ JSON.stringify(customClasses) }}</marquee>
             </label>
         </template>
         <template v-slot:radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
             <label :for="inputId" :title="model.title">
-                <input :id="inputId"
-                        type="radio"
-                        :name="model.input.name"
-                        :value="model.input.value"
-                        :disabled="model.state.input.disabled"
-                        v-model="inputModel"
-                        @change="radioChangeHandler" />
+                <input markdown="0"
+                       :id="inputId"
+                       type="radio"
+                       :name="model.input.name"
+                       :value="model.input.value"
+                       :disabled="model.state.input.disabled"
+                       v-model="inputModel"
+                       @change="radioChangeHandler" />
                 <span style="font-weight: bolder">{{ model.label }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
             </label>
         </template>
