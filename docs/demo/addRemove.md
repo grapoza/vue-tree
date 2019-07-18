@@ -2,7 +2,7 @@
 layout: demo
 ---
 
-## Basic Treeview Checkbox Demo
+## Add/Remove Nodes Demo
 
 This page demonstrates adding and removing nodes. [See the data used](./addRemove.js). The callback for adding nodes is set in `modelDefaults` so any newly created node will use the same creation method automatically.
 
@@ -21,7 +21,7 @@ This page demonstrates adding and removing nodes. [See the data used](./addRemov
       },
       data() {
         return {
-            childCounter = 0;
+            childCounter: 0,
             model: arModel,
             modelDefaults: {
                 addChildCallback: this.addChildCallback
