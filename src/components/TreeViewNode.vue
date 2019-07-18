@@ -26,43 +26,72 @@
             class="tree-view-node-self-spacer"
             :class="customClasses.treeViewNodeSelfSpacer"></span>
 
-      <!-- Input and label -->
-      <label v-if="model.input"
-             :for="inputId"
-             :title="model.title"
-             class="tree-view-node-self-label"
-             :class="customClasses.treeViewNodeSelfLabel">
+      <!-- Inputs and labels -->
+      <!-- Checkbox -->
+      <slot v-if="model.input && model.input.type === 'checkbox'"
+            name="checkbox"
+            :model="model"
+            :customClasses="customClasses"
+            :inputId="inputId"
+            :checkboxChangeHandler="$_treeViewNode_onCheckboxChange">
 
-        <input v-if="model.input.type === 'checkbox'"
-              :id="inputId"
-              class="tree-view-node-self-input tree-view-node-self-checkbox"
-              :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfCheckbox]"
-              type="checkbox"
-              :disabled="model.state.input.disabled"
-              v-model="model.state.input.value"
-              @change="$_treeViewNode_onCheckboxChange" />
+        <label :for="inputId"
+               :title="model.title"
+               class="tree-view-node-self-label"
+               :class="customClasses.treeViewNodeSelfLabel">
 
-        <input v-if="model.input.type === 'radio'"
-              :id="inputId"
-              class="tree-view-node-self-input tree-view-node-self-radio"
-              :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfRadio]"
-              type="radio"
-              :name="model.input.name"
-              :value="model.input.value"
-              :disabled="model.state.input.disabled"
-              v-model="radioGroupValues[model.input.name]"
-              @change="$_treeViewNode_onRadioChange" />
+          <input :id="inputId"
+                 class="tree-view-node-self-input tree-view-node-self-checkbox"
+                 :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfCheckbox]"
+                 type="checkbox"
+                 :disabled="model.state.input.disabled"
+                 v-model="model.state.input.value"
+                 @change="$_treeViewNode_onCheckboxChange" />
 
-        {{ model.label }}
-      </label>
+          {{ model.label }}
+        </label>
+      </slot>
+
+      <!-- Radiobutton -->
+      <slot v-else-if="model.input && model.input.type === 'radio'"
+            name="radio"
+            :model="model"
+            :customClasses="customClasses"
+            :inputId="inputId"
+            :inputModel="radioGroupValues[model.input.name]"
+            :radioChangeHandler="$_treeViewNode_onRadioChange">
+
+        <label :for="inputId"
+               :title="model.title"
+               class="tree-view-node-self-label"
+               :class="customClasses.treeViewNodeSelfLabel">
+
+          <input :id="inputId"
+                 class="tree-view-node-self-input tree-view-node-self-radio"
+                 :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfRadio]"
+                 type="radio"
+                 :name="model.input.name"
+                 :value="model.input.value"
+                 :disabled="model.state.input.disabled"
+                 v-model="radioGroupValues[model.input.name]"
+                 @change="$_treeViewNode_onRadioChange" />
+
+          {{ model.label }}
+        </label>
+      </slot>
 
       <!-- Text (if not an input) -->
-      <span v-else
-            :title="model.title"
-            class="tree-view-node-self-text"
-            :class="customClasses.treeViewNodeSelfText">
-        {{ model.label }}
-      </span>
+      <slot v-else
+            name="text"
+            :model="model"
+            :customClasses="customClasses">
+
+        <span :title="model.title"
+              class="tree-view-node-self-text"
+              :class="customClasses.treeViewNodeSelfText">
+          {{ model.label }}
+        </span>
+      </slot>
 
       <!-- Add Child button -->
       <button :id="addChildId"
@@ -107,6 +136,15 @@
                       @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
                       @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
                       @treeViewNodeDelete="(t, e)=>$_treeViewNode_handleChildDeletion(t, e)">
+        <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
+          <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
+        </template>
+        <template v-slot:radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
+          <slot name="radio" :model="model" :customClasses="customClasses" :inputId="inputId" :inputModel="inputModel" :radioChangeHandler="radioChangeHandler"></slot>
+        </template>
+        <template v-slot:text="{ model, customClasses }">
+          <slot name="text" :model="model" :customClasses="customClasses"></slot>
+        </template>
       </TreeViewNode>
     </ul>
   </li>
@@ -299,13 +337,13 @@
       },
       $_treeViewNode_onClick(event) {
         // Don't fire this if the target is an element which has its own events
-        if (!event.target.matches("input, .tree-view-node-self-expander, .tree-view-node-self-delete")) {
+        if (!event.target.matches("input, .tree-view-node-self-expander, .tree-view-node-self-action")) {
           this.$emit('treeViewNodeClick', this.model, event);
         }
       },
       $_treeViewNode_onDblclick(event) {
         // Don't fire this if the target is an element which has its own events
-        if (!event.target.matches("input, .tree-view-node-self-expander, .tree-view-node-self-delete")) {
+        if (!event.target.matches("input, .tree-view-node-self-expander, .tree-view-node-self-action")) {
           this.$emit('treeViewNodeDblclick', this.model, event);
         }
       },
@@ -386,7 +424,7 @@
         .tree-view-node-self-checkbox,
         .tree-view-node-self-radio,
         .tree-view-node-self-spacer,
-        .tree-view-node-self-delete {
+        .tree-view-node-self-action {
           min-width: 1rem;
         }
 

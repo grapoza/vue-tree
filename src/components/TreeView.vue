@@ -14,6 +14,16 @@
                     @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
                     @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
                     @treeViewNodeDelete="(t, e)=>$_treeViewNode_handleChildDeletion(t, e)">
+
+      <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
+        <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
+      </template>
+      <template v-slot:radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
+        <slot name="radio" :model="model" :customClasses="customClasses" :inputId="inputId" :inputModel="inputModel" :radioChangeHandler="radioChangeHandler"></slot>
+      </template>
+      <template v-slot:text="{ model, customClasses }">
+        <slot name="text" :model="model" :customClasses="customClasses"></slot>
+      </template>
     </tree-view-node>
   </ul>
 </template>

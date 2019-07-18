@@ -7,3 +7,4 @@ Note that demos probably (definitely) won't work in IE due to the way the compon
 - [Basic Checkbox Usage](basic.html)
 - [Basic Radio Button Usage](radioBasic.html)
 - [Adding and Removing Nodes](addRemove.html)
+- [Slots](slots.html)
