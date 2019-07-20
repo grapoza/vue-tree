@@ -14,11 +14,10 @@ This page demonstrates slotted content. [See the data used](./slots.js).
         </template>
         <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
             <label :for="inputId" :title="model.title">
-                <input id="fake" type="checkbox" />
                 <input :id="inputId"
                         type="checkbox"
-                        :disabled="model.state.input.disabled" v-model="model.state.input.value"
-                        @change="checkboxChangeHandler" />
+                        :disabled="model.state.input.disabled"
+                        v-model="model.state.input.value" />
                 <marquee style="max-width: 6rem">{{ model.label }}. Custom Classes: {{ JSON.stringify(customClasses) }}</marquee>
             </label>
         </template>
@@ -29,8 +28,7 @@ This page demonstrates slotted content. [See the data used](./slots.js).
                         :name="model.input.name"
                         :value="model.input.value"
                         :disabled="model.state.input.disabled"
-                        v-model="inputModel"
-                        @change="radioChangeHandler" />
+                        v-model="inputModel" />
                 <span style="font-weight: bolder">{{ model.label }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
             </label>
         </template>
