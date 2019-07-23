@@ -5,14 +5,17 @@ import { generateNodes } from '../data/node-generator.js';
 
 const localVue = createLocalVue();
 
-const defaultPropsData = { model: [] };
+const getDefaultPropsData = function () {
+  return { initialModel: [] }
+};
 
 function createWrapper(customPropsData, customAttrs) {
-    return shallowMount(TreeView, {
-      propsData: customPropsData || defaultPropsData,
-      localVue,
-      attrs: customAttrs
-    });
+  return shallowMount(TreeView, {
+    sync: false,
+    propsData: customPropsData || getDefaultPropsData(),
+    localVue,
+    attrs: customAttrs
+  });
 }
 
 describe('TreeView.vue', () => {
@@ -49,7 +52,7 @@ describe('TreeView.vue', () => {
   describe('when getCheckedCheckboxes() is called', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ model: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']], {}) });
+      wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']], {}) });
     });
 
     it('should return checked checkbox nodes', () => {
@@ -62,7 +65,7 @@ describe('TreeView.vue', () => {
 
     beforeEach(() => {
       let radioGroupValues = {};
-      wrapper = createWrapper({ model: generateNodes(['ers', 'eRs', ['eRs', 'ers']], radioGroupValues), radioGroupValues });
+      wrapper = createWrapper({ initialModel: generateNodes(['ers', 'eRs', ['eRs', 'ers']], radioGroupValues), radioGroupValues });
     });
 
     it('should return checked radiobutton nodes', () => {

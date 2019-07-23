@@ -8,7 +8,7 @@ This page demonstrates adding and removing nodes. [See the data used](./addRemov
 
 {% raw  %}
 <div id="app">
-    <tree id="customtree" :model="model" :model-defaults="modelDefaults" ref="tree"></tree>
+    <tree id="customtree" :initial-model="model" :model-defaults="modelDefaults" ref="tree"></tree>
 </div>
 {% endraw  %}
 

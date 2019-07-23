@@ -8,7 +8,7 @@ This page demonstrates a basic treeview using checkboxes, with some nodes that a
 
 {% raw  %}
 <div id="app">
-    <tree id="customtree" :model="model" ref="tree"></tree>
+    <tree id="customtree" :initial-model="model" ref="tree"></tree>
     <section id="checkedStuff">
         <button type="button" class="treeProcessTrigger" v-on:click="refreshCheckedList">What's been checked?</button>
         <ul id="checkedList">

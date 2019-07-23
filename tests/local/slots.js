@@ -31,6 +31,22 @@ export default [
   {
     id: 'node3',
     label: 'Text Node',
-    children: []
+    children: [
+      {
+        id: 'subnode1',
+        label: 'Checkbox Subnode',
+        input: {
+          type: 'checkbox',
+          name: 'checkbox2'
+        },
+        state: {
+          input: {
+            value: false,
+            disabled: false
+          }
+        },
+        children: []
+      }
+    ]
   }
 ];

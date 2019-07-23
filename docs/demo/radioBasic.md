@@ -8,7 +8,7 @@ This page demonstrates a basic treeview using radio buttons, with some nodes exp
 
 {% raw  %}
 <div id="app">
-    <tree id="customtree" :model="model" :radio-group-values="radioGroupValues" ref="tree"></tree>
+    <tree id="customtree" :initial-model="model" :radio-group-values="radioGroupValues" ref="tree"></tree>
     <section id="checkedStuff">
         <button type="button" class="treeProcessTrigger" v-on:click="refreshCheckedList">What's been checked?</button>
         <ul id="checkedList">

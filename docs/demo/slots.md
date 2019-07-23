@@ -8,7 +8,7 @@ This page demonstrates slotted content. [See the data used](./slots.js).
 
 {% raw  %}
 <div id="app">
-    <tree id="customtree" :model="model">
+    <tree id="customtree" :initial-model="model">
         <template v-slot:text="{ model, customClasses }">
             <span>{{ model.label }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
         </template>

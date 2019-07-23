@@ -13,13 +13,13 @@
       <h1>Slot Treeview Demo</h1>
       <div id="app">
         <div id="app">
-          <tree id="customtree" :model="model">
+          <tree id="customtree" :initial-model="model">
 
-            <template v-slot:text="{ model, customClasses }">
+            <template #text="{ model, customClasses }">
               <span>{{ model.label }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
             </template>
 
-            <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
+            <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
               <label :for="inputId" :title="model.title">
 
                 <input :id="inputId"
@@ -31,7 +31,7 @@
               </label>
             </template>
 
-            <template v-slot:radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
+            <template #radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
               <label :for="inputId" :title="model.title">
 
                 <input :id="inputId"

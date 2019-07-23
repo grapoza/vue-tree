@@ -12,7 +12,7 @@
     <div class="container">
       <h1>Basic Treeview Demo</h1>
       <div id="app">
-        <tree id="customtree" :model="model" ref="tree"></tree>
+        <tree id="customtree" :initial-model="model" ref="tree"></tree>
         <section id="checkedStuff">
           <button type="button" @click="refreshCheckedList">What's been checked?</button>
           <ul id="checkedList">
