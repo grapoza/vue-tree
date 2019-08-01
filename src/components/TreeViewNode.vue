@@ -337,13 +337,13 @@
       },
       $_treeViewNode_onClick(event) {
         // Don't fire this if the target is an element which has its own events
-        if (!event.target.matches("input, .tree-view-node-self-expander, .tree-view-node-self-action")) {
+        if (!this.$_treeViewNode_matches(event.target, "input, .tree-view-node-self-expander, .tree-view-node-self-action")) {
           this.$emit('treeViewNodeClick', this.model, event);
         }
       },
       $_treeViewNode_onDblclick(event) {
         // Don't fire this if the target is an element which has its own events
-        if (!event.target.matches("input, .tree-view-node-self-expander, .tree-view-node-self-action")) {
+        if (!this.$_treeViewNode_matches(event.target, "input, .tree-view-node-self-expander, .tree-view-node-self-action")) {
           this.$emit('treeViewNodeDblclick', this.model, event);
         }
       },
@@ -373,6 +373,19 @@
         }
 
         this.$emit('treeViewNodeDelete', node, event);
+      },
+      $_treeViewNode_matches(target, selector) {
+        if (Element.prototype.matches) {
+          return target.matches(selector);
+        }
+        else if (Element.prototype.msMatchesSelector) {
+          return target.msMatchesSelector(selector);
+        }
+        else if (Element.prototype.webkitMatchesSelector) {
+          return target.webkitMatchesSelector(selector);
+        }
+
+        return false;
       }
     },
   };
