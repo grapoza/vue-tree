@@ -224,13 +224,7 @@
        */
       $_treeViewNode_normalizeNodeData() {
 
-        if (Object.getOwnPropertyNames(this.modelDefaults).length > 0) {
-          // Copy the defaults object.
-          // Then, write the defaults into model, overriding them with anything model specifies.
-          const defaultsCopy = Object.assign({}, this.modelDefaults);
-          Object.assign(defaultsCopy, this.model);
-          Object.assign(this.model, defaultsCopy);
-        }
+        this.$_treeViewNode_assignDefaultProps(this.modelDefaults, this.model);
 
         // Set expected properties if not provided
         if (!Array.isArray(this.model.children)) {
@@ -325,6 +319,27 @@
           }
         }
       },
+      $_treeViewNode_assignDefaultProps(source, target) {
+
+        // Make sure they're objects
+        if (this.$_treeViewNode_isProbablyObject(source) && this.$_treeViewNode_isProbablyObject(target)) {
+
+          // Use a copy of the source, since the props can be fubar'd by the assigns
+          const sourceCopy = JSON.parse(JSON.stringify(source));
+
+          // Assign defaults into the model
+          Object.assign(sourceCopy, target);
+          Object.assign(target, sourceCopy);
+
+          // Find object properties to deep assign them
+          for (const propName of Object.keys(source)) {
+            const propValue = source[propName];
+            if (this.$_treeViewNode_isProbablyObject(propValue)) {
+              this.$_treeViewNode_assignDefaultProps(propValue, target[propName]);
+            }
+          }
+        }
+      },
       $_treeViewNode_onCheckboxChange(event) {
         this.$emit('treeViewNodeCheckboxChange', this.model, event);
       },
@@ -386,6 +401,9 @@
         }
 
         return false;
+      },
+      $_treeViewNode_isProbablyObject(obj) {
+        return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
       }
     },
   };
