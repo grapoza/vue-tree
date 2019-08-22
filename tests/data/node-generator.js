@@ -5,11 +5,16 @@
  * buttons will be added to the radioState parameter.
  *
  * The node spec's node string should be matched by the regex:
- *  `[eE]?[sS]?[d]?[a]?[[cCrR]!?]?`
- * The presence of e, s, d, a, or c|r indicate the node is expandable, selectable, deletable,
- * addable (subnodes can be added), and a checkbox or radio buttton respectively.
- * If it is capitalized, then the related state should be True. In the case of inputs,
- * the capitalization means the input will be selected. The `!` indicates the input will be disabled.
+ *  `[eE]?[sS]?[d]?[f]?[[cCrR]!?]?`
+ *
+ * This identifies if the node is:
+ *  e: expandable. If capitalized, state.expanded is set to true.
+ *  s: selectable. If capitalized, state.selected is set to true.
+ *  d: deletable
+ *  f: focusable
+ *  c: is a checkbox node. If capitalized, it's checked. If followed by '!', it's disabled. Cannot be used with 'r'.
+ *  r: is a radiobutton node. If capitalized, it's checked. If followed by '!', it's disabled. Cannot be used with 'c'.
+ *
  * A node that allows adds will use the callback function passed to generateNodes.
  *
  * @param {Array<String, Array>} nodeSpec The node specification array.
@@ -39,6 +44,7 @@ export function generateNodes(nodeSpec, radioState, baseId = "", addChildCallbac
                 expandable: lowerItem.includes('e'),
                 selectable: lowerItem.includes('s'),
                 deletable: lowerItem.includes('d'),
+                focusable: lowerItem.includes('f'),
                 input: lowerItem.includes('c')
                     ? { type: 'checkbox', name: `${idString}-cbx` }
                     : lowerItem.includes('r')
@@ -48,7 +54,7 @@ export function generateNodes(nodeSpec, radioState, baseId = "", addChildCallbac
                     expanded: item.includes('E'),
                     selected: item.includes('S')
                 },
-                addChildCallback: item.includes('a') ? addChildCallback : null,
+                addChildCallback,
                 children: []
             };
 

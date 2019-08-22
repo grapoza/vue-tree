@@ -5,7 +5,12 @@
   -->
   <li :id="nodeId"
       class="tree-view-node"
-      :class="customClasses.treeViewNode">
+      :class="customClasses.treeViewNode"
+      role="treeitem"
+      :tabindex="ariaTabIndex"
+      :aria-expanded="canExpand ? model.state.expanded.toString() : false"
+      :aria-selected="model.selectable ? model.state.selected.toString() : false"
+      @keydown="$_treeViewNodeAria_onKeyDown">
     <div class="tree-view-node-self"
          :class="customClasses.treeViewNodeSelf"
          @click="$_treeViewNode_onClick"
@@ -14,7 +19,9 @@
       <!-- Expander -->
       <button :id="expanderId"
               type="button"
-              v-if="model.children.length > 0 && model.expandable"
+              v-if="canExpand"
+              aria-hidden="true"
+              tabindex="-1"
               class="tree-view-node-self-expander"
               :class="[customClasses.treeViewNodeSelfExpander,
                        model.state.expanded ? 'tree-view-node-self-expanded' : '',
@@ -41,6 +48,7 @@
                :class="customClasses.treeViewNodeSelfLabel">
 
           <input :id="inputId"
+                 tabindex="-1"
                  class="tree-view-node-self-input tree-view-node-self-checkbox"
                  :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfCheckbox]"
                  type="checkbox"
@@ -67,6 +75,7 @@
                :class="customClasses.treeViewNodeSelfLabel">
 
           <input :id="inputId"
+                 tabindex="-1"
                  class="tree-view-node-self-input tree-view-node-self-radio"
                  :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfRadio]"
                  type="radio"
@@ -97,6 +106,8 @@
       <button :id="addChildId"
               type="button"
               v-if="model.addChildCallback"
+              aria-hidden="true"
+              tabindex="-1"
               class="tree-view-node-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfAddChild]"
               @click="$_treeViewNode_onAddChild">
@@ -108,6 +119,8 @@
       <button :id="deleteId"
               type="button"
               v-if="model.deletable"
+              aria-hidden="true"
+              tabindex="-1"
               class="tree-view-node-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfDelete]"
               @click="$_treeViewNode_onDelete">
@@ -118,31 +131,40 @@
 
     <!-- Children -->
     <ul v-show="model.state.expanded"
-        v-if="model.children.length > 0 && model.expandable"
+        v-if="canExpand"
         class="tree-view-node-children"
-        :class="customClasses.treeViewNodeChildren">
+        :class="customClasses.treeViewNodeChildren"
+        role="group"
+        :aria-hidden="(!model.state.expanded).toString()">
       <TreeViewNode v-for="nodeModel in model.children"
                       :key="nodeModel.id"
                       :depth="depth + 1"
-                      :model="nodeModel"
+                      :initial-model="nodeModel"
                       :model-defaults="modelDefaults"
                       :parent-id="model.id"
                       :tree-id="treeId"
                       :radio-group-values="radioGroupValues"
+                      :aria-key-map="ariaKeyMap"
                       @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
                       @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
                       @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
                       @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
                       @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
                       @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
-                      @treeViewNodeDelete="(t, e)=>$_treeViewNode_handleChildDeletion(t, e)">
-        <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
+                      @treeViewNodeDelete="(t, e)=>$_treeViewNode_handleChildDeletion(t, e)"
+                      @treeViewNodeAriaFocusable="(t)=>$emit('treeViewNodeAriaFocusable', t)"
+                      @treeViewNodeAriaRequestParentFocus="$_treeViewNodeAria_focus()"
+                      @treeViewNodeAriaRequestFirstFocus="()=>$emit('treeViewNodeAriaRequestFirstFocus')"
+                      @treeViewNodeAriaRequestLastFocus="()=>$emit('treeViewNodeAriaRequestLastFocus')"
+                      @treeViewNodeAriaRequestPreviousFocus="$_treeViewNodeAria_handlePreviousFocus"
+                      @treeViewNodeAriaRequestNextFocus="$_treeViewNodeAria_handleNextFocus">
+        <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
           <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
         </template>
-        <template v-slot:radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
+        <template #radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
           <slot name="radio" :model="model" :customClasses="customClasses" :inputId="inputId" :inputModel="inputModel" :radioChangeHandler="radioChangeHandler"></slot>
         </template>
-        <template v-slot:text="{ model, customClasses }">
+        <template #text="{ model, customClasses }">
           <slot name="text" :model="model" :customClasses="customClasses"></slot>
         </template>
       </TreeViewNode>
@@ -151,10 +173,19 @@
 </template>
 
 <script>
+  import TreeViewNodeAria from '../mixins/TreeViewNodeAria';
+
   export default {
     name: 'TreeViewNode',
+    mixins: [
+      TreeViewNodeAria
+    ],
     props: {
-      model: {
+      depth: {
+        type: Number,
+        required: true
+      },
+      initialModel: {
         type: Object,
         required: true,
         validator: function (value) {
@@ -175,32 +206,32 @@
         type: Object,
         required: true
       },
-      depth: {
-        type: Number,
-        required: true
+      parentId: {
+        type: [String, Number],
+        required: false,
+        default: null
       },
       radioGroupValues: {
         type: Object,
         required: true
       },
-      parentId: {
-        type: [String, Number],
-        required: false
-      },
       treeId: {
         type: String,
-        required: false
+        required: false,
+        default: null
       }
     },
     data() {
-      return {};
-    },
-    created() {
-      this.$_treeViewNode_normalizeNodeData();
+      return {
+        model: this.initialModel
+      }
     },
     computed: {
       addChildId() {
         return this.nodeId ? `${this.nodeId}-add-child` : null;
+      },
+      canExpand() {
+        return this.model.children.length > 0 && this.model.expandable;
       },
       customClasses() {
         return (this.model.customizations || {}).classes || {};
@@ -211,12 +242,15 @@
       expanderId() {
         return this.nodeId ? `${this.nodeId}-exp` : null;
       },
-      nodeId() {
-        return this.treeId ? `${this.treeId}-${this.model.id}` : null;
-      },
       inputId() {
         return this.nodeId ? `${this.nodeId}-input` : null;
+      },
+      nodeId() {
+        return this.treeId ? `${this.treeId}-${this.model.id}` : null;
       }
+    },
+    created() {
+      this.$_treeViewNode_normalizeNodeData();
     },
     methods: {
       /*
@@ -224,13 +258,7 @@
        */
       $_treeViewNode_normalizeNodeData() {
 
-        if (Object.getOwnPropertyNames(this.modelDefaults).length > 0) {
-          // Copy the defaults object.
-          // Then, write the defaults into model, overriding them with anything model specifies.
-          const defaultsCopy = Object.assign({}, this.modelDefaults);
-          Object.assign(defaultsCopy, this.model);
-          Object.assign(this.model, defaultsCopy);
-        }
+        this.$_treeViewNode_assignDefaultProps(this.modelDefaults, this.model);
 
         // Set expected properties if not provided
         if (!Array.isArray(this.model.children)) {
@@ -325,6 +353,27 @@
           }
         }
       },
+      $_treeViewNode_assignDefaultProps(source, target) {
+
+        // Make sure they're objects
+        if (this.$_treeViewNode_isProbablyObject(source) && this.$_treeViewNode_isProbablyObject(target)) {
+
+          // Use a copy of the source, since the props can be fubar'd by the assigns
+          const sourceCopy = JSON.parse(JSON.stringify(source));
+
+          // Assign defaults into the model
+          Object.assign(sourceCopy, target);
+          Object.assign(target, sourceCopy);
+
+          // Find object properties to deep assign them
+          for (const propName of Object.keys(source)) {
+            const propValue = source[propName];
+            if (this.$_treeViewNode_isProbablyObject(propValue)) {
+              this.$_treeViewNode_assignDefaultProps(propValue, target[propName]);
+            }
+          }
+        }
+      },
       $_treeViewNode_onCheckboxChange(event) {
         this.$emit('treeViewNodeCheckboxChange', this.model, event);
       },
@@ -340,6 +389,8 @@
         if (!this.$_treeViewNode_matches(event.target, "input, .tree-view-node-self-expander, .tree-view-node-self-action")) {
           this.$emit('treeViewNodeClick', this.model, event);
         }
+
+        this.$_treeViewNodeAria_onClick();
       },
       $_treeViewNode_onDblclick(event) {
         // Don't fire this if the target is an element which has its own events
@@ -362,13 +413,16 @@
         }
       },
       $_treeViewNode_onDelete(event) {
-        this.$emit('treeViewNodeDelete', this.model, event);
+        if (this.model.deletable) {
+          this.$emit('treeViewNodeDelete', this.model, event);
+        }
       },
       $_treeViewNode_handleChildDeletion(node, event) {
         // Remove the node from the array of children if this is an immediate child.
         // Note that only the node that was deleted fires these, not any subnode.
         let targetIndex = this.model.children.indexOf(node);
         if (targetIndex > -1) {
+          this.$_treeViewNodeAria_handleChildDeletion(node);
           this.model.children.splice(targetIndex, 1);
         }
 
@@ -386,6 +440,9 @@
         }
 
         return false;
+      },
+      $_treeViewNode_isProbablyObject(obj) {
+        return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
       }
     },
   };
@@ -484,6 +541,15 @@
         margin: 0 0 0 (1rem + $itemSpacing);
         padding: 0;
         list-style: none;
+      }
+
+      // ARIA styles
+      &[role="treeitem"]:focus {
+        outline: 0;
+
+        >.tree-view-node-self {
+          outline: black dotted 1px;
+        }
       }
     }
   }

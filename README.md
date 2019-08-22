@@ -30,7 +30,7 @@ If you're using it in a .vue file:
 
 ```html
 <template>
-  <tree-view  id="my-tree" :model="dataModel"></tree-view>
+  <tree-view  id="my-tree" :initial-model="dataModel"></tree-view>
 </template>
 
 <script>
@@ -61,7 +61,7 @@ Vue.use(TreeView)
 ```
 Then add the component:
 ```html
-<tree-view id="my-tree" :model="dataModel"></tree-view>
+<tree-view id="my-tree" :initial-model="dataModel"></tree-view>
 ```
 ```javascript
 export default {
