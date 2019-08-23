@@ -206,11 +206,6 @@
         type: Object,
         required: true
       },
-      parentId: {
-        type: [String, Number],
-        required: false,
-        default: null
-      },
       radioGroupValues: {
         type: Object,
         required: true
