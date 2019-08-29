@@ -7,6 +7,7 @@ init:
   - sh: nvm use 8
 
 install:
+  # Get the app version from the package.json's version property, and set the build number
   - ps: $env:package_version = (Get-Content -Raw -Path package.json | ConvertFrom-Json).version
   - ps: Update-AppveyorBuild -Version "$env:package_version-$env:APPVEYOR_BUILD_NUMBER"
 
@@ -32,8 +33,40 @@ deploy_script:
   - ps: |
       if ($env:APPVEYOR_REPO_TAG -eq "true")
       {
+        # Publish the package
         # npm_auth_token defined in the appveyor project on the site. https://www.appveyor.com/docs/lang/nodejs-iojs/#authenticating-npm-for-publishing-packages
         "//registry.npmjs.org/:_authToken=$env:npm_auth_token`n" | out-file (Join-Path $Home "/.npmrc") -Encoding ASCII
         npm publish package/ --access public
+      }
+
+after_deploy:
+  - sh: |
+      if [ ${APPVEYOR_REPO_TAG} == "true" ]; then
+        # Install pandoc (the apt-get version is way out of date, so manually download the package)
+        mkdir -p ../wgetdeb
+        wget -P ../wgetdeb https://github.com/jgm/pandoc/releases/download/2.7.3/pandoc-2.7.3-1-amd64.deb
+        sudo apt-get --assume-yes install ../wgetdeb/pandoc-2.7.3-1-amd64.deb
+      fi
+  # Generate and update docs
+  - ps: |
+      if ($env:APPVEYOR_REPO_TAG -eq "true")
+      {
+        # Publish the docs to the gh-pages branch
+        # github_auth_token defined in the appveyor project on the site. https://www.appveyor.com/docs/how-to/git-push/
+        cd docs
+        .\generateDocs.ps1
+        cd ..\..
+        git clone --depth=1 --branch=gh-pages https://$($env:github_auth_token):x-oauth-basic@github.com/grapoza/vue-tree.git "pagesbranch" 2>&1 | % { $_.ToString() }
+        cd pagesbranch
+        Copy-Item -Path "..\vue-tree\docs\output" -Destination ".\$env:package_version" -Recurse
+        git add "$env:package_version"
+        New-Item -Path . -Name "index.html" -ItemType "file" -Value "<html><head><title>Redirect</title></head><body><script>window.location.replace(`"https://grapoza.github.io/vue-tree/$env:package_version/`");</script></body></html>" -Force
+        git add index.html
+        git config credential.helper store
+        Add-Content "$HOME\.git-credentials" "https://$($env:github_auth_token):x-oauth-basic@github.com`n"
+        git config user.email "grapoza+appveyor@gmail.com"
+        git config user.name "Gregg Rapoza (via AppVeyor)"
+        git commit -m "AppVeyor commit of docs for version $env:package_version"
+        git push
       }
 ...

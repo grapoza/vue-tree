@@ -1,0 +1,12 @@
+---
+author-meta:
+- Gregg Rapoza
+lang: en-US
+dir: ltr
+pagetitle: vue-tree
+title: vue-tree
+subtitle: Yet another Vue treeview implementation.
+css: /style/docs.css
+showgithub: true
+githuburl: https://github.com/grapoza/vue-tree
+...

@@ -3,7 +3,7 @@
   "description": "Yet another Vue treeview component.",
   "author": "Gregg Rapoza <grapoza@gmail.com>",
   "license": "MIT",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "browser": "index.js",
   "repository": {
     "url": "https://github.com/grapoza/vue-tree",
@@ -19,9 +19,11 @@
   "scripts": {
     "build": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue",
     "dev": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --mode development",
+    "docs": "cd docs && @powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./generateDocs.ps1",
+    "docs-site": "(start cmd /C \"C:/Program Files (x86)/IIS Express/iisexpress.exe\" /port:8081 /path:%cd%\\docs\\output && start http://localhost:8081/index.html)",
     "watch": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --watch",
     "test": "./node_modules/.bin/vue-cli-service test:unit",
-    "site": "(start cmd /C \"C:/Program Files (x86)/IIS Express/iisexpress.exe\" /path:%cd% && start http://localhost:8080/tests/local/index.html)"
+    "test-site": "(start cmd /C \"C:/Program Files (x86)/IIS Express/iisexpress.exe\" /path:%cd% && start http://localhost:8080/tests/local/index.html)"
   },
   "dependencies": {
     "vue": "2.6.10"

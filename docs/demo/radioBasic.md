@@ -1,12 +1,14 @@
 ---
-layout: demo
----
+title-prefix: Basic Radiobutton Demo
+...
+
+[Back to Demos list](/demos.html)
 
 ## Basic Treeview Radio Button Demo
 
 This page demonstrates a basic treeview using radio buttons, with some nodes expanded or selected by default and multiple button groups. [See the data used](./radioBasic.js).
 
-{% raw  %}
+```{=html5}
 <div id="app">
     <tree id="customtree" :initial-model="model" :radio-group-values="radioGroupValues" ref="tree"></tree>
     <section id="checkedStuff">
@@ -16,7 +18,6 @@ This page demonstrates a basic treeview using radio buttons, with some nodes exp
         </ul>
     </section>
 </div>
-{% endraw  %}
 
 <script type='module'>
     import basicRadioData from './radioBasic.js';
@@ -40,3 +41,4 @@ This page demonstrates a basic treeview using radio buttons, with some nodes exp
       }
     }).$mount('#app')
 </script>
+```

@@ -1,3 +1,7 @@
+---
+title-prefix: Home
+...
+
 ## Overview
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -93,7 +97,7 @@ export default {
 
 ## Demos
 
-To see it in action, try out the [demos](demo/demos.html).
+To see it in action, try out the [demos](demos.html).
 
 ## Tree Props
 
@@ -227,7 +231,7 @@ If specified, the `modelDefaults` property of the treeview will be merged with n
 The display of the treeview can be customized via CSS using the following classes. Class names are organized in a hierarchy, so a containing node's class is the prefix of its child classes.
 
 | Class                                    | Affects                                                                          |
-|:-----------------------------------------|:---------------------------------------------------------------------------------|
+|:-------------------------------------------|:-------------------------------------------------------------------------------|
 | `tree-view`                              | The top-level tree view list                                                     |
 | `tree-view-node`                         | A single node's list item                                                        |
 | `tree-view-node-self`                    | The div containing the current node's UI                                         |
