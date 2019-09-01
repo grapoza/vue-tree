@@ -199,7 +199,7 @@ describe('TreeViewNode.vue', () => {
     });
   });
 
-  describe('when there is an addChildCallback method', () => {
+  describe('when there is an addChildCallback method in the model', () => {
 
     let addChildButton = null;
 
@@ -213,6 +213,33 @@ describe('TreeViewNode.vue', () => {
         ariaKeyMap: {},
         initialModel: generateNodes(['esa'], radioState, "", addChildCallback)[0],
         modelDefaults: {},
+        depth: 0,
+        treeId: 'tree',
+        radioGroupValues: radioState
+      });
+
+      addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
+    });
+
+    it('should include an add button', async () => {
+      expect(addChildButton.exists()).to.be.true;
+    });
+  });
+
+  describe('when there is an addChildCallback method in the model defaults', () => {
+
+    let addChildButton = null;
+
+    beforeEach(() => {
+      let radioState = {};
+      let addChildCallback = () => {
+        return Promise.resolve(null);
+      };
+
+      wrapper = createWrapper({
+        ariaKeyMap: {},
+        initialModel: generateNodes(['esa'], radioState)[0],
+        modelDefaults: { addChildCallback },
         depth: 0,
         treeId: 'tree',
         radioGroupValues: radioState
