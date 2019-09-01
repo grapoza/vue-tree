@@ -361,10 +361,15 @@
           Object.assign(target, sourceCopy);
 
           // Find object properties to deep assign them
+          // and find function properties and assign if missing in target
           for (const propName of Object.keys(source)) {
             const propValue = source[propName];
+
             if (this.$_treeViewNode_isProbablyObject(propValue)) {
               this.$_treeViewNode_assignDefaultProps(propValue, target[propName]);
+            }
+            else if (typeof propValue === 'function' && !target[propName]) {
+              target[propName] = propValue;
             }
           }
         }
