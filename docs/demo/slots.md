@@ -1,12 +1,14 @@
 ---
-layout: demo
----
+title-prefix: Slots Demo
+...
+
+[Back to Demos list](/demos.html)
 
 ## Slots Demo
 
 This page demonstrates slotted content. [See the data used](./slots.js).
 
-{% raw  %}
+```{=html5}
 <div id="app">
     <tree id="customtree" :initial-model="model">
         <template v-slot:text="{ model, customClasses }">
@@ -36,7 +38,6 @@ This page demonstrates slotted content. [See the data used](./slots.js).
         </template>
     </tree>
 </div>
-{% endraw  %}
 
 <script type='module'>
     import slotsData from './slots.js';
@@ -52,3 +53,4 @@ This page demonstrates slotted content. [See the data used](./slots.js).
       }
     }).$mount('#app')
 </script>
+```

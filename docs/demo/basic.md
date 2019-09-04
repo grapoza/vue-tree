@@ -1,12 +1,14 @@
 ---
-layout: demo
----
+title-prefix: Basic Checkboxes Demo
+...
+
+[Back to Demos list](/demos.html)
 
 ## Basic Treeview Checkbox Demo
 
 This page demonstrates a basic treeview using checkboxes, with some nodes that are expanded, checked, and/or disabled by default. [See the data used](./basic.js).
 
-{% raw  %}
+```{=html5}
 <div id="app">
     <tree id="customtree" :initial-model="model" ref="tree"></tree>
     <section id="checkedStuff">
@@ -16,7 +18,6 @@ This page demonstrates a basic treeview using checkboxes, with some nodes that a
         </ul>
     </section>
 </div>
-{% endraw  %}
 
 <script type='module'>
     import basicData from './basic.js';
@@ -38,3 +39,4 @@ This page demonstrates a basic treeview using checkboxes, with some nodes that a
       }
     }).$mount('#app');
 </script>
+```
