@@ -13,16 +13,14 @@ Foreach-Object {
         $outfile = Join-Path -Path $outdir -ChildPath ($_.BaseName + ".html")
 
         # If building from AppVeyor, the version will be populated. In that case,
-        # resource paths need to be prefixed with "/appveyor/<version>"
+        # resource paths need to be prefixed with "/vue-tree/<version>"
         $siteRoot = $env:package_version
         if (-not [System.String]::IsNullOrEmpty($siteRoot)) {
             $siteRoot = -Join ("/vue-tree/", $siteRoot);
         }
 
-        Write-Host "  .md outfile" $outfile
-
-        # Invoke (&) the pandoc command
-        if ($outfile.Contains("\demo\")) {
+        # Invoke (&) the pandoc command; check here for either Windows or *nix separator
+        if ($outfile.Contains("\demo\") -or $outfile.Contains("/demo/")) {
             & pandoc -s --template=templates/base.html5 --metadata-file=metadata.yaml -V site-root=$siteRoot -o $outfile metadata.demo.yaml $_.FullName
         }
         else {
