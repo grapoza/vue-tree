@@ -2,7 +2,7 @@
 title-prefix: Basic Checkboxes Demo
 ...
 
-[Back to Demos list](/demos.html)
+[Back to Demos list](../demos.html)
 
 ## Basic Treeview Checkbox Demo
 

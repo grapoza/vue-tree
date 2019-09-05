@@ -2,7 +2,7 @@
 title-prefix: Add/Delete Demo
 ...
 
-[Back to Demos list](/demos.html)
+[Back to Demos list](../demos.html)
 
 ## Add/Remove Nodes Demo
 
