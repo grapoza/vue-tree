@@ -76,7 +76,3 @@ export default {
   }
 }
 ```
-
-## Demos
-
-To see it in action, head over to the [documentation](https://grapoza.github.io/vue-tree/demo/demos.html).
