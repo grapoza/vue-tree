@@ -2,7 +2,7 @@
 title-prefix: Basic Radiobutton Demo
 ...
 
-[Back to Demos list](/demos.html)
+[Back to Demos list](../demos.html)
 
 ## Basic Treeview Radio Button Demo
 

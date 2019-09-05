@@ -42,7 +42,7 @@ $if(title)$
 $if(showgithub)$
 <a id="github-banner" href="$githuburl$">View on GitHub</a>
 $endif$
-<h1 class="title"><a href="/">$title$</a></h1>
+<h1 class="title"><a href="$if(site-root)$$site-root$$endif$/">$title$</a></h1>
 $if(subtitle)$
 <p class="subtitle">$subtitle$</p>
 $endif$

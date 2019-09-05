@@ -2,7 +2,7 @@
 title-prefix: Slots Demo
 ...
 
-[Back to Demos list](/demos.html)
+[Back to Demos list](../demos.html)
 
 ## Slots Demo
 
