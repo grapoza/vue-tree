@@ -12,12 +12,19 @@ Foreach-Object {
         # Get the target file name
         $outfile = Join-Path -Path $outdir -ChildPath ($_.BaseName + ".html")
 
+        # If building from AppVeyor, the version will be populated. In that case,
+        # resource paths need to be prefixed with "/appveyor/<version>"
+        $siteRoot = $env:package_version
+        if (-not [System.String]::IsNullOrEmpty($siteRoot)) {
+            $siteRoot = -Join ("/vue-tree/", $siteRoot);
+        }
+
         # Invoke (&) the pandoc command
-        if($outfile.Contains("\demo\")) {
-            & pandoc -s --template=templates/base.html5 --metadata-file=metadata.yaml -o $outfile metadata.demo.yaml $_.FullName
+        if ($outfile.Contains("\demo\")) {
+            & pandoc -s --template=templates/base.html5 --metadata-file=metadata.yaml -V site-root=$siteRoot -o $outfile metadata.demo.yaml $_.FullName
         }
         else {
-            & pandoc -s --template=templates/base.html5 --metadata-file=metadata.yaml -o $outfile $_.FullName
+            & pandoc -s --template=templates/base.html5 --metadata-file=metadata.yaml -V site-root=$siteRoot -o $outfile $_.FullName
         }
     }
     else {

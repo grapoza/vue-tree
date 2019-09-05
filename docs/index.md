@@ -103,7 +103,7 @@ To see it in action, try out the [demos](demos.html).
 
 | Prop             | Type     | Description                                                                          | Default value                     | Required |
 |:-----------------|:---------|:-------------------------------------------------------------------------------------|:----------------------------------|:---------|
-| initialModel     | Array    | The data model containing [tree data](#tree-data)                                    | -                                 | Yes      |
+| initialModel     | Array    | The data model containing [model data](#model-data)                                    | -                                 | Yes      |
 | modelDefaults    | Object   | An object containing defaults for all nodes that do not specify the given properties | `{}`                              |          |
 | radioGroupValues | Object   | An object, the properties of which correspond to radio button group selections       | `{}`                              |          |
 | customAriaKeyMap | Object   | An object, the properties of which are arrays to keyCodes for various actions        | See [Aria](#setting-key-bindings) |          |
@@ -176,7 +176,7 @@ The properties below can be specified for each node.
 | state.input.value    | Boolean         | Contains the value of the input                              | `false` for checkbox, otherwise -  |          |
 | state.input.disabled | Boolean         | True if the node's input field is disabled                   | `false`                            |          |
 | children             | Array\<Object\> | The child nodes of this node                                 | `[]`                               |          |
-| customizations       | Object          | A [customizations](#customizing-treeviewnode-markup) object  | `{}`                               |          |
+| customizations       | Object          | A [customizations](#customizing-the-treeview) object         | `{}`                               |          |
 | addChildCallback     | Function        | An async function that resolves to a new node model          | `null`                             |          |
 
 \* Selection props are unused; see [#5](https://github.com/grapoza/vue-tree/issues/5).
