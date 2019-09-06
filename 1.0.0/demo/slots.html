@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Gregg Rapoza" />
+  <title>Slots Demo – vue-tree</title>
+  <link rel="stylesheet" href="/vue-tree/1.0.0/style/docs.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+  <script src="https://unpkg.com/@grapoza/vue-tree/vue-tree.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@grapoza/vue-tree/vue-tree.css">
+</head>
+<body>
+<header id="title-block-header">
+<div class="header-inner">
+<a id="github-banner" href="https://github.com/grapoza/vue-tree">View on GitHub</a>
+<h1 class="title"><a href="/vue-tree/1.0.0/">vue-tree</a></h1>
+<p class="subtitle">Yet another Vue treeview implementation.</p>
+</div>
+</header>
+<div class="content">
+<main>
+<p><a href="../demos.html">Back to Demos list</a></p>
+<h2 id="slots-demo">Slots Demo</h2>
+<p>This page demonstrates slotted content. <a href="./slots.js">See the data used</a>.</p>
+<div id="app">
+    <tree id="customtree" :initial-model="model">
+        <template v-slot:text="{ model, customClasses }">
+            <span>{{ model.label }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
+        </template>
+        <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
+            <label :for="inputId" :title="model.title">
+                <input :id="inputId"
+                       type="checkbox"
+                       :disabled="model.state.input.disabled"
+                       v-model="model.state.input.value"
+                       v-on:change="checkboxChangeHandler" />
+                <marquee style="max-width: 6rem">{{ model.label }}. Custom Classes: {{ JSON.stringify(customClasses) }}</marquee>
+            </label>
+        </template>
+        <template v-slot:radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
+            <label :for="inputId" :title="model.title">
+                <input :id="inputId"
+                       type="radio"
+                       :name="model.input.name"
+                       :value="model.input.value"
+                       :disabled="model.state.input.disabled"
+                       v-model="inputModel"
+                       v-on:change="radioChangeHandler" />
+                <span style="font-weight: bolder">{{ model.label }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
+            </label>
+        </template>
+    </tree>
+</div>
+
+<script type='module'>
+    import slotsData from './slots.js';
+
+    new Vue({
+      components: {
+        tree: window['vue-tree']
+      },
+      data() {
+        return {
+          model: slotsData
+        };
+      }
+    }).$mount('#app')
+</script>
+</main>
+</div>
+</body>
+</html>
