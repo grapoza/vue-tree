@@ -9,8 +9,6 @@ title-prefix: Home
 
 vue-tree is a Vue component that implements a TreeView control. Its aim is to provide common tree options in a way that is easy to use and easy to customize.
 
-**The Component is still pre-1.0 and should be considered unstable. Breaking changes may occur at any time before the 1.0 release.**
-
 Features include:
 
 - Functions in modern browsers using the precompiled scripts, or can be included in your babel/webpack chain.
