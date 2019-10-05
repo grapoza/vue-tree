@@ -53,12 +53,12 @@ after_deploy:
       {
         # Publish the docs to the gh-pages branch
         # github_auth_token defined in the appveyor project on the site. https://www.appveyor.com/docs/how-to/git-push/
-        cd docs
+        cd docsrc
         .\generateDocs.ps1
         cd ..\..
         git clone --depth=1 --branch=gh-pages https://$($env:github_auth_token):x-oauth-basic@github.com/grapoza/vue-tree.git "pagesbranch" 2>&1 | % { $_.ToString() }
         cd pagesbranch
-        Copy-Item -Path "..\vue-tree\docs\output" -Destination ".\$env:package_version" -Recurse
+        Copy-Item -Path "..\vue-tree\docsrc\output" -Destination ".\$env:package_version" -Recurse
         git add "$env:package_version"
         New-Item -Path . -Name "index.html" -ItemType "file" -Value "<html><head><title>Redirect</title></head><body><script>window.location.replace(`"https://grapoza.github.io/vue-tree/$env:package_version/`");</script></body></html>" -Force
         git add index.html

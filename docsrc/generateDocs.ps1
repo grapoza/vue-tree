@@ -13,6 +13,12 @@ if (-not [System.String]::IsNullOrEmpty($siteRoot)) {
 
 Get-ChildItem $PSScriptRoot\*  -Recurse -Include *.md, *.css, *.js, *.png | Where-Object { -not $_.PsIsContainer -and $_.DirectoryName -notmatch 'output' } |
 Foreach-Object {
+
+    if ($_.Name -eq "README.md") {
+        Write-Host "Skipping" $_.FullName
+        Return
+    }
+
     Write-Host "Processing" $_.FullName
 
     # Create the dir if it doesn't exist.

@@ -22,7 +22,7 @@ yarn-error.log*
 *.sw*
 
 # Documentation output
-/docs/output
+/docsrc/output
 
 # Local scratchpad document
 scratchpad.md
