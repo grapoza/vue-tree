@@ -1,5 +1,16 @@
 Write-Host "Building docs in" $PSScriptRoot
 
+# If building from AppVeyor, the version will be populated. In that case,
+# resource paths need to be prefixed with "/vue-tree/<version>" and demo metadata
+# should point to unpkg.com for that version
+$siteRoot = $env:package_version
+if (-not [System.String]::IsNullOrEmpty($siteRoot)) {
+    $siteRoot = -Join ("/vue-tree/", $siteRoot);
+
+    $metafile = (Join-Path -Path $PSScriptRoot -ChildPath "metadata.demo.yaml")
+    (Get-Content $metafile) -replace 'http://localhost:8082', (-Join ('https://unpkg.com/@grapoza/vue-tree@', $env:package_version)) | Set-Content $metafile
+}
+
 Get-ChildItem $PSScriptRoot\*  -Recurse -Include *.md, *.css, *.js, *.png | Where-Object { -not $_.PsIsContainer -and $_.DirectoryName -notmatch 'output' } |
 Foreach-Object {
     Write-Host "Processing" $_.FullName
@@ -11,13 +22,6 @@ Foreach-Object {
     if ($_.Extension.ToLowerInvariant() -eq ".md") {
         # Get the target file name
         $outfile = Join-Path -Path $outdir -ChildPath ($_.BaseName + ".html")
-
-        # If building from AppVeyor, the version will be populated. In that case,
-        # resource paths need to be prefixed with "/vue-tree/<version>"
-        $siteRoot = $env:package_version
-        if (-not [System.String]::IsNullOrEmpty($siteRoot)) {
-            $siteRoot = -Join ("/vue-tree/", $siteRoot);
-        }
 
         # Invoke (&) the pandoc command; check here for either Windows or *nix separator
         if ($outfile.Contains("\demo\") -or $outfile.Contains("/demo/")) {

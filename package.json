@@ -20,7 +20,7 @@
     "build": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue",
     "dev": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --mode development",
     "docs": "cd docs && @powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./generateDocs.ps1",
-    "docs-site": "(start cmd /C \"C:/Program Files (x86)/IIS Express/iisexpress.exe\" /port:8081 /path:%cd%\\docs\\output && start http://localhost:8081/index.html)",
+    "docs-site": "(start cmd /C \"C:/Program Files (x86)/IIS Express/iisexpress.exe\" /port:8081 /path:%cd%\\docs\\output && start cmd /C \"C:/Program Files (x86)/IIS Express/iisexpress.exe\" /port:8082 /path:%cd%\\dist && start http://localhost:8081/index.html)",
     "watch": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --watch",
     "test": "./node_modules/.bin/vue-cli-service test:unit",
     "test-site": "(start cmd /C \"C:/Program Files (x86)/IIS Express/iisexpress.exe\" /path:%cd% && start http://localhost:8080/tests/local/index.html)"
