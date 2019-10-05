@@ -25,7 +25,10 @@ This page demonstrates adding and removing nodes. [See the data used](./addRemov
             childCounter: 0,
             model: arModel,
             modelDefaults: {
-                addChildCallback: this.addChildCallback
+                addChildCallback: this.addChildCallback,
+                addChildTitle: 'Add a new child node',
+                deleteTitle: 'Delete this node',
+                expanderTitle: 'Expand this node'
             }
         };
       },

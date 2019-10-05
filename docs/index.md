@@ -163,6 +163,9 @@ The properties below can be specified for each node.
 | selectable           | Boolean         | True to allow the node to be selected*                       | `false`                            |          |
 | deletable            | Boolean         | True to allow the node to be deleted                         | `false`                            |          |
 | focusable            | Boolean         | True to make the node the focus when the treeview is focused | See [Aria](#focusable) for details |          |
+| expanderTitle        | String          | The text to use as the title for the expander button         | `null`                             |          |
+| addChildTitle        | String          | The text to use as the title for the Add Child button        | `null`                             |          |
+| deleteTitle          | String          | The text to use as the title for the Delete button           | `null`                             |          |
 | input                | Object          | Contains data specific to the node's `input` element         | `null`                             |          |
 | input.type           | String          | The type of input; valid values are `checkbox` or `radio`    | -                                  | Yes**    |
 | input.name           | String          | The name attribute of the input; used with `radio` type      | `'unspecifiedRadioName'`           |          |
