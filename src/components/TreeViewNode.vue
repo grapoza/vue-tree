@@ -22,6 +22,7 @@
               v-if="canExpand"
               aria-hidden="true"
               tabindex="-1"
+              :title="model.expanderTitle"
               class="tree-view-node-self-expander"
               :class="[customClasses.treeViewNodeSelfExpander,
                        model.state.expanded ? 'tree-view-node-self-expanded' : '',
@@ -108,6 +109,7 @@
               v-if="model.addChildCallback"
               aria-hidden="true"
               tabindex="-1"
+              :title="model.addChildTitle"
               class="tree-view-node-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfAddChild]"
               @click="$_treeViewNode_onAddChild">
@@ -121,6 +123,7 @@
               v-if="model.deletable"
               aria-hidden="true"
               tabindex="-1"
+              :title="model.deleteTitle"
               class="tree-view-node-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfDelete]"
               @click="$_treeViewNode_onDelete">
@@ -275,6 +278,15 @@
 
         if (typeof this.model.title !== 'string' || this.model.title.trim().length === 0) {
           this.$set(this.model, 'title', null);
+        }
+        if (typeof this.model.expanderTitle !== 'string' || this.model.expanderTitle.trim().length === 0) {
+          this.$set(this.model, 'expanderTitle', null);
+        }
+        if (typeof this.model.addChildTitle !== 'string' || this.model.addChildTitle.trim().length === 0) {
+          this.$set(this.model, 'addChildTitle', null);
+        }
+        if (typeof this.model.deleteTitle !== 'string' || this.model.deleteTitle.trim().length === 0) {
+          this.$set(this.model, 'deleteTitle', null);
         }
 
         if (this.model.customizations == null || typeof this.model.customizations !== 'object') {

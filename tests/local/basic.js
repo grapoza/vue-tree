@@ -81,13 +81,7 @@ export default [
             },
             addChildCallback: function () {
               var entry = prompt("Give it a string.", "");
-
-              if (entry) {
-                return Promise.resolve({ id: entry, label: entry, deletable: true });
-              }
-              else {
-                return Promise.resolve(null);
-              }
+              return Promise.resolve(entry ? { id: entry, label: entry, deletable: true } : null);
             }
           }
         ]
