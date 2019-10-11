@@ -1,5 +1,5 @@
 <template>
-  <ul class="tree-view" role="tree">
+  <ul class="tree-view" :class="skinClass" role="tree">
     <tree-view-node v-for="(nodeModel) in model"
                     :key="nodeModel.id"
                     :initial-model="nodeModel"
@@ -60,6 +60,14 @@
         type: Object,
         required: false,
         default: function () { return {}; }
+      },
+      skinClass: {
+        type: String,
+        required: false,
+        default: "default-tree-view-skin",
+        validator: function (value) {
+          return value === null || !value.match(/\s/);
+        }
       }
     },
     data() {
@@ -119,7 +127,8 @@
 
 <style lang="scss">
 
-  .tree-view {
+  // Embedded SCSS is the 'default-tree-view-skin' skin
+  .tree-view.default-tree-view-skin {
     margin: 0;
     padding: 0;
     list-style: none;
