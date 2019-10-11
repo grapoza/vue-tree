@@ -464,95 +464,15 @@
   $baseHeight: 1.2rem;
   $itemSpacing: 1.2rem;
 
-  .tree-view {
+  // Everything's in a .tree-view (embedded SCSS is the 'default-tree-view-skin' skin)
+  .tree-view.default-tree-view-skin {
 
+    // The node, including its content and children list
     .tree-view-node {
       padding-left: 0;
 
       &:first-child {
         margin-top: 0;
-      }
-
-      .tree-view-node-self {
-        display: flex;
-        align-items: flex-start;
-        line-height: $baseHeight;
-
-        .tree-view-node-self-expander {
-          padding: 0;
-          background: none;
-          border: none;
-
-          i.tree-view-node-self-expanded-indicator {
-            font-style: normal;
-
-            &::before {
-              content: '+';
-            }
-          }
-
-          &.tree-view-node-self-expanded {
-
-            i.tree-view-node-self-expanded-indicator {
-
-              &::before {
-                content: '-';
-              }
-            }
-          }
-        }
-
-        .tree-view-node-self-expander,
-        .tree-view-node-self-checkbox,
-        .tree-view-node-self-radio,
-        .tree-view-node-self-spacer,
-        .tree-view-node-self-action {
-          min-width: 1rem;
-        }
-
-        .tree-view-node-self-expander,
-        .tree-view-node-self-spacer {
-          margin: 0;
-        }
-
-        .tree-view-node-self-checkbox,
-        .tree-view-node-self-radio {
-          margin: 0 0 0 (-$itemSpacing);
-        }
-
-        .tree-view-node-self-text,
-        .tree-view-node-self-label {
-          margin-left: $itemSpacing;
-        }
-
-        .tree-view-node-self-action {
-          padding: 0;
-          background: none;
-          border: none;
-          height: $baseHeight;
-
-          i.tree-view-node-self-add-child-icon {
-            font-style: normal;
-
-            &::before {
-              content: '+';
-            }
-          }
-
-          i.tree-view-node-self-delete-icon {
-            font-style: normal;
-
-            &::before {
-              content: 'x';
-            }
-          }
-        }
-      }
-
-      .tree-view-node-children {
-        margin: 0 0 0 (1rem + $itemSpacing);
-        padding: 0;
-        list-style: none;
       }
 
       // ARIA styles
@@ -563,6 +483,95 @@
           outline: black dotted 1px;
         }
       }
+    }
+
+    // The node's content, excluding the list of child nodes
+    .tree-view-node-self {
+      display: flex;
+      align-items: flex-start;
+      line-height: $baseHeight;
+    }
+
+    // The expander button and indicator content
+    .tree-view-node-self-expander {
+      padding: 0;
+      background: none;
+      border: none;
+      height: $baseHeight;
+
+      i.tree-view-node-self-expanded-indicator {
+        font-style: normal;
+
+        &::before {
+          content: '+';
+        }
+      }
+
+      &.tree-view-node-self-expanded {
+
+        i.tree-view-node-self-expanded-indicator {
+
+          &::before {
+            content: '-';
+          }
+        }
+      }
+    }
+
+    // Spacing
+    .tree-view-node-self-expander,
+    .tree-view-node-self-checkbox,
+    .tree-view-node-self-radio,
+    .tree-view-node-self-spacer,
+    .tree-view-node-self-action {
+      min-width: 1rem;
+    }
+
+    .tree-view-node-self-expander,
+    .tree-view-node-self-spacer {
+      margin: 0;
+    }
+
+    .tree-view-node-self-checkbox,
+    .tree-view-node-self-radio {
+      margin: 0 0 0 (-$itemSpacing);
+    }
+
+    .tree-view-node-self-text,
+    .tree-view-node-self-label {
+      margin-left: $itemSpacing;
+    }
+
+    // Action buttons section
+    .tree-view-node-self-action {
+      padding: 0;
+      background: none;
+      border: none;
+      height: $baseHeight;
+    }
+
+    // Action buttons (add, delete, etc)
+    i.tree-view-node-self-add-child-icon {
+      font-style: normal;
+
+      &::before {
+        content: '+';
+      }
+    }
+
+    i.tree-view-node-self-delete-icon {
+      font-style: normal;
+
+      &::before {
+        content: 'x';
+      }
+    }
+
+    // The node's child list
+    .tree-view-node-children {
+      margin: 0 0 0 (1rem + $itemSpacing);
+      padding: 0;
+      list-style: none;
     }
   }
 </style>
