@@ -2,13 +2,16 @@ Write-Host "Building docs in" $PSScriptRoot
 
 # If building from AppVeyor, the version will be populated. In that case,
 # resource paths need to be prefixed with "/vue-tree/<version>" and demo metadata
-# should point to unpkg.com for that version
+# should point to unpkg.com for that version's components
 $siteRoot = $env:package_version
 if (-not [System.String]::IsNullOrEmpty($siteRoot)) {
     $siteRoot = -Join ("/vue-tree/", $siteRoot);
 
     $metafile = (Join-Path -Path $PSScriptRoot -ChildPath "metadata.demo.yaml")
-    (Get-Content $metafile) -replace 'http://localhost:8082', (-Join ('https://unpkg.com/@grapoza/vue-tree@', $env:package_version)) | Set-Content $metafile
+    # Replace TreeView package references
+    (Get-Content $metafile) -replace 'http://localhost:8082', ( -Join ('https://unpkg.com/@grapoza/vue-tree@', $env:package_version)) | Set-Content $metafile
+    # replace CSS paths
+    (Get-Content $metafile) -replace '/style/demo/', ( -Join ($siteRoot, '/style/demo/')) | Set-Content $metafile
 }
 
 Get-ChildItem $PSScriptRoot\*  -Recurse -Include *.md, *.css, *.js, *.png | Where-Object { -not $_.PsIsContainer -and $_.DirectoryName -notmatch 'output' } |
