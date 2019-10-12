@@ -49,6 +49,37 @@ describe('TreeView.vue', () => {
     });
   });
 
+  describe('when not passed a skinClass prop', () => {
+
+    beforeEach(() => {
+      wrapper = createWrapper();
+    });
+
+    it('has a class of default-tree-view-skin', () => {
+      expect(wrapper.vm.skinClass).to.equal('default-tree-view-skin');
+      let target = wrapper.find('.tree-view.default-tree-view-skin');
+      expect(target.exists()).to.be.true;
+    });
+  });
+
+  describe('when passed a skinClass prop', () => {
+
+    beforeEach(() => {
+      wrapper = createWrapper(Object.assign(getDefaultPropsData(), { skinClass: "my-skin" }));
+    });
+
+    it('has a class of my-skin', () => {
+      expect(wrapper.vm.skinClass).to.equal('my-skin');
+      let target = wrapper.find('.tree-view.my-skin');
+      expect(target.exists()).to.be.true;
+    });
+
+    it('does not have a class of default-tree-view-skin', () => {
+      let target = wrapper.find('.tree-view.default-tree-view-skin');
+      expect(target.exists()).to.be.false;
+    });
+  });
+
   describe('when getCheckedCheckboxes() is called', () => {
 
     beforeEach(() => {

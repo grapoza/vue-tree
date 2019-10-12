@@ -3,7 +3,7 @@
   "description": "Yet another Vue treeview component.",
   "author": "Gregg Rapoza <grapoza@gmail.com>",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "browser": "index.js",
   "repository": {
     "url": "https://github.com/grapoza/vue-tree",
@@ -19,8 +19,8 @@
   "scripts": {
     "build": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue",
     "dev": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --mode development",
-    "docs": "cd docs && @powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./generateDocs.ps1",
-    "docs-site": "(start cmd /C \"C:/Program Files (x86)/IIS Express/iisexpress.exe\" /port:8081 /path:%cd%\\docs\\output && start http://localhost:8081/index.html)",
+    "docs": "cd docsrc && @powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./generateDocs.ps1",
+    "docs-site": "(start cmd /C \"C:/Program Files (x86)/IIS Express/iisexpress.exe\" /port:8081 /path:%cd%\\docsrc\\output && start cmd /C \"C:/Program Files (x86)/IIS Express/iisexpress.exe\" /port:8082 /path:%cd%\\dist && start http://localhost:8081/index.html)",
     "watch": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --watch",
     "test": "./node_modules/.bin/vue-cli-service test:unit",
     "test-site": "(start cmd /C \"C:/Program Files (x86)/IIS Express/iisexpress.exe\" /path:%cd% && start http://localhost:8080/tests/local/index.html)"
@@ -35,8 +35,11 @@
     "@vue/test-utils": "1.0.0-beta.29",
     "chai": "4.2.0",
     "node-sass": "4.12.0",
-    "sass-loader": "7.3.1",
+    "sass-loader": "8.0.0",
     "vue-template-compiler": "2.6.10",
-    "webpack": "4.39.2"
-  }
+    "webpack": "4.41.0"
+  },
+  "browserslist": [
+    "defaults"
+  ]
 }

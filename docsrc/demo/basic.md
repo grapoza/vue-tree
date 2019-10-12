@@ -10,7 +10,7 @@ This page demonstrates a basic treeview using checkboxes, with some nodes that a
 
 ```{=html5}
 <div id="app">
-    <tree id="customtree" :initial-model="model" ref="tree"></tree>
+    <tree id="customtree" :initial-model="model" :model-defaults="modelDefaults" ref="tree"></tree>
     <section id="checkedStuff">
         <button type="button" class="treeProcessTrigger" v-on:click="refreshCheckedList">What's been checked?</button>
         <ul id="checkedList">
@@ -29,6 +29,11 @@ This page demonstrates a basic treeview using checkboxes, with some nodes that a
       data() {
         return {
           model: basicData,
+          modelDefaults: {
+            addChildTitle: 'Add a new child node',
+            deleteTitle: 'Delete this node',
+            expanderTitle: 'Expand this node'
+          },
           checkedNodes: []
         };
       },
