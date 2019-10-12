@@ -17,6 +17,7 @@ Features include:
 - Radio buttons
 - Addition and removal of nodes
 - Slots for node content
+- Skinning
 - Follows ARIA guidelines for treeview accessibility
 
 Planned:
@@ -101,9 +102,10 @@ To see it in action, try out the [demos](demos.html).
 
 | Prop             | Type     | Description                                                                          | Default value                     | Required |
 |:-----------------|:---------|:-------------------------------------------------------------------------------------|:----------------------------------|:---------|
-| initialModel     | Array    | The data model containing [model data](#model-data)                                    | -                                 | Yes      |
+| initialModel     | Array    | The data model containing [model data](#model-data)                                  | -                                 | Yes      |
 | modelDefaults    | Object   | An object containing defaults for all nodes that do not specify the given properties | `{}`                              |          |
 | radioGroupValues | Object   | An object, the properties of which correspond to radio button group selections       | `{}`                              |          |
+| skinClass        | String   | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins)) | `"default-tree-view-skin"`        |          |
 | customAriaKeyMap | Object   | An object, the properties of which are arrays to keyCodes for various actions        | See [Aria](#setting-key-bindings) |          |
 
 ## Model Data
@@ -278,6 +280,10 @@ A customizations object may have the following properties:
 | classes.treeViewNodeSelfDelete            | String | Classes to add to the delete button                                    |
 | classes.treeViewNodeSelfDeleteIcon        | String | Classes to add to the `<i>` element containing the delete icon         |
 | classes.treeViewNodeChildren              | String | Classes to add to the list of child nodes                              |
+
+### Skins
+
+If adding classes isn't enough, the entire default styles of the TreeView can be overridden using the `skinClass` property of the TreeView. When this property is set, the TreeView's default class of `default-tree-view-skin` is replaced with your own class name, causing all of the built-in style selectors to not match the tree. Instead, you can create your own stylesheet or modify a copy of the default styles to achieve complete control over the tree styling.
 
 ### Slots
 
