@@ -104,4 +104,82 @@ describe('TreeView.vue', () => {
       expect(nodes.length).to.equal(2);
     });
   });
+
+  describe('when getMatching() is called', () => {
+
+    beforeEach(() => {
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'ES', ['es', 'eS']], {}), selectionMode: 'multiple' });
+    });
+
+    it('should return nodes matched by the function argument', () => {
+      let nodes = wrapper.vm.getMatching((nodeModel) => nodeModel.expandable && nodeModel.state.expanded && nodeModel.selectable && nodeModel.state.selected);
+      expect(nodes.length).to.equal(1);
+    });
+  });
+
+  describe('when getSelected() is called', () => {
+
+    beforeEach(() => {
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']], {}), selectionMode: 'multiple' });
+    });
+
+    it('should return selected nodes', () => {
+      let nodes = wrapper.vm.getSelected();
+      expect(nodes.length).to.equal(2);
+    });
+  });
+
+  describe('when selectionMode is null', () => {
+
+    beforeEach(() => {
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']], {}), selectionMode: null });
+    });
+
+    it('should not have an aria-multiselectable attribute', () => {
+      expect(wrapper.vm.$el.attributes['aria-multiselectable']).to.be.undefined;
+    });
+
+    it('should ignore the selected state of nodes', () => {
+      let nodes = wrapper.vm.getSelected();
+      expect(nodes.length).to.equal(0);
+    });
+  });
+
+  describe('when selectionMode is `single`', () => {
+
+    beforeEach(() => {
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']], {}), selectionMode: 'single' });
+    });
+
+    it('should have an aria-multiselectable attribute of false', () => {
+      expect(wrapper.vm.$el.attributes['aria-multiselectable'].value).to.equal('false');
+    });
+
+    it('should only keep the selectable=true state for the first node with that in the initial model', () => {
+      expect(wrapper.vm.model[1].state.selected).to.be.true;
+      expect(wrapper.vm.model[1].children[1].state.selected).to.be.false;
+    });
+  });
+
+  describe('when selectionMode is `selectionFollowsFocus`', () => {
+
+    beforeEach(() => {
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']], {}), selectionMode: 'selectionFollowsFocus' });
+    });
+
+    it('should have an aria-multiselectable attribute of false', () => {
+      expect(wrapper.vm.$el.attributes['aria-multiselectable'].value).to.equal('false');
+    });
+  });
+
+  describe('when selectionMode is `multiple`', () => {
+
+    beforeEach(() => {
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']], {}), selectionMode: 'multiple' });
+    });
+
+    it('should have an aria-multiselectable attribute of true', () => {
+      expect(wrapper.vm.$el.attributes['aria-multiselectable'].value).to.equal('true');
+    });
+  });
 });

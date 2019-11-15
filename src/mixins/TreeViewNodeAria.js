@@ -20,6 +20,11 @@ export default {
         this.$el.focus();
         this.$emit('treeViewNodeAriaFocusable', this.model);
       }
+
+      // In selectionFollowsFocus selection mode, this focus watch is responsible for updating selection.
+      if (this.model.selectable && this.selectionMode === 'selectionFollowsFocus') {
+        this.model.state.selected = newValue;
+      }
     }
   },
   methods: {
@@ -57,7 +62,8 @@ export default {
 
       if (this.ariaKeyMap.activateItem.includes(event.keyCode)) {
         // Performs the default action (e.g. onclick event) for the focused node.
-
+        // Note that splitting activation and selection so explicitly differs from
+        // https://www.w3.org/TR/wai-aria-practices-1.1/#keyboard-interaction-22 (Enter description, and Selection in multi-select trees)
         if (this.model.input && !this.model.state.input.disabled) {
           let tvns = this.$el.querySelector('.tree-view-node-self');
           let target = tvns.querySelector('.tree-view-node-self-input') || tvns.querySelector('input');
@@ -68,6 +74,12 @@ export default {
             target.dispatchEvent(clickEvent);
           }
         }
+      }
+      else if (this.ariaKeyMap.selectItem.includes(event.keyCode)) {
+        // Toggles selection for the focused node.
+        // Note that splitting activation and selection so explicitly differs from
+        // https://www.w3.org/TR/wai-aria-practices-1.1/#keyboard-interaction-22 (Enter description, and Selection in multi-select trees)
+        this.$_treeViewNode_toggleSelected(event);
       }
       else if (this.ariaKeyMap.expandFocusedItem.includes(event.keyCode)) {
         // When focus is on a closed node, opens the node; focus does not move.

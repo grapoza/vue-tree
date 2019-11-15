@@ -1,10 +1,14 @@
 <template>
-  <ul class="tree-view" :class="skinClass" role="tree">
+  <ul class="tree-view"
+      :class="skinClass"
+      role="tree"
+      :aria-multiselectable="ariaMultiselectable">
     <tree-view-node v-for="(nodeModel) in model"
                     :key="nodeModel.id"
                     :initial-model="nodeModel"
                     :model-defaults="modelDefaults"
                     :depth="0"
+                    :selection-mode="selectionMode"
                     :tree-id="uniqueId"
                     :radio-group-values="radioGroupValues"
                     :aria-key-map="ariaKeyMap"
@@ -13,6 +17,7 @@
                     @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
                     @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
                     @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
+                    @treeViewNodeSelectedChange="(t, e)=>$_treeView_handleNodeSelectedChange(t, e)"
                     @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
                     @treeViewNodeDelete="(t, e)=>$_treeView_handleChildDeletion(t, e)"
                     @treeViewNodeAriaFocusable="$_treeViewAria_handleFocusableChange"
@@ -61,6 +66,14 @@
         required: false,
         default: function () { return {}; }
       },
+      selectionMode: {
+        type: String,
+        required: false,
+        default: null,
+        validator: function (value) {
+          return ['single', 'selectionFollowsFocus', 'multiple'].includes(value);
+        }
+      },
       skinClass: {
         type: String,
         required: false,
@@ -76,39 +89,59 @@
         model: this.initialModel
       };
     },
+    computed: {
+      ariaMultiselectable() {
+        return this.selectionMode === null ? false : (this.selectionMode === 'multiple').toString();
+      }
+    },
+    created() {
+      this.$_treeView_enforceSingleSelectionMode();
+    },
     mounted() {
       this.$set(this, 'uniqueId', this.$el.id ? this.$el.id : null);
     },
     methods: {
       getCheckedCheckboxes() {
-        let checked = [];
-        let toCheck = this.model.slice();
-
-        while (toCheck.length > 0) {
-          let current = toCheck.pop();
-          toCheck = toCheck.concat(current.children);
-
-          if (current.input && current.input.type === 'checkbox' && current.state.input.value) {
-            checked.push(current);
-          }
-        }
-
-        return checked;
+        return this.getMatching((current) => current.input && current.input.type === 'checkbox' && current.state.input.value);
       },
       getCheckedRadioButtons() {
-        let checked = [];
-        let toCheck = this.model.slice();
+        return this.getMatching((current) => current.input && current.input.type === 'radio' && this.radioGroupValues[current.input.name] === current.input.value);
+      },
+      getMatching(matcherFunction) {
+        let matches = [];
 
-        while (toCheck.length > 0) {
-          let current = toCheck.pop();
-          toCheck = toCheck.concat(current.children);
-
-          if (current.input && current.input.type === 'radio' && this.radioGroupValues[current.input.name] === current.input.value) {
-            checked.push(current);
-          }
+        if (typeof matcherFunction === 'function') {
+          this.$_treeView_depthFirstTraverse((current) => {
+            if (matcherFunction(current)) {
+              matches.push(current);
+            }
+          });
         }
 
-        return checked;
+        return matches;
+      },
+      getSelected() {
+        return this.selectionMode === null ? [] : this.getMatching((current) => current.selectable && current.state.selected);
+      },
+      $_treeView_depthFirstTraverse(nodeActionCallback) {
+        if (this.model.length === 0) {
+          return;
+        }
+
+        let nodeQueue = this.model.slice();
+        let continueCallbacks = true;
+
+        while (nodeQueue.length > 0 && continueCallbacks !== false) {
+          let current = nodeQueue.shift();
+
+          // Push children to the front (depth first traversal)
+          if (Array.isArray(current.children)) {
+            nodeQueue = current.children.concat(nodeQueue);
+          }
+
+          // Use a return value of false to halt calling the callback on further nodes.
+          continueCallbacks = nodeActionCallback(current);
+        }
       },
       $_treeView_handleChildDeletion(node, event) {
         // Remove the node from the array of children if this is an immediate child.
@@ -120,6 +153,38 @@
         }
 
         this.$emit('treeViewNodeDelete', node, event);
+      },
+      $_treeView_handleNodeSelectedChange(node, event) {
+        // For single selection mode, unselect any other selected node.
+        // For selectionFollowsFocus mode, selection state is handled in TreeViewAria.$_treeViewAria_handleFocusableChange.
+        // In all cases this emits treeViewNodeSelectedChange for the node parameter.
+        if (this.selectionMode === "single" && node.state.selected) {
+          this.$_treeView_depthFirstTraverse((current) => {
+            if (current.state.selected && current.id !== node.id) {
+              current.state.selected = false;
+              return false;
+            }
+            return true;
+          });
+        }
+
+        this.$emit('treeViewNodeSelectedChange', node, event);
+      },
+      $_treeView_enforceSingleSelectionMode() {
+        // For single selection mode, only allow one selected node.
+        if (this.selectionMode === 'single') {
+          let alreadyFoundSelected = false;
+          this.$_treeView_depthFirstTraverse((node) => {
+            if (node.state.selected === true) {
+              if (alreadyFoundSelected) {
+                node.state.selected = false;
+              }
+              else {
+                alreadyFoundSelected = true;
+              }
+            }
+          });
+        }
       }
     }
   };

@@ -9,7 +9,8 @@ const getDefaultPropsData = function () {
   let radioState = {};
   return {
     ariaKeyMap: {
-      activateItem: [13, 32], // Return, Space
+      activateItem: [32], // Space
+      selectItem: [13], // Enter
       focusLastItem: [35], // End
       focusFirstItem: [36], // Home
       collapseFocusedItem: [37], // Left
@@ -23,7 +24,8 @@ const getDefaultPropsData = function () {
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
-    radioGroupValues: radioState
+    radioGroupValues: radioState,
+    selectionMode: 'multiple'
   }
 };
 
@@ -49,14 +51,43 @@ describe('TreeViewNode.vue (interactions)', () => {
 
     let nodeBody = null;
 
-    beforeEach(() => {
-      wrapper = createWrapper();
-      nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .tree-view-node-self`);
+    describe('always', () => {
+
+      beforeEach(() => {
+        wrapper = createWrapper();
+        nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .tree-view-node-self`);
+        nodeBody.trigger('click');
+      });
+
+      it('should emit the treeViewNodeClick event', () => {
+        expect(wrapper.emitted().treeViewNodeClick.length).to.equal(1);
+      });
     });
 
-    it('should emit the treeViewNodeClick event', () => {
-      nodeBody.trigger('click');
-      expect(wrapper.emitted().treeViewNodeClick.length).to.equal(1);
+    describe('and the node is selectable', () => {
+
+      beforeEach(() => {
+        wrapper = createWrapper();
+        nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .tree-view-node-self`);
+        nodeBody.trigger('click');
+      });
+
+      it('should toggle the selected state', () => {
+        expect(wrapper.vm.model.state.selected).to.be.true;
+      });
+    });
+
+    describe('and the node is not selectable', () => {
+
+      beforeEach(() => {
+        wrapper = createWrapper(Object.assign(getDefaultPropsData(), { selectionMode: null }));
+        nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .tree-view-node-self`);
+        nodeBody.trigger('click');
+      });
+
+      it('should not toggle the selected state', () => {
+        expect(wrapper.vm.model.state.selected).to.be.false;
+      });
     });
   });
 

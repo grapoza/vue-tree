@@ -13,3 +13,4 @@ Note that demos won't work in IE due to the way the component is loaded, syntax,
 - [Adding and Removing Nodes](demo/addRemove.html)
 - [Slots](demo/slots.html)
 - [Custom Styles](demo/customStyles.html)
+- [Selection](demo/selection.html)

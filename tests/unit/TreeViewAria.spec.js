@@ -6,7 +6,9 @@ import { generateNodes } from '../data/node-generator.js';
 const localVue = createLocalVue();
 
 const getDefaultPropsData = function () {
-  return { initialModel: [] }
+  return {
+    initialModel: []
+  }
 };
 
 function createWrapper(customPropsData, customAttrs) {
@@ -49,6 +51,7 @@ describe('TreeView.vue (ARIA)', () => {
       it('has an ARIA key mapping', () => {
         const keyMap = wrapper.vm.ariaKeyMap;
         expect(keyMap).to.have.own.property('activateItem');
+        expect(keyMap).to.have.own.property('selectItem');
         expect(keyMap).to.have.own.property('focusLastItem');
         expect(keyMap).to.have.own.property('focusFirstItem');
         expect(keyMap).to.have.own.property('collapseFocusedItem');
@@ -64,14 +67,15 @@ describe('TreeView.vue (ARIA)', () => {
 
       const customKeyMap = {
         activateItem: [1],
-        focusLastItem: [2],
-        focusFirstItem: [3],
-        collapseFocusedItem: [4],
-        expandFocusedItem: [5],
-        focusPreviousItem: [6],
-        focusNextItem: [7],
-        insertItem: [8],
-        deleteItem: [9]
+        selectItem: [2],
+        focusLastItem: [3],
+        focusFirstItem: [4],
+        collapseFocusedItem: [5],
+        expandFocusedItem: [6],
+        focusPreviousItem: [7],
+        focusNextItem: [8],
+        insertItem: [9],
+        deleteItem: [10]
       };
 
       beforeEach(() => {
@@ -90,27 +94,59 @@ describe('TreeView.vue (ARIA)', () => {
 
   describe('when created without a focusable node specified', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']], {}) });
+    describe('and no selected nodes', () => {
+
+      beforeEach(() => {
+        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']], {}), selectionMode: 'multiple' });
+      });
+
+      it('should set the first node as focusable', () => {
+        expect(wrapper.vm.model[0].focusable).to.be.true;
+      });
     });
 
-    it('sets the first node as focusable', () => {
-      expect(wrapper.vm.model[0].focusable).to.be.true;
+    describe('and selected nodes', () => {
+
+      beforeEach(() => {
+        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCS', 'ecs']], {}), selectionMode: 'multiple' });
+      });
+
+      it('should set the first selected node as focusable', () => {
+        expect(wrapper.vm.model[1].children[0].focusable).to.be.true;
+      });
     });
   });
 
   describe('when created with a focusable node specified', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf', ['eCsf', 'ecs']], {}) });
+    describe('always', () => {
+
+      beforeEach(() => {
+        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf', ['eCsf', 'ecs']], {}), selectionMode: 'multiple' });
+      });
+
+      it('should keep that node as focusable', () => {
+        expect(wrapper.vm.model[1].focusable).to.be.true;
+      });
+
+      it('should set focusble to false for any further nodes', () => {
+        expect(wrapper.vm.model[1].children[0].focusable).to.be.false;
+      });
     });
 
-    it('keeps that node as focusable', () => {
-      expect(wrapper.vm.model[1].focusable).to.be.true;
-    });
+    describe('and with a selectionMode of selectionFollowsFocus', () => {
 
-    it('sets focusble to false for any further nodes', () => {
-      expect(wrapper.vm.model[1].children[0].focusable).to.be.false;
+      describe('and a selectable focusable node', () => {
+
+        beforeEach(() => {
+          wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf'], {}), selectionMode: 'selectionFollowsFocus' });
+        });
+
+        it('should select the focused node', () => {
+          expect(wrapper.vm.model[1].state.selected).to.be.true;
+        });
+      });
+
     });
   });
 
@@ -281,6 +317,23 @@ describe('TreeView.vue (ARIA)', () => {
           expect(wrapper.vm.model[1].focusable).to.be.true;
         });
       });
+    });
+  });
+
+  describe('when selectionMode changes to selectionFollowsFocus', () => {
+
+    beforeEach(async () => {
+      wrapper = createWrapper({ initialModel: generateNodes(['Ecsf', ['ecS', 'ecs'], 'ecs'], {}), selectionMode: 'single' });
+      wrapper.vm.selectionMode = 'selectionFollowsFocus';
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should select the focused node', () => {
+      expect(wrapper.vm.model[0].state.selected).to.be.true;
+    });
+
+    it('should deselect the previously selected node', () => {
+      expect(wrapper.vm.model[0].children[0].state.selected).to.be.false;
     });
   });
 });

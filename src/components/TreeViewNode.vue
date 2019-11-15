@@ -8,11 +8,13 @@
       :class="customClasses.treeViewNode"
       role="treeitem"
       :tabindex="ariaTabIndex"
-      :aria-expanded="canExpand ? model.state.expanded.toString() : false"
-      :aria-selected="model.selectable ? model.state.selected.toString() : false"
+      :aria-expanded="ariaExpanded"
+      :aria-selected="ariaSelected"
       @keydown="$_treeViewNodeAria_onKeyDown">
     <div class="tree-view-node-self"
-         :class="customClasses.treeViewNodeSelf"
+         :class="[customClasses.treeViewNodeSelf,
+                  isEffectivelySelected ? 'tree-view-node-self-selected' : '',
+                  isEffectivelySelected ? customClasses.treeViewNodeSelfSelected : '']"
          @click="$_treeViewNode_onClick"
          @dblclick="$_treeViewNode_onDblclick">
 
@@ -145,6 +147,7 @@
                       :initial-model="nodeModel"
                       :model-defaults="modelDefaults"
                       :parent-id="model.id"
+                      :selection-mode="selectionMode"
                       :tree-id="treeId"
                       :radio-group-values="radioGroupValues"
                       :aria-key-map="ariaKeyMap"
@@ -153,6 +156,7 @@
                       @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
                       @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
                       @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
+                      @treeViewNodeSelectedChange="(t, e)=>$emit('treeViewNodeSelectedChange', t, e)"
                       @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
                       @treeViewNodeDelete="(t, e)=>$_treeViewNode_handleChildDeletion(t, e)"
                       @treeViewNodeAriaFocusable="(t)=>$emit('treeViewNodeAriaFocusable', t)"
@@ -213,6 +217,14 @@
         type: Object,
         required: true
       },
+      selectionMode: {
+        type: String,
+        required: false,
+        default: null,
+        validator: function (value) {
+          return ['single', 'selectionFollowsFocus', 'multiple'].includes(value);
+        }
+      },
       treeId: {
         type: String,
         required: false,
@@ -221,12 +233,35 @@
     },
     data() {
       return {
-        model: this.initialModel
+        model: this.initialModel,
+        elementsThatIgnoreClicks: 'input, .tree-view-node-self-expander, .tree-view-node-self-expander *, .tree-view-node-self-action, .tree-view-node-self-action *'
       }
     },
     computed: {
       addChildId() {
         return this.nodeId ? `${this.nodeId}-add-child` : null;
+      },
+      ariaExpanded() {
+        return this.canExpand ? this.model.state.expanded.toString() : false;
+      },
+      ariaSelected() {
+        // If selection isn't allowed, don't add an aria-selected attribute.
+        // If the tree contains nodes that are not selectable, those nodes do not have the aria-selected state.
+        if (this.selectionMode === null || !this.model.selectable) {
+          return false;
+        }
+
+        // https://www.w3.org/TR/wai-aria-practices-1.1/#tree_roles_states_props
+        // If the tree does not support multiple selection, aria-selected is set to true
+        // for the selected node and it is not present on any other node in the tree.
+        if (this.selectionMode !== 'multiple') {
+          return this.model.state.selected ? 'true' : false;
+        }
+
+        // If the tree supports multiple selection:
+        //   All selected nodes have aria-selected set to true.
+        //   All nodes that are selectable but not selected have aria-selected set to false.
+        return this.model.state.selected.toString();
       },
       canExpand() {
         return this.model.children.length > 0 && this.model.expandable;
@@ -243,12 +278,20 @@
       inputId() {
         return this.nodeId ? `${this.nodeId}-input` : null;
       },
+      isEffectivelySelected() {
+        return this.selectionMode !== null && this.model.selectable && this.model.state.selected;
+      },
       nodeId() {
         return this.treeId ? `${this.treeId}-${this.model.id}` : null;
       }
     },
     created() {
       this.$_treeViewNode_normalizeNodeData();
+    },
+    watch: {
+      'model.state.selected': function(newValue) {
+          this.$emit('treeViewNodeSelectedChange', this.model);
+      }
     },
     methods: {
       /*
@@ -396,17 +439,25 @@
         this.model.state.expanded = !this.model.state.expanded;
         this.$emit('treeViewNodeExpandedChange', this.model, event);
       },
+      $_treeViewNode_toggleSelected(event) {
+        // Note that selection change is already handled by the "model.focusable" watcher
+        // method in TreeViewNodeAria if selectionMode is selectionFollowsFocus.
+        if (this.model.selectable && ['single', 'multiple'].includes(this.selectionMode)) {
+          this.model.state.selected = !this.model.state.selected;
+        }
+      },
       $_treeViewNode_onClick(event) {
         // Don't fire this if the target is an element which has its own events
-        if (!this.$_treeViewNode_matches(event.target, "input, .tree-view-node-self-expander, .tree-view-node-self-action")) {
+        if (!this.$_treeViewNode_matches(event.target, this.elementsThatIgnoreClicks)) {
           this.$emit('treeViewNodeClick', this.model, event);
+          this.$_treeViewNode_toggleSelected(event);
         }
 
         this.$_treeViewNodeAria_onClick();
       },
       $_treeViewNode_onDblclick(event) {
         // Don't fire this if the target is an element which has its own events
-        if (!this.$_treeViewNode_matches(event.target, "input, .tree-view-node-self-expander, .tree-view-node-self-action")) {
+        if (!this.$_treeViewNode_matches(event.target, this.elementsThatIgnoreClicks)) {
           this.$emit('treeViewNodeDblclick', this.model, event);
         }
       },
@@ -516,6 +567,11 @@
           }
         }
       }
+    }
+
+    // The styling for when the node is selected
+    .tree-view-node-self-selected {
+      background-color: #f0f0f8;
     }
 
     // Spacing
