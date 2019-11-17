@@ -9,7 +9,8 @@ const getDefaultPropsData = function () {
   let radioState = {};
   return {
     ariaKeyMap: {
-      activateItem: [13, 32], // Return, Space
+      activateItem: [32], // Space
+      selectItem: [13], // Enter
       focusLastItem: [35], // End
       focusFirstItem: [36], // Home
       collapseFocusedItem: [37], // Left
@@ -139,9 +140,35 @@ describe('TreeViewNode.vue (ARIA)', () => {
     });
   });
 
+  describe('when selectionMode is not selectionFollowsFocus', () => {
+
+    beforeEach(async () => {
+      wrapper = createWrapper();
+      wrapper.find('.tree-view-node-self').trigger('click');
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should have state.selected set to true', () => {
+      expect(wrapper.vm.model.state.selected).to.be.false;
+    });
+  });
+
+  describe('when selectionMode is selectionFollowsFocus', () => {
+
+    beforeEach(async () => {
+      wrapper = createWrapper(Object.assign(getDefaultPropsData(), { selectionMode: 'selectionFollowsFocus' }));
+      wrapper.find('.tree-view-node-self').trigger('click');
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should have state.selected set to true', () => {
+      expect(wrapper.vm.model.state.selected).to.be.true;
+    });
+  });
+
   describe('when the node gets a keydown', () => {
 
-    describe('and shift is pressed', () => {
+    describe('and Shift is pressed', () => {
 
       beforeEach(async () => {
         wrapper = createWrapper();
@@ -245,6 +272,36 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         it('no events are fired', () => {
           expect(wrapper.emitted()).to.deep.equal({});
+        });
+      });
+    });
+
+    describe('and the selection key is pressed', () => {
+
+      describe('and the selectionMode is null', () => {
+
+        beforeEach(async () => {
+          wrapper = createWrapper();
+          await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.selectItem[0]);
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should not toggle state.selected', () => {
+          expect(wrapper.vm.model.state.selected).to.be.false;
+        });
+      });
+
+      describe('and the selectionMode is not null', () => {
+
+        beforeEach(async () => {
+          wrapper = createWrapper();
+          wrapper.vm.selectionMode = 'multiple';
+          await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.selectItem[0]);
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should toggle state.selected', () => {
+          expect(wrapper.vm.model.state.selected).to.be.true;
         });
       });
     });

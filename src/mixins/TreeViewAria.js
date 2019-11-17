@@ -20,7 +20,8 @@ export default {
   data() {
     return {
       defaultAriaKeyMap: {
-        activateItem: [13, 32], // Return, Space
+        activateItem: [32], // Space
+        selectItem: [13], // Enter
         focusLastItem: [35], // End
         focusFirstItem: [36], // Home
         collapseFocusedItem: [37], // Left
@@ -41,31 +42,53 @@ export default {
   created() {
     if (this.model.length > 0) {
       // Walk the model looking for focusable attributes.
-      // If none are found, set to true for the first root.
+      // If none are found, set to true for the first root, or the first selected node if one exists.
       // If one is found, set any subsequent to false.
-      let nodeQueue = this.model.slice();
-
-      while (nodeQueue.length > 0) {
-        let current = nodeQueue.shift();
-
-        // Push children to the front (depth first traversal)
-        if (Array.isArray(current.children)) {
-          nodeQueue = current.children.concat(nodeQueue);
-        }
-
-        if (current.focusable === true) {
+      let firstSelectedNode = null;
+      this.$_treeView_depthFirstTraverse((node) => {
+        if (node.focusable) {
           if (this.focusableNodeModel) {
-            current.focusable = false;
+            node.focusable = false;
           }
           else {
-            this.$set(this, 'focusableNodeModel', current);
+            this.$set(this, 'focusableNodeModel', node);
           }
         }
-      }
+        if (this.selectionMode !== null && firstSelectedNode === null && node.state.selected) {
+          firstSelectedNode = node;
+        }
+      });
 
       if (!this.focusableNodeModel) {
-        this.$set(this, 'focusableNodeModel', this.model[0]);
+        this.$set(this, 'focusableNodeModel', firstSelectedNode || this.model[0]);
         this.$set(this.focusableNodeModel, 'focusable', true);
+      }
+
+      // Also default the selection to the focused node if no selected node was found
+      // and the selection mode is selectionFollowsFocus.
+      if (firstSelectedNode === null && this.focusableNodeModel.selectable && this.selectionMode === 'selectionFollowsFocus') {
+        this.focusableNodeModel.state.selected = true;
+      }
+    }
+  },
+  watch: {
+    selectionMode(newValue) {
+      if (newValue === 'single') {
+        // This is in TreeViewAria instead of TreeView because the default mixin merge strategy only keeps one 'watch' per prop.
+        this.$_treeView_enforceSingleSelectionMode();
+      }
+      else if (newValue === 'selectionFollowsFocus') {
+        // Make sure the actual focused item is selected if the mode changes, and deselect all others
+        this.$_treeView_depthFirstTraverse((node) => {
+          if (node.id === this.focusableNodeModel.id) {
+            if (node.selectable) {
+              node.state.selected = true;
+            }
+          }
+          else if (node.state.selected) {
+            node.state.selected = false;
+          }
+        });
       }
     }
   },
@@ -74,7 +97,8 @@ export default {
       if (this.focusableNodeModel) {
         this.focusableNodeModel.focusable = false;
       }
-      this.focusableNodeModel = newNodeModel
+
+      this.$set(this, 'focusableNodeModel', newNodeModel);
     },
     $_treeViewAria_focusFirstNode() {
       this.model[0].focusable = true;

@@ -13,7 +13,8 @@ const getDefaultPropsData = function () {
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
-    radioGroupValues: radioState
+    radioGroupValues: radioState,
+    selectionMode: 'multiple'
   }
 };
 
@@ -80,7 +81,8 @@ describe('TreeViewNode.vue', () => {
             selected: true
           }
         },
-        radioGroupValues: {}
+        radioGroupValues: {},
+        selectionMode: 'multiple'
       });
     });
 
@@ -322,6 +324,10 @@ describe('TreeViewNode.vue', () => {
           let target = wrapper.find('.tree-view-node-children[aria-hidden="true"]');
           expect(target.exists()).to.be.true;
         });
+
+        it('should have an aria-expanded attribute value of false', () => {
+          expect(wrapper.vm.$el.attributes['aria-expanded'].value).to.equal('false');
+        });
       });
 
       describe('and the model is expanded', () => {
@@ -349,6 +355,10 @@ describe('TreeViewNode.vue', () => {
         it('should have an aria-hidden attribute set to false on the child list', () => {
           let target = wrapper.find('.tree-view-node-children[aria-hidden="false"]');
           expect(target.exists()).to.be.true;
+        });
+
+        it('should have an aria-expanded attribute value of true', () => {
+          expect(wrapper.vm.$el.attributes['aria-expanded'].value).to.equal('true');
         });
       });
     });
@@ -397,6 +407,216 @@ describe('TreeViewNode.vue', () => {
     it('should not have an expander', () => {
       let target = wrapper.find('.tree-view-node-self-expander');
       expect(target.exists()).to.be.false;
+    });
+
+    it('should not have an aria-expanded attribute', () => {
+      expect(wrapper.vm.$el.attributes['aria-expanded']).to.be.undefined;
+    });
+  });
+
+  describe('when selectionMode is null', () => {
+
+    beforeEach(() => {
+
+      let radioState = {};
+      let initialModel = generateNodes(['S'], radioState)[0];
+
+      wrapper = createWrapper({
+        ariaKeyMap: {},
+        initialModel,
+        modelDefaults: {},
+        depth: 0,
+        treeId: 'tree',
+        radioGroupValues: radioState,
+        selectionMode: null
+      });
+    });
+
+    it('should not have an aria-selected attribute', () => {
+      expect(wrapper.vm.$el.attributes['aria-selected']).to.be.undefined;
+    });
+  });
+
+  describe('when model.selectable is false', () => {
+
+    beforeEach(() => {
+
+      let radioState = {};
+      let initialModel = generateNodes([''], radioState)[0];
+
+      wrapper = createWrapper({
+        ariaKeyMap: {},
+        initialModel,
+        modelDefaults: {},
+        depth: 0,
+        treeId: 'tree',
+        radioGroupValues: radioState,
+        selectionMode: 'multiple'
+      });
+    });
+
+    it('should not have an aria-selected attribute', () => {
+      expect(wrapper.vm.$el.attributes['aria-selected']).to.be.undefined;
+    });
+  });
+
+  describe('when selectionMode is single', () => {
+
+    describe('and the node is selected', () => {
+
+      beforeEach(() => {
+
+        let radioState = {};
+        let initialModel = generateNodes(['S'], radioState)[0];
+
+        wrapper = createWrapper({
+          ariaKeyMap: {},
+          initialModel,
+          modelDefaults: {},
+          depth: 0,
+          treeId: 'tree',
+          radioGroupValues: radioState,
+          selectionMode: 'single'
+        });
+      });
+
+      it('should have an aria-selected attribute of true', () => {
+        expect(wrapper.vm.$el.attributes['aria-selected'].value).to.equal('true');
+      });
+    });
+
+    describe('and the node is not selected', () => {
+
+      beforeEach(() => {
+
+        let radioState = {};
+        let initialModel = generateNodes(['s'], radioState)[0];
+
+        wrapper = createWrapper({
+          ariaKeyMap: {},
+          initialModel,
+          modelDefaults: {},
+          depth: 0,
+          treeId: 'tree',
+          radioGroupValues: radioState,
+          selectionMode: 'single'
+        });
+      });
+
+      it('should not have an aria-selected attribute', () => {
+        expect(wrapper.vm.$el.attributes['aria-selected']).to.be.undefined;
+      });
+    });
+  });
+
+  describe('when selectionMode is selectionFollowsFocus', () => {
+
+    describe('and the node is selected', () => {
+
+      beforeEach(() => {
+
+        let radioState = {};
+        let initialModel = generateNodes(['S'], radioState)[0];
+
+        wrapper = createWrapper({
+          ariaKeyMap: {},
+          initialModel,
+          modelDefaults: {},
+          depth: 0,
+          treeId: 'tree',
+          radioGroupValues: radioState,
+          selectionMode: 'selectionFollowsFocus'
+        });
+      });
+
+      it('should have an aria-selected attribute of true', () => {
+        expect(wrapper.vm.$el.attributes['aria-selected'].value).to.equal('true');
+      });
+    });
+
+    describe('and the node is not selected', () => {
+
+      beforeEach(() => {
+
+        let radioState = {};
+        let initialModel = generateNodes(['s'], radioState)[0];
+
+        wrapper = createWrapper({
+          ariaKeyMap: {},
+          initialModel,
+          modelDefaults: {},
+          depth: 0,
+          treeId: 'tree',
+          radioGroupValues: radioState,
+          selectionMode: 'selectionFollowsFocus'
+        });
+      });
+
+      it('should not have an aria-selected attribute', () => {
+        expect(wrapper.vm.$el.attributes['aria-selected']).to.be.undefined;
+      });
+    });
+  });
+
+  describe('when selectionMode is multiple', () => {
+
+    describe('and the node is selected', () => {
+
+      beforeEach(() => {
+
+        let radioState = {};
+        let initialModel = generateNodes(['S'], radioState)[0];
+
+        wrapper = createWrapper({
+          ariaKeyMap: {},
+          initialModel,
+          modelDefaults: {},
+          depth: 0,
+          treeId: 'tree',
+          radioGroupValues: radioState,
+          selectionMode: 'multiple'
+        });
+      });
+
+      it('should have an aria-selected attribute of true', () => {
+        expect(wrapper.vm.$el.attributes['aria-selected'].value).to.equal('true');
+      });
+    });
+
+    describe('and the node is not selected', () => {
+
+      beforeEach(() => {
+
+        let radioState = {};
+        let initialModel = generateNodes(['s'], radioState)[0];
+
+        wrapper = createWrapper({
+          ariaKeyMap: {},
+          initialModel,
+          modelDefaults: {},
+          depth: 0,
+          treeId: 'tree',
+          radioGroupValues: radioState,
+          selectionMode: 'multiple'
+        });
+      });
+
+      it('should have an aria-selected attribute of false', () => {
+        expect(wrapper.vm.$el.attributes['aria-selected'].value).to.equal('false');
+      });
+    });
+  });
+
+  describe('when the node\'s selected state changes', () => {
+
+    beforeEach(async () => {
+      wrapper = createWrapper();
+      wrapper.vm.model.state.selected = true;
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should emit the treeViewNodeSelectedChange event', () => {
+      expect(wrapper.emitted().treeViewNodeSelectedChange).to.be.an('array').that.has.length(1);
     });
   });
 });

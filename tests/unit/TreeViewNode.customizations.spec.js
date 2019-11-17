@@ -9,7 +9,8 @@ const getDefaultPropsData = function () {
   let radioState = {};
   return {
     ariaKeyMap: {
-      activateItem: [13, 32], // Return, Space
+      activateItem: [32], // Space
+      selectItem: [13], // Enter
       focusLastItem: [35], // End
       focusFirstItem: [36], // Home
       collapseFocusedItem: [37], // Left
@@ -54,6 +55,7 @@ describe('TreeViewNode.vue (customizations)', () => {
         treeViewNodeSelfExpander: 'customnodeselfexpanderclass',
         treeViewNodeSelfExpanded: 'customnodeselfexpandedclass',
         treeViewNodeSelfExpandedIndicator: 'customnodeselfexpandedindicatorclass',
+        treeViewNodeSelfSelected: 'customnodeselfselectedclass',
         treeViewNodeSelfSpacer: 'customnodeselfspacerclass',
         treeViewNodeSelfLabel: 'customnodeselflabelclass',
         treeViewNodeSelfInput: 'customnodeselfinputclass',
@@ -71,7 +73,7 @@ describe('TreeViewNode.vue (customizations)', () => {
 
     beforeEach(() => {
       let radioState = {};
-      let initialModel = generateNodes(['cEds', ['res', 'esa']], radioState, "", () => Promise.resolve())[0];
+      let initialModel = generateNodes(['cEdS', ['res', 'esa']], radioState, "", () => Promise.resolve())[0];
 
       wrapper = createWrapper({
         ariaKeyMap: {},
@@ -79,7 +81,8 @@ describe('TreeViewNode.vue (customizations)', () => {
         modelDefaults: { customizations },
         depth: 0,
         treeId: 'tree',
-        radioGroupValues: radioState
+        radioGroupValues: radioState,
+        selectionMode: 'single'
       });
     });
 
@@ -105,6 +108,11 @@ describe('TreeViewNode.vue (customizations)', () => {
 
     it('adds the custom class to the tree view node\'s expanded indicator element', () => {
       let target = wrapper.find('.tree-view-node-self-expanded-indicator.' + customizations.classes.treeViewNodeSelfExpandedIndicator);
+      expect(target.exists()).to.be.true;
+    });
+
+    it('adds the custom class to the tree view node\'s selected element', () => {
+      let target = wrapper.find('.tree-view-node-self-selected.' + customizations.classes.treeViewNodeSelfSelected);
       expect(target.exists()).to.be.true;
     });
 
