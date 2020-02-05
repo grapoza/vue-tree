@@ -20,7 +20,9 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
+    idPropNames: ['id'],
     initialModel: generateNodes(['ces'], radioState)[0],
+    labelPropNames: ['label'],
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
@@ -114,7 +116,9 @@ describe('TreeViewNode.vue (interactions)', () => {
       let radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
+        idPropNames: ['id'],
         initialModel: generateNodes(['ces', ['ces']], radioState)[0],
+        labelPropNames: ['label'],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -184,7 +188,9 @@ describe('TreeViewNode.vue (interactions)', () => {
       radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
+        idPropNames: ['id'],
         initialModel: generateNodes(['res'], radioState)[0],
+        labelPropNames: ['label'],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -225,7 +231,9 @@ describe('TreeViewNode.vue (interactions)', () => {
       let radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
+        idPropNames: ['id'],
         initialModel: generateNodes(['es', ['ds']], radioState)[0],
+        labelPropNames: ['label'],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -260,7 +268,9 @@ describe('TreeViewNode.vue (interactions)', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
+          idPropNames: ['id'],
           initialModel: generateNodes(['esa'], radioState, "", addChildCallback)[0],
+          labelPropNames: ['label'],
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -297,7 +307,9 @@ describe('TreeViewNode.vue (interactions)', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
+          idPropNames: ['id'],
           initialModel: generateNodes(['esa'], radioState, "", addChildCallback)[0],
+          labelPropNames: ['label'],
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',

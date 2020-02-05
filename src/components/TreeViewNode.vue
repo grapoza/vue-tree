@@ -59,7 +59,7 @@
                  v-model="model.state.input.value"
                  @change="$_treeViewNode_onCheckboxChange" />
 
-          {{ model.label }}
+          {{ model[labelPropName] }}
         </label>
       </slot>
 
@@ -88,7 +88,7 @@
                  v-model="radioGroupValues[model.input.name]"
                  @change="$_treeViewNode_onRadioChange" />
 
-          {{ model.label }}
+          {{ model[labelPropName] }}
         </label>
       </slot>
 
@@ -101,7 +101,7 @@
         <span :title="model.title"
               class="tree-view-node-self-text"
               :class="customClasses.treeViewNodeSelfText">
-          {{ model.label }}
+          {{ model[labelPropName] }}
         </span>
       </slot>
 
@@ -142,11 +142,13 @@
         role="group"
         :aria-hidden="(!model.state.expanded).toString()">
       <TreeViewNode v-for="nodeModel in model.children"
-                      :key="nodeModel.id"
+                      :key="nodeModel[$_treeViewNode_getIdPropNameForNode(nodeModel)]"
                       :depth="depth + 1"
+                      :id-prop-names="idPropNames"
                       :initial-model="nodeModel"
+                      :label-prop-names="labelPropNames"
                       :model-defaults="modelDefaults"
-                      :parent-id="model.id"
+                      :parent-id="model[idPropName]"
                       :selection-mode="selectionMode"
                       :tree-id="treeId"
                       :radio-group-values="radioGroupValues"
@@ -192,22 +194,17 @@
         type: Number,
         required: true
       },
+      idPropNames: {
+        type: Array,
+        required: true
+      },
       initialModel: {
         type: Object,
-        required: true,
-        validator: function (value) {
-          // id and label are required
-          if (typeof value.id !== 'number' && typeof value.id !== 'string') {
-            console.error("model.id is required and must be a number or string.");
-            return false;
-          }
-          else if(typeof value.label !== 'string') {
-            console.error("model.label is required and must be a string.");
-            return false;
-          }
-
-          return true;
-        }
+        required: true
+      },
+      labelPropNames: {
+        type: Array,
+        required: true
       },
       modelDefaults: {
         type: Object,
@@ -275,17 +272,33 @@
       expanderId() {
         return this.nodeId ? `${this.nodeId}-exp` : null;
       },
+      idPropName() {
+        return this.$_treeViewNode_getIdPropNameForNode(this.model);
+      },
       inputId() {
         return this.nodeId ? `${this.nodeId}-input` : null;
       },
       isEffectivelySelected() {
         return this.selectionMode !== null && this.model.selectable && this.model.state.selected;
       },
+      labelPropName() {
+        return this.labelPropNames.find(pn => typeof this.model[pn] === 'string')
+      },
       nodeId() {
-        return this.treeId ? `${this.treeId}-${this.model.id}` : null;
+        return this.treeId ? `${this.treeId}-${this.model[this.idPropName]}` : null;
       }
     },
     created() {
+
+      // id and label are required; notify the user. Validation is done here instead
+      // of at the prop level due to dependency on multiple props at once.
+      if (!this.idPropName) {
+        console.error(`initialModel id is required and must be a number or string. Allowed ID props: ${this.idPropNames.join(", ")}`);
+      }
+      else if(!this.labelPropName) {
+        console.error(`initialModel label is required and must be a string. Allowed label props: ${this.labelPropNames.join(", ")}`);
+      }
+
       this.$_treeViewNode_normalizeNodeData();
     },
     watch: {
@@ -294,6 +307,9 @@
       }
     },
     methods: {
+      $_treeViewNode_getIdPropNameForNode(node) {
+        return this.idPropNames.find(pn => typeof node[pn] === 'number' || typeof node[pn] === 'string');
+      },
       /*
        * Normalizes the data model to the format consumable by TreeViewNode.
        */
@@ -361,7 +377,7 @@
               this.$set(input, 'name', 'unspecifiedRadioName');
             }
             if (typeof input.value !== 'string' || input.value.trim().length === 0) {
-              this.$set(input, 'value', this.model.label.replace(/[\s&<>"'\/]/g, ''));
+              this.$set(input, 'value', this.model[labelPropName].replace(/[\s&<>"'\/]/g, ''));
             }
             if (!this.radioGroupValues.hasOwnProperty(input.name)) {
               this.$set(this.radioGroupValues, input.name, '');
@@ -509,6 +525,7 @@
       }
     },
   };
+
 </script>
 
 <style lang="scss">

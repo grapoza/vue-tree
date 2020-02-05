@@ -100,14 +100,16 @@ To see it in action, try out the [demos](demos.html).
 
 ## Tree Props
 
-| Prop             | Type     | Description                                                                          | Default value                     | Required |
-|:-----------------|:---------|:-------------------------------------------------------------------------------------|:----------------------------------|:---------|
-| initialModel     | Array    | The data model containing [model data](#model-data)                                  | -                                 | Yes      |
-| customAriaKeyMap | Object   | An object, the properties of which are arrays to keyCodes for various actions        | See [Aria](#setting-key-bindings) |          |
-| modelDefaults    | Object   | An object containing defaults for all nodes that do not specify the given properties | `{}`                              |          |
-| radioGroupValues | Object   | An object, the properties of which correspond to radio button group selections       | `{}`                              |          |
-| selectionMode    | String   | How selection should operate (see [Selection Mode](#selection-mode))                 | `null` (cannot select nodes)      |          |
-| skinClass        | String   | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins)) | `"default-tree-view-skin"`        |          |
+| Prop             | Type     | Description                                                                                   | Default value                     | Required |
+|:-----------------|:---------|:----------------------------------------------------------------------------------------------|:----------------------------------|:---------|
+| initialModel     | Array    | The data model containing [model data](#model-data)                                           | -                                 | Yes      |
+| customAriaKeyMap | Object   | An object, the properties of which are arrays to keyCodes for various actions                 | See [Aria](#setting-key-bindings) |          |
+| idPropNames      | Array    | An array of property names which will be searched (in order) on each node to use as its ID    | `['id']`                          |          |
+| labelPropNames   | Array    | An array of property names which will be searched (in order) on each node to use as its label | `['label']`                       |          |
+| modelDefaults    | Object   | An object containing defaults for all nodes that do not specify the given properties          | `{}`                              |          |
+| radioGroupValues | Object   | An object, the properties of which correspond to radio button group selections                | `{}`                              |          |
+| selectionMode    | String   | How selection should operate (see [Selection Mode](#selection-mode))                          | `null` (cannot select nodes)      |          |
+| skinClass        | String   | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins))          | `"default-tree-view-skin"`        |          |
 
 ## Selection Mode
 
