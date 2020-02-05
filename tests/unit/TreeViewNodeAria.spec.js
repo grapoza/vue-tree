@@ -35,7 +35,8 @@ function createWrapper(customPropsData, slotsData) {
     sync: false,
     propsData: customPropsData || getDefaultPropsData(),
     localVue,
-    scopedSlots: slotsData
+    scopedSlots: slotsData,
+    attachToDocument: true
   });
 }
 
@@ -122,6 +123,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     });
 
     it('should focus the node', () => {
+
       expect(wrapper.vm.$el).to.equal(document.activeElement);
     });
 
