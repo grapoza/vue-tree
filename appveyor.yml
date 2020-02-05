@@ -19,7 +19,9 @@ build_script:
 
 after_build:
   # Copy anything that goes into the final package into '/package'
-  - sh: mkdir -p package && cp dist/*.js dist/*.css index.js src/components/*.vue package.json LICENSE README.md package
+  - sh: mkdir -p package && cp dist/*.js dist/*.css index.js package.json LICENSE README.md package
+  - sh: mkdir -p package/components && cp src/components/*.vue package/components
+  - sh: mkdir -p package/mixins && cp src/mixins/*.js package/mixins
   # Zip up the package files, along with the .map files for debugging
   - sh: 7z a -tzip artifacts.zip ./package/* ./dist/*.map
 
