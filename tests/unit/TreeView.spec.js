@@ -182,4 +182,26 @@ describe('TreeView.vue', () => {
       expect(wrapper.vm.$el.attributes['aria-multiselectable'].value).to.equal('true');
     });
   });
+
+  describe('when idPropNames is not specified', () => {
+
+    beforeEach(() => {
+      wrapper = createWrapper();
+    });
+
+    it('has a default value of ["id"]', () => {
+      expect(wrapper.vm.idPropNames).to.eql(['id']);
+    });
+  });
+
+  describe('when labelPropNames is not specified', () => {
+
+    beforeEach(() => {
+      wrapper = createWrapper();
+    });
+
+    it('has a default value of ["label"]', () => {
+      expect(wrapper.vm.labelPropNames).to.eql(['label']);
+    });
+  });
 });

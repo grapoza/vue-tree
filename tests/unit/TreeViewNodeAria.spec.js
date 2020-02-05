@@ -20,7 +20,9 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
+    idPropNames: ['id'],
     initialModel: generateNodes(['cs'], radioState)[0],
+    labelPropNames: ['label'],
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
@@ -94,7 +96,9 @@ describe('TreeViewNode.vue (ARIA)', () => {
       wrapper = createWrapper({
         ariaKeyMap: {},
         depth: 0,
+        idPropNames: ['id'],
         initialModel,
+        labelPropNames: ['label'],
         modelDefaults: {},
         radioGroupValues: {}
       });

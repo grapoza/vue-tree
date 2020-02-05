@@ -5,13 +5,15 @@
       :aria-multiselectable="ariaMultiselectable">
     <tree-view-node v-for="(nodeModel) in model"
                     :key="nodeModel.id"
-                    :initial-model="nodeModel"
-                    :model-defaults="modelDefaults"
+                    :aria-key-map="ariaKeyMap"
                     :depth="0"
+                    :model-defaults="modelDefaults"
+                    :id-prop-names="idPropNames"
+                    :initial-model="nodeModel"
+                    :label-prop-names="labelPropNames"
                     :selection-mode="selectionMode"
                     :tree-id="uniqueId"
                     :radio-group-values="radioGroupValues"
-                    :aria-key-map="ariaKeyMap"
                     @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
                     @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
                     @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
@@ -52,9 +54,25 @@
       TreeViewNode,
     },
     props: {
+      idPropNames: {
+        type: Array,
+        required: false,
+        default: function () { return ["id"]; },
+        validator: function (value) {
+          return value.length > 0 && value.every(e => typeof e === 'string');
+        }
+      },
       initialModel: {
         type: Array,
         required: true
+      },
+      labelPropNames: {
+        type: Array,
+        required: false,
+        default: function () { return ["label"]; },
+        validator: function (value) {
+          return value.length > 0 && value.every(e => typeof e === 'string');
+        }
       },
       modelDefaults: {
         type: Object,
