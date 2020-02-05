@@ -1,0 +1,8 @@
+.big-text {
+  font-size: xx-large;
+  color: gray;
+}
+
+.tree-view .tree-view-node-self.large-line {
+  line-height: 2rem;
+}
