@@ -297,7 +297,6 @@
       }
     },
     created() {
-
       // id and label are required; notify the user. Validation is done here instead
       // of at the prop level due to dependency on multiple props at once.
       if (!this.idPropName) {
