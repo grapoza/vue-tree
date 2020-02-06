@@ -269,7 +269,7 @@
         return this.model.children.length > 0 && this.model.expandable;
       },
       childrenPropName() {
-        return this.childrenPropNames.find(pn => Array.isArray(this.model[pn]));
+        return this.childrenPropNames.find(pn => Array.isArray(this.model[pn])) || 'children';
       },
       customClasses() {
         return (this.model.customizations || {}).classes || {};
@@ -326,8 +326,8 @@
         this.$_treeViewNode_assignDefaultProps(this.modelDefaults, this.model);
 
         // Set expected properties if not provided
-        if (!Array.isArray(this.model.children)) {
-          this.$set(this.model, 'children', []);
+        if (!Array.isArray(this.model[this.childrenPropName])) {
+          this.$set(this.model, this.childrenPropName, []);
         }
         if (typeof this.model.expandable !== 'boolean') {
           this.$set(this.model, 'expandable', true);
