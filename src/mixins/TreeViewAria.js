@@ -39,7 +39,7 @@ export default {
       return Object.assign({}, this.defaultAriaKeyMap, this.customAriaKeyMap);
     }
   },
-  created() {
+  mounted() {
     if (this.model.length > 0) {
       // Walk the model looking for focusable attributes.
       // If none are found, set to true for the first root, or the first selected node if one exists.
