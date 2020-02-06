@@ -318,6 +318,9 @@
       $_treeViewNode_getIdPropNameForNode(node) {
         return this.idPropNames.find(pn => typeof node[pn] === 'number' || typeof node[pn] === 'string');
       },
+      $_treeViewNode_getChildrenPropNameForNode(node) {
+        return this.childrenPropNames.find(pn => Array.isArray(node[pn])) || 'children';
+      },
       /*
        * Normalizes the data model to the format consumable by TreeViewNode.
        */

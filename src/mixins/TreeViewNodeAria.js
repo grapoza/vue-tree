@@ -157,7 +157,7 @@ export default {
       else {
         let lastModel = this.model[this.childrenPropName][childIndex - 1];
         while (lastModel.children.length > 0 && lastModel.expandable && lastModel.state.expanded) {
-          lastModel = lastModel.children[lastModel.children.length - 1];
+          lastModel = lastModel[this.$_treeViewNode_getChildrenPropNameForNode(lastModel)][lastModel.children.length - 1];
         }
 
         lastModel.focusable = true;
@@ -169,7 +169,7 @@ export default {
       // Otherwise, punt this up to this node's parent
       let childIndex = this.model[this.childrenPropName].indexOf(childNode);
       if (!ignoreChild && childNode.children.length > 0 && childNode.expandable && childNode.state.expanded) {
-        childNode.children[0].focusable = true;
+        childNode[this.$_treeViewNode_getChildrenPropNameForNode(childNode)][0].focusable = true;
       }
       else if (childIndex < this.model[this.childrenPropName].length - 1) {
         this.model[this.childrenPropName][childIndex + 1].focusable = true;
