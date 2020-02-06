@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Gregg Rapoza" />
+  <title>Selection Demo – vue-tree</title>
+  <link rel="stylesheet" href="/vue-tree/1.3.6/style/docs.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+  <script src="https://unpkg.com/@grapoza/vue-tree@1.3.6/vue-tree.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@grapoza/vue-tree@1.3.6/vue-tree.css">
+  <link rel="stylesheet" href="/vue-tree/1.3.6/style/demo/demo.css">
+  <link rel="stylesheet" href="/vue-tree/1.3.6/style/demo/grayscale.css">
+  <link rel="stylesheet" href="/vue-tree/1.3.6/style/demo/classbased.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css">
+</head>
+<body>
+<header id="title-block-header">
+<div class="header-inner">
+<a id="github-banner" href="https://github.com/grapoza/vue-tree">View on GitHub</a>
+<h1 class="title"><a href="/vue-tree/1.3.6/">vue-tree</a></h1>
+<p class="subtitle">Yet another Vue treeview implementation.</p>
+</div>
+</header>
+<div class="content">
+<main>
+<p><a href="../demos.html">Back to Demos list</a></p>
+<h2 id="selection-demo">Selection Demo</h2>
+<p>This page demonstrates selection in a basic treeview. <a href="./selection.js">See the data used</a>.</p>
+<div id="app">
+    <label for="modeSelect">Selection Mode</label>
+    <select v-model="selectionMode" id="modeSelect" style="margin-bottom: 2rem;">
+        <option value="single">Single</option>
+        <option value="selectionFollowsFocus">Selection Follows Focus</option>
+        <option value="multiple">Multiple</option>
+        <option value="">No Selection</option>
+    </select>
+    <tree id="customtree" :initial-model="model" :model-defaults="modelDefaults" :selection-mode="normalizedSelectionMode" ref="tree"></tree>
+    <section id="selectedStuff">
+        <button type="button" @click="refreshSelectedList">What's selected?</button>
+        <ul id="selectedList">
+            <li v-for="selectedNode in selectedNodes">{{ selectedNode.id }}</li>
+        </ul>
+    </section>
+</div>
+
+<script type='module'>
+    import selectionData from './selection.js';
+
+    new Vue({
+      components: {
+        tree: window['vue-tree']
+      },
+      data() {
+        return {
+          model: selectionData,
+          modelDefaults: {
+            addChildTitle: 'Add a new child node',
+            deleteTitle: 'Delete this node',
+            expanderTitle: 'Expand this node'
+          },
+          selectionMode: 'single',
+          selectedNodes: []
+        };
+      },
+      computed: {
+        normalizedSelectionMode() {
+          return this.selectionMode === '' ? null : this.selectionMode;
+        }
+      },
+      methods: {
+        refreshSelectedList() {
+          this.$set(this, 'selectedNodes', this.$refs.tree.getSelected());
+        }
+      }
+    }).$mount('#app');
+</script>
+</main>
+</div>
+</body>
+</html>
