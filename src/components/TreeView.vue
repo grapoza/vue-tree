@@ -121,10 +121,8 @@
         return this.selectionMode === null ? false : (this.selectionMode === 'multiple').toString();
       }
     },
-    created() {
-      this.$_treeView_enforceSingleSelectionMode();
-    },
     mounted() {
+      this.$_treeView_enforceSingleSelectionMode();
       this.$set(this, 'uniqueId', this.$el.id ? this.$el.id : null);
     },
     methods: {
@@ -211,7 +209,7 @@
         if (this.selectionMode === 'single') {
           let alreadyFoundSelected = false;
           this.$_treeView_depthFirstTraverse((node) => {
-            if (node.state.selected === true) {
+            if (node.state && node.state.selected === true) {
               if (alreadyFoundSelected) {
                 node.state.selected = false;
               }
