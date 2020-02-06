@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Gregg Rapoza" />
+  <title>Add/Delete Demo – vue-tree</title>
+  <link rel="stylesheet" href="/vue-tree/1.3.4/style/docs.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+  <script src="https://unpkg.com/@grapoza/vue-tree@1.3.4/vue-tree.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@grapoza/vue-tree@1.3.4/vue-tree.css">
+  <link rel="stylesheet" href="/vue-tree/1.3.4/style/demo/demo.css">
+  <link rel="stylesheet" href="/vue-tree/1.3.4/style/demo/grayscale.css">
+  <link rel="stylesheet" href="/vue-tree/1.3.4/style/demo/classbased.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css">
+</head>
+<body>
+<header id="title-block-header">
+<div class="header-inner">
+<a id="github-banner" href="https://github.com/grapoza/vue-tree">View on GitHub</a>
+<h1 class="title"><a href="/vue-tree/1.3.4/">vue-tree</a></h1>
+<p class="subtitle">Yet another Vue treeview implementation.</p>
+</div>
+</header>
+<div class="content">
+<main>
+<p><a href="../demos.html">Back to Demos list</a></p>
+<h2 id="addremove-nodes-demo">Add/Remove Nodes Demo</h2>
+<p>This page demonstrates adding and removing nodes. <a href="./addRemove.js">See the data used</a>. The callback for adding nodes is set in <code>modelDefaults</code> so any newly created node will use the same creation method automatically.</p>
+<div id="app">
+    <tree id="customtree" :initial-model="model" :model-defaults="modelDefaults" ref="tree"></tree>
+</div>
+
+<script type='module'>
+    import arModel from './addRemove.js';
+
+    new Vue({
+      components: {
+        tree: window['vue-tree']
+      },
+      data() {
+        return {
+            childCounter: 0,
+            model: arModel,
+            modelDefaults: {
+                addChildCallback: this.addChildCallback,
+                addChildTitle: 'Add a new child node',
+                deleteTitle: 'Delete this node',
+                expanderTitle: 'Expand this node'
+            }
+        };
+      },
+      methods: {
+        addChildCallback(parentModel) {
+          this.childCounter++;
+          return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, deletable: true });
+        }
+      }
+    }).$mount('#app');
+</script>
+</main>
+</div>
+</body>
+</html>
