@@ -719,20 +719,38 @@ describe('TreeViewNode.vue', () => {
 
   describe('when childrenPropNames is specified', () => {
 
-    beforeEach(() => {
-      let defaultProps = getDefaultPropsData();
-      wrapper = createWrapper(Object.assign(defaultProps, {
-        childrenPropNames: ['nope', 'children'],
-        initialModel: generateNodes(['sf', ['s', 's']], defaultProps.radioGroupValues)[0]
-      }));
+    describe('and a valid-children model property is specified', () => {
+
+      beforeEach(() => {
+        let defaultProps = getDefaultPropsData();
+        wrapper = createWrapper(Object.assign(defaultProps, {
+          childrenPropNames: ['nope', 'children'],
+          initialModel: generateNodes(['sf', ['s', 's']], defaultProps.radioGroupValues)[0]
+        }));
+      });
+
+      it('has a childrenPropName matching the first-avilable valid-children model property', () => {
+        expect(wrapper.vm.childrenPropName).to.equal('children');
+      });
+
+      it('has a children list of the first-avilable model[childrenPropName] property', () => {
+        expect(wrapper.vm.model.children.length).to.equal(2);
+      });
     });
 
-    it('has a childrenPropName matching the first-avilable valid-children model property', () => {
-      expect(wrapper.vm.childrenPropName).to.equal('children');
-    });
+    describe('and a valid-children model property is not specified', () => {
 
-    it('has a children list of the first-avilable model[childrenPropName] property', () => {
-      expect(wrapper.vm.model.children.length).to.equal(2);
+      beforeEach(() => {
+        let defaultProps = getDefaultPropsData();
+        wrapper = createWrapper(Object.assign(defaultProps, {
+          childrenPropNames: ['nope', 'steve'],
+          initialModel: generateNodes(['sf', ['s', 's']], defaultProps.radioGroupValues)[0]
+        }));
+      });
+
+      it('has a childrenPropName of "children"', () => {
+        expect(wrapper.vm.childrenPropName).to.equal('children');
+      });
     });
   });
 });
