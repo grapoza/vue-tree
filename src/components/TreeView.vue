@@ -162,13 +162,22 @@
           let current = nodeQueue.shift();
 
           // Push children to the front (depth first traversal)
-          if (Array.isArray(current.children)) {
-            nodeQueue = current.children.concat(nodeQueue);
+          let childrenPropName = this.$_treeView_getChildrenPropName(current);
+          if (Array.isArray(current[childrenPropName])) {
+            nodeQueue = current[childrenPropName].concat(nodeQueue);
           }
 
           // Use a return value of false to halt calling the callback on further nodes.
           continueCallbacks = nodeActionCallback(current);
         }
+      },
+      $_treeView_getChildrenPropName(node) {
+        // Should refactor at some point; this is also a computed in TreeViewNode.vue
+        return this.childrenPropNames.find(pn => Array.isArray(node[pn])) || 'children';
+      },
+      $_treeView_getIdPropName(node) {
+        // Should refactor at some point; this is also a method in TreeViewNode.vue
+        return this.idPropNames.find(pn => typeof node[pn] === 'number' || typeof node[pn] === 'string');
       },
       $_treeView_handleChildDeletion(node, event) {
         // Remove the node from the array of children if this is an immediate child.

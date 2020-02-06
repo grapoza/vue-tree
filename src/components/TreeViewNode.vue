@@ -266,7 +266,7 @@
         return this.model.state.selected.toString();
       },
       canExpand() {
-        return this.model.children.length > 0 && this.model.expandable;
+        return this.model[this.childrenPropName].length > 0 && this.model.expandable;
       },
       childrenPropName() {
         return this.childrenPropNames.find(pn => Array.isArray(this.model[pn])) || 'children';
@@ -494,7 +494,7 @@
           var childModel = await this.model.addChildCallback(this.model);
 
           if (childModel) {
-            this.model.children.push(childModel);
+            this.model[this.childrenPropName].push(childModel);
             this.$emit('treeViewNodeAdd', this.childModel, this.model, event);
           }
         }
@@ -507,10 +507,10 @@
       $_treeViewNode_handleChildDeletion(node, event) {
         // Remove the node from the array of children if this is an immediate child.
         // Note that only the node that was deleted fires these, not any subnode.
-        let targetIndex = this.model.children.indexOf(node);
+        let targetIndex = this.model[this.childrenPropName].indexOf(node);
         if (targetIndex > -1) {
           this.$_treeViewNodeAria_handleChildDeletion(node);
-          this.model.children.splice(targetIndex, 1);
+          this.model[this.childrenPropName].splice(targetIndex, 1);
         }
 
         this.$emit('treeViewNodeDelete', node, event);
