@@ -325,7 +325,6 @@ describe('TreeView.vue (ARIA)', () => {
     beforeEach(async () => {
       wrapper = createWrapper({ initialModel: generateNodes(['Ecsf', ['ecS', 'ecs'], 'ecs'], {}), selectionMode: 'single' });
       wrapper.setProps({ selectionMode: 'selectionFollowsFocus' });
-      //wrapper.vm.selectionMode = 'selectionFollowsFocus';
       await wrapper.vm.$nextTick();
     });
 

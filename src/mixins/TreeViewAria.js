@@ -80,7 +80,9 @@ export default {
       else if (newValue === 'selectionFollowsFocus') {
         // Make sure the actual focused item is selected if the mode changes, and deselect all others
         this.$_treeView_depthFirstTraverse((node) => {
-          if (node.id === this.focusableNodeModel.id) {
+          let idPropName = this.$_treeView_getIdPropName(node);
+          let focusableIdPropName = this.$_treeView_getIdPropName(this.focusableNodeModel);
+          if (node[idPropName] === this.focusableNodeModel[focusableIdPropName]) {
             if (node.selectable) {
               node.state.selected = true;
             }
@@ -105,8 +107,10 @@ export default {
     },
     $_treeViewAria_focusLastNode() {
       let lastModel = this.model[this.model.length - 1];
-      while (lastModel.children.length > 0 && lastModel.expandable && lastModel.state.expanded) {
-        lastModel = lastModel.children[lastModel.children.length - 1];
+      let lastModelChildren = lastModel[this.$_treeView_getChildrenPropName(lastModel)];
+      while (lastModelChildren.length > 0 && lastModel.expandable && lastModel.state.expanded) {
+        lastModel = lastModelChildren[lastModelChildren.length - 1];
+        lastModelChildren = lastModel[this.$_treeView_getChildrenPropName(lastModel)];
       }
 
       lastModel.focusable = true;
@@ -129,8 +133,10 @@ export default {
       let childIndex = this.model.indexOf(childNode);
       if (childIndex > 0) {
         let lastModel = this.model[childIndex - 1];
-        while (lastModel.children.length > 0 && lastModel.expandable && lastModel.state.expanded) {
-          lastModel = lastModel.children[lastModel.children.length - 1];
+        let lastModelChildren = lastModel[this.$_treeView_getChildrenPropName(lastModel)];
+        while (lastModelChildren.length > 0 && lastModel.expandable && lastModel.state.expanded) {
+          lastModel = lastModelChildren[lastModelChildren.length - 1];
+          lastModelChildren = lastModel[this.$_treeView_getChildrenPropName(lastModel)];
         }
 
         lastModel.focusable = true;
@@ -141,8 +147,10 @@ export default {
       // If the node has a next sibling, focus that
       // Otherwise, do nothing
       let childIndex = this.model.indexOf(childNode);
-      if (!ignoreChild && childNode.children.length > 0 && childNode.expandable && childNode.state.expanded) {
-        childNode.children[0].focusable = true;
+      let childNodeChildren = childNode[this.$_treeView_getChildrenPropName(childNode)];
+
+      if (!ignoreChild && childNodeChildren.length > 0 && childNode.expandable && childNode.state.expanded) {
+        childNodeChildren[0].focusable = true;
       }
       else if (childIndex < this.model.length - 1) {
         this.model[childIndex + 1].focusable = true;
