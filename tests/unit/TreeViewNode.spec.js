@@ -9,6 +9,7 @@ const getDefaultPropsData = function () {
   let radioState = {};
   return {
     ariaKeyMap: {},
+    childrenPropNames: ['children'],
     idPropNames: ['id'],
     initialModel: generateNodes(['ces'], radioState)[0],
     labelPropNames: ['label'],
@@ -45,6 +46,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         depth: 0,
         idPropNames: ['id'],
         initialModel,
@@ -76,6 +78,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         depth: 0,
         idPropNames: ['id'],
         initialModel,
@@ -107,6 +110,7 @@ describe('TreeViewNode.vue', () => {
     beforeEach(() => {
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         depth: 0,
         idPropNames: ['id'],
         initialModel: { id: 'my-node', label: 'My Node', title: 'My Title' },
@@ -165,6 +169,7 @@ describe('TreeViewNode.vue', () => {
       let radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         idPropNames: ['id'],
         initialModel: generateNodes(['ces'], radioState)[0],
         labelPropNames: ['label'],
@@ -196,6 +201,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         idPropNames: ['id'],
         initialModel: generateNodes(['es'], radioState)[0],
         labelPropNames: ['label'],
@@ -225,6 +231,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         idPropNames: ['id'],
         initialModel: generateNodes(['esa'], radioState, "", addChildCallback)[0],
         labelPropNames: ['label'],
@@ -254,6 +261,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         idPropNames: ['id'],
         initialModel: generateNodes(['esa'], radioState)[0],
         labelPropNames: ['label'],
@@ -279,6 +287,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         idPropNames: ['id'],
         initialModel,
         labelPropNames: ['label'],
@@ -318,6 +327,7 @@ describe('TreeViewNode.vue', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
+          childrenPropNames: ['children'],
           idPropNames: ['id'],
           initialModel,
           labelPropNames: ['label'],
@@ -359,6 +369,7 @@ describe('TreeViewNode.vue', () => {
 
           wrapper = createWrapper({
             ariaKeyMap: {},
+            childrenPropNames: ['children'],
             idPropNames: ['id'],
             initialModel,
             labelPropNames: ['label'],
@@ -394,6 +405,7 @@ describe('TreeViewNode.vue', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
+          childrenPropNames: ['children'],
           idPropNames: ['id'],
           initialModel,
           labelPropNames: ['label'],
@@ -420,6 +432,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         idPropNames: ['id'],
         initialModel,
         labelPropNames: ['label'],
@@ -449,6 +462,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         idPropNames: ['id'],
         initialModel,
         labelPropNames: ['label'],
@@ -474,6 +488,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         idPropNames: ['id'],
         initialModel,
         labelPropNames: ['label'],
@@ -501,6 +516,7 @@ describe('TreeViewNode.vue', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
+          childrenPropNames: ['children'],
           idPropNames: ['id'],
           initialModel,
           labelPropNames: ['label'],
@@ -526,6 +542,7 @@ describe('TreeViewNode.vue', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
+          childrenPropNames: ['children'],
           idPropNames: ['id'],
           initialModel,
           labelPropNames: ['label'],
@@ -554,6 +571,7 @@ describe('TreeViewNode.vue', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
+          childrenPropNames: ['children'],
           idPropNames: ['id'],
           initialModel,
           labelPropNames: ['label'],
@@ -579,6 +597,7 @@ describe('TreeViewNode.vue', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
+          childrenPropNames: ['children'],
           idPropNames: ['id'],
           initialModel,
           labelPropNames: ['label'],
@@ -607,6 +626,7 @@ describe('TreeViewNode.vue', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
+          childrenPropNames: ['children'],
           idPropNames: ['id'],
           initialModel,
           labelPropNames: ['label'],
@@ -632,6 +652,7 @@ describe('TreeViewNode.vue', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
+          childrenPropNames: ['children'],
           idPropNames: ['id'],
           initialModel,
           labelPropNames: ['label'],
@@ -670,12 +691,16 @@ describe('TreeViewNode.vue', () => {
       }));
     });
 
+    it('has an idPropName matching the first-avilable valid-id model property', () => {
+      expect(wrapper.vm.idPropName).to.equal('label');
+    });
+
     it('has a nodeId made of the tree ID and the first-avilable model[idPropName] property', () => {
       expect(wrapper.vm.nodeId).to.equal(wrapper.vm.treeId + '-' + wrapper.vm.model.label);
     });
   });
 
-  describe('when labelPropNames is not specified', () => {
+  describe('when labelPropNames is specified', () => {
 
     beforeEach(() => {
       wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
@@ -683,8 +708,31 @@ describe('TreeViewNode.vue', () => {
       }));
     });
 
+    it('has a labelPropName matching the first-avilable valid-label model property', () => {
+      expect(wrapper.vm.labelPropName).to.equal('id');
+    });
+
     it('has a label of the first-avilable model[labelPropName] property', () => {
       expect(wrapper.text()).to.equal(wrapper.vm.model.id + '');
+    });
+  });
+
+  describe('when childrenPropNames is specified', () => {
+
+    beforeEach(() => {
+      let defaultProps = getDefaultPropsData();
+      wrapper = createWrapper(Object.assign(defaultProps, {
+        childrenPropNames: ['nope', 'children'],
+        initialModel: generateNodes(['sf', ['s', 's']], defaultProps.radioGroupValues)[0]
+      }));
+    });
+
+    it('has a childrenPropName matching the first-avilable valid-children model property', () => {
+      expect(wrapper.vm.childrenPropName).to.equal('children');
+    });
+
+    it('has a children list of the first-avilable model[childrenPropName] property', () => {
+      expect(wrapper.vm.model.children.length).to.equal(2);
     });
   });
 });

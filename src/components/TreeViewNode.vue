@@ -141,8 +141,9 @@
         :class="customClasses.treeViewNodeChildren"
         role="group"
         :aria-hidden="(!model.state.expanded).toString()">
-      <TreeViewNode v-for="nodeModel in model.children"
+      <TreeViewNode v-for="nodeModel in model[childrenPropName]"
                       :key="nodeModel[$_treeViewNode_getIdPropNameForNode(nodeModel)]"
+                      :children-prop-names="childrenPropNames"
                       :depth="depth + 1"
                       :id-prop-names="idPropNames"
                       :initial-model="nodeModel"
@@ -190,6 +191,10 @@
       TreeViewNodeAria
     ],
     props: {
+      childrenPropNames: {
+        type: Array,
+        required: true
+      },
       depth: {
         type: Number,
         required: true
@@ -262,6 +267,9 @@
       },
       canExpand() {
         return this.model.children.length > 0 && this.model.expandable;
+      },
+      childrenPropName() {
+        return this.childrenPropNames.find(pn => Array.isArray(this.model[pn]));
       },
       customClasses() {
         return (this.model.customizations || {}).classes || {};
@@ -377,7 +385,7 @@
               this.$set(input, 'name', 'unspecifiedRadioName');
             }
             if (typeof input.value !== 'string' || input.value.trim().length === 0) {
-              this.$set(input, 'value', this.model[labelPropName].replace(/[\s&<>"'\/]/g, ''));
+              this.$set(input, 'value', this.model[this.labelPropName].replace(/[\s&<>"'\/]/g, ''));
             }
             if (!this.radioGroupValues.hasOwnProperty(input.name)) {
               this.$set(this.radioGroupValues, input.name, '');

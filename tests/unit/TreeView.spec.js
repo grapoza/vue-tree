@@ -204,4 +204,15 @@ describe('TreeView.vue', () => {
       expect(wrapper.vm.labelPropNames).to.eql(['label']);
     });
   });
+
+  describe('when childrenPropNames is not specified', () => {
+
+    beforeEach(() => {
+      wrapper = createWrapper();
+    });
+
+    it('has a default value of ["children"]', () => {
+      expect(wrapper.vm.childrenPropNames).to.eql(['children']);
+    });
+  });
 });
