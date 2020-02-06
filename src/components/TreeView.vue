@@ -6,6 +6,7 @@
     <tree-view-node v-for="(nodeModel) in model"
                     :key="nodeModel.id"
                     :aria-key-map="ariaKeyMap"
+                    :children-prop-names="childrenPropNames"
                     :depth="0"
                     :model-defaults="modelDefaults"
                     :id-prop-names="idPropNames"
@@ -54,6 +55,14 @@
       TreeViewNode,
     },
     props: {
+      childrenPropNames: {
+        type: Array,
+        required: false,
+        default: function () { return ["children"]; },
+        validator: function (value) {
+          return value.length > 0 && value.every(e => typeof e === 'string');
+        }
+      },
       idPropNames: {
         type: Array,
         required: false,

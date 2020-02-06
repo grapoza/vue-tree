@@ -20,6 +20,7 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
+    childrenPropNames: ['children'],
     idPropNames: ['id'],
     initialModel: generateNodes(['cs'], radioState)[0],
     labelPropNames: ['label'],
@@ -96,6 +97,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         depth: 0,
         idPropNames: ['id'],
         initialModel,
@@ -301,7 +303,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         beforeEach(async () => {
           wrapper = createWrapper();
-          wrapper.vm.selectionMode = 'multiple';
+          wrapper.setProps({ selectionMode: 'multiple' });
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.selectItem[0]);
           await wrapper.vm.$nextTick();
         });

@@ -20,6 +20,7 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
+    childrenPropNames: ['children'],
     idPropNames: ['id'],
     initialModel: generateNodes(['ces'], radioState)[0],
     labelPropNames: ['label'],
@@ -79,6 +80,7 @@ describe('TreeViewNode.vue (customizations)', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         idPropNames: ['id'],
         initialModel,
         labelPropNames: ['label'],
@@ -199,6 +201,7 @@ describe('TreeViewNode.vue (customizations)', () => {
         wrapper = createWrapper(
           {
             ariaKeyMap: {},
+            childrenPropNames: ['children'],
             idPropNames: ['id'],
             initialModel,
             labelPropNames: ['label'],
@@ -237,6 +240,7 @@ describe('TreeViewNode.vue (customizations)', () => {
         wrapper = createWrapper(
           {
             ariaKeyMap: {},
+            childrenPropNames: ['children'],
             idPropNames: ['id'],
             initialModel,
             labelPropNames: ['label'],
@@ -287,6 +291,7 @@ describe('TreeViewNode.vue (customizations)', () => {
         wrapper = createWrapper(
           {
             ariaKeyMap: {},
+            childrenPropNames: ['children'],
             idPropNames: ['id'],
             initialModel,
             labelPropNames: ['label'],

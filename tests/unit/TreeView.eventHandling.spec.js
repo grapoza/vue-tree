@@ -19,7 +19,7 @@ function createWrapper(customPropsData, customAttrs) {
   });
 }
 
-describe('TreeView.vue', () => {
+describe('TreeView.vue (event handling)', () => {
 
   let wrapper = null;
 

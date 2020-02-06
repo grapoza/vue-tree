@@ -20,6 +20,7 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
+    childrenPropNames: ['children'],
     idPropNames: ['id'],
     initialModel: generateNodes(['ces'], radioState)[0],
     labelPropNames: ['label'],
@@ -116,6 +117,7 @@ describe('TreeViewNode.vue (interactions)', () => {
       let radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         idPropNames: ['id'],
         initialModel: generateNodes(['ces', ['ces']], radioState)[0],
         labelPropNames: ['label'],
@@ -188,6 +190,7 @@ describe('TreeViewNode.vue (interactions)', () => {
       radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         idPropNames: ['id'],
         initialModel: generateNodes(['res'], radioState)[0],
         labelPropNames: ['label'],
@@ -231,6 +234,7 @@ describe('TreeViewNode.vue (interactions)', () => {
       let radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
+        childrenPropNames: ['children'],
         idPropNames: ['id'],
         initialModel: generateNodes(['es', ['ds']], radioState)[0],
         labelPropNames: ['label'],
@@ -268,6 +272,7 @@ describe('TreeViewNode.vue (interactions)', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
+          childrenPropNames: ['children'],
           idPropNames: ['id'],
           initialModel: generateNodes(['esa'], radioState, "", addChildCallback)[0],
           labelPropNames: ['label'],
@@ -307,6 +312,7 @@ describe('TreeViewNode.vue (interactions)', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
+          childrenPropNames: ['children'],
           idPropNames: ['id'],
           initialModel: generateNodes(['esa'], radioState, "", addChildCallback)[0],
           labelPropNames: ['label'],
