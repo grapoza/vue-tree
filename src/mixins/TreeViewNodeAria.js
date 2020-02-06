@@ -41,7 +41,7 @@ export default {
       if (node.focusable) {
         // When this is the first of several siblings, focus the next node.
         // Otherwise, focus the previous node.
-        if (this.model.children.length > 1 && this.model.children.indexOf(node) === 0) {
+        if (this.model[this.childrenPropName].length > 1 && this.model[this.childrenPropName].indexOf(node) === 0) {
           this.$_treeViewNodeAria_handleNextFocus(node);
         }
         else {
@@ -90,7 +90,7 @@ export default {
             this.$_treeViewNode_onExpandedChange(event);
           }
           else {
-            this.model.children[0].focusable = true;
+            this.model[this.childrenPropName][0].focusable = true;
           }
         }
       }
@@ -150,12 +150,12 @@ export default {
     $_treeViewNodeAria_handlePreviousFocus(childNode) {
       // If focusing previous of the first child, focus this parent.
       // If focusing previous of any other node, focus the last expanded node within the previous sibling.
-      let childIndex = this.model.children.indexOf(childNode);
+      let childIndex = this.model[this.childrenPropName].indexOf(childNode);
       if (childIndex === 0) {
         this.model.focusable = true;
       }
       else {
-        let lastModel = this.model.children[childIndex - 1];
+        let lastModel = this.model[this.childrenPropName][childIndex - 1];
         while (lastModel.children.length > 0 && lastModel.expandable && lastModel.state.expanded) {
           lastModel = lastModel.children[lastModel.children.length - 1];
         }
@@ -167,12 +167,12 @@ export default {
       // If the node is expanded, focus first child unless we're ignoring it (this was punted from a grandchild)
       // If the node has a next sibling, focus that
       // Otherwise, punt this up to this node's parent
-      let childIndex = this.model.children.indexOf(childNode);
+      let childIndex = this.model[this.childrenPropName].indexOf(childNode);
       if (!ignoreChild && childNode.children.length > 0 && childNode.expandable && childNode.state.expanded) {
         childNode.children[0].focusable = true;
       }
-      else if (childIndex < this.model.children.length - 1) {
-        this.model.children[childIndex + 1].focusable = true;
+      else if (childIndex < this.model[this.childrenPropName].length - 1) {
+        this.model[this.childrenPropName][childIndex + 1].focusable = true;
       }
       else {
         this.$emit('treeViewNodeAriaRequestNextFocus', this.model, true);
