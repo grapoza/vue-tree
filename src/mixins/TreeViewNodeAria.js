@@ -156,8 +156,9 @@ export default {
       }
       else {
         let lastModel = this.model[this.childrenPropName][childIndex - 1];
-        while (lastModel.children.length > 0 && lastModel.expandable && lastModel.state.expanded) {
-          lastModel = lastModel[this.$_treeViewNode_getChildrenPropNameForNode(lastModel)][lastModel.children.length - 1];
+        let lastModelChildren = lastModel[this.$_treeViewNode_getChildrenPropNameForNode(lastModel)];
+        while (lastModelChildren.length > 0 && lastModel.expandable && lastModel.state.expanded) {
+          lastModel = lastModelChildren[lastModelChildren.length - 1];
         }
 
         lastModel.focusable = true;
@@ -168,8 +169,9 @@ export default {
       // If the node has a next sibling, focus that
       // Otherwise, punt this up to this node's parent
       let childIndex = this.model[this.childrenPropName].indexOf(childNode);
-      if (!ignoreChild && childNode.children.length > 0 && childNode.expandable && childNode.state.expanded) {
-        childNode[this.$_treeViewNode_getChildrenPropNameForNode(childNode)][0].focusable = true;
+      let childNodeChildrenPropName = this.$_treeViewNode_getChildrenPropNameForNode(childNode);
+      if (!ignoreChild && childNode[childNodeChildrenPropName].length > 0 && childNode.expandable && childNode.state.expanded) {
+        childNode[childNodeChildrenPropName][0].focusable = true;
       }
       else if (childIndex < this.model[this.childrenPropName].length - 1) {
         this.model[this.childrenPropName][childIndex + 1].focusable = true;

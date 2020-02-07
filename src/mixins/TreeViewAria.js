@@ -69,15 +69,22 @@ export default {
       if (firstSelectedNode === null && this.focusableNodeModel.selectable && this.selectionMode === 'selectionFollowsFocus') {
         this.focusableNodeModel.state.selected = true;
       }
+
+      this.$_treeViewNode_enforceSelectionMode();
     }
   },
   watch: {
-    selectionMode(newValue) {
-      if (newValue === 'single') {
+    selectionMode() {
+      this.$_treeViewNode_enforceSelectionMode();
+    }
+  },
+  methods: {
+    $_treeViewNode_enforceSelectionMode() {
+      if (this.selectionMode === 'single') {
         // This is in TreeViewAria instead of TreeView because the default mixin merge strategy only keeps one 'watch' per prop.
         this.$_treeView_enforceSingleSelectionMode();
       }
-      else if (newValue === 'selectionFollowsFocus') {
+      else if (this.selectionMode === 'selectionFollowsFocus') {
         // Make sure the actual focused item is selected if the mode changes, and deselect all others
         this.$_treeView_depthFirstTraverse((node) => {
           let idPropName = this.$_treeView_getIdPropName(node);
@@ -92,9 +99,7 @@ export default {
           }
         });
       }
-    }
-  },
-  methods: {
+    },
     $_treeViewAria_handleFocusableChange(newNodeModel) {
       if (this.focusableNodeModel) {
         this.focusableNodeModel.focusable = false;
