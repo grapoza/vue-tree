@@ -24,11 +24,11 @@
               v-if="canExpand"
               aria-hidden="true"
               tabindex="-1"
-              :title="model.expanderTitle"
+              :title="model.treeNodeSpec.expanderTitle"
               class="tree-view-node-self-expander"
               :class="[customClasses.treeViewNodeSelfExpander,
-                       model.state.expanded ? 'tree-view-node-self-expanded' : '',
-                       model.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
+                       model.treeNodeSpec.state.expanded ? 'tree-view-node-self-expanded' : '',
+                       model.treeNodeSpec.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
               @click="$_treeViewNode_onExpandedChange">
               <i class="tree-view-node-self-expanded-indicator"
                  :class="customClasses.treeViewNodeSelfExpandedIndicator"></i></button>
@@ -38,7 +38,7 @@
 
       <!-- Inputs and labels -->
       <!-- Checkbox -->
-      <slot v-if="model.input && model.input.type === 'checkbox'"
+      <slot v-if="model.treeNodeSpec.input && model.treeNodeSpec.input.type === 'checkbox'"
             name="checkbox"
             :model="model"
             :customClasses="customClasses"
@@ -46,7 +46,7 @@
             :checkboxChangeHandler="$_treeViewNode_onCheckboxChange">
 
         <label :for="inputId"
-               :title="model.title"
+               :title="model.treeNodeSpec.title"
                class="tree-view-node-self-label"
                :class="customClasses.treeViewNodeSelfLabel">
 
@@ -55,8 +55,8 @@
                  class="tree-view-node-self-input tree-view-node-self-checkbox"
                  :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfCheckbox]"
                  type="checkbox"
-                 :disabled="model.state.input.disabled"
-                 v-model="model.state.input.value"
+                 :disabled="model.treeNodeSpec.state.input.disabled"
+                 v-model="model.treeNodeSpec.state.input.value"
                  @change="$_treeViewNode_onCheckboxChange" />
 
           {{ model[labelPropName] }}
@@ -64,16 +64,16 @@
       </slot>
 
       <!-- Radiobutton -->
-      <slot v-else-if="model.input && model.input.type === 'radio'"
+      <slot v-else-if="model.treeNodeSpec.input && model.treeNodeSpec.input.type === 'radio'"
             name="radio"
             :model="model"
             :customClasses="customClasses"
             :inputId="inputId"
-            :inputModel="radioGroupValues[model.input.name]"
+            :inputModel="radioGroupValues[model.treeNodeSpec.input.name]"
             :radioChangeHandler="$_treeViewNode_onRadioChange">
 
         <label :for="inputId"
-               :title="model.title"
+               :title="model.treeNodeSpec.title"
                class="tree-view-node-self-label"
                :class="customClasses.treeViewNodeSelfLabel">
 
@@ -82,10 +82,10 @@
                  class="tree-view-node-self-input tree-view-node-self-radio"
                  :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfRadio]"
                  type="radio"
-                 :name="model.input.name"
-                 :value="model.input.value"
-                 :disabled="model.state.input.disabled"
-                 v-model="radioGroupValues[model.input.name]"
+                 :name="model.treeNodeSpec.input.name"
+                 :value="model.treeNodeSpec.input.value"
+                 :disabled="model.treeNodeSpec.state.input.disabled"
+                 v-model="radioGroupValues[model.treeNodeSpec.input.name]"
                  @change="$_treeViewNode_onRadioChange" />
 
           {{ model[labelPropName] }}
@@ -98,7 +98,7 @@
             :model="model"
             :customClasses="customClasses">
 
-        <span :title="model.title"
+        <span :title="model.treeNodeSpec.title"
               class="tree-view-node-self-text"
               :class="customClasses.treeViewNodeSelfText">
           {{ model[labelPropName] }}
@@ -108,10 +108,10 @@
       <!-- Add Child button -->
       <button :id="addChildId"
               type="button"
-              v-if="model.addChildCallback"
+              v-if="model.treeNodeSpec.addChildCallback"
               aria-hidden="true"
               tabindex="-1"
-              :title="model.addChildTitle"
+              :title="model.treeNodeSpec.addChildTitle"
               class="tree-view-node-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfAddChild]"
               @click="$_treeViewNode_onAddChild">
@@ -122,10 +122,10 @@
       <!-- Delete button -->
       <button :id="deleteId"
               type="button"
-              v-if="model.deletable"
+              v-if="model.treeNodeSpec.deletable"
               aria-hidden="true"
               tabindex="-1"
-              :title="model.deleteTitle"
+              :title="model.treeNodeSpec.deleteTitle"
               class="tree-view-node-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfDelete]"
               @click="$_treeViewNode_onDelete">
@@ -135,19 +135,16 @@
     </div>
 
     <!-- Children -->
-    <ul v-show="model.state.expanded"
+    <ul v-show="model.treeNodeSpec.state.expanded"
         v-if="canExpand"
         class="tree-view-node-children"
         :class="customClasses.treeViewNodeChildren"
         role="group"
-        :aria-hidden="(!model.state.expanded).toString()">
+        :aria-hidden="(!model.treeNodeSpec.state.expanded).toString()">
       <TreeViewNode v-for="nodeModel in model[childrenPropName]"
-                      :key="nodeModel[$_treeViewNode_getIdPropNameForNode(nodeModel)]"
-                      :children-prop-names="childrenPropNames"
+                      :key="nodeModel[nodeModel.treeNodeSpec && nodeModel.treeNodeSpec.idProperty ? nodeModel.treeNodeSpec.idProperty : 'id']"
                       :depth="depth + 1"
-                      :id-prop-names="idPropNames"
                       :initial-model="nodeModel"
-                      :label-prop-names="labelPropNames"
                       :model-defaults="modelDefaults"
                       :parent-id="model[idPropName]"
                       :selection-mode="selectionMode"
@@ -191,24 +188,12 @@
       TreeViewNodeAria
     ],
     props: {
-      childrenPropNames: {
-        type: Array,
-        required: true
-      },
       depth: {
         type: Number,
         required: true
       },
-      idPropNames: {
-        type: Array,
-        required: true
-      },
       initialModel: {
         type: Object,
-        required: true
-      },
-      labelPropNames: {
-        type: Array,
         required: true
       },
       modelDefaults: {
@@ -244,12 +229,12 @@
         return this.nodeId ? `${this.nodeId}-add-child` : null;
       },
       ariaExpanded() {
-        return this.canExpand ? this.model.state.expanded.toString() : false;
+        return this.canExpand ? this.model.treeNodeSpec.state.expanded.toString() : false;
       },
       ariaSelected() {
         // If selection isn't allowed, don't add an aria-selected attribute.
         // If the tree contains nodes that are not selectable, those nodes do not have the aria-selected state.
-        if (this.selectionMode === null || !this.model.selectable) {
+        if (this.selectionMode === null || !this.model.treeNodeSpec.selectable) {
           return false;
         }
 
@@ -257,22 +242,22 @@
         // If the tree does not support multiple selection, aria-selected is set to true
         // for the selected node and it is not present on any other node in the tree.
         if (this.selectionMode !== 'multiple') {
-          return this.model.state.selected ? 'true' : false;
+          return this.model.treeNodeSpec.state.selected ? 'true' : false;
         }
 
         // If the tree supports multiple selection:
         //   All selected nodes have aria-selected set to true.
         //   All nodes that are selectable but not selected have aria-selected set to false.
-        return this.model.state.selected.toString();
+        return this.model.treeNodeSpec.state.selected.toString();
       },
       canExpand() {
-        return this.model[this.childrenPropName].length > 0 && this.model.expandable;
+        return this.model[this.childrenPropName].length > 0 && this.model.treeNodeSpec.expandable;
       },
       childrenPropName() {
-        return this.childrenPropNames.find(pn => Array.isArray(this.model[pn])) || 'children';
+        return this.model.treeNodeSpec.childrenProperty || 'children';
       },
       customClasses() {
-        return (this.model.customizations || {}).classes || {};
+        return (this.model.treeNodeSpec.customizations || {}).classes || {};
       },
       deleteId() {
         return this.nodeId ? `${this.nodeId}-delete` : null;
@@ -281,45 +266,40 @@
         return this.nodeId ? `${this.nodeId}-exp` : null;
       },
       idPropName() {
-        return this.$_treeViewNode_getIdPropNameForNode(this.model);
+        return this.model.treeNodeSpec.idProperty || 'id';
       },
       inputId() {
         return this.nodeId ? `${this.nodeId}-input` : null;
       },
       isEffectivelySelected() {
-        return this.selectionMode !== null && this.model.selectable && this.model.state.selected;
+        return this.selectionMode !== null && this.model.treeNodeSpec.selectable && this.model.treeNodeSpec.state.selected;
       },
       labelPropName() {
-        return this.labelPropNames.find(pn => typeof this.model[pn] === 'string')
+        return this.model.treeNodeSpec.labelProperty || 'label';
       },
       nodeId() {
         return this.treeId ? `${this.treeId}-${this.model[this.idPropName]}` : null;
       }
     },
     created() {
-      // id and label are required; notify the user. Validation is done here instead
-      // of at the prop level due to dependency on multiple props at once.
-      if (!this.idPropName) {
-        console.error(`initialModel id is required and must be a number or string. Allowed ID props: ${this.idPropNames.join(", ")}`);
-      }
-      else if(!this.labelPropName) {
-        console.error(`initialModel label is required and must be a string. Allowed label props: ${this.labelPropNames.join(", ")}`);
-      }
-
       this.$_treeViewNode_normalizeNodeData();
+
+      // id and label are required; notify the user. Validation is done here instead
+      // of at the prop level due to dependency on multiple props at once and defaulting
+      // that takes place in the normalization process
+      if (!this.model[this.idPropName] || (typeof this.model[this.idPropName] !== 'number' && typeof this.model[this.idPropName] !== 'string')) {
+        console.error(`initialModel id is required and must be a number or string. Expected prop ${this.idPropName} to exist on the model.`);
+      }
+      if(!this.model[this.labelPropName] || typeof this.model[this.labelPropName] !== 'string') {
+        console.error(`initialModel label is required and must be a string. Expected prop ${this.labelPropName} to exist on the model.`);
+      }
     },
     watch: {
-      'model.state.selected': function(newValue) {
+      'model.treeNodeSpec.state.selected': function(newValue) {
           this.$emit('treeViewNodeSelectedChange', this.model);
       }
     },
     methods: {
-      $_treeViewNode_getIdPropNameForNode(node) {
-        return this.idPropNames.find(pn => typeof node[pn] === 'number' || typeof node[pn] === 'string');
-      },
-      $_treeViewNode_getChildrenPropNameForNode(node) {
-        return this.childrenPropNames.find(pn => Array.isArray(node[pn])) || 'children';
-      },
       /*
        * Normalizes the data model to the format consumable by TreeViewNode.
        */
@@ -328,38 +308,48 @@
         this.$_treeViewNode_assignDefaultProps(this.modelDefaults, this.model);
 
         // Set expected properties if not provided
+        if (typeof this.model.treeNodeSpec.childrenProperty !== 'string') {
+          this.$set(this.model.treeNodeSpec, 'childrenProperty', 'children');
+        }
+        if (typeof this.model.treeNodeSpec.idProperty !== 'string') {
+          this.$set(this.model.treeNodeSpec, 'idProperty', 'id');
+        }
+        if (typeof this.model.treeNodeSpec.labelProperty !== 'string') {
+          this.$set(this.model.treeNodeSpec, 'labelProperty', 'label');
+        }
+
         if (!Array.isArray(this.model[this.childrenPropName])) {
           this.$set(this.model, this.childrenPropName, []);
         }
-        if (typeof this.model.expandable !== 'boolean') {
-          this.$set(this.model, 'expandable', true);
+        if (typeof this.model.treeNodeSpec.expandable !== 'boolean') {
+          this.$set(this.model.treeNodeSpec, 'expandable', true);
         }
-        if (typeof this.model.selectable !== 'boolean') {
-          this.$set(this.model, 'selectable', false);
+        if (typeof this.model.treeNodeSpec.selectable !== 'boolean') {
+          this.$set(this.model.treeNodeSpec, 'selectable', false);
         }
-        if (typeof this.model.deletable !== 'boolean') {
-          this.$set(this.model, 'deletable', false);
-        }
-
-        if (typeof this.model.addChildCallback !== 'function') {
-          this.$set(this.model, 'addChildCallback', null);
+        if (typeof this.model.treeNodeSpec.deletable !== 'boolean') {
+          this.$set(this.model.treeNodeSpec, 'deletable', false);
         }
 
-        if (typeof this.model.title !== 'string' || this.model.title.trim().length === 0) {
-          this.$set(this.model, 'title', null);
-        }
-        if (typeof this.model.expanderTitle !== 'string' || this.model.expanderTitle.trim().length === 0) {
-          this.$set(this.model, 'expanderTitle', null);
-        }
-        if (typeof this.model.addChildTitle !== 'string' || this.model.addChildTitle.trim().length === 0) {
-          this.$set(this.model, 'addChildTitle', null);
-        }
-        if (typeof this.model.deleteTitle !== 'string' || this.model.deleteTitle.trim().length === 0) {
-          this.$set(this.model, 'deleteTitle', null);
+        if (typeof this.model.treeNodeSpec.addChildCallback !== 'function') {
+          this.$set(this.model.treeNodeSpec, 'addChildCallback', null);
         }
 
-        if (this.model.customizations == null || typeof this.model.customizations !== 'object') {
-          this.$set(this.model, 'customizations', {});
+        if (typeof this.model.treeNodeSpec.title !== 'string' || this.model.treeNodeSpec.title.trim().length === 0) {
+          this.$set(this.model.treeNodeSpec, 'title', null);
+        }
+        if (typeof this.model.treeNodeSpec.expanderTitle !== 'string' || this.model.treeNodeSpec.expanderTitle.trim().length === 0) {
+          this.$set(this.model.treeNodeSpec, 'expanderTitle', null);
+        }
+        if (typeof this.model.treeNodeSpec.addChildTitle !== 'string' || this.model.treeNodeSpec.addChildTitle.trim().length === 0) {
+          this.$set(this.model.treeNodeSpec, 'addChildTitle', null);
+        }
+        if (typeof this.model.treeNodeSpec.deleteTitle !== 'string' || this.model.treeNodeSpec.deleteTitle.trim().length === 0) {
+          this.$set(this.model.treeNodeSpec, 'deleteTitle', null);
+        }
+
+        if (this.model.treeNodeSpec.customizations == null || typeof this.model.treeNodeSpec.customizations !== 'object') {
+          this.$set(this.model.treeNodeSpec, 'customizations', {});
         }
 
         this.$_treeViewNode_normalizeNodeInputData();
@@ -370,12 +360,12 @@
        */
       $_treeViewNode_normalizeNodeInputData() {
 
-        let input = this.model.input;
+        let input = this.model.treeNodeSpec.input;
 
         // For nodes that are inputs, they must specify at least a type.
         // Only a subset of types are accepted.
         if (input === null || typeof input !== 'object' || !['checkbox', 'radio'].includes(input.type)) {
-          this.$set(this.model, 'input', null);
+          this.$set(this.model.treeNodeSpec, 'input', null);
         }
         else {
           if (typeof input.name !== 'string' || input.name.trim().length === 0) {
@@ -399,11 +389,11 @@
        * Normalizes the data model's data related to the node's state.
        */
       $_treeViewNode_normalizeNodeStateData() {
-        if (this.model.state === null || typeof this.model.state !== 'object') {
-          this.$set(this.model, 'state', {});
+        if (this.model.treeNodeSpec.state === null || typeof this.model.treeNodeSpec.state !== 'object') {
+          this.$set(this.model.treeNodeSpec, 'state', {});
         }
 
-        let state = this.model.state;
+        let state = this.model.treeNodeSpec.state;
 
         if (typeof state.expanded !== 'boolean') {
           this.$set(state, 'expanded', false);
@@ -412,7 +402,7 @@
           this.$set(state, 'selected', false);
         }
 
-        if (this.model.input) {
+        if (this.model.treeNodeSpec.input) {
           if (state.input === null || typeof state.input !== 'object') {
             this.$set(state, 'input', {});
           }
@@ -421,7 +411,7 @@
             this.$set(state.input, 'disabled', false);
           }
 
-          if (this.model.input.type === 'checkbox') {
+          if (this.model.treeNodeSpec.input.type === 'checkbox') {
 
             if (typeof state.input.value !== 'boolean') {
               this.$set(state.input, 'value', false);
@@ -431,15 +421,20 @@
       },
       $_treeViewNode_assignDefaultProps(source, target) {
 
-        // Make sure they're objects
-        if (this.$_treeViewNode_isProbablyObject(source) && this.$_treeViewNode_isProbablyObject(target)) {
+        // The target model must have a treeNodeSpec property to assign defaults into
+        if (!this.$_treeViewNode_isProbablyObject(target.treeNodeSpec)) {
+          this.$set(target, 'treeNodeSpec', {});
+        }
+
+        // Make sure the defaults is an object
+        if (this.$_treeViewNode_isProbablyObject(source)) {
 
           // Use a copy of the source, since the props can be fubar'd by the assigns
           const sourceCopy = JSON.parse(JSON.stringify(source));
 
           // Assign defaults into the model
-          Object.assign(sourceCopy, target);
-          Object.assign(target, sourceCopy);
+          Object.assign(sourceCopy, target.treeNodeSpec);
+          Object.assign(target.treeNodeSpec, sourceCopy);
 
           // Find object properties to deep assign them
           // and find function properties and assign if missing in target
@@ -447,10 +442,10 @@
             const propValue = source[propName];
 
             if (this.$_treeViewNode_isProbablyObject(propValue)) {
-              this.$_treeViewNode_assignDefaultProps(propValue, target[propName]);
+              this.$_treeViewNode_assignDefaultProps(propValue, target.treeNodeSpec[propName]);
             }
-            else if (typeof propValue === 'function' && !target[propName]) {
-              target[propName] = propValue;
+            else if (typeof propValue === 'function' && !target.treeNodeSpec[propName]) {
+              target.treeNodeSpec[propName] = propValue;
             }
           }
         }
@@ -462,14 +457,14 @@
         this.$emit('treeViewNodeRadioChange', this.model, event);
       },
       $_treeViewNode_onExpandedChange(event) {
-        this.model.state.expanded = !this.model.state.expanded;
+        this.model.treeNodeSpec.state.expanded = !this.model.treeNodeSpec.state.expanded;
         this.$emit('treeViewNodeExpandedChange', this.model, event);
       },
       $_treeViewNode_toggleSelected(event) {
         // Note that selection change is already handled by the "model.focusable" watcher
         // method in TreeViewNodeAria if selectionMode is selectionFollowsFocus.
-        if (this.model.selectable && ['single', 'multiple'].includes(this.selectionMode)) {
-          this.model.state.selected = !this.model.state.selected;
+        if (this.model.treeNodeSpec.selectable && ['single', 'multiple'].includes(this.selectionMode)) {
+          this.model.treeNodeSpec.state.selected = !this.model.treeNodeSpec.state.selected;
         }
       },
       $_treeViewNode_onClick(event) {
@@ -492,8 +487,8 @@
        * supplied by an async callback which is the addChildCallback parameter of this node's model.
        */
       async $_treeViewNode_onAddChild(event) {
-        if (this.model.addChildCallback) {
-          var childModel = await this.model.addChildCallback(this.model);
+        if (this.model.treeNodeSpec.addChildCallback) {
+          var childModel = await this.model.treeNodeSpec.addChildCallback(this.model);
 
           if (childModel) {
             this.model[this.childrenPropName].push(childModel);
@@ -502,7 +497,7 @@
         }
       },
       $_treeViewNode_onDelete(event) {
-        if (this.model.deletable) {
+        if (this.model.treeNodeSpec.deletable) {
           this.$emit('treeViewNodeDelete', this.model, event);
         }
       },

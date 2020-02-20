@@ -101,7 +101,7 @@ describe('TreeView.vue (ARIA)', () => {
       });
 
       it('should set the first node as focusable', () => {
-        expect(wrapper.vm.model[0].focusable).to.be.true;
+        expect(wrapper.vm.model[0].treeNodeSpec.focusable).to.be.true;
       });
     });
 
@@ -112,7 +112,7 @@ describe('TreeView.vue (ARIA)', () => {
       });
 
       it('should set the first selected node as focusable', () => {
-        expect(wrapper.vm.model[1].children[0].focusable).to.be.true;
+        expect(wrapper.vm.model[1].children[0].treeNodeSpec.focusable).to.be.true;
       });
     });
   });
@@ -126,11 +126,11 @@ describe('TreeView.vue (ARIA)', () => {
       });
 
       it('should keep that node as focusable', () => {
-        expect(wrapper.vm.model[1].focusable).to.be.true;
+        expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
       });
 
       it('should set focusble to false for any further nodes', () => {
-        expect(wrapper.vm.model[1].children[0].focusable).to.be.false;
+        expect(wrapper.vm.model[1].children[0].treeNodeSpec.focusable).to.be.false;
       });
     });
 
@@ -143,7 +143,7 @@ describe('TreeView.vue (ARIA)', () => {
         });
 
         it('should select the focused node', () => {
-          expect(wrapper.vm.model[1].state.selected).to.be.true;
+          expect(wrapper.vm.model[1].treeNodeSpec.state.selected).to.be.true;
         });
       });
 
@@ -158,7 +158,7 @@ describe('TreeView.vue (ARIA)', () => {
     });
 
     it('should remove focusable from the previous focusable node', () => {
-      expect(wrapper.vm.model[0].focusable).to.be.false;
+      expect(wrapper.vm.model[0].treeNodeSpec.focusable).to.be.false;
     });
 
     it('should set the new node as the current focusable node', () => {
@@ -174,7 +174,7 @@ describe('TreeView.vue (ARIA)', () => {
     });
 
     it('should set the focusable attribute of the first node to true', () => {
-      expect(wrapper.vm.model[0].focusable).to.be.true;
+      expect(wrapper.vm.model[0].treeNodeSpec.focusable).to.be.true;
     });
   });
 
@@ -184,14 +184,14 @@ describe('TreeView.vue (ARIA)', () => {
       wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs'], {}) });
       wrapper.vm.$_treeViewAria_focusLastNode();
 
-      expect(wrapper.vm.model[1].focusable).to.be.true;
+      expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
     });
 
     it('should ignore non-expanded child nodes', () => {
       wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs', ['ecs']], {}) });
       wrapper.vm.$_treeViewAria_focusLastNode();
 
-      expect(wrapper.vm.model[2].focusable).to.be.true;
+      expect(wrapper.vm.model[2].treeNodeSpec.focusable).to.be.true;
     });
   });
 
@@ -205,7 +205,7 @@ describe('TreeView.vue (ARIA)', () => {
       });
 
       it('does not change the focusable node', () => {
-        expect(wrapper.vm.model[0].focusable).to.be.true;
+        expect(wrapper.vm.model[0].treeNodeSpec.focusable).to.be.true;
       });
     });
 
@@ -217,7 +217,7 @@ describe('TreeView.vue (ARIA)', () => {
       });
 
       it('sets the next node as focusable', () => {
-        expect(wrapper.vm.model[1].focusable).to.be.true;
+        expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
       });
     });
 
@@ -229,7 +229,7 @@ describe('TreeView.vue (ARIA)', () => {
       });
 
       it('sets the previous node as focusable', () => {
-        expect(wrapper.vm.model[1].focusable).to.be.true;
+        expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
       });
     })
   });
@@ -244,7 +244,7 @@ describe('TreeView.vue (ARIA)', () => {
       });
 
       it('does not change focusableness', () => {
-        expect(wrapper.vm.model[0].focusable).to.be.true;
+        expect(wrapper.vm.model[0].treeNodeSpec.focusable).to.be.true;
       });
     });
 
@@ -256,7 +256,7 @@ describe('TreeView.vue (ARIA)', () => {
       });
 
       it('sets the previous node as focusable', () => {
-        expect(wrapper.vm.model[0].focusable).to.be.true;
+        expect(wrapper.vm.model[0].treeNodeSpec.focusable).to.be.true;
       });
     });
 
@@ -268,7 +268,7 @@ describe('TreeView.vue (ARIA)', () => {
       });
 
       it('sets the last expanded previous node as focusable', () => {
-        expect(wrapper.vm.model[0].children[1].focusable).to.be.true;
+        expect(wrapper.vm.model[0].children[1].treeNodeSpec.focusable).to.be.true;
       });
     });
   });
@@ -283,7 +283,7 @@ describe('TreeView.vue (ARIA)', () => {
       });
 
       it('does not change focusableness', () => {
-        expect(wrapper.vm.model[1].focusable).to.be.true;
+        expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
       });
     });
 
@@ -295,7 +295,7 @@ describe('TreeView.vue (ARIA)', () => {
       });
 
       it('sets the next sibling node as focusable', () => {
-        expect(wrapper.vm.model[1].focusable).to.be.true;
+        expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
       });
     });
 
@@ -307,14 +307,14 @@ describe('TreeView.vue (ARIA)', () => {
 
       it('sets the first expanded child node as focusable', () => {
         wrapper.vm.$_treeViewAria_handleNextFocus(wrapper.vm.model[0]);
-        expect(wrapper.vm.model[0].children[0].focusable).to.be.true;
+        expect(wrapper.vm.model[0].children[0].treeNodeSpec.focusable).to.be.true;
       });
 
       describe('and the children are explicitly ignored', () => {
 
         if ('sets the next sibling node as focusable', () => {
           wrapper.vm.$_treeViewAria_handleNextFocus(wrapper.vm.model[0], true);
-          expect(wrapper.vm.model[1].focusable).to.be.true;
+          expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
         });
       });
     });
@@ -329,11 +329,11 @@ describe('TreeView.vue (ARIA)', () => {
     });
 
     it('should select the focused node', () => {
-      expect(wrapper.vm.model[0].state.selected).to.be.true;
+      expect(wrapper.vm.model[0].treeNodeSpec.state.selected).to.be.true;
     });
 
     it('should deselect the previously selected node', () => {
-      expect(wrapper.vm.model[0].children[0].state.selected).to.be.false;
+      expect(wrapper.vm.model[0].children[0].treeNodeSpec.state.selected).to.be.false;
     });
   });
 });

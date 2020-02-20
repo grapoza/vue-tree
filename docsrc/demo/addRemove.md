@@ -35,7 +35,7 @@ This page demonstrates adding and removing nodes. [See the data used](./addRemov
       methods: {
         addChildCallback(parentModel) {
           this.childCounter++;
-          return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, deletable: true });
+          return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
         }
       }
     }).$mount('#app');

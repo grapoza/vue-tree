@@ -11,7 +11,7 @@ vue-tree is a Vue component that implements a TreeView control. Its aim is to pr
 
 Features include:
 
-- Functions in modern browsers using the precompiled scripts, or can be included in your babel/webpack chain.
+- Works in modern browsers using the precompiled scripts, or can be included in your babel/webpack chain.
 - Expandable nodes
 - Checkboxes
 - Radio buttons
@@ -103,10 +103,7 @@ To see it in action, try out the [demos](demos.html).
 | Prop              | Type     | Description                                                                                        | Default value                     | Required |
 |:------------------|:---------|:---------------------------------------------------------------------------------------------------|:----------------------------------|:---------|
 | initialModel      | Array    | The data model containing [model data](#model-data)                                                | -                                 | Yes      |
-| childrenPropNames | Array    | An array of property names which will be searched (in order) on each node to use as its child list | `['children']`                    |          |
 | customAriaKeyMap  | Object   | An object, the properties of which are arrays to keyCodes for various actions                      | See [Aria](#setting-key-bindings) |          |
-| idPropNames       | Array    | An array of property names which will be searched (in order) on each node to use as its ID         | `['id']`                          |          |
-| labelPropNames    | Array    | An array of property names which will be searched (in order) on each node to use as its label      | `['label']`                       |          |
 | modelDefaults     | Object   | An object containing defaults for all nodes that do not specify the given properties               | `{}`                              |          |
 | radioGroupValues  | Object   | An object, the properties of which correspond to radio button group selections                     | `{}`                              |          |
 | selectionMode     | String   | How selection should operate (see [Selection Mode](#selection-mode))                               | `null` (cannot select nodes)      |          |
@@ -125,85 +122,110 @@ When clicking on a node, it is only selected if the click target was not interac
 
 ## Model Data
 
-The data passed to the treeview's `initialModel` prop should be an array of nodes, where each node has the following structure. The data model passed to the treeview may be updated by the treeview nodes themselves on creation to include missing properties.
+The data passed to the treeview's `initialModel` prop should be an array of nodes, where each node should have:
+
+* Required: A property with a value that will be used as the node's ID (by default the node looks for a property named `id`)
+* Required: A property with a value that will be used as the node's label (by default the node looks for a property named `label`)
+* Optional: A property containing any subnodes (by default the node looks for a property named `children`)
+* Optional: A `treeNodeSpec` property that contains any data about the node's capabilities and its initial state
+* Optional: Any other data you want on your node
+
+The `treeNodeSpec` of the objects in the data model passed to the treeview's `initialModel` property will be updated by the treeview nodes themselves on creation to include missing properties.
 
 ```javascript
 {
   id: "node0",
   label: "A checkbox node",
-  title: "This will be the value of the node text/label's 'title' attribute.",
-  expandable: true,
-  selectable: false,
-  focusable: true,
-  input: {
-    type: 'checkbox'
-  },
-  state: {
-    expanded: true,
-    selected: false,
+  children: [],
+  treeNodeSpec: {
+    title: "This will be the value of the node text/label's 'title' attribute.",
+    expandable: true,
+    selectable: false,
+    focusable: true,
     input: {
-      value: false,
-      disabled: false
+      type: 'checkbox'
+    },
+    state: {
+      expanded: true,
+      selected: false,
+      input: {
+        value: false,
+        disabled: false
+      }
     }
-  },
-  children: []
+  }
 },
 {
-  id: "node1",
-  label: "A radio button node",
-  expandable: true,
-  selectable: false,
-  input: {
-    type: 'radio',
-    name: 'rbGroup1',  // Used as the name attribute for the radio button
-    value: 'thisValue' // Used as the value attribute for the radio button
-  },
-  state: {
-    expanded: true,
-    selected: false
-    // No input.value here; to let complex radio button groupings work, state value is
-    // bound to a tree-level property. input.disabled, however, is valid here for radio buttons.
-  },
-  children: [],
-  addChildCallback: () => Promise.resolve({ id: '1', label: 'label' })
+  otherIdProp: "node1",
+  textProp: "A radio button node",
+  subThings: [],
+  extraIrrelevantData: "February",
+  treeNodeSpec: {
+    idProperty: "otherIdProp", // Customize what model props are checked for the id, label, and children
+    labelProperty: "textProp",
+    childrenProperty: "subThings",
+    expandable: true,
+    selectable: false,
+    input: {
+      type: 'radio',
+      name: 'rbGroup1',  // Used as the name attribute for the radio button
+      value: 'thisValue' // Used as the value attribute for the radio button
+    },
+    state: {
+      expanded: true,
+      selected: false
+      // No input.value here; to let complex radio button groupings work, state value is
+      // bound to a tree-level property. input.disabled, however, is valid here for radio buttons.
+    },
+    addChildCallback: () => Promise.resolve({ id: '1', label: 'label' })
+  }
 }
 ```
 
-The properties below can be specified for each node.
+The properties below can be specified for each node. Note that `id`, `label`, and `children` are the default properties nodes look for to get data, but the names of the properties can be overridden using the `treeNodeSpec`.
 
-| Prop                 | Type            | Description                                                  | Default value                      | Required |
-|:---------------------|:----------------|:-------------------------------------------------------------|:-----------------------------------|:---------|
-| id                   | Number/String   | An ID that uniquely identifies this node within the tree     | -                                  | Yes      |
-| label                | String          | The text to show in the treeview                             | -                                  | Yes      |
-| title                | String          | The text of the node's text or label's title attribute       | `null`                             |          |
-| expandable           | Boolean         | True to show a toggle for expanding nodes' subnode lists     | `true`                             |          |
-| selectable           | Boolean         | True to allow the node to be selected                        | `false`                            |          |
-| deletable            | Boolean         | True to allow the node to be deleted                         | `false`                            |          |
-| focusable            | Boolean         | True to make the node the focus when the treeview is focused | See [Aria](#focusable) for details |          |
-| expanderTitle        | String          | The text to use as the title for the expander button         | `null`                             |          |
-| addChildTitle        | String          | The text to use as the title for the Add Child button        | `null`                             |          |
-| deleteTitle          | String          | The text to use as the title for the Delete button           | `null`                             |          |
-| input                | Object          | Contains data specific to the node's `input` element         | `null`                             |          |
-| input.type           | String          | The type of input; valid values are `checkbox` or `radio`    | -                                  | Yes*     |
-| input.name           | String          | The name attribute of the input; used with `radio` type      | `'unspecifiedRadioName'`           |          |
-| input.value          | String          | The value attribute of the input; used with `radio` type     | `label`'s value**                  |          |
-| state                | Object          | Contains the current state of the node                       | -                                  |          |
-| state.expanded       | Boolean         | True if this node's subnode list is expanded                 | `false`                            |          |
-| state.selected       | Boolean         | True if the node is selected                                 | `false`                            |          |
-| state.input          | Object          | Contains any state related to the input field                | `{}` for checkbox, otherwise -     |          |
-| state.input.value    | Boolean         | Contains the value of the input                              | `false` for checkbox, otherwise -  |          |
-| state.input.disabled | Boolean         | True if the node's input field is disabled                   | `false`                            |          |
-| children             | Array\<Object\> | The child nodes of this node                                 | `[]`                               |          |
-| customizations       | Object          | A [customizations](#customizing-the-treeview) object         | `{}`                               |          |
-| addChildCallback     | Function        | An async function that resolves to a new node model          | `null`                             |          |
+| Prop                 | Type            | Description                                                                | Default value                      | Required |
+|:---------------------|:----------------|:---------------------------------------------------------------------------|:-----------------------------------|:---------|
+| id                   | Number/String   | An ID that uniquely identifies this node within the tree                   | -                                  | Yes      |
+| label                | String          | The text to show in the treeview                                           | -                                  | Yes      |
+| children             | Array\<Object\> | The child nodes of this node                                               | `[]`                               |          |
+| treeNodeSpec         | Object          | The object containing data about the node's capabilities and initial state | See next table                     |          |
+
+The `treeNodeSpec` property contains any data about the node's capabilities and its initial state. This keeps the tree-specific data separate from the data of the model itself. This makes it more convenient to drop data into the treeview as-is, potentially with a `modelDefaults` specified on the treeview to define common values used in the `treeNodeSpec` of every node.
+
+| Prop                 | Type     | Description                                                                    | Default value                      | Required |
+|:---------------------|:---------|:-------------------------------------------------------------------------------|:-----------------------------------|:---------|
+| idProperty           | String   | The name of the property with a value that will be used as the node's ID       | `id`                               |          |
+| labelProperty        | String   | The name of the property with a value that will be used as the node's label    | `label`                            |          |
+| childrenProperty     | String   | The name of the property with a value that will be used as the node's subnodes | `children`                         |          |
+| title                | String   | The text of the node's text or label's title attribute                         | `null`                             |          |
+| expandable           | Boolean  | True to show a toggle for expanding nodes' subnode lists                       | `true`                             |          |
+| selectable           | Boolean  | True to allow the node to be selected                                          | `false`                            |          |
+| deletable            | Boolean  | True to allow the node to be deleted                                           | `false`                            |          |
+| focusable            | Boolean  | True to make the node the focus when the treeview is focused                   | See [Aria](#focusable) for details |          |
+| expanderTitle        | String   | The text to use as the title for the expander button                           | `null`                             |          |
+| addChildTitle        | String   | The text to use as the title for the Add Child button                          | `null`                             |          |
+| deleteTitle          | String   | The text to use as the title for the Delete button                             | `null`                             |          |
+| input                | Object   | Contains data specific to the node's `input` element                           | `null`                             |          |
+| input.type           | String   | The type of input; valid values are `checkbox` or `radio`                      | -                                  | Yes*     |
+| input.name           | String   | The name attribute of the input; used with `radio` type                        | `'unspecifiedRadioName'`           |          |
+| input.value          | String   | The value attribute of the input; used with `radio` type                       | `label`'s value**                  |          |
+| state                | Object   | Contains the current state of the node                                         | -                                  |          |
+| state.expanded       | Boolean  | True if this node's subnode list is expanded                                   | `false`                            |          |
+| state.selected       | Boolean  | True if the node is selected                                                   | `false`                            |          |
+| state.input          | Object   | Contains any state related to the input field                                  | `{}` for checkbox, otherwise -     |          |
+| state.input.value    | Boolean  | Contains the value of the input                                                | `false` for checkbox, otherwise -  |          |
+| state.input.disabled | Boolean  | True if the node's input field is disabled                                     | `false`                            |          |
+| customizations       | Object   | A [customizations](#customizing-the-treeview) object                           | `{}`                               |          |
+| addChildCallback     | Function | An async function that resolves to a new node model                            | `null`                             |          |
 
 \* If `input.type` is not supplied, `input` is forced to `null`.
 
-\*\* If `input.value` is not supplied, it defaults to `label`'s value replaced with `label.replace(/[\s&<>"'\/]/g, '')`
+\*\* If `input.value` is not supplied, it defaults to the node's label value replaced with the regular expression `/[\s&<>"'\/]/g, ''`
 
 ## Default Data
 
-If specified, the `modelDefaults` property of the treeview will be merged with node model data such that any data not explicitly specified for the node will be set to the value from `modelDefaults`. This is useful for situations where all (or most) nodes will use the same values. For instance, in a treeview that is all enabled, collapsed, unchecked checkboxes the user could use a `modelDefaults` of
+If specified, the `modelDefaults` property of the treeview will be merged with node model's `treeNodeSpec` data such that any data not explicitly specified for the node will be set to the value from `modelDefaults`. This is useful for situations where all (or most) nodes will use the same values. For instance, in a treeview that is all enabled, collapsed, unchecked checkboxes the user could use a `modelDefaults` of
 
 ```javascript
 {
@@ -273,7 +295,7 @@ The display of the treeview can be customized via CSS using the following classe
 
 ### Customizations Property
 
-It's often helpful to be able to make adjustments to the markup or styles for the tree. You can provide an object to the `modelDefaults.customizations` property of the tree to set a customization affecting all nodes, or to the `customizations` property of a single node. Node-specific customizations will override `modelDefault` customizations.
+It's often helpful to be able to make adjustments to the markup or styles for the tree. You can provide an object to the `modelDefaults.customizations` property of the tree to set a customization affecting all nodes, or to the `treeNodeSpec.customizations` property of a single node. Node-specific customizations will override `modelDefault` customizations.
 
 A customizations object may have the following properties:
 
@@ -310,13 +332,13 @@ Sometimes the entire content of a node (_e.g._, the checkbox or text) needs cust
 | Slot Name | Description                                           | Props                                                                                              |
 |:----------|:------------------------------------------------------|:---------------------------------------------------------------------------------------------------|
 | text      | Replaces the span used for non-input content          | model - The TreeViewNode's model                                                                   |
-|           |                                                       | customClasses - Any custom classes specified in `customizations`                                   |
+|           |                                                       | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
 | checkbox  | Replaces the label and content used for checkboxes    | model - The TreeViewNode's model                                                                   |
-|           |                                                       | customClasses - Any custom classes specified in `customizations`                                   |
+|           |                                                       | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
 |           |                                                       | inputId - The ID for the input (as generated by the TreeViewNode)                                  |
 |           |                                                       | checkboxChangeHandler - The handler for checkbox change events. You should fire this on `change`.  |
 | radio     | Replaces the label and content used for radio buttons | model - The TreeViewNode's model                                                                   |
-|           |                                                       | customClasses - Any custom classes specified in `customizations`                                   |
+|           |                                                       | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
 |           |                                                       | inputId - The ID for the input (as generated by the TreeViewNode)                                  |
 |           |                                                       | radioChangeHandler - The handler for radio button change events. You should fire this on `change`. |
 
@@ -325,27 +347,27 @@ Example usage:
 ```html
 <tree-view id="customtree" :initial-model="model">
   <template #text="{ model, customClasses }">
-    <marquee :title="model.title" <!-- The tree view node's model is available -->
+    <marquee :title="model.treeNodeSpec.title" <!-- The tree view node's model is available -->
               class="tree-view-node-self-text" <!-- Built in classes and overrides are available -->
               :class="customClasses.treeViewNodeSelfText">
-          {{ model.label }}
+          {{ model[model.treeNodeSpec.labelProperty] }}
     <marquee>
   </template>
 
   <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
     <label :for="inputId"
-        :title="model.title"
+        :title="model.treeNodeSpec.title"
         class="tree-view-node-self-label"
         :class="customClasses.treeViewNodeSelfLabel">
 
       <input :id="inputId" <!-- The generated inputId for the node is available -->
              class="my-awesome-checkbox-class"
              type="checkbox"
-             :disabled="model.state.input.disabled"
-             v-model="model.state.input.value"
+             :disabled="model.treeNodeSpec.state.input.disabled"
+             v-model="model.treeNodeSpec.state.input.value"
              @change="checkboxChangeHandler" /> <!-- The TreeViewNode change handler is available -->
 
-      <blink>{{ "Slotted Content for " + model.label }}</blink>
+      <blink>{{ "Slotted Content for " + model[model.treeNodeSpec.labelProperty] }}</blink>
     </label>
   </template>
 </tree-view>
@@ -378,7 +400,7 @@ The keys used to navigate the treeview can be customized using the `customAriaKe
 
 ### Focusable
 
-The treeview uses a roaming tab index to maintain focusability in the tree. A node model can specify a `focusable` property of `true` in order for that node to be used as the initial target of keyboard focus within the treeview. If multiple node models specify this then only the first will have `focusable` set to `true` once the treeview is intialized. If no models have it specified then the first selected node in the treeview is given a `focusable` of `true`. If there are no selected nodes then the first node in the treeview is given a `focusable` of `true`.
+The treeview uses a roaming tab index to maintain focusability in the tree. A node model can specify a `treeNodeSpec.focusable` property of `true` in order for that node to be used as the initial target of keyboard focus within the treeview. If multiple node models specify this then only the first will have `treeNodeSpec.focusable` set to `true` once the treeview is intialized. If no models have it specified then the first selected node in the treeview is given a `treeNodeSpec.focusable` of `true`. If there are no selected nodes then the first node in the treeview is given a `treeNodeSpec.focusable` of `true`.
 
 ### More about ARIA TreeViews
 

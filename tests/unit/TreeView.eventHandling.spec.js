@@ -112,7 +112,7 @@ describe('TreeView.vue (event handling)', () => {
         });
 
         it('deselects other selected nodes', () => {
-          expect(wrapper.vm.model[1].state.selected).to.be.false;
+          expect(wrapper.vm.model[1].treeNodeSpec.state.selected).to.be.false;
         });
       });
 
@@ -124,7 +124,7 @@ describe('TreeView.vue (event handling)', () => {
         });
 
         it('does not deselect other selected nodes', () => {
-          expect(wrapper.vm.model[1].state.selected).to.be.true;
+          expect(wrapper.vm.model[1].treeNodeSpec.state.selected).to.be.true;
         });
       });
     });

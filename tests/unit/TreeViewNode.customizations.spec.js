@@ -20,10 +20,7 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
-    childrenPropNames: ['children'],
-    idPropNames: ['id'],
     initialModel: generateNodes(['ces'], radioState)[0],
-    labelPropNames: ['label'],
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
@@ -80,10 +77,7 @@ describe('TreeViewNode.vue (customizations)', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
-        childrenPropNames: ['children'],
-        idPropNames: ['id'],
         initialModel,
-        labelPropNames: ['label'],
         modelDefaults: { customizations },
         depth: 0,
         treeId: 'tree',
@@ -201,10 +195,7 @@ describe('TreeViewNode.vue (customizations)', () => {
         wrapper = createWrapper(
           {
             ariaKeyMap: {},
-            childrenPropNames: ['children'],
-            idPropNames: ['id'],
             initialModel,
-            labelPropNames: ['label'],
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',
@@ -240,10 +231,7 @@ describe('TreeViewNode.vue (customizations)', () => {
         wrapper = createWrapper(
           {
             ariaKeyMap: {},
-            childrenPropNames: ['children'],
-            idPropNames: ['id'],
             initialModel,
-            labelPropNames: ['label'],
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',
@@ -291,10 +279,7 @@ describe('TreeViewNode.vue (customizations)', () => {
         wrapper = createWrapper(
           {
             ariaKeyMap: {},
-            childrenPropNames: ['children'],
-            idPropNames: ['id'],
             initialModel,
-            labelPropNames: ['label'],
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',

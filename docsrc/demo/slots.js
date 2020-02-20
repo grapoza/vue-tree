@@ -2,35 +2,56 @@ export default [
   {
     id: 'node1',
     label: 'Checkbox Node',
-    input: {
-      type: 'checkbox',
-      name: 'checkbox1'
-    },
-    state: {
+    children: [],
+    treeNodeSpec: {
+      customizations: {
+        classes: {
+          treeViewNode: 'beep'
+        }
+      },
       input: {
-        value: false,
-        disabled: false
+        type: 'checkbox',
+        name: 'checkbox1'
+      },
+      state: {
+        input: {
+          value: false,
+          disabled: false
+        }
       }
-    },
-    children: []
+    }
   },
   {
     id: 'node2',
     label: 'Radiobutton Node',
-    input: {
-      type: 'radio',
-      name: 'radiobutton1'
-    },
-    state: {
+    treeNodeSpec: {
+      customizations: {
+        classes: {
+          treeViewNode: 'boop'
+        }
+      },
       input: {
-        value: false,
-        disabled: false
+        type: 'radio',
+        name: 'radiobutton1'
+      },
+      state: {
+        input: {
+          value: false,
+          disabled: false
+        }
       }
     }
   },
   {
     id: 'node3',
     label: 'Text Node',
-    children: []
+    children: [],
+    treeNodeSpec: {
+      customizations: {
+        classes: {
+          treeViewNode: 'plop'
+        }
+      },
+    }
   }
 ];

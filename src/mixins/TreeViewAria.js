@@ -46,28 +46,28 @@ export default {
       // If one is found, set any subsequent to false.
       let firstSelectedNode = null;
       this.$_treeView_depthFirstTraverse((node) => {
-        if (node.focusable) {
+        if (node.treeNodeSpec.focusable) {
           if (this.focusableNodeModel) {
-            node.focusable = false;
+            node.treeNodeSpec.focusable = false;
           }
           else {
             this.$set(this, 'focusableNodeModel', node);
           }
         }
-        if (this.selectionMode !== null && firstSelectedNode === null && node.state.selected) {
+        if (this.selectionMode !== null && firstSelectedNode === null && node.treeNodeSpec.state.selected) {
           firstSelectedNode = node;
         }
       });
 
       if (!this.focusableNodeModel) {
         this.$set(this, 'focusableNodeModel', firstSelectedNode || this.model[0]);
-        this.$set(this.focusableNodeModel, 'focusable', true);
+        this.$set(this.focusableNodeModel.treeNodeSpec, 'focusable', true);
       }
 
       // Also default the selection to the focused node if no selected node was found
       // and the selection mode is selectionFollowsFocus.
-      if (firstSelectedNode === null && this.focusableNodeModel.selectable && this.selectionMode === 'selectionFollowsFocus') {
-        this.focusableNodeModel.state.selected = true;
+      if (firstSelectedNode === null && this.focusableNodeModel.treeNodeSpec.selectable && this.selectionMode === 'selectionFollowsFocus') {
+        this.focusableNodeModel.treeNodeSpec.state.selected = true;
       }
 
       this.$_treeViewNode_enforceSelectionMode();
@@ -87,41 +87,41 @@ export default {
       else if (this.selectionMode === 'selectionFollowsFocus') {
         // Make sure the actual focused item is selected if the mode changes, and deselect all others
         this.$_treeView_depthFirstTraverse((node) => {
-          let idPropName = this.$_treeView_getIdPropName(node);
-          let focusableIdPropName = this.$_treeView_getIdPropName(this.focusableNodeModel);
+          let idPropName = node.treeNodeSpec.idProperty;
+          let focusableIdPropName = this.focusableNodeModel.treeNodeSpec.idProperty;
           if (node[idPropName] === this.focusableNodeModel[focusableIdPropName]) {
-            if (node.selectable) {
-              node.state.selected = true;
+            if (node.treeNodeSpec.selectable) {
+              node.treeNodeSpec.state.selected = true;
             }
           }
-          else if (node.state.selected) {
-            node.state.selected = false;
+          else if (node.treeNodeSpec.state.selected) {
+            node.treeNodeSpec.state.selected = false;
           }
         });
       }
     },
     $_treeViewAria_handleFocusableChange(newNodeModel) {
       if (this.focusableNodeModel) {
-        this.focusableNodeModel.focusable = false;
+        this.focusableNodeModel.treeNodeSpec.focusable = false;
       }
 
       this.$set(this, 'focusableNodeModel', newNodeModel);
     },
     $_treeViewAria_focusFirstNode() {
-      this.model[0].focusable = true;
+      this.model[0].treeNodeSpec.focusable = true;
     },
     $_treeViewAria_focusLastNode() {
       let lastModel = this.model[this.model.length - 1];
-      let lastModelChildren = lastModel[this.$_treeView_getChildrenPropName(lastModel)];
-      while (lastModelChildren.length > 0 && lastModel.expandable && lastModel.state.expanded) {
+      let lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
+      while (lastModelChildren.length > 0 && lastModel.treeNodeSpec.expandable && lastModel.treeNodeSpec.state.expanded) {
         lastModel = lastModelChildren[lastModelChildren.length - 1];
-        lastModelChildren = lastModel[this.$_treeView_getChildrenPropName(lastModel)];
+        lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
       }
 
-      lastModel.focusable = true;
+      lastModel.treeNodeSpec.focusable = true;
     },
     $_treeViewAria_handleNodeDeletion(node) {
-      if (node.focusable) {
+      if (node.treeNodeSpec.focusable) {
         if (this.model.indexOf(node) === 0) {
           if (this.model.length > 0) {
             this.$_treeViewAria_handleNextFocus(node);
@@ -138,13 +138,13 @@ export default {
       let childIndex = this.model.indexOf(childNode);
       if (childIndex > 0) {
         let lastModel = this.model[childIndex - 1];
-        let lastModelChildren = lastModel[this.$_treeView_getChildrenPropName(lastModel)];
-        while (lastModelChildren.length > 0 && lastModel.expandable && lastModel.state.expanded) {
+        let lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
+        while (lastModelChildren.length > 0 && lastModel.treeNodeSpec.expandable && lastModel.treeNodeSpec.state.expanded) {
           lastModel = lastModelChildren[lastModelChildren.length - 1];
-          lastModelChildren = lastModel[this.$_treeView_getChildrenPropName(lastModel)];
+          lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
         }
 
-        lastModel.focusable = true;
+        lastModel.treeNodeSpec.focusable = true;
       }
     },
     $_treeViewAria_handleNextFocus(childNode, ignoreChild) {
@@ -152,13 +152,13 @@ export default {
       // If the node has a next sibling, focus that
       // Otherwise, do nothing
       let childIndex = this.model.indexOf(childNode);
-      let childNodeChildren = childNode[this.$_treeView_getChildrenPropName(childNode)];
+      let childNodeChildren = childNode[childNode.treeNodeSpec.childrenProperty];
 
-      if (!ignoreChild && childNodeChildren.length > 0 && childNode.expandable && childNode.state.expanded) {
-        childNodeChildren[0].focusable = true;
+      if (!ignoreChild && childNodeChildren.length > 0 && childNode.treeNodeSpec.expandable && childNode.treeNodeSpec.state.expanded) {
+        childNodeChildren[0].treeNodeSpec.focusable = true;
       }
       else if (childIndex < this.model.length - 1) {
-        this.model[childIndex + 1].focusable = true;
+        this.model[childIndex + 1].treeNodeSpec.focusable = true;
       }
     }
   }

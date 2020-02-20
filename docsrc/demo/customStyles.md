@@ -39,7 +39,7 @@ First, let's look at the default styles. There's not much to see here, since the
       methods: {
         addChildCallback(parentModel) {
           this.childCounter++;
-          return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, deletable: true });
+          return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
         }
       }
     }).$mount('#app-default');
@@ -83,7 +83,7 @@ Some simple customizations can be done by applying custom classes to various par
       methods: {
         addChildCallback(parentModel) {
           this.childCounter++;
-          return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, deletable: true });
+          return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
         }
       }
     }).$mount('#app-classbased');
@@ -130,7 +130,7 @@ In this example, a treeview has been given a `skin-class` prop value of `graysca
       methods: {
         addChildCallback(parentModel) {
           this.childCounter++;
-          return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, deletable: true });
+          return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
         }
       }
     }).$mount('#app-gray');
