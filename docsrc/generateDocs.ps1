@@ -33,11 +33,11 @@ Foreach-Object {
         $outfile = Join-Path -Path $outdir -ChildPath ($_.BaseName + ".html")
 
         # Invoke (&) the pandoc command; check here for either Windows or *nix separator
-        if ($outfile.Contains("\demo\") -or $outfile.Contains("/demo/")) {
-            & pandoc -s --template=templates/base.html5 --metadata-file=metadata.yaml -V site-root=$siteRoot -o $outfile metadata.demo.yaml $_.FullName
+        if ($outfile.Contains("\demo\") -or $outfile.Contains("/demo/") -or $_.Name.Equals("demos.md")) {
+            & pandoc -s --template=templates/base.html5 --metadata-file=metadata.yaml --toc -V site-root=$siteRoot -o $outfile metadata.demo.yaml $_.FullName
         }
         else {
-            & pandoc -s --template=templates/base.html5 --metadata-file=metadata.yaml -V site-root=$siteRoot -o $outfile $_.FullName
+            & pandoc -s --template=templates/base.html5 --metadata-file=metadata.yaml --toc -V site-root=$siteRoot -o $outfile $_.FullName
         }
     }
     else {

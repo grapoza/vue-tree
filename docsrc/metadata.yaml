@@ -6,7 +6,9 @@ dir: ltr
 pagetitle: vue-tree
 title: vue-tree
 subtitle: Yet another Vue treeview implementation.
-css: /style/docs.css
+css:
+- /style/docs.css
+- /style/codeFormatting.css
 showgithub: true
 githuburl: https://github.com/grapoza/vue-tree
 ...
