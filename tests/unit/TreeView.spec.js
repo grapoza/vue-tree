@@ -112,7 +112,12 @@ describe('TreeView.vue', () => {
     });
 
     it('should return nodes matched by the function argument', () => {
-      let nodes = wrapper.vm.getMatching((nodeModel) => nodeModel.expandable && nodeModel.state.expanded && nodeModel.selectable && nodeModel.state.selected);
+      let nodes = wrapper.vm.getMatching((nodeModel) =>
+        nodeModel.treeNodeSpec.expandable
+        && nodeModel.treeNodeSpec.state.expanded
+        && nodeModel.treeNodeSpec.selectable
+        && nodeModel.treeNodeSpec.state.selected);
+
       expect(nodes.length).to.equal(1);
     });
   });
@@ -156,8 +161,8 @@ describe('TreeView.vue', () => {
     });
 
     it('should only keep the selectable=true state for the first node with that in the initial model', () => {
-      expect(wrapper.vm.model[1].state.selected).to.be.true;
-      expect(wrapper.vm.model[1].children[1].state.selected).to.be.false;
+      expect(wrapper.vm.model[1].treeNodeSpec.state.selected).to.be.true;
+      expect(wrapper.vm.model[1].children[1].treeNodeSpec.state.selected).to.be.false;
     });
   });
 
@@ -180,39 +185,6 @@ describe('TreeView.vue', () => {
 
     it('should have an aria-multiselectable attribute of true', () => {
       expect(wrapper.vm.$el.attributes['aria-multiselectable'].value).to.equal('true');
-    });
-  });
-
-  describe('when idPropNames is not specified', () => {
-
-    beforeEach(() => {
-      wrapper = createWrapper();
-    });
-
-    it('has a default value of ["id"]', () => {
-      expect(wrapper.vm.idPropNames).to.eql(['id']);
-    });
-  });
-
-  describe('when labelPropNames is not specified', () => {
-
-    beforeEach(() => {
-      wrapper = createWrapper();
-    });
-
-    it('has a default value of ["label"]', () => {
-      expect(wrapper.vm.labelPropNames).to.eql(['label']);
-    });
-  });
-
-  describe('when childrenPropNames is not specified', () => {
-
-    beforeEach(() => {
-      wrapper = createWrapper();
-    });
-
-    it('has a default value of ["children"]', () => {
-      expect(wrapper.vm.childrenPropNames).to.eql(['children']);
     });
   });
 });

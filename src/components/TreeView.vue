@@ -4,14 +4,11 @@
       role="tree"
       :aria-multiselectable="ariaMultiselectable">
     <tree-view-node v-for="(nodeModel) in model"
-                    :key="nodeModel.id"
+                    :key="nodeModel[nodeModel.treeNodeSpec && nodeModel.treeNodeSpec.idProperty ? nodeModel.treeNodeSpec.idProperty : 'id']"
                     :aria-key-map="ariaKeyMap"
-                    :children-prop-names="childrenPropNames"
                     :depth="0"
                     :model-defaults="modelDefaults"
-                    :id-prop-names="idPropNames"
                     :initial-model="nodeModel"
-                    :label-prop-names="labelPropNames"
                     :selection-mode="selectionMode"
                     :tree-id="uniqueId"
                     :radio-group-values="radioGroupValues"
@@ -55,33 +52,9 @@
       TreeViewNode,
     },
     props: {
-      childrenPropNames: {
-        type: Array,
-        required: false,
-        default: function () { return ["children"]; },
-        validator: function (value) {
-          return value.length > 0 && value.every(e => typeof e === 'string');
-        }
-      },
-      idPropNames: {
-        type: Array,
-        required: false,
-        default: function () { return ["id"]; },
-        validator: function (value) {
-          return value.length > 0 && value.every(e => typeof e === 'string');
-        }
-      },
       initialModel: {
         type: Array,
         required: true
-      },
-      labelPropNames: {
-        type: Array,
-        required: false,
-        default: function () { return ["label"]; },
-        validator: function (value) {
-          return value.length > 0 && value.every(e => typeof e === 'string');
-        }
       },
       modelDefaults: {
         type: Object,
@@ -104,7 +77,7 @@
       skinClass: {
         type: String,
         required: false,
-        default: "default-tree-view-skin",
+        default: 'default-tree-view-skin',
         validator: function (value) {
           return value === null || !value.match(/\s/);
         }
@@ -118,6 +91,8 @@
     },
     computed: {
       ariaMultiselectable() {
+        // If there's no selectionMode, return a boolean so aria-multiselectable isn't included.
+        // Otherwise, return either the string 'true' or 'false' as the attribute's value.
         return this.selectionMode === null ? false : (this.selectionMode === 'multiple').toString();
       }
     },
@@ -127,10 +102,16 @@
     },
     methods: {
       getCheckedCheckboxes() {
-        return this.getMatching((current) => current.input && current.input.type === 'checkbox' && current.state.input.value);
+        return this.getMatching((current) =>
+          current.treeNodeSpec.input
+          && current.treeNodeSpec.input.type === 'checkbox'
+          && current.treeNodeSpec.state.input.value);
       },
       getCheckedRadioButtons() {
-        return this.getMatching((current) => current.input && current.input.type === 'radio' && this.radioGroupValues[current.input.name] === current.input.value);
+        return this.getMatching((current) =>
+          current.treeNodeSpec.input
+          && current.treeNodeSpec.input.type === 'radio'
+          && this.radioGroupValues[current.treeNodeSpec.input.name] === current.treeNodeSpec.input.value);
       },
       getMatching(matcherFunction) {
         let matches = [];
@@ -146,7 +127,7 @@
         return matches;
       },
       getSelected() {
-        return this.selectionMode === null ? [] : this.getMatching((current) => current.selectable && current.state.selected);
+        return this.selectionMode === null ? [] : this.getMatching((current) => current.treeNodeSpec.selectable && current.treeNodeSpec.state.selected);
       },
       $_treeView_depthFirstTraverse(nodeActionCallback) {
         if (this.model.length === 0) {
@@ -160,7 +141,7 @@
           let current = nodeQueue.shift();
 
           // Push children to the front (depth first traversal)
-          let childrenPropName = this.$_treeView_getChildrenPropName(current);
+          let childrenPropName = current.treeNodeSpec.childrenProperty;
           if (Array.isArray(current[childrenPropName])) {
             nodeQueue = current[childrenPropName].concat(nodeQueue);
           }
@@ -168,14 +149,6 @@
           // Use a return value of false to halt calling the callback on further nodes.
           continueCallbacks = nodeActionCallback(current);
         }
-      },
-      $_treeView_getChildrenPropName(node) {
-        // Should refactor at some point; this is also a computed in TreeViewNode.vue
-        return this.childrenPropNames.find(pn => Array.isArray(node[pn])) || 'children';
-      },
-      $_treeView_getIdPropName(node) {
-        // Should refactor at some point; this is also a method in TreeViewNode.vue
-        return this.idPropNames.find(pn => typeof node[pn] === 'number' || typeof node[pn] === 'string');
       },
       $_treeView_handleChildDeletion(node, event) {
         // Remove the node from the array of children if this is an immediate child.
@@ -192,10 +165,10 @@
         // For single selection mode, unselect any other selected node.
         // For selectionFollowsFocus mode, selection state is handled in TreeViewAria.$_treeViewAria_handleFocusableChange.
         // In all cases this emits treeViewNodeSelectedChange for the node parameter.
-        if (this.selectionMode === "single" && node.state.selected) {
+        if (this.selectionMode === "single" && node.treeNodeSpec.state.selected) {
           this.$_treeView_depthFirstTraverse((current) => {
-            if (current.state.selected && current.id !== node.id) {
-              current.state.selected = false;
+            if (current.treeNodeSpec.state.selected && current.id !== node.id) {
+              current.treeNodeSpec.state.selected = false;
               return false;
             }
             return true;
@@ -209,9 +182,9 @@
         if (this.selectionMode === 'single') {
           let alreadyFoundSelected = false;
           this.$_treeView_depthFirstTraverse((node) => {
-            if (node.state && node.state.selected === true) {
+            if (node.treeNodeSpec.state && node.treeNodeSpec.state.selected === true) {
               if (alreadyFoundSelected) {
-                node.state.selected = false;
+                node.treeNodeSpec.state.selected = false;
               }
               else {
                 alreadyFoundSelected = true;

@@ -8,8 +8,8 @@
  *  `[eE]?[sS]?[d]?[f]?[[cCrR]!?]?`
  *
  * This identifies if the node is:
- *  e: expandable. If capitalized, state.expanded is set to true.
- *  s: selectable. If capitalized, state.selected is set to true.
+ *  e: expandable. If capitalized, .treeNodeSpec.state.expanded is set to true.
+ *  s: selectable. If capitalized, .treeNodeSpec.state.selected is set to true.
  *  d: deletable
  *  f: focusable
  *  c: is a checkbox node. If capitalized, it's checked. If followed by '!', it's disabled. Cannot be used with 'r'.
@@ -41,46 +41,51 @@ export function generateNodes(nodeSpec, radioState, baseId = "", addChildCallbac
             prevNode = {
                 id: idString,
                 label: 'Node ' + index,
-                expandable: lowerItem.includes('e'),
-                selectable: lowerItem.includes('s'),
-                deletable: lowerItem.includes('d'),
-                focusable: lowerItem.includes('f'),
-                input: lowerItem.includes('c')
-                    ? { type: 'checkbox', name: `${idString}-cbx` }
-                    : lowerItem.includes('r')
-                        ? { type: 'radio', name: `${baseId || 'root'}-rb`, value: `${idString}-val` }
-                        : null,
-                state: {
-                    expanded: item.includes('E'),
-                    selected: item.includes('S')
-                },
-                addChildCallback,
-                children: []
+                children: [],
+                treeNodeSpec: {
+                    childrenProperty: 'children',
+                    idProperty: 'id',
+                    labelProperty: 'label',
+                    expandable: lowerItem.includes('e'),
+                    selectable: lowerItem.includes('s'),
+                    deletable: lowerItem.includes('d'),
+                    focusable: lowerItem.includes('f'),
+                    input: lowerItem.includes('c')
+                        ? { type: 'checkbox', name: `${idString}-cbx` }
+                        : lowerItem.includes('r')
+                            ? { type: 'radio', name: `${baseId || 'root'}-rb`, value: `${idString}-val` }
+                            : null,
+                    state: {
+                        expanded: item.includes('E'),
+                        selected: item.includes('S')
+                    },
+                    addChildCallback
+                }
             };
 
             // Set up input state if needed
-            if (prevNode.input) {
+            if (prevNode.treeNodeSpec.input) {
 
                 // Disable inputs
-                prevNode.state.input = {
+                prevNode.treeNodeSpec.state.input = {
                     disabled: item.includes('!')
                 };
 
                 // Set up checkbox state
                 if (lowerItem.includes('c')) {
-                    prevNode.state.input.value = item.includes('C')
+                    prevNode.treeNodeSpec.state.input.value = item.includes('C')
                 }
 
                 // Set up the radiobutton state in the radioState
                 if (lowerItem.includes('r')) {
-                    if (!radioState.hasOwnProperty(prevNode.input.name)) {
-                        radioState[prevNode.input.name] = null;
+                    if (!radioState.hasOwnProperty(prevNode.treeNodeSpec.input.name)) {
+                        radioState[prevNode.treeNodeSpec.input.name] = null;
                     }
 
                     // Radio button selectedness can also be specified in the normal way by providing
                     // the radio button data to the TreeView's radioGroupValues prop.
                     if (item.includes('R')) {
-                        radioState[prevNode.input.name] = prevNode.input.value;
+                        radioState[prevNode.treeNodeSpec.input.name] = prevNode.treeNodeSpec.input.value;
                     }
                 }
             }

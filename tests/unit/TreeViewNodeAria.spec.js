@@ -20,10 +20,7 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
-    childrenPropNames: ['children'],
-    idPropNames: ['id'],
     initialModel: generateNodes(['cs'], radioState)[0],
-    labelPropNames: ['label'],
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
@@ -68,7 +65,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     });
 
     it('has a tabindex of 0 if focusable', async () => {
-      wrapper.vm.model.focusable = true;
+      wrapper.vm.model.treeNodeSpec.focusable = true;
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.$el.attributes.tabindex.value).to.equal('0');
     });
@@ -97,18 +94,15 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
-        childrenPropNames: ['children'],
         depth: 0,
-        idPropNames: ['id'],
         initialModel,
-        labelPropNames: ['label'],
         modelDefaults: {},
         radioGroupValues: {}
       });
     });
 
     it('should have a boolean focusable property on the model', () => {
-      expect(wrapper.vm.model.focusable).to.be.a('boolean');
+      expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.a('boolean');
     });
   });
 
@@ -121,7 +115,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     });
 
     it('should have focusable set to true', () => {
-      expect(wrapper.vm.model.focusable).to.be.true;
+      expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
     });
 
     it('should focus the node', () => {
@@ -144,7 +138,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     });
 
     it('should have focusable set to true', () => {
-      expect(wrapper.vm.model.focusable).to.be.true;
+      expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
     });
   });
 
@@ -157,7 +151,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     });
 
     it('should have state.selected set to true', () => {
-      expect(wrapper.vm.model.state.selected).to.be.false;
+      expect(wrapper.vm.model.treeNodeSpec.state.selected).to.be.false;
     });
   });
 
@@ -170,7 +164,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     });
 
     it('should have state.selected set to true', () => {
-      expect(wrapper.vm.model.state.selected).to.be.true;
+      expect(wrapper.vm.model.treeNodeSpec.state.selected).to.be.true;
     });
   });
 
@@ -260,7 +254,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             wrapper = createWrapper();
-            wrapper.vm.model.state.input.disabled = true;
+            wrapper.vm.model.treeNodeSpec.state.input.disabled = true;
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
           });
 
@@ -295,7 +289,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         });
 
         it('should not toggle state.selected', () => {
-          expect(wrapper.vm.model.state.selected).to.be.false;
+          expect(wrapper.vm.model.treeNodeSpec.state.selected).to.be.false;
         });
       });
 
@@ -309,7 +303,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         });
 
         it('should toggle state.selected', () => {
-          expect(wrapper.vm.model.state.selected).to.be.true;
+          expect(wrapper.vm.model.treeNodeSpec.state.selected).to.be.true;
         });
       });
     });
@@ -328,7 +322,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           it('expands the node', () => {
             expect(wrapper.emitted().treeViewNodeExpandedChange).to.be.an('array').that.has.length(1);
-            expect(wrapper.vm.model.state.expanded).to.be.true;
+            expect(wrapper.vm.model.treeNodeSpec.state.expanded).to.be.true;
           });
         });
 
@@ -342,7 +336,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           it('focuses the first child', () => {
             expect(wrapper.emitted().treeViewNodeAriaFocusable).to.be.an('array').that.has.length(1);
-            expect(wrapper.vm.model.children[0].focusable).to.be.true;
+            expect(wrapper.vm.model.children[0].treeNodeSpec.focusable).to.be.true;
           });
         });
       });
@@ -375,7 +369,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           it('focuses the parent node', () => {
             expect(wrapper.find('.tree-view-node-children').find(TreeViewNode).emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
-            expect(wrapper.vm.model.focusable).to.be.true;
+            expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
           });
         });
 
@@ -389,7 +383,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           it('collapses the node', () => {
             expect(wrapper.emitted().treeViewNodeExpandedChange).to.be.an('array').that.has.length(1);
-            expect(wrapper.vm.model.focusable).to.be.true;
+            expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
           });
         });
       });
@@ -404,7 +398,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         it('focuses the parent node', () => {
           expect(wrapper.find('.tree-view-node-children').find(TreeViewNode).emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
-          expect(wrapper.vm.model.focusable).to.be.true;
+          expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
         });
       });
     });
@@ -534,7 +528,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       });
 
       it('should set this node as focusable', () => {
-        expect(wrapper.vm.model.focusable).to.be.true;
+        expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
       });
     });
 
@@ -548,7 +542,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       });
 
       it('sets the last child of the previous sibling node as focusable', () => {
-        expect(wrapper.vm.model.children[0].children[1].focusable).to.be.true;
+        expect(wrapper.vm.model.children[0].children[1].treeNodeSpec.focusable).to.be.true;
       });
     });
 
@@ -562,7 +556,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       });
 
       it('sets the previous sibling node as focusable', () => {
-        expect(wrapper.vm.model.children[0].focusable).to.be.true;
+        expect(wrapper.vm.model.children[0].treeNodeSpec.focusable).to.be.true;
       });
     });
   });
@@ -584,7 +578,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         });
 
         it('should set its first child as focusable', () => {
-          expect(wrapper.vm.model.children[0].children[0].focusable).to.be.true;
+          expect(wrapper.vm.model.children[0].children[0].treeNodeSpec.focusable).to.be.true;
         });
       });
 
@@ -600,7 +594,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           });
 
           it('should set the next sibling as focusable', () => {
-            expect(wrapper.vm.model.children[1].focusable).to.be.true;
+            expect(wrapper.vm.model.children[1].treeNodeSpec.focusable).to.be.true;
           });
         });
 
@@ -633,7 +627,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         });
 
         it('should set the next sibling as focusable', () => {
-          expect(wrapper.vm.model.children[1].focusable).to.be.true;
+          expect(wrapper.vm.model.children[1].treeNodeSpec.focusable).to.be.true;
         });
       });
 

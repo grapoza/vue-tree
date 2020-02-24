@@ -12,28 +12,28 @@ This page demonstrates slotted content. [See the data used](./slots.js).
 <div id="app">
     <tree id="customtree" :initial-model="model">
         <template v-slot:text="{ model, customClasses }">
-            <span>{{ model.label }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
+            <span>{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
         </template>
         <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
-            <label :for="inputId" :title="model.title">
+            <label :for="inputId" :title="model.treeNodeSpec.title">
                 <input :id="inputId"
                        type="checkbox"
-                       :disabled="model.state.input.disabled"
-                       v-model="model.state.input.value"
+                       :disabled="model.treeNodeSpec.state.input.disabled"
+                       v-model="model.treeNodeSpec.state.input.value"
                        v-on:change="checkboxChangeHandler" />
-                <marquee style="max-width: 6rem">{{ model.label }}. Custom Classes: {{ JSON.stringify(customClasses) }}</marquee>
+                <marquee style="max-width: 6rem">{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</marquee>
             </label>
         </template>
         <template v-slot:radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
-            <label :for="inputId" :title="model.title">
+            <label :for="inputId" :title="model.treeNodeSpec.title">
                 <input :id="inputId"
                        type="radio"
-                       :name="model.input.name"
-                       :value="model.input.value"
-                       :disabled="model.state.input.disabled"
+                       :name="model.treeNodeSpec.input.name"
+                       :value="model.treeNodeSpec.input.value"
+                       :disabled="model.treeNodeSpec.state.input.disabled"
                        v-model="inputModel"
                        v-on:change="radioChangeHandler" />
-                <span style="font-weight: bolder">{{ model.label }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
+                <span style="font-weight: bolder">{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
             </label>
         </template>
     </tree>

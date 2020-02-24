@@ -20,10 +20,7 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
-    childrenPropNames: ['children'],
-    idPropNames: ['id'],
     initialModel: generateNodes(['ces'], radioState)[0],
-    labelPropNames: ['label'],
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
@@ -76,7 +73,7 @@ describe('TreeViewNode.vue (interactions)', () => {
       });
 
       it('should toggle the selected state', () => {
-        expect(wrapper.vm.model.state.selected).to.be.true;
+        expect(wrapper.vm.model.treeNodeSpec.state.selected).to.be.true;
       });
     });
 
@@ -89,7 +86,7 @@ describe('TreeViewNode.vue (interactions)', () => {
       });
 
       it('should not toggle the selected state', () => {
-        expect(wrapper.vm.model.state.selected).to.be.false;
+        expect(wrapper.vm.model.treeNodeSpec.state.selected).to.be.false;
       });
     });
   });
@@ -117,10 +114,7 @@ describe('TreeViewNode.vue (interactions)', () => {
       let radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
-        childrenPropNames: ['children'],
-        idPropNames: ['id'],
         initialModel: generateNodes(['ces', ['ces']], radioState)[0],
-        labelPropNames: ['label'],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -132,7 +126,7 @@ describe('TreeViewNode.vue (interactions)', () => {
 
     it('should toggle the expanded state', () => {
       expander.trigger('click');
-      expect(wrapper.vm.model.state.expanded).to.be.true;
+      expect(wrapper.vm.model.treeNodeSpec.state.expanded).to.be.true;
     });
 
     it('should emit the treeViewNodeExpandedChange event', () => {
@@ -162,7 +156,7 @@ describe('TreeViewNode.vue (interactions)', () => {
 
     it('should toggle the input value state', () => {
       checkbox.setChecked();
-      expect(wrapper.vm.model.state.input.value).to.be.true;
+      expect(wrapper.vm.model.treeNodeSpec.state.input.value).to.be.true;
     });
 
     it('should emit the treeViewNodeCheckboxChange event', () => {
@@ -190,10 +184,7 @@ describe('TreeViewNode.vue (interactions)', () => {
       radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
-        childrenPropNames: ['children'],
-        idPropNames: ['id'],
         initialModel: generateNodes(['res'], radioState)[0],
-        labelPropNames: ['label'],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -206,7 +197,7 @@ describe('TreeViewNode.vue (interactions)', () => {
     it('should toggle the input value state', () => {
       radioButton.setChecked();
       let model = wrapper.vm.model;
-      expect(wrapper.vm.radioGroupValues[model.input.name]).to.equal(model.input.value);
+      expect(wrapper.vm.radioGroupValues[model.treeNodeSpec.input.name]).to.equal(model.treeNodeSpec.input.value);
     });
 
     it('should emit the treeViewNodeRadioChange event', () => {
@@ -234,10 +225,7 @@ describe('TreeViewNode.vue (interactions)', () => {
       let radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
-        childrenPropNames: ['children'],
-        idPropNames: ['id'],
         initialModel: generateNodes(['es', ['ds']], radioState)[0],
-        labelPropNames: ['label'],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -272,10 +260,7 @@ describe('TreeViewNode.vue (interactions)', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
-          childrenPropNames: ['children'],
-          idPropNames: ['id'],
           initialModel: generateNodes(['esa'], radioState, "", addChildCallback)[0],
-          labelPropNames: ['label'],
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -312,10 +297,7 @@ describe('TreeViewNode.vue (interactions)', () => {
 
         wrapper = createWrapper({
           ariaKeyMap: {},
-          childrenPropNames: ['children'],
-          idPropNames: ['id'],
           initialModel: generateNodes(['esa'], radioState, "", addChildCallback)[0],
-          labelPropNames: ['label'],
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',

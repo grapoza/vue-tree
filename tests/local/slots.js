@@ -2,17 +2,19 @@ export default [
   {
     id: 'node1',
     label: 'Checkbox Node',
-    input: {
-      type: 'checkbox',
-      name: 'checkbox1'
-    },
-    state: {
+    children: [],
+    treeNodeSpec: {
       input: {
-        value: false,
-        disabled: false
+        type: 'checkbox',
+        name: 'checkbox1'
+      },
+      state: {
+        input: {
+          value: false,
+          disabled: false
+        }
       }
-    },
-    children: []
+    }
   },
   {
     id: 'node2',

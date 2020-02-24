@@ -2,41 +2,28 @@ export default [
   {
     id: 'node1',
     label: 'My First Node',
-    expandable: true,
-    selectable: true,
-    deletable: true,
-    input: {
-      type: 'checkbox',
-      name: 'checkbox1'
-    },
-    state: {
-      expanded: false,
-      selected: false,
+    children: [],
+    treeNodeSpec: {
+      expandable: true,
+      selectable: true,
+      deletable: true,
       input: {
-        value: false,
-        disabled: false
+        type: 'checkbox',
+        name: 'checkbox1'
+      },
+      state: {
+        expanded: false,
+        selected: false,
+        input: {
+          value: false,
+          disabled: false
+        }
       }
-    },
-    children: []
+    }
   },
   {
     id: 'node2',
     label: 'My Second Node',
-    title: 'My second node, and its fantastic title',
-    expandable: true,
-    selectable: true,
-    input: {
-      type: 'checkbox',
-      name: 'checkbox2'
-    },
-    state: {
-      expanded: true,
-      selected: false,
-      input: {
-        value: false,
-        disabled: false
-      }
-    },
     children: [
       {
         id: 'subnode1',
@@ -54,20 +41,6 @@ export default [
       {
         id: 'subnode2',
         label: 'This is a checkable, checked subnode',
-        expandable: true,
-        selectable: true,
-        input: {
-          type: 'checkbox',
-          name: 'checkbox3'
-        },
-        state: {
-          expanded: false,
-          selected: false,
-          input: {
-            value: true,
-            disabled: true
-          }
-        },
         children: [
           {
             id: 'subsubnode1',
@@ -84,8 +57,41 @@ export default [
               return Promise.resolve(entry ? { id: entry, label: entry, deletable: true, selectable: true } : null);
             }
           }
-        ]
+        ],
+        treeNodeSpec: {
+          expandable: true,
+          selectable: true,
+          input: {
+            type: 'checkbox',
+            name: 'checkbox3'
+          },
+          state: {
+            expanded: false,
+            selected: false,
+            input: {
+              value: true,
+              disabled: true
+            }
+          }
+        }
       }
-    ]
+    ],
+    treeNodeSpec: {
+      title: 'My second node, and its fantastic title',
+      expandable: true,
+      selectable: true,
+      input: {
+        type: 'checkbox',
+        name: 'checkbox2'
+      },
+      state: {
+        expanded: true,
+        selected: false,
+        input: {
+          value: false,
+          disabled: false
+        }
+      }
+    }
   }
 ];
