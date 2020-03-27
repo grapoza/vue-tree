@@ -304,8 +304,12 @@
        * Normalizes the data model to the format consumable by TreeViewNode.
        */
       $_treeViewNode_normalizeNodeData() {
+        // The target model must have a treeNodeSpec property to assign defaults into
+        if (!this.$_treeViewNode_isProbablyObject(this.model.treeNodeSpec)) {
+          this.$set(this.model, 'treeNodeSpec', {});
+        }
 
-        this.$_treeViewNode_assignDefaultProps(this.modelDefaults, this.model);
+        this.$_treeViewNode_assignDefaultProps(this.modelDefaults, this.model.treeNodeSpec);
 
         // Set expected properties if not provided
         if (typeof this.model.treeNodeSpec.childrenProperty !== 'string') {
@@ -421,31 +425,31 @@
       },
       $_treeViewNode_assignDefaultProps(source, target) {
 
-        // The target model must have a treeNodeSpec property to assign defaults into
-        if (!this.$_treeViewNode_isProbablyObject(target.treeNodeSpec)) {
-          this.$set(target, 'treeNodeSpec', {});
-        }
-
         // Make sure the defaults is an object
         if (this.$_treeViewNode_isProbablyObject(source)) {
 
           // Use a copy of the source, since the props can be fubar'd by the assigns
           const sourceCopy = JSON.parse(JSON.stringify(source));
 
-          // Assign defaults into the model
-          Object.assign(sourceCopy, target.treeNodeSpec);
-          Object.assign(target.treeNodeSpec, sourceCopy);
+          // Assign existing values into the source
+          Object.assign(sourceCopy, target);
 
-          // Find object properties to deep assign them
-          // and find function properties and assign if missing in target
           for (const propName of Object.keys(source)) {
-            const propValue = source[propName];
+            // Functions are lost on the JSON copy, so snag the original.
+            const propValue = typeof source[propName] === 'function' ? source[propName] : sourceCopy[propName];
 
             if (this.$_treeViewNode_isProbablyObject(propValue)) {
-              this.$_treeViewNode_assignDefaultProps(propValue, target.treeNodeSpec[propName]);
+              // Find object properties to deep assign them
+              this.$set(target, propName, target[propName] || {});
+              this.$_treeViewNode_assignDefaultProps(propValue, target[propName]);
             }
-            else if (typeof propValue === 'function' && !target.treeNodeSpec[propName]) {
-              target.treeNodeSpec[propName] = propValue;
+            else if (typeof propValue === 'function' && !target[propName]) {
+              // Find function properties and assign if missing in target.
+              target[propName] = propValue;
+            }
+            else {
+              // Otherwise, copy from the source to the target.
+              this.$set(target, propName, propValue);
             }
           }
         }
