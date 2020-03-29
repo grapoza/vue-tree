@@ -14,11 +14,6 @@ $if(keywords)$
   <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
 $endif$
   <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
-$if(highlighting-css)$
-  <style>
-$highlighting-css$
-  </style>
-$endif$
 $for(css)$
   <link rel="stylesheet" href="$if(site-root)$$site-root$$endif$$css$" />
 $endfor$
@@ -28,45 +23,61 @@ $endif$
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
+  <script>
+  document.createElement('main'); // For IE 11 to recognize main
+  </script>
 $for(header-includes)$
   $header-includes$
 $endfor$
 </head>
+
 <body>
 $for(include-before)$
 $include-before$
 $endfor$
+
 $if(title)$
 <header id="title-block-header">
-<div class="header-inner">
-$if(showgithub)$
-<a id="github-banner" href="$githuburl$">View on GitHub</a>
-$endif$
-<h1 class="title"><a href="$if(site-root)$$site-root$$endif$/">$title$</a></h1>
-$if(subtitle)$
-<p class="subtitle">$subtitle$</p>
-$endif$
-$for(author)$
-<p class="author">$author$</p>
-$endfor$
-$if(date)$
-<p class="date">$date$</p>
-$endif$
-</div>
+  <div class="header-inner">
+  $if(showgithub)$
+  <a id="github-banner" href="$githuburl$">View on GitHub</a>
+  $endif$
+  <h1 class="title"><a href="$if(site-root)$$site-root$$endif$/">$title$</a></h1>
+  $if(subtitle)$
+  <p class="subtitle">$subtitle$</p>
+  $endif$
+  $for(author)$
+  <p class="author">$author$</p>
+  $endfor$
+  $if(date)$
+  <p class="date">$date$</p>
+  $endif$
+  </div>
 </header>
 $endif$
+
 <div class="content">
-$if(toc)$
-<nav id="$idprefix$TOC" role="doc-toc">
-$table-of-contents$
-</nav>
-$endif$
-<main>
-$body$
-$for(include-after)$
-$include-after$
-$endfor$
-</main>
+  <nav id="sitenav" aria-labelledby="site-navigation">
+  <h2 id="site-navigation">Site Navigation</h2>
+  <ul>
+  <li><a href="/">Home</a></li>
+  <li><a href="/demos.html">Demos</a></li>
+  </ul>
+  </nav>
+
+  $if(toc)$
+  <nav id="$idprefix$TOC" role="doc-toc" aria-labelledby="toc-navigation">
+  <h2 id="toc-navigation">Table of Contents</h2>
+  $table-of-contents$
+  </nav>
+  $endif$
+
+  <main>
+  $body$
+  $for(include-after)$
+  $include-after$
+  $endfor$
+  </main>
 </div>
 </body>
 </html>

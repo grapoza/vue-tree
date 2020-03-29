@@ -49,12 +49,12 @@ The specs are organized in a fairly standard hierarchy. Each test file should ha
 describe('myComponent', () => {
     describe('when beeping', () => {
         describe('and booping', () => {
-            it('should beep-boop'() => {
+            it('should beep-boop', () => {
             });
         });
 
         describe('and not booping', () => {
-            it('should not beep-boop'() => {
+            it('should not beep-boop', () => {
             });
         });
     });

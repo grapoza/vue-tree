@@ -85,9 +85,9 @@ export default {
   data() {
     return {
       dataModel: [
-        {id: "numberOrString", label: "Root Node", children: [
-          {id: 1, label: "Child Node"},
-          {id: "node2", label: "Second Child"}]
+        { id: "numberOrString", label: "Root Node", children: [
+          { id: 1, label: "Child Node" },
+          { id: "node2", label: "Second Child" }]
         }]
     }
   }

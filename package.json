@@ -29,15 +29,15 @@
     "vue": "2.6.11"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "4.1.2",
-    "@vue/cli-plugin-unit-mocha": "4.1.2",
-    "@vue/cli-service": "4.1.2",
+    "@vue/cli-plugin-babel": "4.2.3",
+    "@vue/cli-plugin-unit-mocha": "4.2.3",
+    "@vue/cli-service": "4.2.3",
     "@vue/test-utils": "1.0.0-beta.31",
     "chai": "4.2.0",
     "node-sass": "4.13.1",
     "sass-loader": "8.0.2",
     "vue-template-compiler": "2.6.11",
-    "webpack": "4.41.5"
+    "webpack": "4.41.6"
   },
   "browserslist": [
     "defaults"
