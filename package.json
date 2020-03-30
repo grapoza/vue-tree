@@ -4,6 +4,7 @@
   "author": "Gregg Rapoza <grapoza@gmail.com>",
   "license": "MIT",
   "version": "2.0.0",
+  "main": "dist/vue-tree.umd.min.js",
   "browser": "index.js",
   "repository": {
     "url": "https://github.com/grapoza/vue-tree",
