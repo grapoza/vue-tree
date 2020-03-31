@@ -83,7 +83,7 @@ describe('TreeView.vue', () => {
   describe('when getCheckedCheckboxes() is called', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']], {}) });
+      wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]) });
     });
 
     it('should return checked checkbox nodes', () => {
@@ -95,8 +95,13 @@ describe('TreeView.vue', () => {
   describe('when getCheckedRadioButtons() is called', () => {
 
     beforeEach(() => {
-      let radioGroupValues = {};
-      wrapper = createWrapper({ initialModel: generateNodes(['ers', 'eRs', ['eRs', 'ers']], radioGroupValues), radioGroupValues });
+      let nodes = generateNodes(['ers', 'eRs', ['eRs', 'ers']]);
+      wrapper = createWrapper({ initialModel: nodes });
+
+      // Fake the setup of the radio storage since we're shallow mounting
+      wrapper.vm.$set(wrapper.vm, 'radioGroupValues', {});
+      wrapper.vm.$set(wrapper.vm.radioGroupValues, nodes[1].treeNodeSpec.input.name, nodes[1].treeNodeSpec.input.value);
+      wrapper.vm.$set(wrapper.vm.radioGroupValues, nodes[1].children[0].treeNodeSpec.input.name, nodes[1].children[0].treeNodeSpec.input.value);
     });
 
     it('should return checked radiobutton nodes', () => {
@@ -108,7 +113,7 @@ describe('TreeView.vue', () => {
   describe('when getMatching() is called', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'ES', ['es', 'eS']], {}), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'ES', ['es', 'eS']]), selectionMode: 'multiple' });
     });
 
     it('should return nodes matched by the function argument', () => {
@@ -125,7 +130,7 @@ describe('TreeView.vue', () => {
   describe('when getSelected() is called', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']], {}), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: 'multiple' });
     });
 
     it('should return selected nodes', () => {
@@ -137,7 +142,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is null', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']], {}), selectionMode: null });
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: null });
     });
 
     it('should not have an aria-multiselectable attribute', () => {
@@ -153,7 +158,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is `single`', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']], {}), selectionMode: 'single' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: 'single' });
     });
 
     it('should have an aria-multiselectable attribute of false', () => {
@@ -169,7 +174,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is `selectionFollowsFocus`', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']], {}), selectionMode: 'selectionFollowsFocus' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: 'selectionFollowsFocus' });
     });
 
     it('should have an aria-multiselectable attribute of false', () => {
@@ -180,7 +185,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is `multiple`', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']], {}), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: 'multiple' });
     });
 
     it('should have an aria-multiselectable attribute of true', () => {

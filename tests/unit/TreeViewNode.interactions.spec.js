@@ -6,7 +6,6 @@ import { generateNodes } from '../data/node-generator.js';
 const localVue = createLocalVue();
 
 const getDefaultPropsData = function () {
-  let radioState = {};
   return {
     ariaKeyMap: {
       activateItem: [32], // Space
@@ -20,11 +19,11 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
-    initialModel: generateNodes(['ces'], radioState)[0],
+    initialModel: generateNodes(['ces'])[0],
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
-    radioGroupValues: radioState,
+    initialRadioGroupValues: {},
     selectionMode: 'multiple'
   }
 };
@@ -111,14 +110,13 @@ describe('TreeViewNode.vue (interactions)', () => {
     let expander = null;
 
     beforeEach(() => {
-      let radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['ces', ['ces']], radioState)[0],
+        initialModel: generateNodes(['ces', ['ces']])[0],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        radioGroupValues: radioState
+        initialRadioGroupValues: {}
       });
 
       expander = wrapper.find('#' + wrapper.vm.expanderId);
@@ -178,17 +176,15 @@ describe('TreeViewNode.vue (interactions)', () => {
   describe('when the node\'s radiobutton is toggled', () => {
 
     let radioButton = null;
-    let radioState = null;
 
     beforeEach(() => {
-      radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['res'], radioState)[0],
+        initialModel: generateNodes(['res'])[0],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        radioGroupValues: radioState
+        initialRadioGroupValues: {}
       });
 
       radioButton = wrapper.find('#' + wrapper.vm.inputId);
@@ -222,14 +218,13 @@ describe('TreeViewNode.vue (interactions)', () => {
 
 
     beforeEach(() => {
-      let radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['es', ['ds']], radioState)[0],
+        initialModel: generateNodes(['es', ['ds']])[0],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        radioGroupValues: radioState
+        initialRadioGroupValues: {}
       });
 
       deleteButton = wrapper.find('#' + wrapper.vm.$children[0].nodeId + '-delete');
@@ -253,18 +248,17 @@ describe('TreeViewNode.vue (interactions)', () => {
     describe('and the callback resolves to node data', () => {
 
       beforeEach(() => {
-        let radioState = {};
         let addChildCallback = () => {
           return Promise.resolve({ id: 'newId', label: 'new label' });
         };
 
         wrapper = createWrapper({
           ariaKeyMap: {},
-          initialModel: generateNodes(['esa'], radioState, "", addChildCallback)[0],
+          initialModel: generateNodes(['esa'], "", addChildCallback)[0],
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          radioGroupValues: radioState
+          initialRadioGroupValues: {}
         });
 
         addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
@@ -290,18 +284,17 @@ describe('TreeViewNode.vue (interactions)', () => {
     describe('and the callback does not resolve to node data', () => {
 
       beforeEach(() => {
-        let radioState = {};
         let addChildCallback = () => {
           return Promise.resolve(null);
         };
 
         wrapper = createWrapper({
           ariaKeyMap: {},
-          initialModel: generateNodes(['esa'], radioState, "", addChildCallback)[0],
+          initialModel: generateNodes(['esa'], "", addChildCallback)[0],
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          radioGroupValues: radioState
+          initialRadioGroupValues: {}
         });
 
         addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');

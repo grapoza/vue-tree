@@ -105,7 +105,6 @@ To see it in action, try out the [demos](demos.html).
 | initialModel      | Array    | The data model containing [model data](#model-data)                                                | -                                 | Yes      |
 | customAriaKeyMap  | Object   | An object, the properties of which are arrays to keyCodes for various actions                      | See [Aria](#setting-key-bindings) |          |
 | modelDefaults     | Object   | An object containing defaults for all nodes that do not specify the given properties               | `{}`                              |          |
-| radioGroupValues  | Object   | An object, the properties of which correspond to radio button group selections                     | `{}`                              |          |
 | selectionMode     | String   | How selection should operate (see [Selection Mode](#selection-mode))                               | `null` (cannot select nodes)      |          |
 | skinClass         | String   | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins))               | `"default-tree-view-skin"`        |          |
 
@@ -168,14 +167,15 @@ The `treeNodeSpec` of the objects in the data model passed to the treeview's `in
     selectable: false,
     input: {
       type: 'radio',
-      name: 'rbGroup1',  // Used as the name attribute for the radio button
-      value: 'thisValue' // Used as the value attribute for the radio button
+      name: 'rbGroup1',   // Used as the name attribute for the radio button
+      value: 'thisValue', // Used as the value attribute for the radio button
+      isInitialRadioGroupValue: true // Indicates this should be the initially selected value for the group
     },
     state: {
       expanded: true,
       selected: false
       // No input.value here; to let complex radio button groupings work, state value is
-      // bound to a tree-level property. input.disabled, however, is valid here for radio buttons.
+      // bound to an internal tree-level property. input.disabled, however, is valid here for radio buttons.
     },
     addChildCallback: () => Promise.resolve({ id: '1', label: 'label' })
   }
@@ -210,6 +210,7 @@ The `treeNodeSpec` property contains any data about the node's capabilities and 
 | input.type           | String   | The type of input; valid values are `checkbox` or `radio`                      | -                                  | Yes*     |
 | input.name           | String   | The name attribute of the input; used with `radio` type                        | `'unspecifiedRadioName'`           |          |
 | input.value          | String   | The value attribute of the input; used with `radio` type                       | `label`'s value**                  |          |
+| input.isInitialRadioGroupValue | Boolean | Indicates this should be the initially selected value for the group   | `null`                             |          |
 | state                | Object   | Contains the current state of the node                                         | -                                  |          |
 | state.expanded       | Boolean  | True if this node's subnode list is expanded                                   | `false`                            |          |
 | state.selected       | Boolean  | True if the node is selected                                                   | `false`                            |          |

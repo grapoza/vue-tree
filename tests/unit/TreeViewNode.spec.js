@@ -6,14 +6,13 @@ import { generateNodes } from '../data/node-generator.js';
 const localVue = createLocalVue();
 
 const getDefaultPropsData = function () {
-  let radioState = {};
   return {
     ariaKeyMap: {},
-    initialModel: generateNodes(['ces'], radioState)[0],
+    initialModel: generateNodes(['ces'])[0],
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
-    radioGroupValues: radioState,
+    initialRadioGroupValues: {},
     selectionMode: 'multiple'
   }
 };
@@ -46,7 +45,7 @@ describe('TreeViewNode.vue', () => {
         depth: 0,
         initialModel,
         modelDefaults: {},
-        radioGroupValues: {}
+        initialRadioGroupValues: {}
       });
     });
 
@@ -81,7 +80,7 @@ describe('TreeViewNode.vue', () => {
             selected: true
           }
         },
-        radioGroupValues: {},
+        initialRadioGroupValues: {},
         selectionMode: 'multiple'
       });
     });
@@ -104,7 +103,7 @@ describe('TreeViewNode.vue', () => {
         depth: 0,
         initialModel: { id: 'my-node', label: 'My Node', treeNodeSpec: { title: 'My Title' } },
         modelDefaults: {},
-        radioGroupValues: {}
+        initialRadioGroupValues: {}
       });
     });
 
@@ -154,13 +153,12 @@ describe('TreeViewNode.vue', () => {
   describe('when not passed a tree ID', () => {
 
     beforeEach(() => {
-      let radioState = {};
       wrapper = createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['ces'], radioState)[0],
+        initialModel: generateNodes(['ces'])[0],
         modelDefaults: {},
         depth: 0,
-        radioGroupValues: radioState
+        initialRadioGroupValues: {}
       });
     });
 
@@ -182,15 +180,13 @@ describe('TreeViewNode.vue', () => {
     let addChildButton = null;
 
     beforeEach(() => {
-      let radioState = {};
-
       wrapper = createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['es'], radioState)[0],
+        initialModel: generateNodes(['es'])[0],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        radioGroupValues: radioState
+        initialRadioGroupValues: {}
       });
 
       addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
@@ -206,18 +202,17 @@ describe('TreeViewNode.vue', () => {
     let addChildButton = null;
 
     beforeEach(() => {
-      let radioState = {};
       let addChildCallback = () => {
         return Promise.resolve(null);
       };
 
       wrapper = createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['esa'], radioState, "", addChildCallback)[0],
+        initialModel: generateNodes(['esa'], "", addChildCallback)[0],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        radioGroupValues: radioState
+        initialRadioGroupValues: {}
       });
 
       addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
@@ -233,18 +228,17 @@ describe('TreeViewNode.vue', () => {
     let addChildButton = null;
 
     beforeEach(() => {
-      let radioState = {};
       let addChildCallback = () => {
         return Promise.resolve(null);
       };
 
       wrapper = createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['esa'], radioState)[0],
+        initialModel: generateNodes(['esa'])[0],
         modelDefaults: { addChildCallback },
         depth: 0,
         treeId: 'tree',
-        radioGroupValues: radioState
+        initialRadioGroupValues: {}
       });
 
       addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
@@ -258,8 +252,7 @@ describe('TreeViewNode.vue', () => {
   describe('when a node\'s model is disabled', () => {
 
     beforeEach(() => {
-      let radioState = {};
-      let initialModel = generateNodes(['ces!'], radioState)[0];
+      let initialModel = generateNodes(['ces!'])[0];
 
       wrapper = createWrapper({
         ariaKeyMap: {},
@@ -267,7 +260,7 @@ describe('TreeViewNode.vue', () => {
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        radioGroupValues: radioState
+        initialRadioGroupValues: {}
       });
     });
 
@@ -295,8 +288,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(() => {
 
-        let radioState = {};
-        let initialModel = generateNodes(['es', ['es']], radioState)[0];
+        let initialModel = generateNodes(['es', ['es']])[0];
 
         wrapper = createWrapper({
           ariaKeyMap: {},
@@ -304,7 +296,7 @@ describe('TreeViewNode.vue', () => {
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          radioGroupValues: radioState
+          initialRadioGroupValues: {}
         });
       });
 
@@ -334,8 +326,7 @@ describe('TreeViewNode.vue', () => {
 
         beforeEach(() => {
 
-          let radioState = {};
-          let initialModel = generateNodes(['Es', ['es']], radioState)[0];
+          let initialModel = generateNodes(['Es', ['es']])[0];
 
           wrapper = createWrapper({
             ariaKeyMap: {},
@@ -343,7 +334,7 @@ describe('TreeViewNode.vue', () => {
             modelDefaults: {},
             depth: 0,
             treeId: 'tree',
-            radioGroupValues: radioState
+            initialRadioGroupValues: {}
           });
         });
 
@@ -367,8 +358,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(() => {
 
-        let radioState = {};
-        let initialModel = generateNodes(['es'], radioState)[0];
+        let initialModel = generateNodes(['es'])[0];
 
         wrapper = createWrapper({
           ariaKeyMap: {},
@@ -376,7 +366,7 @@ describe('TreeViewNode.vue', () => {
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          radioGroupValues: radioState
+          initialRadioGroupValues: {}
         });
       });
 
@@ -391,8 +381,7 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(() => {
 
-      let radioState = {};
-      let initialModel = generateNodes(['s', ['es']], radioState)[0];
+      let initialModel = generateNodes(['s', ['es']])[0];
 
       wrapper = createWrapper({
         ariaKeyMap: {},
@@ -400,7 +389,7 @@ describe('TreeViewNode.vue', () => {
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        radioGroupValues: radioState
+        initialRadioGroupValues: {}
       });
     });
 
@@ -418,8 +407,7 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(() => {
 
-      let radioState = {};
-      let initialModel = generateNodes(['S'], radioState)[0];
+      let initialModel = generateNodes(['S'])[0];
 
       wrapper = createWrapper({
         ariaKeyMap: {},
@@ -427,7 +415,7 @@ describe('TreeViewNode.vue', () => {
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        radioGroupValues: radioState,
+        initialRadioGroupValues: {},
         selectionMode: null
       });
     });
@@ -441,8 +429,7 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(() => {
 
-      let radioState = {};
-      let initialModel = generateNodes([''], radioState)[0];
+      let initialModel = generateNodes([''])[0];
 
       wrapper = createWrapper({
         ariaKeyMap: {},
@@ -450,7 +437,7 @@ describe('TreeViewNode.vue', () => {
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        radioGroupValues: radioState,
+        initialRadioGroupValues: {},
         selectionMode: 'multiple'
       });
     });
@@ -466,8 +453,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(() => {
 
-        let radioState = {};
-        let initialModel = generateNodes(['S'], radioState)[0];
+        let initialModel = generateNodes(['S'])[0];
 
         wrapper = createWrapper({
           ariaKeyMap: {},
@@ -475,7 +461,7 @@ describe('TreeViewNode.vue', () => {
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          radioGroupValues: radioState,
+          initialRadioGroupValues: {},
           selectionMode: 'single'
         });
       });
@@ -489,8 +475,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(() => {
 
-        let radioState = {};
-        let initialModel = generateNodes(['s'], radioState)[0];
+        let initialModel = generateNodes(['s'])[0];
 
         wrapper = createWrapper({
           ariaKeyMap: {},
@@ -498,7 +483,7 @@ describe('TreeViewNode.vue', () => {
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          radioGroupValues: radioState,
+          initialRadioGroupValues: {},
           selectionMode: 'single'
         });
       });
@@ -515,8 +500,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(() => {
 
-        let radioState = {};
-        let initialModel = generateNodes(['S'], radioState)[0];
+        let initialModel = generateNodes(['S'])[0];
 
         wrapper = createWrapper({
           ariaKeyMap: {},
@@ -524,7 +508,7 @@ describe('TreeViewNode.vue', () => {
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          radioGroupValues: radioState,
+          initialRadioGroupValues: {},
           selectionMode: 'selectionFollowsFocus'
         });
       });
@@ -538,8 +522,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(() => {
 
-        let radioState = {};
-        let initialModel = generateNodes(['s'], radioState)[0];
+        let initialModel = generateNodes(['s'])[0];
 
         wrapper = createWrapper({
           ariaKeyMap: {},
@@ -547,7 +530,7 @@ describe('TreeViewNode.vue', () => {
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          radioGroupValues: radioState,
+          initialRadioGroupValues: {},
           selectionMode: 'selectionFollowsFocus'
         });
       });
@@ -564,8 +547,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(() => {
 
-        let radioState = {};
-        let initialModel = generateNodes(['S'], radioState)[0];
+        let initialModel = generateNodes(['S'])[0];
 
         wrapper = createWrapper({
           ariaKeyMap: {},
@@ -573,7 +555,7 @@ describe('TreeViewNode.vue', () => {
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          radioGroupValues: radioState,
+          initialRadioGroupValues: {},
           selectionMode: 'multiple'
         });
       });
@@ -587,8 +569,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(() => {
 
-        let radioState = {};
-        let initialModel = generateNodes(['s'], radioState)[0];
+        let initialModel = generateNodes(['s'])[0];
 
         wrapper = createWrapper({
           ariaKeyMap: {},
@@ -596,7 +577,7 @@ describe('TreeViewNode.vue', () => {
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          radioGroupValues: radioState,
+          initialRadioGroupValues: {},
           selectionMode: 'multiple'
         });
       });
@@ -659,7 +640,7 @@ describe('TreeViewNode.vue', () => {
     beforeEach(async () => {
       let defaultProps = getDefaultPropsData();
       wrapper = createWrapper(Object.assign(defaultProps, {
-        initialModel: generateNodes(['sf', ['s', 's']], defaultProps.radioGroupValues)[0]
+        initialModel: generateNodes(['sf', ['s', 's']])[0]
       }));
       wrapper.vm.model.treeNodeSpec.childrenProperty = 'children';
       await wrapper.vm.$nextTick();

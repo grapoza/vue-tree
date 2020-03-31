@@ -97,7 +97,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and no selected nodes', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']], {}), selectionMode: 'multiple' });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]), selectionMode: 'multiple' });
       });
 
       it('should set the first node as focusable', () => {
@@ -108,7 +108,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and selected nodes', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCS', 'ecs']], {}), selectionMode: 'multiple' });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCS', 'ecs']]), selectionMode: 'multiple' });
       });
 
       it('should set the first selected node as focusable', () => {
@@ -122,7 +122,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('always', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf', ['eCsf', 'ecs']], {}), selectionMode: 'multiple' });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf', ['eCsf', 'ecs']]), selectionMode: 'multiple' });
       });
 
       it('should keep that node as focusable', () => {
@@ -139,7 +139,7 @@ describe('TreeView.vue (ARIA)', () => {
       describe('and a selectable focusable node', () => {
 
         beforeEach(() => {
-          wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf'], {}), selectionMode: 'selectionFollowsFocus' });
+          wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']), selectionMode: 'selectionFollowsFocus' });
         });
 
         it('should select the focused node', () => {
@@ -153,7 +153,7 @@ describe('TreeView.vue (ARIA)', () => {
   describe('when handling a focus change', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs'], {}) });
+      wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs']) });
       wrapper.vm.$_treeViewAria_handleFocusableChange(wrapper.vm.model[1]);
     });
 
@@ -169,7 +169,7 @@ describe('TreeView.vue (ARIA)', () => {
   describe('when focusing the first node', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf'], {}) });
+      wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']) });
       wrapper.vm.$_treeViewAria_focusFirstNode();
     });
 
@@ -181,14 +181,14 @@ describe('TreeView.vue (ARIA)', () => {
   describe('when focusing the last node', () => {
 
     it('should focus the last visible node', () => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs'], {}) });
+      wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs']) });
       wrapper.vm.$_treeViewAria_focusLastNode();
 
       expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
     });
 
     it('should ignore non-expanded child nodes', () => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs', ['ecs']], {}) });
+      wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs', ['ecs']]) });
       wrapper.vm.$_treeViewAria_focusLastNode();
 
       expect(wrapper.vm.model[2].treeNodeSpec.focusable).to.be.true;
@@ -200,7 +200,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and the node is not the currently focusable node', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs'], {}) });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs']) });
         wrapper.vm.$_treeViewAria_handleNodeDeletion(wrapper.vm.model[1]);
       });
 
@@ -212,7 +212,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and the node is not the last node', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs'], {}) });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs']) });
         wrapper.vm.$_treeViewAria_handleNodeDeletion(wrapper.vm.model[0]);
       });
 
@@ -224,7 +224,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and the node is the last node', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', 'ecsf'], {}) });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', 'ecsf']) });
         wrapper.vm.$_treeViewAria_handleNodeDeletion(wrapper.vm.model[2]);
       });
 
@@ -239,7 +239,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and the first node is focused', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs'], {}) });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs']) });
         wrapper.vm.$_treeViewAria_handlePreviousFocus(wrapper.vm.model[0]);
       });
 
@@ -251,7 +251,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and the previous node does not have any expanded children', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', ['ecs', 'ecs'], 'ecsf'], {}) });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecs', ['ecs', 'ecs'], 'ecsf']) });
         wrapper.vm.$_treeViewAria_handlePreviousFocus(wrapper.vm.model[1]);
       });
 
@@ -263,7 +263,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and the previous node has expanded children', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['Ecs', ['ecs', 'ecs'], 'ecsf'], {}) });
+        wrapper = createWrapper({ initialModel: generateNodes(['Ecs', ['ecs', 'ecs'], 'ecsf']) });
         wrapper.vm.$_treeViewAria_handlePreviousFocus(wrapper.vm.model[1]);
       });
 
@@ -278,7 +278,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and the last node is focused', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf'], {}) });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']) });
         wrapper.vm.$_treeViewAria_handleNextFocus(wrapper.vm.model[1]);
       });
 
@@ -290,7 +290,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and the current node does not have any expanded children', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecsf', ['ecs', 'ecs'], 'ecs'], {}) });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecsf', ['ecs', 'ecs'], 'ecs']) });
         wrapper.vm.$_treeViewAria_handleNextFocus(wrapper.vm.model[0]);
       });
 
@@ -302,7 +302,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and the current node has expanded children', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['Ecsf', ['ecs', 'ecs'], 'ecs'], {}) });
+        wrapper = createWrapper({ initialModel: generateNodes(['Ecsf', ['ecs', 'ecs'], 'ecs']) });
       });
 
       it('sets the first expanded child node as focusable', () => {
@@ -323,7 +323,7 @@ describe('TreeView.vue (ARIA)', () => {
   describe('when selectionMode changes to selectionFollowsFocus', () => {
 
     beforeEach(async () => {
-      wrapper = createWrapper({ initialModel: generateNodes(['Ecsf', ['ecS', 'ecs'], 'ecs'], {}), selectionMode: 'single' });
+      wrapper = createWrapper({ initialModel: generateNodes(['Ecsf', ['ecS', 'ecs'], 'ecs']), selectionMode: 'single' });
       wrapper.setProps({ selectionMode: 'selectionFollowsFocus' });
       await wrapper.vm.$nextTick();
     });

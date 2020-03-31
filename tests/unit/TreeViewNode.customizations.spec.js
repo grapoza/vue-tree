@@ -6,7 +6,6 @@ import { generateNodes } from '../data/node-generator.js';
 const localVue = createLocalVue();
 
 const getDefaultPropsData = function () {
-  let radioState = {};
   return {
     ariaKeyMap: {
       activateItem: [32], // Space
@@ -20,11 +19,11 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
-    initialModel: generateNodes(['ces'], radioState)[0],
+    initialModel: generateNodes(['ces'])[0],
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
-    radioGroupValues: radioState
+    initialRadioGroupValues: {}
   }
 };
 
@@ -72,8 +71,7 @@ describe('TreeViewNode.vue (customizations)', () => {
     };
 
     beforeEach(() => {
-      let radioState = {};
-      let initialModel = generateNodes(['cEdS', ['res', 'esa']], radioState, "", () => Promise.resolve())[0];
+      let initialModel = generateNodes(['cEdS', ['res', 'esa']], "", () => Promise.resolve())[0];
 
       wrapper = createWrapper({
         ariaKeyMap: {},
@@ -81,7 +79,7 @@ describe('TreeViewNode.vue (customizations)', () => {
         modelDefaults: { customizations },
         depth: 0,
         treeId: 'tree',
-        radioGroupValues: radioState,
+        initialRadioGroupValues: {},
         selectionMode: 'single'
       });
     });
@@ -189,8 +187,7 @@ describe('TreeViewNode.vue (customizations)', () => {
       const customClasses = { treeViewNode: 'customnodeclass' };
 
       beforeEach(() => {
-        let radioState = {};
-        let initialModel = generateNodes([''], radioState, "baseId")[0];
+        let initialModel = generateNodes([''], "baseId")[0];
 
         wrapper = createWrapper(
           {
@@ -199,7 +196,7 @@ describe('TreeViewNode.vue (customizations)', () => {
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',
-            radioGroupValues: radioState
+            initialRadioGroupValues: {}
           },
           {
             text: '<span :id="props.model.id" class="text-slot-content"><span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span></span>',
@@ -225,8 +222,7 @@ describe('TreeViewNode.vue (customizations)', () => {
       const customClasses = { treeViewNode: 'customnodeclass' };
 
       beforeEach(() => {
-        let radioState = {};
-        let initialModel = generateNodes(['c'], radioState, "baseId")[0];
+        let initialModel = generateNodes(['c'], "baseId")[0];
 
         wrapper = createWrapper(
           {
@@ -235,7 +231,7 @@ describe('TreeViewNode.vue (customizations)', () => {
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',
-            radioGroupValues: radioState
+            initialRadioGroupValues: {}
           },
           {
             checkbox: `<span :id="props.model.id" class="text-slot-content">
@@ -273,8 +269,7 @@ describe('TreeViewNode.vue (customizations)', () => {
       const customClasses = { treeViewNode: 'customnodeclass' };
 
       beforeEach(() => {
-        let radioState = {};
-        let initialModel = generateNodes(['R'], radioState, "baseId")[0];
+        let initialModel = generateNodes(['R'], "baseId")[0];
 
         wrapper = createWrapper(
           {
@@ -283,7 +278,7 @@ describe('TreeViewNode.vue (customizations)', () => {
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',
-            radioGroupValues: radioState
+            initialRadioGroupValues: {}
           },
           {
             radio: `<span :id="props.model.id" class="text-slot-content">

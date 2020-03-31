@@ -9,7 +9,8 @@ export default [
       input: {
         type: 'radio',
         name: 'radio1',
-        value: 'aValueToSubmit'
+        value: 'aValueToSubmit',
+        isInitialRadioGroupValue: true
       },
       state: {
         expanded: false,
@@ -30,7 +31,8 @@ export default [
           selectable: true,
           input: {
             type: 'radio',
-            name: 'radio2'
+            name: 'radio2',
+            isInitialRadioGroupValue: true
           },
           state: {
             expanded: false,
