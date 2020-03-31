@@ -60,8 +60,8 @@ $endif$
   <nav id="sitenav" aria-labelledby="site-navigation">
   <h2 id="site-navigation">Site Navigation</h2>
   <ul>
-  <li><a href="/">Home</a></li>
-  <li><a href="/demos.html">Demos</a></li>
+  <li><a href="$if(site-root)$$site-root$$endif$/">Home</a></li>
+  <li><a href="$if(site-root)$$site-root$$endif$/demos.html">Demos</a></li>
   </ul>
   </nav>
 
