@@ -297,7 +297,7 @@ Support for checkboxes and radio buttons is built into the treeview.
 
 To create a checkbox node, specify `input.type = 'checkbox'` on the node's `treeNodeSpec`. To initialize the node as checked, specify `state.input.value = true`.
 
-To create a radio button node, specify `input.type = 'radio'` on the node's `treeNodeSpec`, give the node a name using the `input.name` property, and give the node a value using `input.value`. The name will determine the radio button group to which the radio button belongs. The values of the selected radio button within each group are stored at the tree level in the `radioGroupValues`, which is an object that maps the name for a group of radio buttons to the selected node's value. To initialize a node as checked pass a `radioGroupValues` object to the tree with the format `{ matchesGroupInputNameProp: 'matchesNodeInputValueProp' }`.
+To create a radio button node, specify `input.type = 'radio'` on the node's `treeNodeSpec`, give the node a name using the `input.name` property, and give the node a value using `input.value`. The name will determine the radio button group to which the radio button belongs. To initialize a node as checked set the node's `input.isInitialRadioGroupValue` to `true`. If multiple nodes within a radio button group are specified as `isInitialRadioGroupValue`, the last one in wins.
 
 The convenience methods `getCheckedRadioButtons` and `getCheckedCheckboxes` are exposed on the tree component to make it easy to get the nodes that have been checked.
 
@@ -306,7 +306,7 @@ The convenience methods `getCheckedRadioButtons` and `getCheckedCheckboxes` are 
 <summary>
 ```
 ```html
-<tree id="customtree-inputs" :initial-model="model" :radio-group-values="radioGroupValues" ref="treeInputs"></tree>
+<tree id="customtree-inputs" :initial-model="model" ref="treeInputs"></tree>
 ```
 ```{=html5}
 </summary>
@@ -314,7 +314,7 @@ The convenience methods `getCheckedRadioButtons` and `getCheckedCheckboxes` are 
 <!--- The leading spaces are to render the html aligned correctly --->
 ```html
   <div id="app-inputs" class="demo-tree">
-  <tree id="customtree-inputs" :initial-model="model" :radio-group-values="radioGroupValues" ref="treeInputs"></tree>
+  <tree id="customtree-inputs" :initial-model="model" ref="treeInputs"></tree>
   <section id="checked-stuff-inputs">
     <button type="button" class="tree-processor-trigger" v-on:click="refreshCheckedList">What's been checked?</button>
     <ul id="checked-list-inputs">
@@ -339,7 +339,8 @@ The convenience methods `getCheckedRadioButtons` and `getCheckedCheckboxes` are 
               input: {
                 type: 'radio',
                 name: 'radio1',
-                value: 'aValueToSubmit'
+                value: 'aValueToSubmit',
+                isInitialRadioGroupValue: true
               }
             }
           },
@@ -393,8 +394,7 @@ The convenience methods `getCheckedRadioButtons` and `getCheckedCheckboxes` are 
             }
           }
         ],
-        checkedNodes: [],
-        radioGroupValues: { 'radio1': 'aValueToSubmit' }
+        checkedNodes: []
       };
     },
     methods: {
@@ -413,7 +413,7 @@ The convenience methods `getCheckedRadioButtons` and `getCheckedCheckboxes` are 
 
 ```{=html5}
 <div id="app-inputs" class="demo-tree">
-    <tree id="customtree-inputs" :initial-model="model" :radio-group-values="radioGroupValues" ref="treeInputs"></tree>
+    <tree id="customtree-inputs" :initial-model="model" ref="treeInputs"></tree>
     <section id="checked-stuff-inputs">
         <button type="button" class="tree-processor-trigger" v-on:click="refreshCheckedList">What's been checked?</button>
         <ul id="checked-list-inputs">
@@ -437,7 +437,8 @@ The convenience methods `getCheckedRadioButtons` and `getCheckedCheckboxes` are 
                 input: {
                   type: 'radio',
                   name: 'radio1',
-                  value: 'aValueToSubmit'
+                  value: 'aValueToSubmit',
+                  isInitialRadioGroupValue: true
                 }
               }
             },
@@ -491,8 +492,7 @@ The convenience methods `getCheckedRadioButtons` and `getCheckedCheckboxes` are 
               }
             }
           ],
-          checkedNodes: [],
-          radioGroupValues: { 'radio1': 'aValueToSubmit' }
+          checkedNodes: []
         };
       },
       methods: {

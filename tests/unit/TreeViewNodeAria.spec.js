@@ -6,7 +6,6 @@ import { generateNodes } from '../data/node-generator.js';
 const localVue = createLocalVue();
 
 const getDefaultPropsData = function () {
-  let radioState = {};
   return {
     ariaKeyMap: {
       activateItem: [32], // Space
@@ -20,11 +19,11 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
-    initialModel: generateNodes(['cs'], radioState)[0],
+    initialModel: generateNodes(['cs'])[0],
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
-    radioGroupValues: radioState
+    initialRadioGroupValues: {}
   }
 };
 
@@ -78,7 +77,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
       beforeEach(async () => {
         let defaultProps = getDefaultPropsData();
-        wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es', ['es']], defaultProps.radioGroupValues)[0] }));
+        wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es', ['es']])[0] }));
       });
 
       it('has an ARIA role of group on the child list', () => {
@@ -97,7 +96,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         depth: 0,
         initialModel,
         modelDefaults: {},
-        radioGroupValues: {}
+        initialRadioGroupValues: {}
       });
     });
 
@@ -268,7 +267,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es'], defaultProps.radioGroupValues)[0] }));
+          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es'])[0] }));
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
         });
 
@@ -316,7 +315,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['esf', ['s', 's']], defaultProps.radioGroupValues)[0] }));
+            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['esf', ['s', 's']])[0] }));
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
           });
 
@@ -330,7 +329,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Esf', ['s', 's']], defaultProps.radioGroupValues)[0] }));
+            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Esf', ['s', 's']])[0] }));
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
           });
 
@@ -345,7 +344,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['sf', ['s', 's']], defaultProps.radioGroupValues)[0] }));
+          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['sf', ['s', 's']])[0] }));
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
         });
 
@@ -363,7 +362,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esf', ['s']]], defaultProps.radioGroupValues)[0] }));
+            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esf', ['s']]])[0] }));
             await triggerKeydown(wrapper.find('.tree-view-node-children').find(TreeViewNode), wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
           });
 
@@ -377,7 +376,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Esf', ['es']], defaultProps.radioGroupValues)[0] }));
+            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Esf', ['es']])[0] }));
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
           });
 
@@ -392,7 +391,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['sf']], defaultProps.radioGroupValues)[0] }));
+          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['sf']])[0] }));
           await triggerKeydown(wrapper.find('.tree-view-node-children').find(TreeViewNode), wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
         });
 
@@ -470,7 +469,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
           let nodeAddCallback = function () { return Promise.resolve({ id: 100, label: 'labelText' }) };
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['sf'], defaultProps.radioGroupValues, "", nodeAddCallback)[0] }));
+          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['sf'], "", nodeAddCallback)[0] }));
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.insertItem[0]);
         });
 
@@ -499,7 +498,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esdf']], defaultProps.radioGroupValues)[0] }));
+          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esdf']])[0] }));
           await triggerKeydown(wrapper.find('.tree-view-node-children').find(TreeViewNode), wrapper.vm.ariaKeyMap.deleteItem[0]);
         });
 
@@ -521,7 +520,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     describe('and the currently focusable node is the first sibling', () => {
 
       beforeEach(async () => {
-        initialModel = generateNodes(['Es', ['esf']], defaultProps.radioGroupValues)[0];
+        initialModel = generateNodes(['Es', ['esf']])[0];
         wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
         wrapper.vm.$_treeViewNodeAria_handlePreviousFocus(initialModel.children[0]);
         await wrapper.vm.$nextTick();
@@ -535,7 +534,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     describe('and the previous sibling node is expanded', () => {
 
       beforeEach(async () => {
-        initialModel = generateNodes(['Es', ['Es', ['s', 's'], 'sf']], defaultProps.radioGroupValues)[0];
+        initialModel = generateNodes(['Es', ['Es', ['s', 's'], 'sf']])[0];
         wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
         wrapper.vm.$_treeViewNodeAria_handlePreviousFocus(initialModel.children[1]);
         await wrapper.vm.$nextTick();
@@ -549,7 +548,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     describe('and the previous sibling node is not expanded', () => {
 
       beforeEach(async () => {
-        initialModel = generateNodes(['Es', ['es', ['s', 's'], 'sf']], defaultProps.radioGroupValues)[0];
+        initialModel = generateNodes(['Es', ['es', ['s', 's'], 'sf']])[0];
         wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
         wrapper.vm.$_treeViewNodeAria_handlePreviousFocus(initialModel.children[1]);
         await wrapper.vm.$nextTick();
@@ -571,7 +570,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       describe('and its children are not ignored', () => {
 
         beforeEach(async () => {
-          initialModel = generateNodes(['Es', ['Esf', ['s', 's'], 's']], defaultProps.radioGroupValues)[0];
+          initialModel = generateNodes(['Es', ['Esf', ['s', 's'], 's']])[0];
           wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
           wrapper.vm.$_treeViewNodeAria_handleNextFocus(initialModel.children[0], false);
           await wrapper.vm.$nextTick();
@@ -587,7 +586,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         describe('and it has a next sibling', () => {
 
           beforeEach(async () => {
-            initialModel = generateNodes(['Es', ['Esf', ['s', 's'], 's']], defaultProps.radioGroupValues)[0];
+            initialModel = generateNodes(['Es', ['Esf', ['s', 's'], 's']])[0];
             wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
             wrapper.vm.$_treeViewNodeAria_handleNextFocus(initialModel.children[0], true);
             await wrapper.vm.$nextTick();
@@ -601,7 +600,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         describe('and it does not have a next sibling', () => {
 
           beforeEach(async () => {
-            initialModel = generateNodes(['Es', ['Esf', ['s', 's']]], defaultProps.radioGroupValues)[0];
+            initialModel = generateNodes(['Es', ['Esf', ['s', 's']]])[0];
             wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
             wrapper.vm.$_treeViewNodeAria_handleNextFocus(initialModel.children[0], true);
             await wrapper.vm.$nextTick();
@@ -620,7 +619,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       describe('and it has a next sibling', () => {
 
         beforeEach(async () => {
-          initialModel = generateNodes(['Es', ['esf', ['s', 's'], 's']], defaultProps.radioGroupValues)[0];
+          initialModel = generateNodes(['Es', ['esf', ['s', 's'], 's']])[0];
           wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
           wrapper.vm.$_treeViewNodeAria_handleNextFocus(initialModel.children[0], false);
           await wrapper.vm.$nextTick();
@@ -634,7 +633,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       describe('and it does not have a next sibling', () => {
 
         beforeEach(async () => {
-          initialModel = generateNodes(['Es', ['esf', ['s', 's']]], defaultProps.radioGroupValues)[0];
+          initialModel = generateNodes(['Es', ['esf', ['s', 's']]])[0];
           wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
           wrapper.vm.$_treeViewNodeAria_handleNextFocus(initialModel.children[0], false);
           await wrapper.vm.$nextTick();

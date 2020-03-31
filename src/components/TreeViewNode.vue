@@ -149,7 +149,7 @@
                       :parent-id="model[idPropName]"
                       :selection-mode="selectionMode"
                       :tree-id="treeId"
-                      :radio-group-values="radioGroupValues"
+                      :initial-radio-group-values="radioGroupValues"
                       :aria-key-map="ariaKeyMap"
                       @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
                       @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
@@ -200,7 +200,7 @@
         type: Object,
         required: true
       },
-      radioGroupValues: {
+      initialRadioGroupValues: {
         type: Object,
         required: true
       },
@@ -220,8 +220,9 @@
     },
     data() {
       return {
+        elementsThatIgnoreClicks: 'input, .tree-view-node-self-expander, .tree-view-node-self-expander *, .tree-view-node-self-action, .tree-view-node-self-action *',
         model: this.initialModel,
-        elementsThatIgnoreClicks: 'input, .tree-view-node-self-expander, .tree-view-node-self-expander *, .tree-view-node-self-action, .tree-view-node-self-action *'
+        radioGroupValues: this.initialRadioGroupValues
       }
     },
     computed: {
@@ -385,6 +386,10 @@
             }
             if (!this.radioGroupValues.hasOwnProperty(input.name)) {
               this.$set(this.radioGroupValues, input.name, '');
+            }
+
+            if (input.isInitialRadioGroupValue === true) {
+              this.$set(this.radioGroupValues, input.name, input.value);
             }
           }
         }

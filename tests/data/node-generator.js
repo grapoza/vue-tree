@@ -1,8 +1,7 @@
 /**
  * Generates nodes, one per array element that is not itself an array.
  * Array elements that are arrays recursively generate child nodes
- * of the last created node. Additionally, the initial state for radio
- * buttons will be added to the radioState parameter.
+ * of the last created node.
  *
  * The node spec's node string should be matched by the regex:
  *  `[eE]?[sS]?[d]?[f]?[[cCrR]!?]?`
@@ -18,11 +17,10 @@
  * A node that allows adds will use the callback function passed to generateNodes.
  *
  * @param {Array<String, Array>} nodeSpec The node specification array.
- * @param {Object} radioState An object in which the state of radio button groups is generated. Essentially an "out".
  * @param {String} baseId The base string used in the node IDs.
  * @param {Function} addChildCallback A method that returns a Promise that resolves to the node data to add as a subnode.
  */
-export function generateNodes(nodeSpec, radioState, baseId = "", addChildCallback = null) {
+export function generateNodes(nodeSpec, baseId = "", addChildCallback = null) {
     let nodes = [];
     let prevNode = null;
 
@@ -32,7 +30,7 @@ export function generateNodes(nodeSpec, radioState, baseId = "", addChildCallbac
             if (prevNode === null) {
                 return;
             }
-            prevNode.children = generateNodes(item, radioState, prevNode.id, addChildCallback);
+            prevNode.children = generateNodes(item, prevNode.id, addChildCallback);
         }
         else {
             let lowerItem = item.toLowerCase();
@@ -77,16 +75,8 @@ export function generateNodes(nodeSpec, radioState, baseId = "", addChildCallbac
                 }
 
                 // Set up the radiobutton state in the radioState
-                if (lowerItem.includes('r')) {
-                    if (!radioState.hasOwnProperty(prevNode.treeNodeSpec.input.name)) {
-                        radioState[prevNode.treeNodeSpec.input.name] = null;
-                    }
-
-                    // Radio button selectedness can also be specified in the normal way by providing
-                    // the radio button data to the TreeView's radioGroupValues prop.
-                    if (item.includes('R')) {
-                        radioState[prevNode.treeNodeSpec.input.name] = prevNode.treeNodeSpec.input.value;
-                    }
+                if (item.includes('R')) {
+                    prevNode.treeNodeSpec.input.isInitialRadioGroupValue = true;
                 }
             }
 

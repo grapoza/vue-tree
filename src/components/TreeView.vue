@@ -11,7 +11,7 @@
                     :initial-model="nodeModel"
                     :selection-mode="selectionMode"
                     :tree-id="uniqueId"
-                    :radio-group-values="radioGroupValues"
+                    :initial-radio-group-values="radioGroupValues"
                     @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
                     @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
                     @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
@@ -61,11 +61,6 @@
         required: false,
         default: function () { return {}; }
       },
-      radioGroupValues: {
-        type: Object,
-        required: false,
-        default: function () { return {}; }
-      },
       selectionMode: {
         type: String,
         required: false,
@@ -86,7 +81,8 @@
     data() {
       return {
         uniqueId: null,
-        model: this.initialModel
+        model: this.initialModel,
+        radioGroupValues: {}
       };
     },
     computed: {
