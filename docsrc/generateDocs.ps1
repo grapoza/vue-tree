@@ -9,9 +9,15 @@ if (-not [System.String]::IsNullOrEmpty($siteRoot)) {
 
     $metafile = (Join-Path -Path $PSScriptRoot -ChildPath "metadata.demo.yaml")
     # Replace TreeView package references
-    (Get-Content $metafile) -replace 'http://localhost:8082', ( -Join ('https://unpkg.com/@grapoza/vue-tree@', $env:package_version)) | Set-Content $metafile
+    # Replace full JS with minified
     # replace CSS paths
-    (Get-Content $metafile) -replace '/style/demo/', ( -Join ($siteRoot, '/style/demo/')) | Set-Content $metafile
+    (Get-Content $metafile) | ForEach-Object {
+        $_ -replace 'http://localhost:8082', ( -Join ('https://unpkg.com/@grapoza/vue-tree@', $env:package_version)) `
+           -replace 'dist/vue.js',           'dist/vue.min.js' `
+           -replace '/vue-tree.umd.js',      '/vue-tree.umd.min.js' `
+           -replace '/style/demo/',          ( -Join ($siteRoot, '/style/demo/'))
+    } |
+    Set-Content $metafile
 }
 
 Get-ChildItem $PSScriptRoot\*  -Recurse -Include *.md, *.css, *.js, *.png | Where-Object { -not $_.PsIsContainer -and $_.DirectoryName -notmatch 'output' } |
