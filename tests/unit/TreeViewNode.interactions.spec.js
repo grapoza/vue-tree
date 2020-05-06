@@ -24,6 +24,7 @@ const getDefaultPropsData = function () {
     depth: 0,
     treeId: 'tree-id',
     initialRadioGroupValues: {},
+    isMounted: false,
     selectionMode: 'multiple'
   }
 };
@@ -116,7 +117,8 @@ describe('TreeViewNode.vue (interactions)', () => {
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        initialRadioGroupValues: {}
+        initialRadioGroupValues: {},
+        isMounted: false
       });
 
       expander = wrapper.find('#' + wrapper.vm.expanderId);
@@ -184,7 +186,8 @@ describe('TreeViewNode.vue (interactions)', () => {
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        initialRadioGroupValues: {}
+        initialRadioGroupValues: {},
+        isMounted: false
       });
 
       radioButton = wrapper.find('#' + wrapper.vm.inputId);
@@ -224,7 +227,8 @@ describe('TreeViewNode.vue (interactions)', () => {
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        initialRadioGroupValues: {}
+        initialRadioGroupValues: {},
+        isMounted: false
       });
 
       deleteButton = wrapper.find('#' + wrapper.vm.$children[0].nodeId + '-delete');
@@ -258,7 +262,8 @@ describe('TreeViewNode.vue (interactions)', () => {
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          initialRadioGroupValues: {}
+          initialRadioGroupValues: {},
+          isMounted: false
         });
 
         addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
@@ -294,7 +299,8 @@ describe('TreeViewNode.vue (interactions)', () => {
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          initialRadioGroupValues: {}
+          initialRadioGroupValues: {},
+          isMounted: false
         });
 
         addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');

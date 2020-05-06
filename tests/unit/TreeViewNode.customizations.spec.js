@@ -23,7 +23,8 @@ const getDefaultPropsData = function () {
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
-    initialRadioGroupValues: {}
+    initialRadioGroupValues: {},
+    isMounted: false
   }
 };
 
@@ -80,7 +81,8 @@ describe('TreeViewNode.vue (customizations)', () => {
         depth: 0,
         treeId: 'tree',
         initialRadioGroupValues: {},
-        selectionMode: 'single'
+        selectionMode: 'single',
+        isMounted: false
       });
     });
 
@@ -196,7 +198,8 @@ describe('TreeViewNode.vue (customizations)', () => {
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',
-            initialRadioGroupValues: {}
+            initialRadioGroupValues: {},
+            isMounted: false
           },
           {
             text: '<span :id="props.model.id" class="text-slot-content"><span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span></span>',
@@ -231,7 +234,8 @@ describe('TreeViewNode.vue (customizations)', () => {
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',
-            initialRadioGroupValues: {}
+            initialRadioGroupValues: {},
+            isMounted: false
           },
           {
             checkbox: `<span :id="props.model.id" class="text-slot-content">
@@ -278,7 +282,8 @@ describe('TreeViewNode.vue (customizations)', () => {
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',
-            initialRadioGroupValues: {}
+            initialRadioGroupValues: {},
+            isMounted: false
           },
           {
             radio: `<span :id="props.model.id" class="text-slot-content">

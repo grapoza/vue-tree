@@ -15,9 +15,12 @@ export default {
   },
   watch: {
     'model.treeNodeSpec.focusable': function(newValue) {
-      // If focusable is set to true, also focus the treeitem element.
       if (newValue === true) {
-        this.$el.focus();
+        // If focusable is set to true and the tree is mounted in the DOM,
+        // also focus the node's element.
+        if (this.isMounted) {
+          this.$el.focus();
+        }
         this.$emit('treeViewNodeAriaFocusable', this.model);
       }
 
