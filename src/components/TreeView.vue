@@ -11,6 +11,7 @@
                     :initial-model="nodeModel"
                     :selection-mode="selectionMode"
                     :tree-id="uniqueId"
+                    :is-mounted="isMounted"
                     :initial-radio-group-values="radioGroupValues"
                     @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
                     @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
@@ -82,7 +83,8 @@
       return {
         uniqueId: null,
         model: this.initialModel,
-        radioGroupValues: {}
+        radioGroupValues: {},
+        isMounted: false
       };
     },
     computed: {
@@ -95,6 +97,13 @@
     mounted() {
       this.$_treeView_enforceSingleSelectionMode();
       this.$set(this, 'uniqueId', this.$el.id ? this.$el.id : null);
+
+      // Set this in a $nextTick so the focusable watcher
+      // in TreeViewNodeAria fires before isMounted is set.
+      // Otherwise, it steals focus when the tree is mounted.
+      this.$nextTick(() => {
+        this.isMounted = true;
+      });
     },
     methods: {
       getCheckedCheckboxes() {

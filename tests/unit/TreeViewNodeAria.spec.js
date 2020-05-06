@@ -23,18 +23,22 @@ const getDefaultPropsData = function () {
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
-    initialRadioGroupValues: {}
+    initialRadioGroupValues: {},
+    isMounted: false
   }
 };
 
 function createWrapper(customPropsData, slotsData) {
-  return mount(TreeViewNode, {
+  var wrapper = mount(TreeViewNode, {
     sync: false,
     propsData: customPropsData || getDefaultPropsData(),
     localVue,
     scopedSlots: slotsData,
     attachToDocument: true
   });
+
+  wrapper.setProps({ isMounted: true });
+  return wrapper;
 }
 
 async function triggerKeydown(wrapper, keyCode) {
@@ -96,7 +100,8 @@ describe('TreeViewNode.vue (ARIA)', () => {
         depth: 0,
         initialModel,
         modelDefaults: {},
-        initialRadioGroupValues: {}
+        initialRadioGroupValues: {},
+        isMounted: false
       });
     });
 

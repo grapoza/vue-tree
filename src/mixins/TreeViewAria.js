@@ -85,7 +85,7 @@ export default {
         this.$_treeView_enforceSingleSelectionMode();
       }
       else if (this.selectionMode === 'selectionFollowsFocus') {
-        // Make sure the actual focused item is selected if the mode changes, and deselect all others
+        // Make sure the actual focusable item is selected if the mode changes, and deselect all others
         this.$_treeView_depthFirstTraverse((node) => {
           let idPropName = node.treeNodeSpec.idProperty;
           let focusableIdPropName = this.focusableNodeModel.treeNodeSpec.idProperty;
@@ -101,11 +101,13 @@ export default {
       }
     },
     $_treeViewAria_handleFocusableChange(newNodeModel) {
-      if (this.focusableNodeModel) {
-        this.focusableNodeModel.treeNodeSpec.focusable = false;
-      }
+      if (this.focusableNodeModel !== newNodeModel) {
+        if (this.focusableNodeModel) {
+          this.focusableNodeModel.treeNodeSpec.focusable = false;
+        }
 
-      this.$set(this, 'focusableNodeModel', newNodeModel);
+        this.$set(this, 'focusableNodeModel', newNodeModel);
+      }
     },
     $_treeViewAria_focusFirstNode() {
       this.model[0].treeNodeSpec.focusable = true;

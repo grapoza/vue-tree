@@ -151,6 +151,7 @@
                       :tree-id="treeId"
                       :initial-radio-group-values="radioGroupValues"
                       :aria-key-map="ariaKeyMap"
+                      :is-mounted="isMounted"
                       @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
                       @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
                       @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
@@ -194,6 +195,10 @@
       },
       initialModel: {
         type: Object,
+        required: true
+      },
+      isMounted: {
+        type: Boolean,
         required: true
       },
       modelDefaults: {
@@ -470,7 +475,7 @@
         this.$emit('treeViewNodeExpandedChange', this.model, event);
       },
       $_treeViewNode_toggleSelected(event) {
-        // Note that selection change is already handled by the "model.focusable" watcher
+        // Note that selection change is already handled by the "model.treeNodeSpec.focusable" watcher
         // method in TreeViewNodeAria if selectionMode is selectionFollowsFocus.
         if (this.model.treeNodeSpec.selectable && ['single', 'multiple'].includes(this.selectionMode)) {
           this.model.treeNodeSpec.state.selected = !this.model.treeNodeSpec.state.selected;

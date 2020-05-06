@@ -13,6 +13,7 @@ const getDefaultPropsData = function () {
     depth: 0,
     treeId: 'tree-id',
     initialRadioGroupValues: {},
+    isMounted: false,
     selectionMode: 'multiple'
   }
 };
@@ -45,7 +46,8 @@ describe('TreeViewNode.vue', () => {
         depth: 0,
         initialModel,
         modelDefaults: {},
-        initialRadioGroupValues: {}
+        initialRadioGroupValues: {},
+        isMounted: false
       });
     });
 
@@ -81,7 +83,8 @@ describe('TreeViewNode.vue', () => {
           }
         },
         initialRadioGroupValues: {},
-        selectionMode: 'multiple'
+        selectionMode: 'multiple',
+        isMounted: false
       });
     });
 
@@ -103,7 +106,8 @@ describe('TreeViewNode.vue', () => {
         depth: 0,
         initialModel: { id: 'my-node', label: 'My Node', treeNodeSpec: { title: 'My Title' } },
         modelDefaults: {},
-        initialRadioGroupValues: {}
+        initialRadioGroupValues: {},
+        isMounted: false
       });
     });
 
@@ -158,7 +162,8 @@ describe('TreeViewNode.vue', () => {
         initialModel: generateNodes(['ces'])[0],
         modelDefaults: {},
         depth: 0,
-        initialRadioGroupValues: {}
+        initialRadioGroupValues: {},
+        isMounted: false
       });
     });
 
@@ -186,7 +191,8 @@ describe('TreeViewNode.vue', () => {
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        initialRadioGroupValues: {}
+        initialRadioGroupValues: {},
+        isMounted: false
       });
 
       addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
@@ -212,7 +218,8 @@ describe('TreeViewNode.vue', () => {
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        initialRadioGroupValues: {}
+        initialRadioGroupValues: {},
+        isMounted: false
       });
 
       addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
@@ -238,7 +245,8 @@ describe('TreeViewNode.vue', () => {
         modelDefaults: { addChildCallback },
         depth: 0,
         treeId: 'tree',
-        initialRadioGroupValues: {}
+        initialRadioGroupValues: {},
+        isMounted: false
       });
 
       addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
@@ -260,7 +268,8 @@ describe('TreeViewNode.vue', () => {
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        initialRadioGroupValues: {}
+        initialRadioGroupValues: {},
+        isMounted: false
       });
     });
 
@@ -296,7 +305,8 @@ describe('TreeViewNode.vue', () => {
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          initialRadioGroupValues: {}
+          initialRadioGroupValues: {},
+          isMounted: false
         });
       });
 
@@ -334,7 +344,8 @@ describe('TreeViewNode.vue', () => {
             modelDefaults: {},
             depth: 0,
             treeId: 'tree',
-            initialRadioGroupValues: {}
+            initialRadioGroupValues: {},
+            isMounted: false
           });
         });
 
@@ -366,7 +377,8 @@ describe('TreeViewNode.vue', () => {
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
-          initialRadioGroupValues: {}
+          initialRadioGroupValues: {},
+          isMounted: false
         });
       });
 
@@ -389,7 +401,8 @@ describe('TreeViewNode.vue', () => {
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
-        initialRadioGroupValues: {}
+        initialRadioGroupValues: {},
+        isMounted: false
       });
     });
 
@@ -416,7 +429,8 @@ describe('TreeViewNode.vue', () => {
         depth: 0,
         treeId: 'tree',
         initialRadioGroupValues: {},
-        selectionMode: null
+        selectionMode: null,
+        isMounted: false
       });
     });
 
@@ -438,7 +452,8 @@ describe('TreeViewNode.vue', () => {
         depth: 0,
         treeId: 'tree',
         initialRadioGroupValues: {},
-        selectionMode: 'multiple'
+        selectionMode: 'multiple',
+        isMounted: false
       });
     });
 
@@ -462,7 +477,8 @@ describe('TreeViewNode.vue', () => {
           depth: 0,
           treeId: 'tree',
           initialRadioGroupValues: {},
-          selectionMode: 'single'
+          selectionMode: 'single',
+          isMounted: false
         });
       });
 
@@ -484,7 +500,8 @@ describe('TreeViewNode.vue', () => {
           depth: 0,
           treeId: 'tree',
           initialRadioGroupValues: {},
-          selectionMode: 'single'
+          selectionMode: 'single',
+          isMounted: false
         });
       });
 
@@ -509,7 +526,8 @@ describe('TreeViewNode.vue', () => {
           depth: 0,
           treeId: 'tree',
           initialRadioGroupValues: {},
-          selectionMode: 'selectionFollowsFocus'
+          selectionMode: 'selectionFollowsFocus',
+          isMounted: false
         });
       });
 
@@ -531,7 +549,8 @@ describe('TreeViewNode.vue', () => {
           depth: 0,
           treeId: 'tree',
           initialRadioGroupValues: {},
-          selectionMode: 'selectionFollowsFocus'
+          selectionMode: 'selectionFollowsFocus',
+          isMounted: false
         });
       });
 
@@ -556,7 +575,8 @@ describe('TreeViewNode.vue', () => {
           depth: 0,
           treeId: 'tree',
           initialRadioGroupValues: {},
-          selectionMode: 'multiple'
+          selectionMode: 'multiple',
+          isMounted: false
         });
       });
 
@@ -578,7 +598,8 @@ describe('TreeViewNode.vue', () => {
           depth: 0,
           treeId: 'tree',
           initialRadioGroupValues: {},
-          selectionMode: 'multiple'
+          selectionMode: 'multiple',
+          isMounted: false
         });
       });
 
