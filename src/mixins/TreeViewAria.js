@@ -1,3 +1,5 @@
+import SelectionMode from '../enums/selectionMode';
+
 export default {
   props: {
     customAriaKeyMap: {
@@ -54,7 +56,7 @@ export default {
             this.$set(this, 'focusableNodeModel', node);
           }
         }
-        if (this.selectionMode !== null && firstSelectedNode === null && node.treeNodeSpec.state.selected) {
+        if (this.selectionMode !== SelectionMode.None && firstSelectedNode === null && node.treeNodeSpec.state.selected) {
           firstSelectedNode = node;
         }
       });
@@ -66,7 +68,7 @@ export default {
 
       // Also default the selection to the focused node if no selected node was found
       // and the selection mode is selectionFollowsFocus.
-      if (firstSelectedNode === null && this.focusableNodeModel.treeNodeSpec.selectable && this.selectionMode === 'selectionFollowsFocus') {
+      if (firstSelectedNode === null && this.focusableNodeModel.treeNodeSpec.selectable && this.selectionMode === SelectionMode.SelectionFollowsFocus) {
         this.focusableNodeModel.treeNodeSpec.state.selected = true;
       }
 
@@ -80,11 +82,11 @@ export default {
   },
   methods: {
     $_treeViewNode_enforceSelectionMode() {
-      if (this.selectionMode === 'single') {
+      if (this.selectionMode === SelectionMode.Single) {
         // This is in TreeViewAria instead of TreeView because the default mixin merge strategy only keeps one 'watch' per prop.
         this.$_treeView_enforceSingleSelectionMode();
       }
-      else if (this.selectionMode === 'selectionFollowsFocus') {
+      else if (this.selectionMode === SelectionMode.SelectionFollowsFocus) {
         // Make sure the actual focusable item is selected if the mode changes, and deselect all others
         this.$_treeView_depthFirstTraverse((node) => {
           let idPropName = node.treeNodeSpec.idProperty;

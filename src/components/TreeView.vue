@@ -43,6 +43,7 @@
 <script>
   import TreeViewAria from '../mixins/TreeViewAria';
   import TreeViewNode from './TreeViewNode.vue';
+  import SelectionMode from '../enums/selectionMode';
 
   export default {
     name: 'TreeView',
@@ -65,9 +66,9 @@
       selectionMode: {
         type: String,
         required: false,
-        default: null,
+        default: SelectionMode.None,
         validator: function (value) {
-          return ['single', 'selectionFollowsFocus', 'multiple'].includes(value);
+          return Object.values(SelectionMode).includes(value);
         }
       },
       skinClass: {
@@ -91,7 +92,7 @@
       ariaMultiselectable() {
         // If there's no selectionMode, return a boolean so aria-multiselectable isn't included.
         // Otherwise, return either the string 'true' or 'false' as the attribute's value.
-        return this.selectionMode === null ? false : (this.selectionMode === 'multiple').toString();
+        return this.selectionMode === SelectionMode.None ? false : (this.selectionMode === SelectionMode.Multiple).toString();
       }
     },
     mounted() {
@@ -132,7 +133,7 @@
         return matches;
       },
       getSelected() {
-        return this.selectionMode === null ? [] : this.getMatching((current) => current.treeNodeSpec.selectable && current.treeNodeSpec.state.selected);
+        return this.selectionMode === SelectionMode.None ? [] : this.getMatching((current) => current.treeNodeSpec.selectable && current.treeNodeSpec.state.selected);
       },
       $_treeView_depthFirstTraverse(nodeActionCallback) {
         if (this.model.length === 0) {
@@ -170,7 +171,7 @@
         // For single selection mode, unselect any other selected node.
         // For selectionFollowsFocus mode, selection state is handled in TreeViewAria.$_treeViewAria_handleFocusableChange.
         // In all cases this emits treeViewNodeSelectedChange for the node parameter.
-        if (this.selectionMode === "single" && node.treeNodeSpec.state.selected) {
+        if (this.selectionMode === SelectionMode.Single && node.treeNodeSpec.state.selected) {
           this.$_treeView_depthFirstTraverse((current) => {
             if (current.treeNodeSpec.state.selected && current.id !== node.id) {
               current.treeNodeSpec.state.selected = false;
@@ -184,7 +185,7 @@
       },
       $_treeView_enforceSingleSelectionMode() {
         // For single selection mode, only allow one selected node.
-        if (this.selectionMode === 'single') {
+        if (this.selectionMode === SelectionMode.Single) {
           let alreadyFoundSelected = false;
           this.$_treeView_depthFirstTraverse((node) => {
             if (node.treeNodeSpec.state && node.treeNodeSpec.state.selected === true) {

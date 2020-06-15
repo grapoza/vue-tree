@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { createLocalVue, mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
+import SelectionMode from '../../src/enums/selectionMode';
 
 const localVue = createLocalVue();
 
@@ -162,7 +163,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
   describe('when selectionMode is selectionFollowsFocus', () => {
 
     beforeEach(async () => {
-      wrapper = createWrapper(Object.assign(getDefaultPropsData(), { selectionMode: 'selectionFollowsFocus' }));
+      wrapper = createWrapper(Object.assign(getDefaultPropsData(), { selectionMode: SelectionMode.SelectionFollowsFocus }));
       wrapper.find('.tree-view-node-self').trigger('click');
       await wrapper.vm.$nextTick();
     });
@@ -301,7 +302,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         beforeEach(async () => {
           wrapper = createWrapper();
-          wrapper.setProps({ selectionMode: 'multiple' });
+          wrapper.setProps({ selectionMode: SelectionMode.Multiple });
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.selectItem[0]);
           await wrapper.vm.$nextTick();
         });

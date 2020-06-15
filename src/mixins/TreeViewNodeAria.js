@@ -1,3 +1,5 @@
+import SelectionMode from '../enums/selectionMode';
+
 export default {
   props: {
     ariaKeyMap: {
@@ -25,7 +27,7 @@ export default {
       }
 
       // In selectionFollowsFocus selection mode, this focus watch is responsible for updating selection.
-      if (this.model.treeNodeSpec.selectable && this.selectionMode === 'selectionFollowsFocus') {
+      if (this.model.treeNodeSpec.selectable && this.selectionMode === SelectionMode.SelectionFollowsFocus) {
         this.model.treeNodeSpec.state.selected = newValue;
       }
     }

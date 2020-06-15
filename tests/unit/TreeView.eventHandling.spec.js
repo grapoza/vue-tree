@@ -3,6 +3,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
+import SelectionMode from '../../src/enums/selectionMode';
 
 const localVue = createLocalVue();
 
@@ -31,7 +32,7 @@ describe('TreeView.vue (event handling)', () => {
   describe('when a node fires a treeViewNodeClick event', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeClick');
     });
 
@@ -43,7 +44,7 @@ describe('TreeView.vue (event handling)', () => {
   describe('when a node fires a treeViewNodeDblclick event', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeDblclick');
     });
 
@@ -55,7 +56,7 @@ describe('TreeView.vue (event handling)', () => {
   describe('when a node fires a treeViewNodeCheckboxChange event', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeCheckboxChange');
     });
 
@@ -67,7 +68,7 @@ describe('TreeView.vue (event handling)', () => {
   describe('when a node fires a treeViewNodeRadioChange event', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeRadioChange');
     });
 
@@ -79,7 +80,7 @@ describe('TreeView.vue (event handling)', () => {
   describe('when a node fires a treeViewNodeExpandedChange event', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeExpandedChange');
     });
 
@@ -93,7 +94,7 @@ describe('TreeView.vue (event handling)', () => {
     describe('always', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['eS', 'es']), selectionMode: 'multiple' });
+        wrapper = createWrapper({ initialModel: generateNodes(['eS', 'es']), selectionMode: SelectionMode.Multiple });
         wrapper.find(TreeViewNode).vm.$emit('treeViewNodeSelectedChange', wrapper.vm.model[0]);
       });
 
@@ -107,7 +108,7 @@ describe('TreeView.vue (event handling)', () => {
       describe('and the target node is selected', () => {
 
         beforeEach(() => {
-          wrapper = createWrapper({ initialModel: generateNodes(['eS', 'eS', 'es']), selectionMode: 'single' });
+          wrapper = createWrapper({ initialModel: generateNodes(['eS', 'eS', 'es']), selectionMode: SelectionMode.Single });
           wrapper.find(TreeViewNode).vm.$emit('treeViewNodeSelectedChange', wrapper.vm.model[0]);
         });
 
@@ -119,7 +120,7 @@ describe('TreeView.vue (event handling)', () => {
       describe('and the target node is not selected', () => {
 
         beforeEach(() => {
-          wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', 'es']), selectionMode: 'single' });
+          wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', 'es']), selectionMode: SelectionMode.Single });
           wrapper.find(TreeViewNode).vm.$emit('treeViewNodeSelectedChange', wrapper.vm.model[0]);
         });
 
@@ -133,7 +134,7 @@ describe('TreeView.vue (event handling)', () => {
   describe('when a node fires a treeViewNodeAdd event', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeAdd');
     });
 
@@ -145,7 +146,7 @@ describe('TreeView.vue (event handling)', () => {
   describe('when a node fires a treeViewNodeDelete event', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeDelete', wrapper.vm.model[0]);
     });
 

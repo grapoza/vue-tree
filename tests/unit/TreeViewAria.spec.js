@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { createLocalVue, mount } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import { generateNodes } from '../data/node-generator.js';
+import SelectionMode from '../../src/enums/selectionMode';
 
 const localVue = createLocalVue();
 
@@ -97,7 +98,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and no selected nodes', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]), selectionMode: 'multiple' });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]), selectionMode: SelectionMode.Multiple });
       });
 
       it('should set the first node as focusable', () => {
@@ -108,7 +109,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('and selected nodes', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCS', 'ecs']]), selectionMode: 'multiple' });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCS', 'ecs']]), selectionMode: SelectionMode.Multiple });
       });
 
       it('should set the first selected node as focusable', () => {
@@ -122,7 +123,7 @@ describe('TreeView.vue (ARIA)', () => {
     describe('always', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf', ['eCsf', 'ecs']]), selectionMode: 'multiple' });
+        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf', ['eCsf', 'ecs']]), selectionMode: SelectionMode.Multiple });
       });
 
       it('should keep that node as focusable', () => {
@@ -139,7 +140,7 @@ describe('TreeView.vue (ARIA)', () => {
       describe('and a selectable focusable node', () => {
 
         beforeEach(() => {
-          wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']), selectionMode: 'selectionFollowsFocus' });
+          wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']), selectionMode: SelectionMode.SelectionFollowsFocus });
         });
 
         it('should select the focused node', () => {
@@ -323,8 +324,8 @@ describe('TreeView.vue (ARIA)', () => {
   describe('when selectionMode changes to selectionFollowsFocus', () => {
 
     beforeEach(async () => {
-      wrapper = createWrapper({ initialModel: generateNodes(['Ecsf', ['ecS', 'ecs'], 'ecs']), selectionMode: 'single' });
-      wrapper.setProps({ selectionMode: 'selectionFollowsFocus' });
+      wrapper = createWrapper({ initialModel: generateNodes(['Ecsf', ['ecS', 'ecs'], 'ecs']), selectionMode: SelectionMode.Single });
+      wrapper.setProps({ selectionMode: SelectionMode.SelectionFollowsFocus });
       await wrapper.vm.$nextTick();
     });
 

@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { createLocalVue, mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
+import SelectionMode from '../../src/enums/selectionMode';
 
 const localVue = createLocalVue();
 
@@ -14,7 +15,7 @@ const getDefaultPropsData = function () {
     treeId: 'tree-id',
     initialRadioGroupValues: {},
     isMounted: false,
-    selectionMode: 'multiple'
+    selectionMode: SelectionMode.Multiple
   }
 };
 
@@ -83,7 +84,7 @@ describe('TreeViewNode.vue', () => {
           }
         },
         initialRadioGroupValues: {},
-        selectionMode: 'multiple',
+        selectionMode: SelectionMode.Multiple,
         isMounted: false
       });
     });
@@ -429,7 +430,7 @@ describe('TreeViewNode.vue', () => {
         depth: 0,
         treeId: 'tree',
         initialRadioGroupValues: {},
-        selectionMode: null,
+        selectionMode: SelectionMode.None,
         isMounted: false
       });
     });
@@ -452,7 +453,7 @@ describe('TreeViewNode.vue', () => {
         depth: 0,
         treeId: 'tree',
         initialRadioGroupValues: {},
-        selectionMode: 'multiple',
+        selectionMode: SelectionMode.Multiple,
         isMounted: false
       });
     });
@@ -477,7 +478,7 @@ describe('TreeViewNode.vue', () => {
           depth: 0,
           treeId: 'tree',
           initialRadioGroupValues: {},
-          selectionMode: 'single',
+          selectionMode: SelectionMode.Single,
           isMounted: false
         });
       });
@@ -500,7 +501,7 @@ describe('TreeViewNode.vue', () => {
           depth: 0,
           treeId: 'tree',
           initialRadioGroupValues: {},
-          selectionMode: 'single',
+          selectionMode: SelectionMode.Single,
           isMounted: false
         });
       });
@@ -526,7 +527,7 @@ describe('TreeViewNode.vue', () => {
           depth: 0,
           treeId: 'tree',
           initialRadioGroupValues: {},
-          selectionMode: 'selectionFollowsFocus',
+          selectionMode: SelectionMode.SelectionFollowsFocus,
           isMounted: false
         });
       });
@@ -549,7 +550,7 @@ describe('TreeViewNode.vue', () => {
           depth: 0,
           treeId: 'tree',
           initialRadioGroupValues: {},
-          selectionMode: 'selectionFollowsFocus',
+          selectionMode: SelectionMode.SelectionFollowsFocus,
           isMounted: false
         });
       });
@@ -575,7 +576,7 @@ describe('TreeViewNode.vue', () => {
           depth: 0,
           treeId: 'tree',
           initialRadioGroupValues: {},
-          selectionMode: 'multiple',
+          selectionMode: SelectionMode.Multiple,
           isMounted: false
         });
       });
@@ -598,7 +599,7 @@ describe('TreeViewNode.vue', () => {
           depth: 0,
           treeId: 'tree',
           initialRadioGroupValues: {},
-          selectionMode: 'multiple',
+          selectionMode: SelectionMode.Multiple,
           isMounted: false
         });
       });

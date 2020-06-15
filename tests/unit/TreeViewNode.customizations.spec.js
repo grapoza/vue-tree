@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { createLocalVue, mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
+import SelectionMode from '../../src/enums/selectionMode';
 
 const localVue = createLocalVue();
 
@@ -81,7 +82,7 @@ describe('TreeViewNode.vue (customizations)', () => {
         depth: 0,
         treeId: 'tree',
         initialRadioGroupValues: {},
-        selectionMode: 'single',
+        selectionMode: SelectionMode.Single,
         isMounted: false
       });
     });

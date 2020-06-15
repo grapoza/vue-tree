@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { createLocalVue, mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
+import SelectionMode from '../../src/enums/selectionMode';
 
 const localVue = createLocalVue();
 
@@ -25,7 +26,7 @@ const getDefaultPropsData = function () {
     treeId: 'tree-id',
     initialRadioGroupValues: {},
     isMounted: false,
-    selectionMode: 'multiple'
+    selectionMode: SelectionMode.Multiple
   }
 };
 
@@ -80,7 +81,7 @@ describe('TreeViewNode.vue (interactions)', () => {
     describe('and the node is not selectable', () => {
 
       beforeEach(() => {
-        wrapper = createWrapper(Object.assign(getDefaultPropsData(), { selectionMode: null }));
+        wrapper = createWrapper(Object.assign(getDefaultPropsData(), { selectionMode: SelectionMode.None }));
         nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .tree-view-node-self`);
         nodeBody.trigger('click');
       });
