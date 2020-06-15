@@ -182,6 +182,7 @@
 
 <script>
   import TreeViewNodeAria from '../mixins/TreeViewNodeAria';
+  import SelectionMode from '../enums/selectionMode';
 
   export default {
     name: 'TreeViewNode',
@@ -212,9 +213,9 @@
       selectionMode: {
         type: String,
         required: false,
-        default: null,
+        default: SelectionMode.None,
         validator: function (value) {
-          return ['single', 'selectionFollowsFocus', 'multiple'].includes(value);
+          return Object.values(SelectionMode).includes(value);
         }
       },
       treeId: {
@@ -240,14 +241,14 @@
       ariaSelected() {
         // If selection isn't allowed, don't add an aria-selected attribute.
         // If the tree contains nodes that are not selectable, those nodes do not have the aria-selected state.
-        if (this.selectionMode === null || !this.model.treeNodeSpec.selectable) {
+        if (this.selectionMode === SelectionMode.None || !this.model.treeNodeSpec.selectable) {
           return false;
         }
 
         // https://www.w3.org/TR/wai-aria-practices-1.1/#tree_roles_states_props
         // If the tree does not support multiple selection, aria-selected is set to true
         // for the selected node and it is not present on any other node in the tree.
-        if (this.selectionMode !== 'multiple') {
+        if (this.selectionMode !== SelectionMode.Multiple) {
           return this.model.treeNodeSpec.state.selected ? 'true' : false;
         }
 
@@ -278,7 +279,7 @@
         return this.nodeId ? `${this.nodeId}-input` : null;
       },
       isEffectivelySelected() {
-        return this.selectionMode !== null && this.model.treeNodeSpec.selectable && this.model.treeNodeSpec.state.selected;
+        return this.selectionMode !== SelectionMode.None && this.model.treeNodeSpec.selectable && this.model.treeNodeSpec.state.selected;
       },
       labelPropName() {
         return this.model.treeNodeSpec.labelProperty || 'label';
@@ -476,8 +477,8 @@
       },
       $_treeViewNode_toggleSelected(event) {
         // Note that selection change is already handled by the "model.treeNodeSpec.focusable" watcher
-        // method in TreeViewNodeAria if selectionMode is selectionFollowsFocus.
-        if (this.model.treeNodeSpec.selectable && ['single', 'multiple'].includes(this.selectionMode)) {
+        // method in TreeViewNodeAria if selectionMode is SelectionFollowsFocus.
+        if (this.model.treeNodeSpec.selectable && [SelectionMode.Single, SelectionMode.Multiple].includes(this.selectionMode)) {
           this.model.treeNodeSpec.state.selected = !this.model.treeNodeSpec.state.selected;
         }
       },

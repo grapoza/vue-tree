@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import { generateNodes } from '../data/node-generator.js';
+import SelectionMode from '../../src/enums/selectionMode';
 
 const localVue = createLocalVue();
 
@@ -113,7 +114,7 @@ describe('TreeView.vue', () => {
   describe('when getMatching() is called', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'ES', ['es', 'eS']]), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'ES', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
     });
 
     it('should return nodes matched by the function argument', () => {
@@ -130,7 +131,7 @@ describe('TreeView.vue', () => {
   describe('when getSelected() is called', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
     });
 
     it('should return selected nodes', () => {
@@ -142,7 +143,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is null', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: null });
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.None });
     });
 
     it('should not have an aria-multiselectable attribute', () => {
@@ -158,7 +159,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is `single`', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: 'single' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Single });
     });
 
     it('should have an aria-multiselectable attribute of false', () => {
@@ -174,7 +175,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is `selectionFollowsFocus`', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: 'selectionFollowsFocus' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.SelectionFollowsFocus });
     });
 
     it('should have an aria-multiselectable attribute of false', () => {
@@ -185,7 +186,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is `multiple`', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: 'multiple' });
+      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
     });
 
     it('should have an aria-multiselectable attribute of true', () => {
