@@ -36,7 +36,7 @@ describe('TreeView.vue (ARIA)', () => {
       wrapper = createWrapper();
     });
 
-    it('has an ARIA role of tree', () => {
+    it('should have an ARIA role of tree', () => {
       expect(wrapper.vm.$el.attributes.role.value).to.equal('tree');
     });
   });
@@ -49,7 +49,7 @@ describe('TreeView.vue (ARIA)', () => {
         wrapper = createWrapper();
       });
 
-      it('has an ARIA key mapping', () => {
+      it('should have an ARIA key mapping', () => {
         const keyMap = wrapper.vm.ariaKeyMap;
         expect(keyMap).to.have.own.property('activateItem');
         expect(keyMap).to.have.own.property('selectItem');
@@ -86,7 +86,7 @@ describe('TreeView.vue (ARIA)', () => {
         });
       });
 
-      it('uses the custom ARIA key mapping', () => {
+      it('should use the custom ARIA key mapping', () => {
         const keyMap = wrapper.vm.ariaKeyMap;
         expect(keyMap).to.deep.equal(customKeyMap);
       });
@@ -205,7 +205,7 @@ describe('TreeView.vue (ARIA)', () => {
         wrapper.vm.$_treeViewAria_handleNodeDeletion(wrapper.vm.model[1]);
       });
 
-      it('does not change the focusable node', () => {
+      it('should not change the focusable node', () => {
         expect(wrapper.vm.model[0].treeNodeSpec.focusable).to.be.true;
       });
     });
@@ -217,7 +217,7 @@ describe('TreeView.vue (ARIA)', () => {
         wrapper.vm.$_treeViewAria_handleNodeDeletion(wrapper.vm.model[0]);
       });
 
-      it('sets the next node as focusable', () => {
+      it('should set the next node as focusable', () => {
         expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
       });
     });
@@ -229,7 +229,7 @@ describe('TreeView.vue (ARIA)', () => {
         wrapper.vm.$_treeViewAria_handleNodeDeletion(wrapper.vm.model[2]);
       });
 
-      it('sets the previous node as focusable', () => {
+      it('should set the previous node as focusable', () => {
         expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
       });
     })
@@ -244,7 +244,7 @@ describe('TreeView.vue (ARIA)', () => {
         wrapper.vm.$_treeViewAria_handlePreviousFocus(wrapper.vm.model[0]);
       });
 
-      it('does not change focusableness', () => {
+      it('should not change focusableness', () => {
         expect(wrapper.vm.model[0].treeNodeSpec.focusable).to.be.true;
       });
     });
@@ -256,7 +256,7 @@ describe('TreeView.vue (ARIA)', () => {
         wrapper.vm.$_treeViewAria_handlePreviousFocus(wrapper.vm.model[1]);
       });
 
-      it('sets the previous node as focusable', () => {
+      it('should set the previous node as focusable', () => {
         expect(wrapper.vm.model[0].treeNodeSpec.focusable).to.be.true;
       });
     });
@@ -268,7 +268,7 @@ describe('TreeView.vue (ARIA)', () => {
         wrapper.vm.$_treeViewAria_handlePreviousFocus(wrapper.vm.model[1]);
       });
 
-      it('sets the last expanded previous node as focusable', () => {
+      it('should set the last expanded previous node as focusable', () => {
         expect(wrapper.vm.model[0].children[1].treeNodeSpec.focusable).to.be.true;
       });
     });
@@ -283,7 +283,7 @@ describe('TreeView.vue (ARIA)', () => {
         wrapper.vm.$_treeViewAria_handleNextFocus(wrapper.vm.model[1]);
       });
 
-      it('does not change focusableness', () => {
+      it('should not change focusableness', () => {
         expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
       });
     });
@@ -295,7 +295,7 @@ describe('TreeView.vue (ARIA)', () => {
         wrapper.vm.$_treeViewAria_handleNextFocus(wrapper.vm.model[0]);
       });
 
-      it('sets the next sibling node as focusable', () => {
+      it('should set the next sibling node as focusable', () => {
         expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
       });
     });
@@ -306,7 +306,7 @@ describe('TreeView.vue (ARIA)', () => {
         wrapper = createWrapper({ initialModel: generateNodes(['Ecsf', ['ecs', 'ecs'], 'ecs']) });
       });
 
-      it('sets the first expanded child node as focusable', () => {
+      it('should set the first expanded child node as focusable', () => {
         wrapper.vm.$_treeViewAria_handleNextFocus(wrapper.vm.model[0]);
         expect(wrapper.vm.model[0].children[0].treeNodeSpec.focusable).to.be.true;
       });

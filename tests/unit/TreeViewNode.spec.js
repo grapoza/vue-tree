@@ -52,7 +52,7 @@ describe('TreeViewNode.vue', () => {
       });
     });
 
-    it('normalizes model data', () => {
+    it('should normalize model data', () => {
       expect(wrapper.vm.model.id).to.equal('my-node');
       expect(wrapper.vm.model.label).to.equal('My Node');
       expect(wrapper.vm.model.treeNodeSpec.title).to.be.null;
@@ -139,17 +139,17 @@ describe('TreeViewNode.vue', () => {
       wrapper = createWrapper();
     });
 
-    it('has a nodeId made of the tree ID and the model[idPropName] property', () => {
+    it('should have a nodeId made of the tree ID and the model[idPropName] property', () => {
       expect(wrapper.vm.nodeId).to.equal(wrapper.vm.treeId + '-' + wrapper.vm.model.id);
     });
 
-    it('has an expanderId made of the node ID and -exp', () => {
+    it('should have an expanderId made of the node ID and -exp', () => {
       expect(wrapper.vm.expanderId).to.equal(wrapper.vm.nodeId + '-exp');
     });
 
     describe('and the node has an input', () => {
 
-      it('has an inputId made of the node ID and -input', () => {
+      it('should have an inputId made of the node ID and -input', () => {
         expect(wrapper.vm.inputId).to.equal(wrapper.vm.nodeId + '-input');
       });
     });
@@ -168,15 +168,15 @@ describe('TreeViewNode.vue', () => {
       });
     });
 
-    it('has a null nodeId', () => {
+    it('should have a null nodeId', () => {
       expect(wrapper.vm.nodeId).to.be.null;
     });
 
-    it('has a null inputId', () => {
+    it('should have a null inputId', () => {
       expect(wrapper.vm.inputId).to.be.null;
     });
 
-    it('has a null expanderId', () => {
+    it('should have a null expanderId', () => {
       expect(wrapper.vm.expanderId).to.be.null;
     });
   });
@@ -274,7 +274,7 @@ describe('TreeViewNode.vue', () => {
       });
     });
 
-    it('has a disabled input', () => {
+    it('should have a disabled input', () => {
       let input = wrapper.find('#' + wrapper.vm.inputId);
       expect(input.element.disabled).to.be.true;
     });
@@ -286,7 +286,7 @@ describe('TreeViewNode.vue', () => {
       wrapper = createWrapper();
     });
 
-    it('has an enabled input', () => {
+    it('should have an enabled input', () => {
       let input = wrapper.find('#' + wrapper.vm.inputId);
       expect(input.element.disabled).to.be.false;
     });
@@ -631,11 +631,11 @@ describe('TreeViewNode.vue', () => {
       await wrapper.vm.$nextTick();
     });
 
-    it('has an idPropName matching the idProperty', () => {
+    it('should have an idPropName matching the idProperty', () => {
       expect(wrapper.vm.idPropName).to.equal('label');
     });
 
-    it('has a nodeId made of the tree ID and the model[idPropName] property', () => {
+    it('should have a nodeId made of the tree ID and the model[idPropName] property', () => {
       expect(wrapper.vm.nodeId).to.equal(wrapper.vm.treeId + '-' + wrapper.vm.model.label);
     });
   });
@@ -648,11 +648,11 @@ describe('TreeViewNode.vue', () => {
       await wrapper.vm.$nextTick();
     });
 
-    it('has a labelPropName matching the labelProperty', () => {
+    it('should have a labelPropName matching the labelProperty', () => {
       expect(wrapper.vm.labelPropName).to.equal('id');
     });
 
-    it('has a label of the  model[labelPropName] property', () => {
+    it('should have a label of the  model[labelPropName] property', () => {
       expect(wrapper.text()).to.equal(wrapper.vm.model.id + '');
     });
   });
@@ -668,11 +668,11 @@ describe('TreeViewNode.vue', () => {
       await wrapper.vm.$nextTick();
     });
 
-    it('has a childrenPropName matching the valid-children model property', () => {
+    it('should have a childrenPropName matching the valid-children model property', () => {
       expect(wrapper.vm.childrenPropName).to.equal('children');
     });
 
-    it('has a children list of the model[childrenPropName] property', () => {
+    it('should have a children list of the model[childrenPropName] property', () => {
       expect(wrapper.vm.model[wrapper.vm.childrenPropName].length).to.equal(2);
     });
   });

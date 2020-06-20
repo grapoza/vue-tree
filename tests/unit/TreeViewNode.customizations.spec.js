@@ -87,97 +87,97 @@ describe('TreeViewNode.vue (customizations)', () => {
       });
     });
 
-    it('adds the custom class to the tree view node\'s root element', () => {
+    it('should add the custom class to the tree view node\'s root element', () => {
       let target = wrapper.find('.tree-view-node.' + customizations.classes.treeViewNode);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s self element', () => {
+    it('should add the custom class to the tree view node\'s self element', () => {
       let target = wrapper.find('.tree-view-node-self.' + customizations.classes.treeViewNodeSelf);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s expander element', () => {
+    it('should add the custom class to the tree view node\'s expander element', () => {
       let target = wrapper.find('.tree-view-node-self-expander.' + customizations.classes.treeViewNodeSelfExpander);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s expanded element', () => {
+    it('should add the custom class to the tree view node\'s expanded element', () => {
       let target = wrapper.find('.tree-view-node-self-expanded.' + customizations.classes.treeViewNodeSelfExpanded);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s expanded indicator element', () => {
+    it('should add the custom class to the tree view node\'s expanded indicator element', () => {
       let target = wrapper.find('.tree-view-node-self-expanded-indicator.' + customizations.classes.treeViewNodeSelfExpandedIndicator);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s selected element', () => {
+    it('should add the custom class to the tree view node\'s selected element', () => {
       let target = wrapper.find('.tree-view-node-self-selected.' + customizations.classes.treeViewNodeSelfSelected);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s spacer element', () => {
+    it('should add the custom class to the tree view node\'s spacer element', () => {
       let target = wrapper.find('.tree-view-node-self-spacer.' + customizations.classes.treeViewNodeSelfSpacer);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s label element', () => {
+    it('should add the custom class to the tree view node\'s label element', () => {
       let target = wrapper.find('.tree-view-node-self-label.' + customizations.classes.treeViewNodeSelfLabel);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s input element', () => {
+    it('should add the custom class to the tree view node\'s input element', () => {
       let target = wrapper.find('.tree-view-node-self-input.' + customizations.classes.treeViewNodeSelfInput);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s checkbox element', () => {
+    it('should add the custom class to the tree view node\'s checkbox element', () => {
       let target = wrapper.find('.tree-view-node-self-checkbox.' + customizations.classes.treeViewNodeSelfCheckbox);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s radio button element', () => {
+    it('should add the custom class to the tree view node\'s radio button element', () => {
       let target = wrapper.find('.tree-view-node-self-radio.' + customizations.classes.treeViewNodeSelfRadio);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s text element', () => {
+    it('should add the custom class to the tree view node\'s text element', () => {
       let target = wrapper.find('.tree-view-node-self-text.' + customizations.classes.treeViewNodeSelfText);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom add child class to the tree view node\'s add child element', () => {
+    it('should add the custom add child class to the tree view node\'s add child element', () => {
       let target = wrapper.find('.tree-view-node-self-action.' + customizations.classes.treeViewNodeSelfAddChild);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom action class to the tree view node\'s add child element', () => {
+    it('should add the custom action class to the tree view node\'s add child element', () => {
       let target = wrapper.find('.tree-view-node-self-action.' + customizations.classes.treeViewNodeSelfAddChild + '.' + customizations.classes.treeViewNodeSelfAction);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s add child icon element', () => {
+    it('should add the custom class to the tree view node\'s add child icon element', () => {
       let target = wrapper.find('.tree-view-node-self-add-child-icon.' + customizations.classes.treeViewNodeSelfAddChildIcon);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom delete class to the tree view node\'s delete element', () => {
+    it('should add the custom delete class to the tree view node\'s delete element', () => {
       let target = wrapper.find('.tree-view-node-self-action.' + customizations.classes.treeViewNodeSelfDelete);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom action class to the tree view node\'s delete element', () => {
+    it('should add the custom action class to the tree view node\'s delete element', () => {
       let target = wrapper.find('.tree-view-node-self-action.' + customizations.classes.treeViewNodeSelfDelete + '.' + customizations.classes.treeViewNodeSelfAction);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s delete icon element', () => {
+    it('should add the custom class to the tree view node\'s delete icon element', () => {
       let target = wrapper.find('.tree-view-node-self-delete-icon.' + customizations.classes.treeViewNodeSelfDeleteIcon);
       expect(target.exists()).to.be.true;
     });
 
-    it('adds the custom class to the tree view node\'s children element', () => {
+    it('should add the custom class to the tree view node\'s children element', () => {
       let target = wrapper.find('.tree-view-node-children.' + customizations.classes.treeViewNodeChildren);
       expect(target.exists()).to.be.true;
     });

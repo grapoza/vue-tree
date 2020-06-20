@@ -36,7 +36,7 @@ describe('TreeView.vue (event handling)', () => {
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeClick');
     });
 
-    it('emits a treeViewNodeClick event', () => {
+    it('should emit a treeViewNodeClick event', () => {
       expect(wrapper.emitted('treeViewNodeClick').length).to.equal(1);
     });
   });
@@ -48,7 +48,7 @@ describe('TreeView.vue (event handling)', () => {
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeDblclick');
     });
 
-    it('emits a treeViewNodeDblclick event', () => {
+    it('should emit a treeViewNodeDblclick event', () => {
       expect(wrapper.emitted('treeViewNodeDblclick').length).to.equal(1);
     });
   });
@@ -60,7 +60,7 @@ describe('TreeView.vue (event handling)', () => {
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeCheckboxChange');
     });
 
-    it('emits a treeViewNodeCheckboxChange event', () => {
+    it('should emit a treeViewNodeCheckboxChange event', () => {
       expect(wrapper.emitted('treeViewNodeCheckboxChange').length).to.equal(1);
     });
   });
@@ -72,7 +72,7 @@ describe('TreeView.vue (event handling)', () => {
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeRadioChange');
     });
 
-    it('emits a treeViewNodeRadioChange event', () => {
+    it('should emit a treeViewNodeRadioChange event', () => {
       expect(wrapper.emitted('treeViewNodeRadioChange').length).to.equal(1);
     });
   });
@@ -84,7 +84,7 @@ describe('TreeView.vue (event handling)', () => {
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeExpandedChange');
     });
 
-    it('emits a treeViewNodeExpandedChange event', () => {
+    it('should emit a treeViewNodeExpandedChange event', () => {
       expect(wrapper.emitted('treeViewNodeExpandedChange').length).to.equal(1);
     });
   });
@@ -98,7 +98,7 @@ describe('TreeView.vue (event handling)', () => {
         wrapper.find(TreeViewNode).vm.$emit('treeViewNodeSelectedChange', wrapper.vm.model[0]);
       });
 
-      it('emits a treeViewNodeSelectedChange event', () => {
+      it('should emit a treeViewNodeSelectedChange event', () => {
         expect(wrapper.emitted('treeViewNodeSelectedChange').length).to.equal(1);
       });
     });
@@ -112,7 +112,7 @@ describe('TreeView.vue (event handling)', () => {
           wrapper.find(TreeViewNode).vm.$emit('treeViewNodeSelectedChange', wrapper.vm.model[0]);
         });
 
-        it('deselects other selected nodes', () => {
+        it('should deselect other selected nodes', () => {
           expect(wrapper.vm.model[1].treeNodeSpec.state.selected).to.be.false;
         });
       });
@@ -124,7 +124,7 @@ describe('TreeView.vue (event handling)', () => {
           wrapper.find(TreeViewNode).vm.$emit('treeViewNodeSelectedChange', wrapper.vm.model[0]);
         });
 
-        it('does not deselect other selected nodes', () => {
+        it('should not deselect other selected nodes', () => {
           expect(wrapper.vm.model[1].treeNodeSpec.state.selected).to.be.true;
         });
       });
@@ -138,7 +138,7 @@ describe('TreeView.vue (event handling)', () => {
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeAdd');
     });
 
-    it('emits a treeViewNodeAdd event', () => {
+    it('should emit a treeViewNodeAdd event', () => {
       expect(wrapper.emitted('treeViewNodeAdd').length).to.equal(1);
     });
   });
@@ -150,11 +150,11 @@ describe('TreeView.vue (event handling)', () => {
       wrapper.find(TreeViewNode).vm.$emit('treeViewNodeDelete', wrapper.vm.model[0]);
     });
 
-    it('emits a treeViewNodeDelete event', () => {
+    it('should emit a treeViewNodeDelete event', () => {
       expect(wrapper.emitted('treeViewNodeDelete').length).to.equal(1);
     });
 
-    it('deletes the child node', () => {
+    it('should delete the child node', () => {
       expect(wrapper.vm.model.length).to.equal(0);
     });
   });

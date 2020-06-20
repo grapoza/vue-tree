@@ -64,17 +64,17 @@ describe('TreeViewNode.vue (ARIA)', () => {
       wrapper = createWrapper();
     })
 
-    it('has an ARIA role of treeitem', () => {
+    it('should have an ARIA role of treeitem', () => {
       expect(wrapper.vm.$el.attributes.role.value).to.equal('treeitem');
     });
 
-    it('has a tabindex of 0 if focusable', async () => {
+    it('should have a tabindex of 0 if focusable', async () => {
       wrapper.vm.model.treeNodeSpec.focusable = true;
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.$el.attributes.tabindex.value).to.equal('0');
     });
 
-    it('has a tabindex of -1 if not focusable', () => {
+    it('should have a tabindex of -1 if not focusable', () => {
       expect(wrapper.vm.$el.attributes.tabindex.value).to.equal('-1');
     });
 
@@ -85,7 +85,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es', ['es']])[0] }));
       });
 
-      it('has an ARIA role of group on the child list', () => {
+      it('should have an ARIA role of group on the child list', () => {
         expect(wrapper.find('.tree-view-node-children').element.attributes.role.value).to.equal('group');
       });
     });
@@ -186,7 +186,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('ignores the keydown', () => {
+      it('should ignore the keydown', () => {
         expect(wrapper.emitted().treeViewNodeAriaRequestPreviousFocus).not.to.exist;
       });
     });
@@ -202,7 +202,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('ignores the keydown', () => {
+      it('should ignore the keydown', () => {
         expect(wrapper.emitted().treeViewNodeAriaRequestPreviousFocus).not.to.exist;
       });
     });
@@ -218,7 +218,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('ignores the keydown', () => {
+      it('should ignore the keydown', () => {
         expect(wrapper.emitted().treeViewNodeAriaRequestPreviousFocus).not.to.exist;
       });
     });
@@ -234,7 +234,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('ignores the keydown', () => {
+      it('should ignore the keydown', () => {
         expect(wrapper.emitted().treeViewNodeAriaRequestPreviousFocus).not.to.exist;
       });
     });
@@ -250,7 +250,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
           });
 
-          it('performs the default action on the node', () => {
+          it('should perform the default action on the node', () => {
             expect(wrapper.find('input[type="checkbox"]').element.checked).to.be.true;
           });
         });
@@ -263,7 +263,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
           });
 
-          it('performs no action on the node', () => {
+          it('should perform no action on the node', () => {
             expect(wrapper.find('input[type="checkbox"]').element.checked).to.be.false;
           });
         });
@@ -277,7 +277,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
         });
 
-        it('no events are fired', () => {
+        it('should not fire any events', () => {
           expect(wrapper.emitted()).to.deep.equal({});
         });
       });
@@ -325,7 +325,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
           });
 
-          it('expands the node', () => {
+          it('should not expand the node', () => {
             expect(wrapper.emitted().treeViewNodeExpandedChange).to.be.an('array').that.has.length(1);
             expect(wrapper.vm.model.treeNodeSpec.state.expanded).to.be.true;
           });
@@ -339,7 +339,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
           });
 
-          it('focuses the first child', () => {
+          it('should focus the first child', () => {
             expect(wrapper.emitted().treeViewNodeAriaFocusable).to.be.an('array').that.has.length(1);
             expect(wrapper.vm.model.children[0].treeNodeSpec.focusable).to.be.true;
           });
@@ -354,7 +354,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
         });
 
-        it('ignores the keydown', () => {
+        it('should ignore the keydown', () => {
           expect(wrapper.emitted().treeViewNodeExpandedChange).not.to.exist;
         });
       });
@@ -372,7 +372,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
             await triggerKeydown(wrapper.find('.tree-view-node-children').find(TreeViewNode), wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
           });
 
-          it('focuses the parent node', () => {
+          it('should focus the parent node', () => {
             expect(wrapper.find('.tree-view-node-children').find(TreeViewNode).emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
             expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
           });
@@ -386,7 +386,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
           });
 
-          it('collapses the node', () => {
+          it('should collapse the node', () => {
             expect(wrapper.emitted().treeViewNodeExpandedChange).to.be.an('array').that.has.length(1);
             expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
           });
@@ -401,7 +401,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           await triggerKeydown(wrapper.find('.tree-view-node-children').find(TreeViewNode), wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
         });
 
-        it('focuses the parent node', () => {
+        it('should focus the parent node', () => {
           expect(wrapper.find('.tree-view-node-children').find(TreeViewNode).emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
           expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
         });
@@ -415,7 +415,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.focusFirstItem[0]);
       });
 
-      it('emits a treeViewNodeAriaRequestFirstFocus event', () => {
+      it('should emit a treeViewNodeAriaRequestFirstFocus event', () => {
         expect(wrapper.emitted().treeViewNodeAriaRequestFirstFocus).to.be.an('array').that.has.length(1);
       });
     });
@@ -427,7 +427,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.focusLastItem[0]);
       });
 
-      it('emits a treeViewNodeAriaRequestLastFocus event', () => {
+      it('should emit a treeViewNodeAriaRequestLastFocus event', () => {
         expect(wrapper.emitted().treeViewNodeAriaRequestLastFocus).to.be.an('array').that.has.length(1);
       });
     });
@@ -439,7 +439,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.focusPreviousItem[0]);
       });
 
-      it('emits a treeViewNodeAriaRequestPreviousFocus event', () => {
+      it('should emit a treeViewNodeAriaRequestPreviousFocus event', () => {
         expect(wrapper.emitted().treeViewNodeAriaRequestPreviousFocus).to.be.an('array').that.has.length(1);
       });
     });
@@ -451,7 +451,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.focusNextItem[0]);
       });
 
-      it('emits a treeViewNodeAriaRequestNextFocus event', () => {
+      it('should emit a treeViewNodeAriaRequestNextFocus event', () => {
         expect(wrapper.emitted().treeViewNodeAriaRequestNextFocus).to.be.an('array').that.has.length(1);
       });
     });
@@ -465,7 +465,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.insertItem[0]);
         });
 
-        it('does nothing', () => {
+        it('should do nothing', () => {
           expect(wrapper.emitted().treeViewNodeAdd).not.to.exist;
         });
       });
@@ -479,7 +479,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.insertItem[0]);
         });
 
-        it('adds a child to the current node', () => {
+        it('should add a child to the current node', () => {
           expect(wrapper.emitted().treeViewNodeAdd).to.be.an('array').that.has.length(1);
           expect(wrapper.vm.model.children.length).to.equal(1);
         });
@@ -495,7 +495,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.deleteItem[0]);
         });
 
-        it('does nothing', () => {
+        it('should do nothing', () => {
           expect(wrapper.emitted().treeViewNodeDelete).not.to.exist;
         });
       });
@@ -508,7 +508,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           await triggerKeydown(wrapper.find('.tree-view-node-children').find(TreeViewNode), wrapper.vm.ariaKeyMap.deleteItem[0]);
         });
 
-        it('deletes the current node', () => {
+        it('should delete the current node', () => {
           // wrapper will emit the event as it bubbles up the tree; the child node
           // originated it, but is deleted by this point so we can't check it here.
           expect(wrapper.emitted().treeViewNodeDelete).to.be.an('array').that.has.length(1);
@@ -546,7 +546,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('sets the last child of the previous sibling node as focusable', () => {
+      it('should set the last child of the previous sibling node as focusable', () => {
         expect(wrapper.vm.model.children[0].children[1].treeNodeSpec.focusable).to.be.true;
       });
     });
@@ -560,7 +560,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('sets the previous sibling node as focusable', () => {
+      it('should set the previous sibling node as focusable', () => {
         expect(wrapper.vm.model.children[0].treeNodeSpec.focusable).to.be.true;
       });
     });
