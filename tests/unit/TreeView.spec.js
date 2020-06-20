@@ -34,7 +34,7 @@ describe('TreeView.vue', () => {
       wrapper = createWrapper(null, { id: 'my-id' });
     });
 
-    it('has a uniqueId of the root element ID', () => {
+    it('should have a uniqueId of the root element ID', () => {
       expect(wrapper.vm.uniqueId).to.equal(wrapper.attributes('id'));
     });
   });
@@ -45,7 +45,7 @@ describe('TreeView.vue', () => {
       wrapper = createWrapper();
     });
 
-    it('has a null uniqueId', () => {
+    it('should have a null uniqueId', () => {
       expect(wrapper.vm.uniqueId).to.be.null;
     });
   });
@@ -56,7 +56,7 @@ describe('TreeView.vue', () => {
       wrapper = createWrapper();
     });
 
-    it('has a class of default-tree-view-skin', () => {
+    it('should have a class of default-tree-view-skin', () => {
       expect(wrapper.vm.skinClass).to.equal('default-tree-view-skin');
       let target = wrapper.find('.tree-view.default-tree-view-skin');
       expect(target.exists()).to.be.true;
@@ -69,13 +69,13 @@ describe('TreeView.vue', () => {
       wrapper = createWrapper(Object.assign(getDefaultPropsData(), { skinClass: "my-skin" }));
     });
 
-    it('has a class of my-skin', () => {
+    it('should have a class of my-skin', () => {
       expect(wrapper.vm.skinClass).to.equal('my-skin');
       let target = wrapper.find('.tree-view.my-skin');
       expect(target.exists()).to.be.true;
     });
 
-    it('does not have a class of default-tree-view-skin', () => {
+    it('should not have a class of default-tree-view-skin', () => {
       let target = wrapper.find('.tree-view.default-tree-view-skin');
       expect(target.exists()).to.be.false;
     });
