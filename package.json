@@ -1,9 +1,9 @@
 {
   "name": "@grapoza/vue-tree",
+  "version": "2.0.2",
   "description": "Yet another Vue treeview component.",
   "author": "Gregg Rapoza <grapoza@gmail.com>",
   "license": "MIT",
-  "version": "2.0.2",
   "main": "dist/vue-tree.umd.min.js",
   "browser": "index.js",
   "repository": {
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "4.2.3",
-    "@vue/cli-plugin-unit-mocha": "4.2.3",
+    "@vue/cli-plugin-unit-jest": "4.4.4",
     "@vue/cli-service": "4.2.3",
     "@vue/test-utils": "1.0.0-beta.32",
     "chai": "4.2.0",

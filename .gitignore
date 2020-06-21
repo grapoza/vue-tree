@@ -21,6 +21,10 @@ yarn-error.log*
 *.sln
 *.sw*
 
+# Code coverage
+
+/coverage
+
 # Documentation output
 /docsrc/output
 
