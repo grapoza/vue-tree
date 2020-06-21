@@ -33,6 +33,7 @@ describe('TreeViewNode.vue', () => {
   let wrapper = null;
 
   afterEach(() => {
+    jest.restoreAllMocks();
     wrapper.vm.$destroy();
     wrapper = null;
   });
@@ -640,6 +641,45 @@ describe('TreeViewNode.vue', () => {
     });
   });
 
+  describe('when idProperty is not specified', () => {
+
+    beforeEach(async () => {
+      wrapper = createWrapper();
+      wrapper.vm.model.treeNodeSpec.idProperty = null;
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should have an idPropName of id', () => {
+      expect(wrapper.vm.idPropName).to.equal('id');
+    });
+
+    it('should have a nodeId made of the tree ID and the model.id property', () => {
+      expect(wrapper.vm.nodeId).to.equal(wrapper.vm.treeId + '-' + wrapper.vm.model.id);
+    });
+  });
+
+  describe('when the model does not have a property that matches idProperty', () => {
+
+    beforeEach(async () => {
+
+      jest.spyOn(console, 'error').mockImplementation(() => { });
+
+      wrapper = createWrapper({
+        ariaKeyMap: {},
+        depth: 0,
+        initialModel: { badid: 'asf', label: 'asdf' },
+        modelDefaults: {},
+        initialRadioGroupValues: {},
+        isMounted: false
+      });
+    });
+
+    it('should log an error', () => {
+      expect(console.error.mock.calls[0][0])
+        .to.equal('initialModel id is required and must be a number or string. Expected prop id to exist on the model.');
+    });
+  });
+
   describe('when labelProperty is specified', () => {
 
     beforeEach(async () => {
@@ -654,6 +694,45 @@ describe('TreeViewNode.vue', () => {
 
     it('should have a label of the  model[labelPropName] property', () => {
       expect(wrapper.text()).to.equal(wrapper.vm.model.id + '');
+    });
+  });
+
+  describe('when labelProperty is not specified', () => {
+
+    beforeEach(async () => {
+      wrapper = createWrapper();
+      wrapper.vm.model.treeNodeSpec.labelProperty = null;
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should have a labelPropName of label', () => {
+      expect(wrapper.vm.labelPropName).to.equal('label');
+    });
+
+    it('should have a label of the  model.label property', () => {
+      expect(wrapper.text()).to.equal(wrapper.vm.model.label + '');
+    });
+  });
+
+  describe('when the model does not have a property that matches labelProperty', () => {
+
+    beforeEach(async () => {
+
+      jest.spyOn(console, 'error').mockImplementation(() => { });
+
+      wrapper = createWrapper({
+        ariaKeyMap: {},
+        depth: 0,
+        initialModel: { id: 'asf', badlabel: 'asdf' },
+        modelDefaults: {},
+        initialRadioGroupValues: {},
+        isMounted: false
+      });
+    });
+
+    it('should log an error', () => {
+      expect(console.error.mock.calls[0][0])
+        .to.equal('initialModel label is required and must be a string. Expected prop label to exist on the model.');
     });
   });
 
