@@ -35,7 +35,7 @@ function createWrapper(customPropsData, slotsData) {
     propsData: customPropsData || getDefaultPropsData(),
     localVue,
     scopedSlots: slotsData,
-    attachToDocument: true
+    attachTo: '#root'
   });
 
   wrapper.setProps({ isMounted: true });
@@ -52,6 +52,14 @@ async function triggerKeydown(wrapper, keyCode) {
 describe('TreeViewNode.vue (ARIA)', () => {
 
   let wrapper = null;
+  let root = null;
+
+  beforeEach(() => {
+    // Create an element to which the component will be mounted.
+    root = document.createElement('div')
+    root.id = "root";
+    document.body.appendChild(root);
+  });
 
   afterEach(() => {
     wrapper.vm.$destroy();
@@ -77,17 +85,17 @@ describe('TreeViewNode.vue (ARIA)', () => {
     it('should have a tabindex of -1 if not focusable', () => {
       expect(wrapper.vm.$el.attributes.tabindex.value).to.equal('-1');
     });
+  });
 
-    describe('with child nodes', () => {
+  describe('when there are child nodes', () => {
 
-      beforeEach(async () => {
-        let defaultProps = getDefaultPropsData();
-        wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es', ['es']])[0] }));
-      });
+    beforeEach(async () => {
+      let defaultProps = getDefaultPropsData();
+      wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es', ['es']])[0] }));
+    });
 
-      it('should have an ARIA role of group on the child list', () => {
-        expect(wrapper.find('.tree-view-node-children').element.attributes.role.value).to.equal('group');
-      });
+    it('should have an ARIA role of group on the child list', () => {
+      expect(wrapper.find('.tree-view-node-children').element.attributes.role.value).to.equal('group');
     });
   });
 
@@ -369,11 +377,11 @@ describe('TreeViewNode.vue (ARIA)', () => {
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
             wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esf', ['s']]])[0] }));
-            await triggerKeydown(wrapper.find('.tree-view-node-children').find(TreeViewNode), wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
+            await triggerKeydown(wrapper.findAllComponents(TreeViewNode).at(1), wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
           });
 
           it('should focus the parent node', () => {
-            expect(wrapper.find('.tree-view-node-children').find(TreeViewNode).emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
+            expect(wrapper.findAllComponents(TreeViewNode).at(1).emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
             expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
           });
         });
@@ -398,11 +406,11 @@ describe('TreeViewNode.vue (ARIA)', () => {
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
           wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['sf']])[0] }));
-          await triggerKeydown(wrapper.find('.tree-view-node-children').find(TreeViewNode), wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
+          await triggerKeydown(wrapper.findAllComponents(TreeViewNode).at(1), wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
         });
 
         it('should focus the parent node', () => {
-          expect(wrapper.find('.tree-view-node-children').find(TreeViewNode).emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
+          expect(wrapper.findAllComponents(TreeViewNode).at(1).emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
           expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
         });
       });
@@ -505,7 +513,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
           wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esdf']])[0] }));
-          await triggerKeydown(wrapper.find('.tree-view-node-children').find(TreeViewNode), wrapper.vm.ariaKeyMap.deleteItem[0]);
+          await triggerKeydown(wrapper.findAllComponents(TreeViewNode).at(1), wrapper.vm.ariaKeyMap.deleteItem[0]);
         });
 
         it('should delete the current node', () => {
