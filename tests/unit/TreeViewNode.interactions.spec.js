@@ -328,6 +328,14 @@ describe('TreeViewNode.vue (interactions)', () => {
         expect(wrapper.emitted().treeViewNodeAdd.length).to.equal(1);
       });
 
+      it('should pass the new node data to the treeViewNodeAdd event', async () => {
+        addChildButton.trigger('click');
+
+        await Promise.resolve(); // This just lets the callback resolve before the expect.
+
+        expect(wrapper.emitted().treeViewNodeAdd[0][0].id).to.equal('newId');
+      });
+
       it('should add a subnode to the target node from the model', async () => {
         addChildButton.trigger('click');
 
