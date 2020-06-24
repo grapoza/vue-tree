@@ -46,6 +46,11 @@
               </label>
             </template>
 
+            <template #loading="{ model, customClasses }">
+              <span class="tree-view-node-loading">
+                LOADING CHILDREN OF {{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}
+              </span>
+            </template>
           </tree>
         </div>
       </div>

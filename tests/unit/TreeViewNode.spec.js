@@ -161,7 +161,7 @@ describe('TreeViewNode.vue', () => {
     beforeEach(() => {
       wrapper = createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['ces'])[0],
+        initialModel: generateNodes(['cesd'], '', () => Promise.resolve(null))[0],
         modelDefaults: {},
         depth: 0,
         initialRadioGroupValues: {},
@@ -179,6 +179,14 @@ describe('TreeViewNode.vue', () => {
 
     it('should have a null expanderId', () => {
       expect(wrapper.vm.expanderId).to.be.null;
+    });
+
+    it('should have a null addChildId', () => {
+      expect(wrapper.vm.addChildId).to.be.null;
+    });
+
+    it('should have a null deleteId', () => {
+      expect(wrapper.vm.deleteId).to.be.null;
     });
   });
 

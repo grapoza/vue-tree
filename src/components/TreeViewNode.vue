@@ -134,38 +134,49 @@
       </button>
     </div>
 
-    <!-- Children -->
+    <!-- Children and Loading Placholder -->
+    <slot v-if="model.treeNodeSpec.state.expanded && canExpand && !areChildrenLoaded"
+          name="loading"
+          :model="model"
+          :customClasses="customClasses">
+
+      <span class="tree-view-node-loading"
+            :class="customClasses.treeViewNodeLoading">
+        ...
+      </span>
+    </slot>
     <ul v-show="model.treeNodeSpec.state.expanded"
-        v-if="canExpand"
+        v-if="canExpand && areChildrenLoaded"
         class="tree-view-node-children"
         :class="customClasses.treeViewNodeChildren"
         role="group"
         :aria-hidden="(!model.treeNodeSpec.state.expanded).toString()">
       <TreeViewNode v-for="nodeModel in model[childrenPropName]"
-                      :key="nodeModel[nodeModel.treeNodeSpec && nodeModel.treeNodeSpec.idProperty ? nodeModel.treeNodeSpec.idProperty : 'id']"
-                      :depth="depth + 1"
-                      :initial-model="nodeModel"
-                      :model-defaults="modelDefaults"
-                      :parent-id="model[idPropName]"
-                      :selection-mode="selectionMode"
-                      :tree-id="treeId"
-                      :initial-radio-group-values="radioGroupValues"
-                      :aria-key-map="ariaKeyMap"
-                      :is-mounted="isMounted"
-                      @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
-                      @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
-                      @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
-                      @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
-                      @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
-                      @treeViewNodeSelectedChange="(t, e)=>$emit('treeViewNodeSelectedChange', t, e)"
-                      @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
-                      @treeViewNodeDelete="(t, e)=>$_treeViewNode_handleChildDeletion(t, e)"
-                      @treeViewNodeAriaFocusable="(t)=>$emit('treeViewNodeAriaFocusable', t)"
-                      @treeViewNodeAriaRequestParentFocus="$_treeViewNodeAria_focus()"
-                      @treeViewNodeAriaRequestFirstFocus="()=>$emit('treeViewNodeAriaRequestFirstFocus')"
-                      @treeViewNodeAriaRequestLastFocus="()=>$emit('treeViewNodeAriaRequestLastFocus')"
-                      @treeViewNodeAriaRequestPreviousFocus="$_treeViewNodeAria_handlePreviousFocus"
-                      @treeViewNodeAriaRequestNextFocus="$_treeViewNodeAria_handleNextFocus">
+                    :key="nodeModel[nodeModel.treeNodeSpec && nodeModel.treeNodeSpec.idProperty ? nodeModel.treeNodeSpec.idProperty : 'id']"
+                    :depth="depth + 1"
+                    :initial-model="nodeModel"
+                    :model-defaults="modelDefaults"
+                    :parent-id="model[idPropName]"
+                    :selection-mode="selectionMode"
+                    :tree-id="treeId"
+                    :initial-radio-group-values="radioGroupValues"
+                    :aria-key-map="ariaKeyMap"
+                    :is-mounted="isMounted"
+                    @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
+                    @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
+                    @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
+                    @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
+                    @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
+                    @treeViewNodeChildrenLoaded="(t, e)=>$emit('treeViewNodeChildrenLoaded', t, e)"
+                    @treeViewNodeSelectedChange="(t, e)=>$emit('treeViewNodeSelectedChange', t, e)"
+                    @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
+                    @treeViewNodeDelete="(t, e)=>$_treeViewNode_handleChildDeletion(t, e)"
+                    @treeViewNodeAriaFocusable="(t)=>$emit('treeViewNodeAriaFocusable', t)"
+                    @treeViewNodeAriaRequestParentFocus="$_treeViewNodeAria_focus()"
+                    @treeViewNodeAriaRequestFirstFocus="()=>$emit('treeViewNodeAriaRequestFirstFocus')"
+                    @treeViewNodeAriaRequestLastFocus="()=>$emit('treeViewNodeAriaRequestLastFocus')"
+                    @treeViewNodeAriaRequestPreviousFocus="$_treeViewNodeAria_handlePreviousFocus"
+                    @treeViewNodeAriaRequestNextFocus="$_treeViewNodeAria_handleNextFocus">
         <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
           <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
         </template>
@@ -174,6 +185,9 @@
         </template>
         <template #text="{ model, customClasses }">
           <slot name="text" :model="model" :customClasses="customClasses"></slot>
+        </template>
+        <template #loading="{ model, customClasses }">
+          <slot name="loading" :model="model" :customClasses="customClasses"></slot>
         </template>
       </TreeViewNode>
     </ul>
@@ -258,7 +272,13 @@
         return this.model.treeNodeSpec.state.selected.toString();
       },
       canExpand() {
-        return this.model[this.childrenPropName].length > 0 && this.model.treeNodeSpec.expandable;
+        // A node can be expanded if it is expandable and either has children or has not
+        // yet had the asynchronous loader for children called.
+        return (this.model[this.childrenPropName].length > 0 || !this.areChildrenLoaded) && this.model.treeNodeSpec.expandable;
+      },
+      areChildrenLoaded() {
+        const tns = this.model.treeNodeSpec;
+        return typeof tns.loadChildrenAsync !== 'function' || tns.state.areChildrenLoaded;
       },
       childrenPropName() {
         return this.model.treeNodeSpec.childrenProperty || 'children';
@@ -363,6 +383,10 @@
           this.$set(this.model.treeNodeSpec, 'customizations', {});
         }
 
+        if(typeof this.model.treeNodeSpec.loadChildrenAsync !== 'function') {
+          this.$set(this.model.treeNodeSpec, 'loadChildrenAsync', null);
+        }
+
         this.$_treeViewNode_normalizeNodeInputData();
         this.$_treeViewNode_normalizeNodeStateData();
       },
@@ -410,7 +434,12 @@
 
         let state = this.model.treeNodeSpec.state;
 
-        if (typeof state.expanded !== 'boolean') {
+        // areChildrenLoaded and areChildrenLoading are internal state used with asynchronous child
+        // node loading. Any node with asynchronously loaded children starts as not expanded.
+        this.$set(state, 'areChildrenLoaded', typeof this.model.treeNodeSpec.loadChildrenAsync !== 'function');
+        this.$set(state, 'areChildrenLoading', false);
+
+        if (typeof state.expanded !== 'boolean' || !state.areChildrenLoaded) {
           this.$set(state, 'expanded', false);
         }
         if (typeof state.selected !== 'boolean') {
@@ -471,9 +500,27 @@
       $_treeViewNode_onRadioChange(event) {
         this.$emit('treeViewNodeRadioChange', this.model, event);
       },
-      $_treeViewNode_onExpandedChange(event) {
-        this.model.treeNodeSpec.state.expanded = !this.model.treeNodeSpec.state.expanded;
+      async $_treeViewNode_onExpandedChange(event) {
+        let spec = this.model.treeNodeSpec;
+
+        // First expand the node (to show either children or a "loading" indicator)
+        spec.state.expanded = !spec.state.expanded;
         this.$emit('treeViewNodeExpandedChange', this.model, event);
+
+        // If children need to be loaded asynchronously, load them.
+        if (spec.state.expanded && !spec.state.areChildrenLoaded && !spec.state.areChildrenLoading) {
+
+          spec.state.areChildrenLoading = true;
+          var childrenResult = await spec.loadChildrenAsync(this.model);
+
+          if (childrenResult) {
+            spec.state.areChildrenLoaded = true;
+            this.model[this.childrenPropName].splice(0, this.model[this.childrenPropName].length, ...childrenResult);
+            this.$emit('treeViewNodeChildrenLoaded', this.model, event);
+          }
+
+          spec.state.areChildrenLoading = false;
+        }
       },
       $_treeViewNode_toggleSelected(event) {
         // Note that selection change is already handled by the "model.treeNodeSpec.focusable" watcher
@@ -658,6 +705,11 @@
       &::before {
         content: 'x';
       }
+    }
+
+    // Loading slot content
+    .tree-view-node-loading {
+      margin: 0 0 0 (1rem + $itemSpacing);
     }
 
     // The node's child list

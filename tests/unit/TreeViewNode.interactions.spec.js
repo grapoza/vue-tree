@@ -111,38 +111,88 @@ describe('TreeViewNode.vue (interactions)', () => {
 
     let expander = null;
 
-    beforeEach(() => {
-      wrapper = createWrapper({
-        ariaKeyMap: {},
-        initialModel: generateNodes(['ces', ['ces']])[0],
-        modelDefaults: {},
-        depth: 0,
-        treeId: 'tree',
-        initialRadioGroupValues: {},
-        isMounted: false
+    describe('always', () => {
+
+      beforeEach(() => {
+        wrapper = createWrapper({
+          ariaKeyMap: {},
+          initialModel: generateNodes(['ces', ['ces']])[0],
+          modelDefaults: {},
+          depth: 0,
+          treeId: 'tree',
+          initialRadioGroupValues: {},
+          isMounted: false
+        });
+
+        expander = wrapper.find('#' + wrapper.vm.expanderId);
       });
 
-      expander = wrapper.find('#' + wrapper.vm.expanderId);
+      it('should toggle the expanded state', () => {
+        expander.trigger('click');
+        expect(wrapper.vm.model.treeNodeSpec.state.expanded).to.be.true;
+      });
+
+      it('should emit the treeViewNodeExpandedChange event', () => {
+        expander.trigger('click');
+        expect(wrapper.emitted().treeViewNodeExpandedChange.length).to.equal(1);
+      });
+
+      it('should not emit the treeViewNodeClick event', () => {
+        expander.trigger('click');
+        expect(wrapper.emitted().treeViewNodeClick).to.be.undefined;
+      });
+
+      it('should not emit the treeViewNodeDblclick event', () => {
+        expander.trigger('dblclick');
+        expect(wrapper.emitted().treeViewNodeDblclick).to.be.undefined;
+      });
     });
 
-    it('should toggle the expanded state', () => {
-      expander.trigger('click');
-      expect(wrapper.vm.model.treeNodeSpec.state.expanded).to.be.true;
-    });
+    describe('and the children should be loaded asynchronously', () => {
 
-    it('should emit the treeViewNodeExpandedChange event', () => {
-      expander.trigger('click');
-      expect(wrapper.emitted().treeViewNodeExpandedChange.length).to.equal(1);
-    });
+      beforeEach(() => {
+        jest.useFakeTimers();
 
-    it('should not emit the treeViewNodeClick event', () => {
-      expander.trigger('click');
-      expect(wrapper.emitted().treeViewNodeClick).to.be.undefined;
-    });
+        let loadChildrenAsync = () => new Promise(resolve => setTimeout(resolve.bind(null, generateNodes(['', ''])), 1000));
+        let initialModel = generateNodes(['ces'], '', null, loadChildrenAsync)[0];
 
-    it('should not emit the treeViewNodeDblclick event', () => {
-      expander.trigger('dblclick');
-      expect(wrapper.emitted().treeViewNodeDblclick).to.be.undefined;
+        wrapper = createWrapper({
+          ariaKeyMap: {},
+          initialModel,
+          modelDefaults: {},
+          depth: 0,
+          treeId: 'tree',
+          initialRadioGroupValues: {},
+          isMounted: false
+        });
+
+        expander = wrapper.find('#' + wrapper.vm.expanderId).trigger('click');
+      });
+
+      afterEach(() => {
+        jest.useRealTimers();
+      });
+
+      it('should show the loading area while children load', () => {
+        expect(wrapper.find('.tree-view-node-loading').exists()).to.be.true;
+      });
+
+      describe('and the loadChildrenAsync Promise returns', () => {
+
+        beforeEach(async () => {
+          jest.runAllTimers();
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should show the children', () => {
+          expect(wrapper.find('.tree-view-node-loading').exists()).to.be.false;
+          expect(wrapper.findAllComponents(TreeViewNode).length).to.equal(3);
+        });
+
+        it('should emit the treeViewNodeChildrenLoaded event', () => {
+          expect(wrapper.emitted().treeViewNodeChildrenLoaded).to.be.an('array').that.has.length(1);
+        });
+      });
     });
   });
 

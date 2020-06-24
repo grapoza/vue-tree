@@ -14,13 +14,14 @@
  *  c: is a checkbox node. If capitalized, it's checked. If followed by '!', it's disabled. Cannot be used with 'r'.
  *  r: is a radiobutton node. If capitalized, it's checked. If followed by '!', it's disabled. Cannot be used with 'c'.
  *
- * A node that allows adds will use the callback function passed to generateNodes.
+ * A node that allows adds will use the addChildCallback function passed to generateNodes.
+ * A node that loads children asynchronously will use the loadChildrenAsync function passed to generateNodes.
  *
  * @param {Array<String, Array>} nodeSpec The node specification array.
  * @param {String} baseId The base string used in the node IDs.
  * @param {Function} addChildCallback A method that returns a Promise that resolves to the node data to add as a subnode.
  */
-export function generateNodes(nodeSpec, baseId = "", addChildCallback = null) {
+export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, loadChildrenAsync = null) {
     let nodes = [];
     let prevNode = null;
 
@@ -44,6 +45,7 @@ export function generateNodes(nodeSpec, baseId = "", addChildCallback = null) {
                     childrenProperty: 'children',
                     idProperty: 'id',
                     labelProperty: 'label',
+                    loadChildrenAsync,
                     expandable: lowerItem.includes('e'),
                     selectable: lowerItem.includes('s'),
                     deletable: lowerItem.includes('d'),

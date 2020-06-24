@@ -10,35 +10,35 @@
   </head>
   <body>
     <div class="container">
-      <h1>Basic Treeview Demo</h1>
+      <h1>Add/Delete Usage</h1>
       <div id="app">
-          <tree id="customtree" :initial-model="model" :model-defaults="modelDefaults" ref="tree"></tree>
+        <tree id="customtree" :initial-model="model" :model-defaults="modelDefaults" ref="tree"></tree>
       </div>
     </div>
 
     <script type='module'>
-        import arModel from './addRemove.js';
+      import arModel from './addRemove.js';
 
-        new Vue({
-          components: {
-            tree: window['vue-tree']
-          },
-          data() {
-            return {
-                childCounter: 0,
-                model: arModel,
-                modelDefaults: {
-                    addChildCallback: this.addChildCallback
-                }
-            };
-          },
-          methods: {
-            addChildCallback (parentModel) {
-              this.childCounter++;
-              return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
-            }
+      new Vue({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+              childCounter: 0,
+              model: arModel,
+              modelDefaults: {
+                  addChildCallback: this.addChildCallback
+              }
+          };
+        },
+        methods: {
+          addChildCallback (parentModel) {
+            this.childCounter++;
+            return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
           }
-        }).$mount('#app');
+        }
+      }).$mount('#app');
     </script>
   </body>
 </html>
