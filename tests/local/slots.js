@@ -37,18 +37,29 @@ export default [
       {
         id: 'subnode1',
         label: 'Checkbox Subnode',
-        input: {
-          type: 'checkbox',
-          name: 'checkbox2'
-        },
-        state: {
+        treeNodeSpec: {
           input: {
-            value: false,
-            disabled: false
-          }
-        },
-        children: []
+            type: 'checkbox',
+            name: 'checkbox2'
+          },
+          state: {
+            input: {
+              value: false,
+              disabled: false
+            }
+          },
+          children: []
+        }
       }
     ]
+  },
+  {
+    id: 'node4',
+    label: 'Text Node with Async Children',
+    children: [],
+    treeNodeSpec: {
+      expandable: true,
+      loadChildrenAsync: (m) => new Promise(() => { }), // Never resolve so the demo node stays up.
+    }
   }
 ];

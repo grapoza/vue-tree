@@ -18,6 +18,7 @@
                     @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
                     @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
                     @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
+                    @treeViewNodeChildrenLoaded="(t, e)=>$emit('treeViewNodeChildrenLoaded', t, e)"
                     @treeViewNodeSelectedChange="(t, e)=>$_treeView_handleNodeSelectedChange(t, e)"
                     @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
                     @treeViewNodeDelete="(t, e)=>$_treeView_handleChildDeletion(t, e)"
@@ -35,6 +36,9 @@
       </template>
       <template #text="{ model, customClasses }">
         <slot name="text" :model="model" :customClasses="customClasses"></slot>
+      </template>
+      <template #loading="{ model, customClasses }">
+        <slot name="loading" :model="model" :customClasses="customClasses"></slot>
       </template>
     </tree-view-node>
   </ul>

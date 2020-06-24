@@ -68,7 +68,8 @@ describe('TreeViewNode.vue (customizations)', () => {
         treeViewNodeSelfAddChildIcon: 'customnodeselfaddchildiconclass',
         treeViewNodeSelfDelete: 'customnodeselfdeleteclass',
         treeViewNodeSelfDeleteIcon: 'customnodeselfdeleteiconclass',
-        treeViewNodeChildren: 'customnodechildrenclass'
+        treeViewNodeChildren: 'customnodechildrenclass',
+        treeViewNodeLoading: 'customnodeloadingclass'
       }
     };
 
@@ -319,6 +320,45 @@ describe('TreeViewNode.vue (customizations)', () => {
 
       it('should get a radioChangeHandler property function', () => {
         expect(wrapper.find('span.slot-has-handler').text()).to.equal('true');
+      });
+    });
+
+    describe('and rendering a custom loader message', () => {
+
+      const customClasses = { treeViewNode: 'customnodeclass' };
+
+      beforeEach(() => {
+        let loadChildrenAsync = () => new Promise(resolve => setTimeout(resolve.bind(null, []), 1000));
+        let initialModel = generateNodes(['e'], "baseId", null, loadChildrenAsync)[0];
+
+        wrapper = createWrapper(
+          {
+            ariaKeyMap: {},
+            initialModel,
+            modelDefaults: { customizations: { classes: customClasses } },
+            depth: 0,
+            treeId: 'tree',
+            initialRadioGroupValues: {},
+            isMounted: false
+          },
+          {
+            loading: '<span :id="props.model.id" class="loading-slot-content"><span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span></span>',
+          }
+        );
+
+        wrapper.find('#' + wrapper.vm.expanderId).trigger('click');
+      });
+
+      it('should render the slot template', () => {
+        expect(wrapper.find('.loading-slot-content').exists()).to.be.true;
+      });
+
+      it('should have model data', () => {
+        expect(wrapper.find('span#baseIdn0.loading-slot-content').exists()).to.be.true;
+      });
+
+      it('should have custom classes data', () => {
+        expect(wrapper.find('span.slot-custom-classes').text()).to.equal(JSON.stringify(customClasses));
       });
     });
   });

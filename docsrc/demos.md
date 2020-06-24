@@ -193,7 +193,7 @@ If there are common settings that should be used by all (or even most) nodes, th
 <!--- -------------------------------------------------------------------------------------- --->
 ### Adding and Removing Nodes
 
-Any node can be marked as deletable or provide a callback used to create a new child node. To make a node deletable, just set a `deletable` property to `true` in that node's `treeNodeSpec`. To allow a node to have children added, set an `addChildCallback` property on the node's `treeNodeSpec` (or use `modelDefaults` to use the same callback for all nodes). The `addChildCallback` should return a Promise that resolves to the node data to add.
+Any node can be marked as deletable or provide a callback used to create a new child node. To make a node deletable, just set a `deletable` property to `true` in that node's `treeNodeSpec`. To allow a node to have children added, set an `addChildCallback` property on the node's `treeNodeSpec` (or use `modelDefaults` to use the same callback for all nodes). The `addChildCallback` can take the parent node's model data as an argument, and should return a Promise that resolves to the node data to add.
 
 ```{=html5}
 <details>
@@ -737,7 +737,7 @@ The convenience method `getSelected` is exposed on the tree component to make it
 <!--- -------------------------------------------------------------------------------------- --->
 ### Slots
 
-A treeview has slots available for replacing specific types of nodes. The `text`, `checkbox`, and `radio` slots replace the correpsonding types of nodes. For more info, see [the docs](./#slots).
+A treeview has slots available for replacing specific types of nodes. The `text`, `checkbox`, `radio`, and `loading` slots replace the correpsonding types of nodes. For more info, see [the docs](./#slots).
 
 ```{=html5}
 <details>
@@ -752,6 +752,9 @@ A treeview has slots available for replacing specific types of nodes. The `text`
     content
   </template>
   <template v-slot:radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
+    content
+  </template>
+  <template v-slot:text="{ model, customClasses }">
     content
   </template>
 </tree>
@@ -787,6 +790,9 @@ A treeview has slots available for replacing specific types of nodes. The `text`
                v-on:change="radioChangeHandler" />
         <span style="font-weight: bolder">{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
       </label>
+    </template>
+    <template v-slot:loading="{ model, customClasses }">
+      <span style="">LOADING CHILDREN OF {{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
     </template>
   </tree>
 </div>
@@ -833,7 +839,10 @@ A treeview has slots available for replacing specific types of nodes. The `text`
           {
             id: 'node3-slots',
             label: 'Text Node',
+            children: [],
             treeNodeSpec: {
+              expandable: true,
+              loadChildrenAsync: (m) => axios.get(`/children/${m.id}`),
               customizations: {
                 classes: {
                   treeViewNode: 'plop'
@@ -879,6 +888,9 @@ A treeview has slots available for replacing specific types of nodes. The `text`
                 <span style="font-weight: bolder">{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
             </label>
         </template>
+        <template v-slot:loading="{ model, customClasses }">
+          <span class="tree-view-node-loading">LOADING CHILDREN OF {{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
+        </template>
     </tree>
 </div>
 
@@ -923,7 +935,10 @@ A treeview has slots available for replacing specific types of nodes. The `text`
             {
               id: 'node3-slots',
               label: 'Text Node',
+              children: [],
               treeNodeSpec: {
+                expandable: true,
+                loadChildrenAsync: (m) => new Promise(() => {}), // Never resolve so the demo node stays up.
                 customizations: {
                   classes: {
                     treeViewNode: 'plop'
@@ -935,6 +950,115 @@ A treeview has slots available for replacing specific types of nodes. The `text`
         };
       }
     }).$mount('#app-slots');
+</script>
+```
+
+<!--- -------------------------------------------------------------------------------------- --->
+### Asynchronous Loading
+
+Child nodes can be loaded asynchronously by providing a function to the `loadChildrenAsync` property in a node's `treeNodeSpec` (or use `modelDefaults` to use the same method for all nodes). The `loadChildrenAsync` can take the parent node's model data as an argument, and should return a Promise that resolves to an array of model data to add as children.
+
+```{=html5}
+<details>
+<summary>
+```
+```html
+<tree id="customtree-async" :initial-model="model" :model-defaults="modelDefaults"></tree>
+```
+```{=html5}
+</summary>
+```
+<!--- The leading spaces are to render the html aligned correctly --->
+```html
+  <div id="app-async" class="demo-tree">
+  <tree id="customtree-async" :initial-model="model" :model-defaults="modelDefaults"></tree>
+</div>
+<script type='module'>
+  import TreeView from "@grapoza/vue-tree"
+  new Vue({
+    components: {
+      tree: TreeView
+    },
+    data() {
+      return {
+        model: [
+          {
+            id: "async-rootnode",
+            label: "Root Node"
+          }
+        ],
+        modelDefaults: {
+          loadChildrenAsync: this.loadChildrenAsync,
+          deleteTitle: 'Delete this node',
+          expanderTitle: 'Expand this node'
+        }
+      };
+    },
+    methods: {
+      loadChildrenAsync(parentModel) {
+        const id = Date.now();
+        return new Promise(resolve => setTimeout(resolve.bind(null, [
+          {
+            id: `async-child-node-${id}-1`,
+            label: `Child ${id}-1`
+          },
+          {
+            id: `async-child-node-${id}-2`,
+            label: `Child ${id}-2`,
+            treeNodeSpec: { deletable: true }
+          }
+        ]), 1000));
+      }
+    }
+  }).$mount('#app-async');
+</script>
+```
+```{=html5}
+</details>
+```
+
+```{=html5}
+<div id="app-async" class="demo-tree">
+    <tree id="customtree-async" :initial-model="model" :model-defaults="modelDefaults"></tree>
+</div>
+<script type='module'>
+    new Vue({
+      components: {
+        tree: window['vue-tree']
+      },
+      data() {
+        return {
+            childCounter: 0,
+            model: [
+            {
+                id: "async-rootnode",
+                label: "Root Node"
+            }
+            ],
+            modelDefaults: {
+                loadChildrenAsync: this.loadChildrenAsync,
+                deleteTitle: 'Delete this node',
+                expanderTitle: 'Expand this node'
+            }
+        };
+      },
+      methods: {
+        loadChildrenAsync(parentModel) {
+          const id = Date.now();
+          return new Promise(resolve => setTimeout(resolve.bind(null, [
+            {
+              id: `async-child-node-${id}-1`,
+              label: `Child ${id}-1`
+            },
+            {
+              id: `async-child-node-${id}-2`,
+              label: `Child ${id}-2`,
+              treeNodeSpec: { deletable: true }
+            }
+          ]), 1000));
+        }
+      }
+    }).$mount('#app-async');
 </script>
 ```
 
