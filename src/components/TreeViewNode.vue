@@ -554,7 +554,7 @@
 
           if (childModel) {
             this.model[this.childrenPropName].push(childModel);
-            this.$emit('treeViewNodeAdd', this.childModel, this.model, event);
+            this.$emit('treeViewNodeAdd', childModel, this.model, event);
           }
         }
       },
