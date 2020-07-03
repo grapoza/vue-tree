@@ -41,12 +41,28 @@ describe('TreeView.vue', () => {
 
   describe('when on an element without an ID', () => {
 
+    let newDiv;
+
     beforeEach(() => {
+      // Add a node that uses the first auto-generated ID to test collision logic.
+      newDiv = document.createElement('div');
+      newDiv.id = 'grtv-1';
+      document.body.appendChild(newDiv);
+
       wrapper = createWrapper();
     });
 
-    it('should have a null uniqueId', () => {
-      expect(wrapper.vm.uniqueId).to.be.null;
+    afterEach(() => {
+      document.body.removeChild(newDiv);
+      newDiv = null;
+    });
+
+    it('should have a uniqueId prefixed with grtv-', () => {
+      expect(wrapper.vm.uniqueId).to.be.a('string').and.match(/^grtv-/i);
+    });
+
+    it('should increment the uniqueId counter until no collisions are encountered', () => {
+      expect(wrapper.vm.uniqueId).to.equal('grtv-2');
     });
   });
 
@@ -113,18 +129,33 @@ describe('TreeView.vue', () => {
 
   describe('when getMatching() is called', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'ES', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
+    describe('and there are nodes present', () => {
+
+      beforeEach(() => {
+        wrapper = createWrapper({ initialModel: generateNodes(['es', 'ES', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
+      });
+
+      it('should return nodes matched by the function argument', () => {
+        let nodes = wrapper.vm.getMatching((nodeModel) =>
+          nodeModel.treeNodeSpec.expandable
+          && nodeModel.treeNodeSpec.state.expanded
+          && nodeModel.treeNodeSpec.selectable
+          && nodeModel.treeNodeSpec.state.selected);
+
+        expect(nodes.length).to.equal(1);
+      });
     });
 
-    it('should return nodes matched by the function argument', () => {
-      let nodes = wrapper.vm.getMatching((nodeModel) =>
-        nodeModel.treeNodeSpec.expandable
-        && nodeModel.treeNodeSpec.state.expanded
-        && nodeModel.treeNodeSpec.selectable
-        && nodeModel.treeNodeSpec.state.selected);
+    describe('and there are no nodes present', () => {
 
-      expect(nodes.length).to.equal(1);
+      beforeEach(() => {
+        wrapper = createWrapper();
+      });
+
+      it('should return an empty array', () => {
+        let nodes = wrapper.vm.getMatching(() => true);
+        expect(nodes.length).to.equal(0);
+      });
     });
   });
 

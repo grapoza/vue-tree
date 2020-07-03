@@ -19,14 +19,16 @@
                     @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
                     @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
                     @treeViewNodeChildrenLoaded="(t, e)=>$emit('treeViewNodeChildrenLoaded', t, e)"
-                    @treeViewNodeSelectedChange="(t, e)=>$_treeView_handleNodeSelectedChange(t, e)"
+                    @treeViewNodeSelectedChange="$_treeView_handleNodeSelectedChange"
                     @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
-                    @treeViewNodeDelete="(t, e)=>$_treeView_handleChildDeletion(t, e)"
+                    @treeViewNodeDelete="$_treeView_handleChildDeletion"
                     @treeViewNodeAriaFocusable="$_treeViewAria_handleFocusableChange"
                     @treeViewNodeAriaRequestFirstFocus="$_treeViewAria_focusFirstNode"
                     @treeViewNodeAriaRequestLastFocus="$_treeViewAria_focusLastNode"
                     @treeViewNodeAriaRequestPreviousFocus="$_treeViewAria_handlePreviousFocus"
-                    @treeViewNodeAriaRequestNextFocus="$_treeViewAria_handleNextFocus">
+                    @treeViewNodeAriaRequestNextFocus="$_treeViewAria_handleNextFocus"
+                    @treeViewNodeDragMove="$_treeViewDnd_dragMoveNode"
+                    @treeViewNodeDrop="$_treeViewDnd_drop">
 
       <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
         <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
@@ -46,13 +48,17 @@
 
 <script>
   import TreeViewAria from '../mixins/TreeViewAria';
+  import TreeViewNodeDragAndDrop from '../mixins/TreeViewDragAndDrop';
   import TreeViewNode from './TreeViewNode.vue';
   import SelectionMode from '../enums/selectionMode';
+  import InputType from '../enums/inputType';
+  import TreeViewDragAndDrop from '../mixins/TreeViewDragAndDrop';
 
   export default {
     name: 'TreeView',
     mixins: [
-      TreeViewAria
+      TreeViewAria,
+      TreeViewDragAndDrop
     ],
     components: {
       TreeViewNode,
@@ -99,9 +105,17 @@
         return this.selectionMode === SelectionMode.None ? false : (this.selectionMode === SelectionMode.Multiple).toString();
       }
     },
+    created() {
+      // Force a unique tree ID. This will generate a unique ID internally, but on mount
+      // it will be set to the element ID if one is present.
+      this.$set(this, 'uniqueId', this.$_treeView_generateUniqueId());
+    },
     mounted() {
       this.$_treeView_enforceSingleSelectionMode();
-      this.$set(this, 'uniqueId', this.$el.id ? this.$el.id : null);
+
+      if (this.$el.id) {
+        this.$set(this, 'uniqueId', this.$el.id);
+      }
 
       // Set this in a $nextTick so the focusable watcher
       // in TreeViewNodeAria fires before isMounted is set.
@@ -114,13 +128,13 @@
       getCheckedCheckboxes() {
         return this.getMatching((current) =>
           current.treeNodeSpec.input
-          && current.treeNodeSpec.input.type === 'checkbox'
+          && current.treeNodeSpec.input.type === InputType.Checkbox
           && current.treeNodeSpec.state.input.value);
       },
       getCheckedRadioButtons() {
         return this.getMatching((current) =>
           current.treeNodeSpec.input
-          && current.treeNodeSpec.input.type === 'radio'
+          && current.treeNodeSpec.input.type === InputType.RadioButton
           && this.radioGroupValues[current.treeNodeSpec.input.name] === current.treeNodeSpec.input.value);
       },
       getMatching(matcherFunction) {
@@ -138,6 +152,51 @@
       },
       getSelected() {
         return this.selectionMode === SelectionMode.None ? [] : this.getMatching((current) => current.treeNodeSpec.selectable && current.treeNodeSpec.state.selected);
+      },
+      $_treeView_findById(targetId) {
+        let node = null;
+
+        if (typeof targetId === 'string') {
+          // Do a quick check to see if it's at the root level
+          node = this.model.find(n => n[n.treeNodeSpec.idProperty] === targetId);
+
+          if (!node) {
+            this.$_treeView_depthFirstTraverse((current) => {
+              let children = current[current.treeNodeSpec.childrenProperty];
+              node = children.find(n => n[n.treeNodeSpec.idProperty] === targetId);
+              if (node) {
+                return false;
+              }
+            });
+          }
+        }
+
+        return node;
+      },
+      $_treeView_removeById(targetId) {
+        let node = null;
+
+        if (typeof targetId === 'string') {
+          // Do a quick check to see if it's at the root level
+          let nodeIndex = this.model.findIndex(n => n[n.treeNodeSpec.idProperty] === targetId);
+
+          if (nodeIndex > -1) {
+            node = this.model.splice(nodeIndex, 1)[0];
+          }
+          else {
+            this.$_treeView_depthFirstTraverse((current) => {
+              // See if this node has a child that matches
+              let children = current[current.treeNodeSpec.childrenProperty];
+              nodeIndex = children.findIndex(n => n[n.treeNodeSpec.idProperty] === targetId);
+              if (nodeIndex > -1) {
+                node = children.splice(nodeIndex, 1)[0];
+                return false;
+              }
+            });
+          }
+        }
+
+        return node;
       },
       $_treeView_depthFirstTraverse(nodeActionCallback) {
         if (this.model.length === 0) {
@@ -159,6 +218,16 @@
           // Use a return value of false to halt calling the callback on further nodes.
           continueCallbacks = nodeActionCallback(current);
         }
+      },
+      $_treeView_generateUniqueId() {
+        const stem = 'grtv-';
+        let treeNum = 1;
+
+        while (document.getElementById(stem + treeNum)) {
+          treeNum++;
+        }
+
+        return stem + treeNum;
       },
       $_treeView_handleChildDeletion(node, event) {
         // Remove the node from the array of children if this is an immediate child.

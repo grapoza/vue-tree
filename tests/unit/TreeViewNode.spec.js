@@ -48,6 +48,7 @@ describe('TreeViewNode.vue', () => {
         depth: 0,
         initialModel,
         modelDefaults: {},
+        treeId: 'tree-id',
         initialRadioGroupValues: {},
         isMounted: false
       });
@@ -84,6 +85,7 @@ describe('TreeViewNode.vue', () => {
             selected: true
           }
         },
+        treeId: 'tree-id',
         initialRadioGroupValues: {},
         selectionMode: SelectionMode.Multiple,
         isMounted: false
@@ -108,6 +110,7 @@ describe('TreeViewNode.vue', () => {
         depth: 0,
         initialModel: { id: 'my-node', label: 'My Node', treeNodeSpec: { title: 'My Title' } },
         modelDefaults: {},
+        treeId: 'tree-id',
         initialRadioGroupValues: {},
         isMounted: false
       });
@@ -134,7 +137,7 @@ describe('TreeViewNode.vue', () => {
     });
   });
 
-  describe('when passed a tree ID', () => {
+  describe('when generating element IDs', () => {
 
     beforeEach(() => {
       wrapper = createWrapper();
@@ -153,40 +156,6 @@ describe('TreeViewNode.vue', () => {
       it('should have an inputId made of the node ID and -input', () => {
         expect(wrapper.vm.inputId).to.equal(wrapper.vm.nodeId + '-input');
       });
-    });
-  });
-
-  describe('when not passed a tree ID', () => {
-
-    beforeEach(() => {
-      wrapper = createWrapper({
-        ariaKeyMap: {},
-        initialModel: generateNodes(['cesd'], '', () => Promise.resolve(null))[0],
-        modelDefaults: {},
-        depth: 0,
-        initialRadioGroupValues: {},
-        isMounted: false
-      });
-    });
-
-    it('should have a null nodeId', () => {
-      expect(wrapper.vm.nodeId).to.be.null;
-    });
-
-    it('should have a null inputId', () => {
-      expect(wrapper.vm.inputId).to.be.null;
-    });
-
-    it('should have a null expanderId', () => {
-      expect(wrapper.vm.expanderId).to.be.null;
-    });
-
-    it('should have a null addChildId', () => {
-      expect(wrapper.vm.addChildId).to.be.null;
-    });
-
-    it('should have a null deleteId', () => {
-      expect(wrapper.vm.deleteId).to.be.null;
     });
   });
 
@@ -675,6 +644,7 @@ describe('TreeViewNode.vue', () => {
       wrapper = createWrapper({
         ariaKeyMap: {},
         depth: 0,
+        treeId: 'tree',
         initialModel: { badid: 'asf', label: 'asdf' },
         modelDefaults: {},
         initialRadioGroupValues: {},
@@ -731,6 +701,7 @@ describe('TreeViewNode.vue', () => {
       wrapper = createWrapper({
         ariaKeyMap: {},
         depth: 0,
+        treeId: 'tree',
         initialModel: { id: 'asf', badlabel: 'asdf' },
         modelDefaults: {},
         initialRadioGroupValues: {},

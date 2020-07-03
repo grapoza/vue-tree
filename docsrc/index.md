@@ -21,12 +21,9 @@ Features include:
 - Skinning
 - Asynchronous loading of child nodes
 - Follows ARIA guidelines for treeview accessibility
+- Drag and drop (single nodes, works between trees)
 
-Planned:
-
-- Icons ([#22](https://github.com/grapoza/vue-tree/issues/22))
-- Searching ([#4](https://github.com/grapoza/vue-tree/issues/4))
-- Drag n' Drop ([#6](https://github.com/grapoza/vue-tree/issues/6))
+For future plans, see the project's [Issues](https://github.com/grapoza/vue-tree/issues) page.
 
 ##  Installation
 
@@ -201,6 +198,8 @@ The `treeNodeSpec` property contains any data about the node's capabilities and 
 | selectable           | Boolean  | True to allow the node to be selected                                                     | `false`                            |          |
 | deletable            | Boolean  | True to allow the node to be deleted                                                      | `false`                            |          |
 | focusable            | Boolean  | True to make the node the focus when the treeview is focused                              | See [Aria](#focusable) for details |          |
+| draggable            | Boolean  | True to make this node draggable                                                          | `false`                            |          |
+| allowDrop            | Boolean  | True to allow dropping TreeViewNode data onto this node                                   | `false`                            |          |
 | expanderTitle        | String   | The text to use as the title for the expander button                                      | `null`                             |          |
 | addChildTitle        | String   | The text to use as the title for the Add Child button                                     | `null`                             |          |
 | deleteTitle          | String   | The text to use as the title for the Delete button                                        | `null`                             |          |
@@ -272,26 +271,33 @@ If specified, the `modelDefaults` property of the treeview will be merged with n
 
 The display of the treeview can be customized via CSS using the following classes. Class names are organized in a hierarchy, so a containing node's class is the prefix of its child classes.
 
-| Class                                    | Affects                                                                          |
-|:-------------------------------------------|:-------------------------------------------------------------------------------|
-| `tree-view`                              | The top-level tree view list                                                     |
-| `tree-view-node`                         | A single node's list item                                                        |
-| `tree-view-node-self-selected`           | A selected node                                                                  |
-| `tree-view-node-self`                    | The div containing the current node's UI                                         |
-| `tree-view-node-self-expander`           | The button used to expand the children                                           |
-| `tree-view-node-self-expanded`           | Applied to the expander button when the node is expanded                         |
-| `tree-view-node-self-expanded-indicator` | The `<i>` element containing the expansion indicator                             |
-| `tree-view-node-self-spacer`             | An empty spacer to replace fixed-width elements, _e.g._ the expander or checkbox |
-| `tree-view-node-self-label`              | The label for the checkbox of checkable nodes                                    |
-| `tree-view-node-self-input`              | Any type of input field within the tree node                                     |
-| `tree-view-node-self-checkbox`           | The checkbox                                                                     |
-| `tree-view-node-self-radio`              | The radio button                                                                 |
-| `tree-view-node-self-text`               | The text for a non-input node                                                    |
-| `tree-view-node-self-action`             | The action buttons (e.g., add child or delete)                                   |
-| `tree-view-node-self-add-child-icon`     | The `<i>` element containing the add child icon                                  |
-| `tree-view-node-self-delete-icon`        | The `<i>` element containing the delete icon                                     |
-| `tree-view-node-children`                | The list of child nodes                                                          |
-| `tree-view-node-loading`                 | The placeholder shown when child nodes are loading asynchronously                |
+| Class                                     | Affects                                                                          |
+|:--------------------------------------------|:-------------------------------------------------------------------------------|
+| `tree-view`                               | The top-level tree view list                                                     |
+| `tree-view-node`                          | A single node's list item                                                        |
+| `tree-view-node-self-selected`            | A selected node                                                                  |
+| `tree-view-node-self`                     | The div containing the current node's UI                                         |
+| `tree-view-node-self-expander`            | The button used to expand the children                                           |
+| `tree-view-node-self-expanded`            | Applied to the expander button when the node is expanded                         |
+| `tree-view-node-self-expanded-indicator`  | The `<i>` element containing the expansion indicator                             |
+| `tree-view-node-self-spacer`              | An empty spacer to replace fixed-width elements, _e.g._ the expander or checkbox |
+| `tree-view-node-self-label`               | The label for the checkbox of checkable nodes                                    |
+| `tree-view-node-self-input`               | Any type of input field within the tree node                                     |
+| `tree-view-node-self-checkbox`            | The checkbox                                                                     |
+| `tree-view-node-self-radio`               | The radio button                                                                 |
+| `tree-view-node-self-text`                | The text for a non-input node                                                    |
+| `tree-view-node-self-action`              | The action buttons (e.g., add child or delete)                                   |
+| `tree-view-node-self-add-child-icon`      | The `<i>` element containing the add child icon                                  |
+| `tree-view-node-self-delete-icon`         | The `<i>` element containing the delete icon                                     |
+| `tree-view-node-self-drop-target`         | A node has another node dragged over it and can accept drops                     |
+| `tree-view-node-self-child-drop-target`   | A node has another node dragged over its child drop target                       |
+| `tree-view-node-self-sibling-drop-target` | Either the previous or next sibling node drop target                             |
+| `tree-view-node-self-sibling-drop-target-hover` | A node has another node dragged over one of the sibling drop targets       |
+| `tree-view-node-self-prev-target`         | The previous sibling node drop target                                            |
+| `tree-view-node-self-next-target`         | The next sibling node drop target                                                |
+| `tree-view-node-children`                 | The list of child nodes                                                          |
+| `tree-view-node-loading`                  | The placeholder shown when child nodes are loading asynchronously                |
+| `tree-view-node-dragging`                 | The node is dragged as part of a drag and drop operation                         |
 
 ## Customizing the TreeView
 
@@ -394,6 +400,20 @@ Child nodes can be loaded asynchronously by providing a method to the `treeNodeS
 The method may accept one argument, which will be the model of the node that has been expanded. It should resolve to an array of child node models.
 
 The load method is called once, and after that the children are part of the model and are not reloaded.
+
+## Drag and Drop
+
+A user can drag and drop an individual TreeViewNode. A drag only affects the node where the dragging starts, and has nothing to do with any node selection within the tree. To make a node draggable, the node's `treeNodeSpec.draggable` must be `true`. To make a node accept drops, the node's `treeNodeSpec.allowDrop` must be `true`. Both Move and Copy operations are supported. To copy in most browsers hold down the `Ctrl` key while dragging.
+
+When dropping a node on another node, there are three areas of the target node where a drop can occur. If dropped at the top of the target node in the shaded area then the node will be inserted before the target. If dropped at the bottom of the target node in the shaded area then the node will be inserted after the target. If dropped directly on the of the target node then the node will be inserted as a child of the target. The drop can occur on a node in the same tree or in a different tree as long as the receiving node allows drops.
+
+The drop can also occur anywhere that allows dropping data with the `application/json` or `text/plain` MIME types (_e.g._, a simple text input field or a text editor).
+
+When copying a node the newly created node will have its own unique identifier, will not be the currently focusable node even if the source node was the focusable node.
+
+When moving a node within the same tree, the actual node is moved within the tree data. If the node is copied within the same tree, any function members of the node data (_e.g._, the addChildCallback) are copied.
+
+When a node is moved or copied to a different tree, the node data that passes between trees does not contain any of the functions from the original node data.
 
 ## Aria
 
