@@ -29,12 +29,11 @@ const getDefaultPropsData = function () {
   }
 };
 
-function createWrapper(customPropsData, slotsData) {
+function createWrapper(customPropsData) {
   var wrapper = mount(TreeViewNode, {
     sync: false,
     propsData: customPropsData || getDefaultPropsData(),
     localVue,
-    scopedSlots: slotsData,
     attachTo: '#root'
   });
 
@@ -109,6 +108,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         depth: 0,
         initialModel,
         modelDefaults: {},
+        treeId: 'tree-id',
         initialRadioGroupValues: {},
         isMounted: false
       });

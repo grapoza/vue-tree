@@ -1399,3 +1399,119 @@ In the next example, a treeview has been given a `skin-class` prop value of `gra
     }).$mount('#app-custom-gray');
 </script>
 ```
+
+<!--- -------------------------------------------------------------------------------------- --->
+### Drag and Drop
+
+You can drag a node that has the `draggable` property in a node's `treeNodeSpec` set to `true`. Any node with `allowDrop` set to `true` in the `treeNodeSpec` can accept a drop from any TreeView.
+
+```{=html5}
+<details>
+<summary>
+```
+```html
+<tree id="customtree-dnd" :initial-model="model" :model-defaults="modelDefaults"></tree>
+```
+```{=html5}
+</summary>
+```
+<!--- The leading spaces are to render the html aligned correctly --->
+```html
+  <div id="app-dnd" class="demo-tree">
+  <tree id="customtree-dnd" :initial-model="model" :model-defaults="modelDefaults"></tree>
+</div>
+<script type='module'>
+  import TreeView from "@grapoza/vue-tree"
+  new Vue({
+    components: {
+      tree: TreeView
+    },
+    data() {
+      return {
+        model: [
+          {
+            id: "dnd-rootnode",
+            label: "Root Node",
+            children: [
+              {
+                id: "child-1",
+                label: "Subnode 1"
+              },
+              {
+                id: "child-2",
+                label: "Subnode 2"
+              }
+            ]
+          }
+        ],
+        modelDefaults: {
+          draggable: true,
+          allowDrop: true
+        }
+      };
+    }
+  }).$mount('#app-dnd');
+</script>
+```
+```{=html5}
+</details>
+```
+
+```{=html5}
+<div id="app-dnd" class="demo-tree">
+    <h4>Tree 1</h4>
+    <tree id="customtree-dnd-1" :initial-model="model1" :model-defaults="modelDefaults"></tree>
+    <h4>Tree 2</h4>
+    <tree id="customtree-dnd-2" :initial-model="model2" :model-defaults="modelDefaults"></tree>
+</div>
+<script type='module'>
+    new Vue({
+      components: {
+        tree: window['vue-tree']
+      },
+      data() {
+        return {
+            model1: [
+              {
+                id: "dnd-rootnode-1",
+                label: "Root Node 1",
+                children: [
+                  {
+                    id: "child-1",
+                    label: "Subnode 1"
+                  },
+                  {
+                    id: "child-2",
+                    label: "Subnode 2"
+                  }
+                ]
+              }
+            ],
+            model2: [
+              {
+                id: "dnd-rootnode-2",
+                label: "Root Node 2",
+                children: [
+                  {
+                    id: "child-3",
+                    label: "Subnode 3"
+                  },
+                  {
+                    id: "child-4",
+                    label: "Subnode 4"
+                  }
+                ]
+              }
+            ],
+            modelDefaults: {
+              draggable: true,
+              allowDrop: true,
+              state: {
+                expanded: true
+              }
+            }
+        };
+      }
+    }).$mount('#app-dnd');
+</script>
+```

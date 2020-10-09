@@ -1,22 +1,38 @@
 <template>
   <!--
-      A Component meant to be used internally by the TreeView component. See README.md
+      A Component meant to be used internally by the TreeView component. See the documentation
       for a description of the expected data format.
   -->
   <li :id="nodeId"
       class="tree-view-node"
-      :class="customClasses.treeViewNode"
+      :class="[customClasses.treeViewNode,
+               model.treeNodeSpec._.dragging ? 'tree-view-node-dragging' : '']"
       role="treeitem"
       :tabindex="ariaTabIndex"
       :aria-expanded="ariaExpanded"
       :aria-selected="ariaSelected"
       @keydown="$_treeViewNodeAria_onKeyDown">
+
     <div class="tree-view-node-self"
          :class="[customClasses.treeViewNodeSelf,
                   isEffectivelySelected ? 'tree-view-node-self-selected' : '',
-                  isEffectivelySelected ? customClasses.treeViewNodeSelfSelected : '']"
+                  isEffectivelySelected ? customClasses.treeViewNodeSelfSelected : '',
+                  model.treeNodeSpec._.isDropTarget ? 'tree-view-node-self-drop-target': '',
+                  model.treeNodeSpec._.isChildDropTarget ? 'tree-view-node-self-child-drop-target': '']"
+         :draggable="model.treeNodeSpec.draggable"
+         :dragging="model.treeNodeSpec._.dragging"
          @click="$_treeViewNode_onClick"
-         @dblclick="$_treeViewNode_onDblclick">
+         @dblclick="$_treeViewNode_onDblclick"
+         @dragend="$_treeViewNodeDnd_onDragend"
+         @dragenter="$_treeViewNodeDnd_onDragenter"
+         @dragleave="$_treeViewNodeDnd_onDragleave"
+         @dragover="$_treeViewNodeDnd_onDragover"
+         @dragstart="$_treeViewNodeDnd_onDragstart"
+         @drop="$_treeViewNodeDnd_onDrop">
+
+      <!-- Top Drop Target -->
+      <div class="tree-view-node-self-sibling-drop-target tree-view-node-self-prev-target"
+           :class="[model.treeNodeSpec._.isPrevDropTarget ? 'tree-view-node-self-sibling-drop-target-hover': '']"></div>
 
       <!-- Expander -->
       <button :id="expanderId"
@@ -132,6 +148,10 @@
         <i class="tree-view-node-self-delete-icon"
             :class="customClasses.treeViewNodeSelfDeleteIcon"></i>
       </button>
+
+      <!-- Bottom Drop Target -->
+      <div class="tree-view-node-self-sibling-drop-target tree-view-node-self-next-target"
+           :class="[model.treeNodeSpec._.isNextDropTarget ? 'tree-view-node-self-sibling-drop-target-hover': '']"></div>
     </div>
 
     <!-- Children and Loading Placholder -->
@@ -170,13 +190,15 @@
                     @treeViewNodeChildrenLoaded="(t, e)=>$emit('treeViewNodeChildrenLoaded', t, e)"
                     @treeViewNodeSelectedChange="(t, e)=>$emit('treeViewNodeSelectedChange', t, e)"
                     @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
-                    @treeViewNodeDelete="(t, e)=>$_treeViewNode_handleChildDeletion(t, e)"
+                    @treeViewNodeDelete="$_treeViewNode_handleChildDeletion"
                     @treeViewNodeAriaFocusable="(t)=>$emit('treeViewNodeAriaFocusable', t)"
-                    @treeViewNodeAriaRequestParentFocus="$_treeViewNodeAria_focus()"
+                    @treeViewNodeAriaRequestParentFocus="$_treeViewNodeAria_focus"
                     @treeViewNodeAriaRequestFirstFocus="()=>$emit('treeViewNodeAriaRequestFirstFocus')"
                     @treeViewNodeAriaRequestLastFocus="()=>$emit('treeViewNodeAriaRequestLastFocus')"
                     @treeViewNodeAriaRequestPreviousFocus="$_treeViewNodeAria_handlePreviousFocus"
-                    @treeViewNodeAriaRequestNextFocus="$_treeViewNodeAria_handleNextFocus">
+                    @treeViewNodeAriaRequestNextFocus="$_treeViewNodeAria_handleNextFocus"
+                    @treeViewNodeDragMove="$_treeViewNodeDnd_dragMoveChild"
+                    @treeViewNodeDrop="$_treeViewNodeDnd_drop">
         <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
           <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
         </template>
@@ -196,12 +218,17 @@
 
 <script>
   import TreeViewNodeAria from '../mixins/TreeViewNodeAria';
+  import TreeViewNodeDragAndDrop from '../mixins/TreeViewNodeDragAndDrop';
   import SelectionMode from '../enums/selectionMode';
+  import InputType from '../enums/inputType';
+  import MimeType from '../enums/mimeType';
+  import { isProbablyObject } from '../objectMethods';
 
   export default {
     name: 'TreeViewNode',
     mixins: [
-      TreeViewNodeAria
+      TreeViewNodeAria,
+      TreeViewNodeDragAndDrop
     ],
     props: {
       depth: {
@@ -234,8 +261,7 @@
       },
       treeId: {
         type: String,
-        required: false,
-        default: null
+        required: true
       }
     },
     data() {
@@ -247,7 +273,11 @@
     },
     computed: {
       addChildId() {
-        return this.nodeId ? `${this.nodeId}-add-child` : null;
+        return `${this.nodeId}-add-child`;
+      },
+      areChildrenLoaded() {
+        const tns = this.model.treeNodeSpec;
+        return typeof tns.loadChildrenAsync !== 'function' || tns.state.areChildrenLoaded;
       },
       ariaExpanded() {
         return this.canExpand ? this.model.treeNodeSpec.state.expanded.toString() : false;
@@ -276,10 +306,6 @@
         // yet had the asynchronous loader for children called.
         return (this.model[this.childrenPropName].length > 0 || !this.areChildrenLoaded) && this.model.treeNodeSpec.expandable;
       },
-      areChildrenLoaded() {
-        const tns = this.model.treeNodeSpec;
-        return typeof tns.loadChildrenAsync !== 'function' || tns.state.areChildrenLoaded;
-      },
       childrenPropName() {
         return this.model.treeNodeSpec.childrenProperty || 'children';
       },
@@ -287,16 +313,16 @@
         return (this.model.treeNodeSpec.customizations || {}).classes || {};
       },
       deleteId() {
-        return this.nodeId ? `${this.nodeId}-delete` : null;
+        return `${this.nodeId}-delete`;
       },
       expanderId() {
-        return this.nodeId ? `${this.nodeId}-exp` : null;
+        return `${this.nodeId}-exp`;
       },
       idPropName() {
         return this.model.treeNodeSpec.idProperty || 'id';
       },
       inputId() {
-        return this.nodeId ? `${this.nodeId}-input` : null;
+        return `${this.nodeId}-input`;
       },
       isEffectivelySelected() {
         return this.selectionMode !== SelectionMode.None && this.model.treeNodeSpec.selectable && this.model.treeNodeSpec.state.selected;
@@ -305,7 +331,7 @@
         return this.model.treeNodeSpec.labelProperty || 'label';
       },
       nodeId() {
-        return this.treeId ? `${this.treeId}-${this.model[this.idPropName]}` : null;
+        return `${this.treeId}-${this.model[this.idPropName]}`;
       }
     },
     created() {
@@ -332,7 +358,7 @@
        */
       $_treeViewNode_normalizeNodeData() {
         // The target model must have a treeNodeSpec property to assign defaults into
-        if (!this.$_treeViewNode_isProbablyObject(this.model.treeNodeSpec)) {
+        if (!isProbablyObject(this.model.treeNodeSpec)) {
           this.$set(this.model, 'treeNodeSpec', {});
         }
 
@@ -361,6 +387,12 @@
         if (typeof this.model.treeNodeSpec.deletable !== 'boolean') {
           this.$set(this.model.treeNodeSpec, 'deletable', false);
         }
+        if (typeof this.model.treeNodeSpec.draggable !== 'boolean') {
+          this.$set(this.model.treeNodeSpec, 'draggable', false);
+        }
+        if (typeof this.model.treeNodeSpec.allowDrop !== 'boolean') {
+          this.$set(this.model.treeNodeSpec, 'allowDrop', false);
+        }
 
         if (typeof this.model.treeNodeSpec.addChildCallback !== 'function') {
           this.$set(this.model.treeNodeSpec, 'addChildCallback', null);
@@ -387,6 +419,10 @@
           this.$set(this.model.treeNodeSpec, 'loadChildrenAsync', null);
         }
 
+        // Internal members
+        this.$set(this.model.treeNodeSpec, '_', {});
+        this.$set(this.model.treeNodeSpec._, 'dragging', false);
+
         this.$_treeViewNode_normalizeNodeInputData();
         this.$_treeViewNode_normalizeNodeStateData();
       },
@@ -399,7 +435,7 @@
 
         // For nodes that are inputs, they must specify at least a type.
         // Only a subset of types are accepted.
-        if (input === null || typeof input !== 'object' || !['checkbox', 'radio'].includes(input.type)) {
+        if (input === null || typeof input !== 'object' || !Object.values(InputType).includes(input.type)) {
           this.$set(this.model.treeNodeSpec, 'input', null);
         }
         else {
@@ -407,7 +443,7 @@
             this.$set(input, 'name', null);
           }
 
-          if (input.type === 'radio') {
+          if (input.type === InputType.RadioButton) {
             if (typeof input.name !== 'string' || input.name.trim().length === 0) {
               this.$set(input, 'name', 'unspecifiedRadioName');
             }
@@ -455,7 +491,7 @@
             this.$set(state.input, 'disabled', false);
           }
 
-          if (this.model.treeNodeSpec.input.type === 'checkbox') {
+          if (this.model.treeNodeSpec.input.type === InputType.Checkbox) {
 
             if (typeof state.input.value !== 'boolean') {
               this.$set(state.input, 'value', false);
@@ -466,7 +502,7 @@
       $_treeViewNode_assignDefaultProps(source, target) {
 
         // Make sure the defaults is an object
-        if (this.$_treeViewNode_isProbablyObject(source)) {
+        if (isProbablyObject(source)) {
 
           // Use a copy of the source, since the props can be fubar'd by the assigns
           const sourceCopy = JSON.parse(JSON.stringify(source));
@@ -475,10 +511,10 @@
           Object.assign(sourceCopy, target);
 
           for (const propName of Object.keys(source)) {
-            // Functions are lost on the JSON copy, so snag the original.
+            // Functions are lost on the JSON copy, so snag the original. Otherwise, use the merged value.
             const propValue = typeof source[propName] === 'function' ? source[propName] : sourceCopy[propName];
 
-            if (this.$_treeViewNode_isProbablyObject(propValue)) {
+            if (isProbablyObject(propValue)) {
               // Find object properties to deep assign them
               this.$set(target, propName, target[propName] || {});
               this.$_treeViewNode_assignDefaultProps(propValue, target[propName]);
@@ -586,9 +622,6 @@
         }
 
         return false;
-      },
-      $_treeViewNode_isProbablyObject(obj) {
-        return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
       }
     },
   };
@@ -625,6 +658,29 @@
       display: flex;
       align-items: flex-start;
       line-height: $baseHeight;
+    }
+
+    // Drag and Drop styles
+    .tree-view-node-dragging .tree-view-node-self {
+      opacity: 0.5;
+    }
+
+    .tree-view-node-self-drop-target {
+      flex-wrap: wrap;
+
+      &.tree-view-node-self-child-drop-target {
+        opacity: .5;
+      }
+
+      .tree-view-node-self-sibling-drop-target {
+        width: 100%;
+        height: 7px;
+        background-color: #dddddd;
+
+        &.tree-view-node-self-sibling-drop-target-hover {
+          background-color: #bbbbbb;
+        }
+      }
     }
 
     // The expander button and indicator content

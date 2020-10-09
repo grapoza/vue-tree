@@ -1,3 +1,5 @@
+import InputType from '../../src/enums/inputType';
+
 /**
  * Generates nodes, one per array element that is not itself an array.
  * Array elements that are arrays recursively generate child nodes
@@ -51,9 +53,9 @@ export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, lo
                     deletable: lowerItem.includes('d'),
                     focusable: lowerItem.includes('f'),
                     input: lowerItem.includes('c')
-                        ? { type: 'checkbox', name: `${idString}-cbx` }
+                        ? { type: InputType.Checkbox, name: `${idString}-cbx` }
                         : lowerItem.includes('r')
-                            ? { type: 'radio', name: `${baseId || 'root'}-rb`, value: `${idString}-val` }
+                            ? { type: InputType.RadioButton, name: `${baseId || 'root'}-rb`, value: `${idString}-val` }
                             : null,
                     state: {
                         expanded: item.includes('E'),
