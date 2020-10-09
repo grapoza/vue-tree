@@ -27,18 +27,18 @@
     "test-site": "(start cmd /C \"C:/Program Files (x86)/IIS Express/iisexpress.exe\" /path:%cd% && start http://localhost:8080/tests/local/index.html)"
   },
   "dependencies": {
-    "vue": "2.6.11"
+    "vue": "2.6.12"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "4.4.4",
-    "@vue/cli-plugin-unit-jest": "4.4.4",
-    "@vue/cli-service": "4.4.4",
-    "@vue/test-utils": "1.0.3",
+    "@vue/cli-plugin-babel": "4.5.6",
+    "@vue/cli-plugin-unit-jest": "4.5.6",
+    "@vue/cli-service": "4.5.6",
+    "@vue/test-utils": "1.1.0",
     "chai": "4.2.0",
     "node-sass": "4.14.1",
-    "sass-loader": "8.0.2",
-    "vue-template-compiler": "2.6.11",
-    "webpack": "4.43.0"
+    "sass-loader": "10.0.2",
+    "vue-template-compiler": "2.6.12",
+    "webpack": "4.44.2"
   },
   "browserslist": [
     "defaults"
