@@ -1,4 +1,5 @@
 import SelectionMode from '../enums/selectionMode';
+import TvEvent from '../enums/event';
 
 export default {
   props: {
@@ -23,7 +24,7 @@ export default {
         if (this.isMounted) {
           this.$el.focus();
         }
-        this.$emit('treeViewNodeAriaFocusable', this.model);
+        this.$emit(TvEvent.FocusableChange, this.model);
       }
 
       // In selectionFollowsFocus selection mode, this focus watch is responsible for updating selection.
@@ -49,7 +50,7 @@ export default {
       if (node.treeNodeSpec.focusable) {
         // When this is the first of several siblings, focus the next node.
         // Otherwise, focus the previous node.
-        if (this.model[this.childrenPropName].length > 1 && this.model[this.childrenPropName].indexOf(node) === 0) {
+        if (this.children.length > 1 && this.children.indexOf(node) === 0) {
           this.$_treeViewNodeAria_handleNextFocus(node);
         }
         else {
@@ -98,7 +99,7 @@ export default {
             this.$_treeViewNode_onExpandedChange(event);
           }
           else {
-            this.model[this.childrenPropName][0].treeNodeSpec.focusable = true;
+            this.children[0].treeNodeSpec.focusable = true;
           }
         }
       }
@@ -111,30 +112,30 @@ export default {
         }
         else {
           // Parent handles setting its own focusability.
-          this.$emit("treeViewNodeAriaRequestParentFocus");
+          this.$emit(TvEvent.RequestParentFocus);
         }
       }
       else if (this.ariaKeyMap.focusFirstItem.includes(event.keyCode)) {
         // Moves focus to first node without opening or closing a node.
         // The actual change on the desired node model is handled at the TreeView level.
-        this.$emit("treeViewNodeAriaRequestFirstFocus");
+        this.$emit(TvEvent.RequestFirstFocus);
       }
       else if (this.ariaKeyMap.focusLastItem.includes(event.keyCode)) {
         // Moves focus to the last node that can be focused without expanding any nodes that are closed.
         // The actual change on the desired node model is handled at the TreeView level.
-        this.$emit("treeViewNodeAriaRequestLastFocus");
+        this.$emit(TvEvent.RequestLastFocus);
       }
       else if (this.ariaKeyMap.focusPreviousItem.includes(event.keyCode)) {
         // Moves focus to the previous node that is focusable without opening or closing a node.
         // If focus is on the first node, does nothing
         // Parent handles setting focusability on a sibling (or child thereof) of this node, or itself.
-        this.$emit("treeViewNodeAriaRequestPreviousFocus", this.model);
+        this.$emit(TvEvent.RequestPreviousFocus, this.model);
       }
       else if (this.ariaKeyMap.focusNextItem.includes(event.keyCode)) {
         // Moves focus to the next node that is focusable without opening or closing a node.
         // If focus is on the last node, does nothing.
         // Parent handles setting focusability on a sibling of this node, or its first child.
-        this.$emit("treeViewNodeAriaRequestNextFocus", this.model, false);
+        this.$emit(TvEvent.RequestNextFocus, this.model, false);
       }
       else if (this.ariaKeyMap.insertItem.includes(event.keyCode)) {
         // Trigger insertion of a new child item if allowed.
@@ -158,12 +159,12 @@ export default {
     $_treeViewNodeAria_handlePreviousFocus(childNode) {
       // If focusing previous of the first child, focus this parent.
       // If focusing previous of any other node, focus the last expanded node within the previous sibling.
-      let childIndex = this.model[this.childrenPropName].indexOf(childNode);
+      let childIndex = this.children.indexOf(childNode);
       if (childIndex === 0) {
         this.model.treeNodeSpec.focusable = true;
       }
       else {
-        let lastModel = this.model[this.childrenPropName][childIndex - 1];
+        let lastModel = this.children[childIndex - 1];
         let lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
         while (lastModelChildren.length > 0 && lastModel.treeNodeSpec.expandable && lastModel.treeNodeSpec.state.expanded) {
           lastModel = lastModelChildren[lastModelChildren.length - 1];
@@ -176,16 +177,16 @@ export default {
       // If the node is expanded, focus first child unless we're ignoring it (this was punted from a grandchild)
       // If the node has a next sibling, focus that
       // Otherwise, punt this up to this node's parent
-      let childIndex = this.model[this.childrenPropName].indexOf(childNode);
+      let childIndex = this.children.indexOf(childNode);
       let childNodeChildrenPropName = childNode.treeNodeSpec.childrenProperty;
       if (!ignoreChild && childNode[childNodeChildrenPropName].length > 0 && childNode.treeNodeSpec.expandable && childNode.treeNodeSpec.state.expanded) {
         childNode[childNodeChildrenPropName][0].treeNodeSpec.focusable = true;
       }
-      else if (childIndex < this.model[this.childrenPropName].length - 1) {
-        this.model[this.childrenPropName][childIndex + 1].treeNodeSpec.focusable = true;
+      else if (childIndex < this.children.length - 1) {
+        this.children[childIndex + 1].treeNodeSpec.focusable = true;
       }
       else {
-        this.$emit('treeViewNodeAriaRequestNextFocus', this.model, true);
+        this.$emit(TvEvent.RequestNextFocus, this.model, true);
       }
     }
   }

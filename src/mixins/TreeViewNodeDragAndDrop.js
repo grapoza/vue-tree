@@ -4,6 +4,7 @@ import {
   effectAllowed as EffectAllowed,
   targetZone as TargetZone
 } from '../enums/dragDrop';
+import TvEvent from '../enums/event';
 
 export default {
   methods: {
@@ -17,9 +18,9 @@ export default {
      * @param {TreeViewNode} node The node which was dragged/dropped
      */
     $_treeViewNodeDnd_dragMoveChild(node) {
-      const targetIndex = this.model[this.childrenPropName].indexOf(node);
+      const targetIndex = this.children.indexOf(node);
       if (targetIndex > -1) {
-        this.model[this.childrenPropName].splice(targetIndex, 1);
+        this.children.splice(targetIndex, 1);
       }
     },
     /**
@@ -36,8 +37,8 @@ export default {
      * @param {DragEvent} event The original DOM drop event
      */
     $_treeViewNodeDnd_drop(data, event) {
-      data.siblingNodeSet = data.siblingNodeSet || this.model[this.childrenPropName];
-      this.$emit('treeViewNodeDrop', data, event);
+      data.siblingNodeSet = data.siblingNodeSet || this.children;
+      this.$emit(TvEvent.Drop, data, event);
     },
     /**
      * Handles starting a drag on this node.
@@ -118,12 +119,12 @@ export default {
         isSameTree: payload.treeId === this.treeId,
         droppedModel: payload.data,
         targetModel: this.model,
-        siblingNodeSet: tzone === TargetZone.Child ? this.model[this.childrenPropName] : null,
+        siblingNodeSet: tzone === TargetZone.Child ? this.children : null,
         dropEffect: event.dataTransfer.dropEffect,
         targetZone: tzone
       };
 
-      this.$emit('treeViewNodeDrop', eventData, event);
+      this.$emit(TvEvent.Drop, eventData, event);
 
       this.$_treeViewNodeDnd_setDropTargetProps(event, false);
 
@@ -147,7 +148,7 @@ export default {
           // If the node was moved to a different tree, delete it from this one
           // by passing this event to the parent node, or the TreeView if this
           // is a root node.
-          this.$emit('treeViewNodeDragMove', this.model, event);
+          this.$emit(TvEvent.DragMove, this.model, event);
         }
       }
       else {
@@ -163,16 +164,7 @@ export default {
     $_treeViewNodeDnd_isValidDropTargetForEvent(event) {
       return this.model.treeNodeSpec.allowDrop
         && event.dataTransfer.types.includes(MimeType.TreeViewNode)
-        && !this.$_treeViewNodeDnd_closest(event.target, '.tree-view-node-dragging');
-    },
-    /**
-     * Runs Element.closest on a given node, handling text nodes by delegating to a parent.
-     * @param {Node} node The element to check for a closest element
-     * @param {String} selector The CSS selector to check
-     */
-    $_treeViewNodeDnd_closest(node, selector) {
-      let target = node.closest ? node : node.parentElement;
-      return target.closest(selector);
+        && !closest(event.target, '.tree-view-node-dragging');
     },
     /**
      * Sets the model's properties based on whether this node is the current drop target,
@@ -201,3 +193,13 @@ export default {
     }
   }
 };
+
+/**
+ * Runs Element.closest on a given node, handling text nodes by delegating to a parent.
+ * @param {Node} node The element to check for a closest element
+ * @param {String} selector The CSS selector to check
+ */
+function closest(node, selector) {
+  const target = node.closest ? node : node.parentElement;
+  return target.closest(selector);
+}

@@ -75,7 +75,7 @@
                  v-model="model.treeNodeSpec.state.input.value"
                  @change="$_treeViewNode_onCheckboxChange" />
 
-          {{ model[labelPropName] }}
+          {{ label }}
         </label>
       </slot>
 
@@ -104,7 +104,7 @@
                  v-model="radioGroupValues[model.treeNodeSpec.input.name]"
                  @change="$_treeViewNode_onRadioChange" />
 
-          {{ model[labelPropName] }}
+          {{ label }}
         </label>
       </slot>
 
@@ -117,7 +117,7 @@
         <span :title="model.treeNodeSpec.title"
               class="tree-view-node-self-text"
               :class="customClasses.treeViewNodeSelfText">
-          {{ model[labelPropName] }}
+          {{ label }}
         </span>
       </slot>
 
@@ -171,30 +171,30 @@
         :class="customClasses.treeViewNodeChildren"
         role="group"
         :aria-hidden="(!model.treeNodeSpec.state.expanded).toString()">
-      <TreeViewNode v-for="nodeModel in model[childrenPropName]"
+      <TreeViewNode v-for="nodeModel in children"
                     :key="nodeModel[nodeModel.treeNodeSpec && nodeModel.treeNodeSpec.idProperty ? nodeModel.treeNodeSpec.idProperty : 'id']"
                     :depth="depth + 1"
                     :initial-model="nodeModel"
                     :model-defaults="modelDefaults"
-                    :parent-id="model[idPropName]"
+                    :parent-id="id"
                     :selection-mode="selectionMode"
                     :tree-id="treeId"
                     :initial-radio-group-values="radioGroupValues"
                     :aria-key-map="ariaKeyMap"
                     :is-mounted="isMounted"
-                    @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
-                    @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
-                    @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
-                    @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
-                    @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
-                    @treeViewNodeChildrenLoaded="(t, e)=>$emit('treeViewNodeChildrenLoaded', t, e)"
-                    @treeViewNodeSelectedChange="(t, e)=>$emit('treeViewNodeSelectedChange', t, e)"
-                    @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
+                    @treeViewNodeClick="(t, e)=>$emit(TvEvent.Click, t, e)"
+                    @treeViewNodeDblclick="(t, e)=>$emit(TvEvent.DoubleClick, t, e)"
+                    @treeViewNodeCheckboxChange="(t, e)=>$emit(TvEvent.CheckboxChange, t, e)"
+                    @treeViewNodeRadioChange="(t, e)=>$emit(TvEvent.RadioChange, t, e)"
+                    @treeViewNodeExpandedChange="(t, e)=>$emit(TvEvent.ExpandedChange, t, e)"
+                    @treeViewNodeChildrenLoaded="(t, e)=>$emit(TvEvent.ChildrenLoad, t, e)"
+                    @treeViewNodeSelectedChange="(t, e)=>$emit(TvEvent.SelectedChange, t, e)"
+                    @treeViewNodeAdd="(t, p, e)=>$emit(TvEvent.Add, t, p, e)"
                     @treeViewNodeDelete="$_treeViewNode_handleChildDeletion"
-                    @treeViewNodeAriaFocusable="(t)=>$emit('treeViewNodeAriaFocusable', t)"
+                    @treeViewNodeAriaFocusable="(t)=>$emit(TvEvent.FocusableChange, t)"
                     @treeViewNodeAriaRequestParentFocus="$_treeViewNodeAria_focus"
-                    @treeViewNodeAriaRequestFirstFocus="()=>$emit('treeViewNodeAriaRequestFirstFocus')"
-                    @treeViewNodeAriaRequestLastFocus="()=>$emit('treeViewNodeAriaRequestLastFocus')"
+                    @treeViewNodeAriaRequestFirstFocus="()=>$emit(TvEvent.RequestFirstFocus)"
+                    @treeViewNodeAriaRequestLastFocus="()=>$emit(TvEvent.RequestLastFocus)"
                     @treeViewNodeAriaRequestPreviousFocus="$_treeViewNodeAria_handlePreviousFocus"
                     @treeViewNodeAriaRequestNextFocus="$_treeViewNodeAria_handleNextFocus"
                     @treeViewNodeDragMove="$_treeViewNodeDnd_dragMoveChild"
@@ -222,6 +222,7 @@
   import SelectionMode from '../enums/selectionMode';
   import InputType from '../enums/inputType';
   import MimeType from '../enums/mimeType';
+  import TvEvent from '../enums/event';
   import { isProbablyObject } from '../objectMethods';
 
   export default {
@@ -304,7 +305,10 @@
       canExpand() {
         // A node can be expanded if it is expandable and either has children or has not
         // yet had the asynchronous loader for children called.
-        return (this.model[this.childrenPropName].length > 0 || !this.areChildrenLoaded) && this.model.treeNodeSpec.expandable;
+        return (this.children.length > 0 || !this.areChildrenLoaded) && this.model.treeNodeSpec.expandable;
+      },
+      children() {
+        return this.model[this.childrenPropName];
       },
       childrenPropName() {
         return this.model.treeNodeSpec.childrenProperty || 'children';
@@ -318,6 +322,9 @@
       expanderId() {
         return `${this.nodeId}-exp`;
       },
+      id() {
+        return this.model[this.idPropName];
+      },
       idPropName() {
         return this.model.treeNodeSpec.idProperty || 'id';
       },
@@ -327,11 +334,17 @@
       isEffectivelySelected() {
         return this.selectionMode !== SelectionMode.None && this.model.treeNodeSpec.selectable && this.model.treeNodeSpec.state.selected;
       },
+      label() {
+        return this.model[this.labelPropName];
+      },
       labelPropName() {
         return this.model.treeNodeSpec.labelProperty || 'label';
       },
       nodeId() {
-        return `${this.treeId}-${this.model[this.idPropName]}`;
+        return `${this.treeId}-${this.id}`;
+      },
+      TvEvent() {
+        return TvEvent;
       }
     },
     created() {
@@ -340,16 +353,16 @@
       // id and label are required; notify the user. Validation is done here instead
       // of at the prop level due to dependency on multiple props at once and defaulting
       // that takes place in the normalization process
-      if (!this.model[this.idPropName] || (typeof this.model[this.idPropName] !== 'number' && typeof this.model[this.idPropName] !== 'string')) {
+      if (!this.id || (typeof this.id !== 'number' && typeof this.id !== 'string')) {
         console.error(`initialModel id is required and must be a number or string. Expected prop ${this.idPropName} to exist on the model.`);
       }
-      if(!this.model[this.labelPropName] || typeof this.model[this.labelPropName] !== 'string') {
+      if(!this.label || typeof this.label !== 'string') {
         console.error(`initialModel label is required and must be a string. Expected prop ${this.labelPropName} to exist on the model.`);
       }
     },
     watch: {
       'model.treeNodeSpec.state.selected': function(newValue) {
-          this.$emit('treeViewNodeSelectedChange', this.model);
+          this.$emit(TvEvent.SelectedChange, this.model);
       }
     },
     methods: {
@@ -375,7 +388,7 @@
           this.$set(this.model.treeNodeSpec, 'labelProperty', 'label');
         }
 
-        if (!Array.isArray(this.model[this.childrenPropName])) {
+        if (!Array.isArray(this.children)) {
           this.$set(this.model, this.childrenPropName, []);
         }
         if (typeof this.model.treeNodeSpec.expandable !== 'boolean') {
@@ -448,7 +461,7 @@
               this.$set(input, 'name', 'unspecifiedRadioName');
             }
             if (typeof input.value !== 'string' || input.value.trim().length === 0) {
-              this.$set(input, 'value', this.model[this.labelPropName].replace(/[\s&<>"'\/]/g, ''));
+              this.$set(input, 'value', this.label.replace(/[\s&<>"'\/]/g, ''));
             }
             if (!this.radioGroupValues.hasOwnProperty(input.name)) {
               this.$set(this.radioGroupValues, input.name, '');
@@ -531,17 +544,17 @@
         }
       },
       $_treeViewNode_onCheckboxChange(event) {
-        this.$emit('treeViewNodeCheckboxChange', this.model, event);
+        this.$emit(TvEvent.CheckboxChange, this.model, event);
       },
       $_treeViewNode_onRadioChange(event) {
-        this.$emit('treeViewNodeRadioChange', this.model, event);
+        this.$emit(TvEvent.RadioChange, this.model, event);
       },
       async $_treeViewNode_onExpandedChange(event) {
         let spec = this.model.treeNodeSpec;
 
         // First expand the node (to show either children or a "loading" indicator)
         spec.state.expanded = !spec.state.expanded;
-        this.$emit('treeViewNodeExpandedChange', this.model, event);
+        this.$emit(TvEvent.ExpandedChange, this.model, event);
 
         // If children need to be loaded asynchronously, load them.
         if (spec.state.expanded && !spec.state.areChildrenLoaded && !spec.state.areChildrenLoading) {
@@ -551,8 +564,8 @@
 
           if (childrenResult) {
             spec.state.areChildrenLoaded = true;
-            this.model[this.childrenPropName].splice(0, this.model[this.childrenPropName].length, ...childrenResult);
-            this.$emit('treeViewNodeChildrenLoaded', this.model, event);
+            this.children.splice(0, this.children.length, ...childrenResult);
+            this.$emit(TvEvent.ChildrenLoad, this.model, event);
           }
 
           spec.state.areChildrenLoading = false;
@@ -567,8 +580,8 @@
       },
       $_treeViewNode_onClick(event) {
         // Don't fire this if the target is an element which has its own events
-        if (!this.$_treeViewNode_matches(event.target, this.elementsThatIgnoreClicks)) {
-          this.$emit('treeViewNodeClick', this.model, event);
+        if (!matches(event.target, this.elementsThatIgnoreClicks)) {
+          this.$emit(TvEvent.Click, this.model, event);
           this.$_treeViewNode_toggleSelected(event);
         }
 
@@ -576,8 +589,8 @@
       },
       $_treeViewNode_onDblclick(event) {
         // Don't fire this if the target is an element which has its own events
-        if (!this.$_treeViewNode_matches(event.target, this.elementsThatIgnoreClicks)) {
-          this.$emit('treeViewNodeDblclick', this.model, event);
+        if (!matches(event.target, this.elementsThatIgnoreClicks)) {
+          this.$emit(TvEvent.DoubleClick, this.model, event);
         }
       },
       /*
@@ -589,42 +602,43 @@
           var childModel = await this.model.treeNodeSpec.addChildCallback(this.model);
 
           if (childModel) {
-            this.model[this.childrenPropName].push(childModel);
-            this.$emit('treeViewNodeAdd', childModel, this.model, event);
+            this.children.push(childModel);
+            this.$emit(TvEvent.Add, childModel, this.model, event);
           }
         }
       },
       $_treeViewNode_onDelete(event) {
         if (this.model.treeNodeSpec.deletable) {
-          this.$emit('treeViewNodeDelete', this.model, event);
+          this.$emit(TvEvent.Delete, this.model, event);
         }
       },
       $_treeViewNode_handleChildDeletion(node, event) {
         // Remove the node from the array of children if this is an immediate child.
         // Note that only the node that was deleted fires these, not any subnode.
-        let targetIndex = this.model[this.childrenPropName].indexOf(node);
+        let targetIndex = this.children.indexOf(node);
         if (targetIndex > -1) {
           this.$_treeViewNodeAria_handleChildDeletion(node);
-          this.model[this.childrenPropName].splice(targetIndex, 1);
+          this.children.splice(targetIndex, 1);
         }
 
-        this.$emit('treeViewNodeDelete', node, event);
-      },
-      $_treeViewNode_matches(target, selector) {
-        if (Element.prototype.matches) {
-          return target.matches(selector);
-        }
-        else if (Element.prototype.msMatchesSelector) {
-          return target.msMatchesSelector(selector);
-        }
-        else if (Element.prototype.webkitMatchesSelector) {
-          return target.webkitMatchesSelector(selector);
-        }
-
-        return false;
+        this.$emit(TvEvent.Delete, node, event);
       }
     },
   };
+
+  function matches(target, selector) {
+    if (Element.prototype.matches) {
+      return target.matches(selector);
+    }
+    else if (Element.prototype.msMatchesSelector) {
+      return target.msMatchesSelector(selector);
+    }
+    else if (Element.prototype.webkitMatchesSelector) {
+      return target.webkitMatchesSelector(selector);
+    }
+
+    return false;
+  }
 
 </script>
 
