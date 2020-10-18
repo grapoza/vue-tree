@@ -13,14 +13,14 @@
                     :tree-id="uniqueId"
                     :is-mounted="isMounted"
                     :initial-radio-group-values="radioGroupValues"
-                    @treeViewNodeClick="(t, e)=>$emit('treeViewNodeClick', t, e)"
-                    @treeViewNodeDblclick="(t, e)=>$emit('treeViewNodeDblclick', t, e)"
-                    @treeViewNodeCheckboxChange="(t, e)=>$emit('treeViewNodeCheckboxChange', t, e)"
-                    @treeViewNodeRadioChange="(t, e)=>$emit('treeViewNodeRadioChange', t, e)"
-                    @treeViewNodeExpandedChange="(t, e)=>$emit('treeViewNodeExpandedChange', t, e)"
-                    @treeViewNodeChildrenLoaded="(t, e)=>$emit('treeViewNodeChildrenLoaded', t, e)"
+                    @treeViewNodeClick="(t, e)=>$emit(TvEvent.Click, t, e)"
+                    @treeViewNodeDblclick="(t, e)=>$emit(TvEvent.DoubleClick, t, e)"
+                    @treeViewNodeCheckboxChange="(t, e)=>$emit(TvEvent.CheckboxChange, t, e)"
+                    @treeViewNodeRadioChange="(t, e)=>$emit(TvEvent.RadioChange, t, e)"
+                    @treeViewNodeExpandedChange="(t, e)=>$emit(TvEvent.ExpandedChange, t, e)"
+                    @treeViewNodeChildrenLoaded="(t, e)=>$emit(TvEvent.ChildrenLoad, t, e)"
                     @treeViewNodeSelectedChange="$_treeView_handleNodeSelectedChange"
-                    @treeViewNodeAdd="(t, p, e)=>$emit('treeViewNodeAdd', t, p, e)"
+                    @treeViewNodeAdd="(t, p, e)=>$emit(TvEvent.Add, t, p, e)"
                     @treeViewNodeDelete="$_treeView_handleChildDeletion"
                     @treeViewNodeAriaFocusable="$_treeViewAria_handleFocusableChange"
                     @treeViewNodeAriaRequestFirstFocus="$_treeViewAria_focusFirstNode"
@@ -48,11 +48,11 @@
 
 <script>
   import TreeViewAria from '../mixins/TreeViewAria';
-  import TreeViewNodeDragAndDrop from '../mixins/TreeViewDragAndDrop';
+  import TreeViewDragAndDrop from '../mixins/TreeViewDragAndDrop';
   import TreeViewNode from './TreeViewNode.vue';
   import SelectionMode from '../enums/selectionMode';
   import InputType from '../enums/inputType';
-  import TreeViewDragAndDrop from '../mixins/TreeViewDragAndDrop';
+  import TvEvent from '../enums/event';
 
   export default {
     name: 'TreeView',
@@ -103,12 +103,15 @@
         // If there's no selectionMode, return a boolean so aria-multiselectable isn't included.
         // Otherwise, return either the string 'true' or 'false' as the attribute's value.
         return this.selectionMode === SelectionMode.None ? false : (this.selectionMode === SelectionMode.Multiple).toString();
+      },
+      TvEvent() {
+        return TvEvent;
       }
     },
     created() {
       // Force a unique tree ID. This will generate a unique ID internally, but on mount
       // it will be set to the element ID if one is present.
-      this.$set(this, 'uniqueId', this.$_treeView_generateUniqueId());
+      this.$set(this, 'uniqueId', generateUniqueId());
     },
     mounted() {
       this.$_treeView_enforceSingleSelectionMode();
@@ -219,16 +222,6 @@
           continueCallbacks = nodeActionCallback(current);
         }
       },
-      $_treeView_generateUniqueId() {
-        const stem = 'grtv-';
-        let treeNum = 1;
-
-        while (document.getElementById(stem + treeNum)) {
-          treeNum++;
-        }
-
-        return stem + treeNum;
-      },
       $_treeView_handleChildDeletion(node, event) {
         // Remove the node from the array of children if this is an immediate child.
         // Note that only the node that was deleted fires these, not any subnode.
@@ -238,7 +231,7 @@
           this.model.splice(targetIndex, 1);
         }
 
-        this.$emit('treeViewNodeDelete', node, event);
+        this.$emit(TvEvent.Delete, node, event);
       },
       $_treeView_handleNodeSelectedChange(node, event) {
         // For single selection mode, unselect any other selected node.
@@ -254,7 +247,7 @@
           });
         }
 
-        this.$emit('treeViewNodeSelectedChange', node, event);
+        this.$emit(TvEvent.SelectedChange, node, event);
       },
       $_treeView_enforceSingleSelectionMode() {
         // For single selection mode, only allow one selected node.
@@ -274,6 +267,18 @@
       }
     }
   };
+
+  // Fully private methods
+  function generateUniqueId() {
+    const stem = 'grtv-';
+    let treeNum = 1;
+
+    while (document.getElementById(stem + treeNum)) {
+      treeNum++;
+    }
+
+    return stem + treeNum;
+  }
 </script>
 
 <style lang="scss">
