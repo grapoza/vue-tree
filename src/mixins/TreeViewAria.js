@@ -81,6 +81,10 @@ export default {
     }
   },
   methods: {
+    /**
+     * Enforces the selection mode for the tree, ensuring only the expected
+     * node or nodes are selected.
+     */
     $_treeViewNode_enforceSelectionMode() {
       if (this.selectionMode === SelectionMode.Single) {
         // This is in TreeViewAria instead of TreeView because the default mixin merge strategy only keeps one 'watch' per prop.
@@ -102,6 +106,13 @@ export default {
         });
       }
     },
+    /**
+     * Handles changes to the node on which the focusable property is true.
+     * A tree can only have one focusable node; that is, one node to which
+     * focus is given when the treeview as a whole is given focus, e.g., by
+     * tabbing into it.
+     * @param {TreeViewNode} newNodeModel The newly focusable node
+     */
     $_treeViewAria_handleFocusableChange(newNodeModel) {
       if (this.focusableNodeModel !== newNodeModel) {
         if (this.focusableNodeModel) {
@@ -111,9 +122,15 @@ export default {
         this.$set(this, 'focusableNodeModel', newNodeModel);
       }
     },
+    /**
+     * Sets the first node in the tree as focusable.
+     */
     $_treeViewAria_focusFirstNode() {
       this.model[0].treeNodeSpec.focusable = true;
     },
+    /**
+     * Sets the last expanded node in the tree as focusable.
+     */
     $_treeViewAria_focusLastNode() {
       let lastModel = this.model[this.model.length - 1];
       let lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
@@ -124,6 +141,11 @@ export default {
 
       lastModel.treeNodeSpec.focusable = true;
     },
+    /**
+     * Handles setting the focusable node in the tree when the
+     * currently focuable node is deleted.
+     * @param {TreeViewNode} node The node that was deleted
+     */
     $_treeViewAria_handleNodeDeletion(node) {
       if (node.treeNodeSpec.focusable) {
         if (this.model.indexOf(node) === 0) {
@@ -136,6 +158,10 @@ export default {
         }
       }
     },
+    /**
+     * Focuses the previous node in the tree
+     * @param {TreeViewNode} childNode The node from which focusable should be moved
+     */
     $_treeViewAria_handlePreviousFocus(childNode) {
       // If focusing previous of the first child, do nothing.
       // If focusing previous of any other node, focus the last expanded node within the previous sibling.
@@ -151,6 +177,13 @@ export default {
         lastModel.treeNodeSpec.focusable = true;
       }
     },
+    /**
+     * Focuses the next node in the tree.
+     * @param {TreeViewNode} childNode The node from which focusable should be moved
+     * @param {Boolean} ignoreChild True to not consider child nodes. This would be true if a user
+     * requests to focus the next node while on the last child of this node; the next sibling of
+     * this node should gain focus in that case.
+     */
     $_treeViewAria_handleNextFocus(childNode, ignoreChild) {
       // If the node is expanded, focus first child unless we're ignoring it (this was punted from a grandchild)
       // If the node has a next sibling, focus that

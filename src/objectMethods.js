@@ -11,6 +11,7 @@ function isProbablyObject(obj) {
  * Deeply (or deeply enough) copies the given object into a new object.
  * Note that this is "cheap" as in budget-value, not efficiency.
  * @param {Object} toCopy The object to copy
+ * @returns {Object} The copy
  */
 function cheapCopyObject(toCopy) {
 

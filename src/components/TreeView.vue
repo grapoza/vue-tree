@@ -128,18 +128,32 @@
       });
     },
     methods: {
+      /**
+       * Gets any nodes with checked checkboxes.
+       * @returns {Array<TreeViewNode>} An array of any nodes with checked checkboxes
+       */
       getCheckedCheckboxes() {
         return this.getMatching((current) =>
           current.treeNodeSpec.input
           && current.treeNodeSpec.input.type === InputType.Checkbox
           && current.treeNodeSpec.state.input.value);
       },
+      /**
+       * Gets any nodes with checked checkboxes.
+       * @returns {Array<TreeViewNode>} An array of any nodes with checked checkboxes
+       */
       getCheckedRadioButtons() {
         return this.getMatching((current) =>
           current.treeNodeSpec.input
           && current.treeNodeSpec.input.type === InputType.RadioButton
           && this.radioGroupValues[current.treeNodeSpec.input.name] === current.treeNodeSpec.input.value);
       },
+      /**
+       * Gets any nodes matched by the given function.
+       * @param matcherFunction {function} A function which takes a node as an argument
+       * and returns a boolean indicating a match for some condition
+       * @returns {Array<TreeViewNode>} An array of any nodes matched by the given function
+       */
       getMatching(matcherFunction) {
         let matches = [];
 
@@ -153,9 +167,20 @@
 
         return matches;
       },
+      /**
+       * Gets any selected nodes
+       * @returns {Array<TreeViewNode>} An array of any selected nodes
+       */
       getSelected() {
-        return this.selectionMode === SelectionMode.None ? [] : this.getMatching((current) => current.treeNodeSpec.selectable && current.treeNodeSpec.state.selected);
+        return this.selectionMode === SelectionMode.None
+          ? []
+          : this.getMatching((current) => current.treeNodeSpec.selectable && current.treeNodeSpec.state.selected);
       },
+      /**
+       * Gets the node with the given ID
+       * @param targetId {string} The ID of the node to find
+       * @returns {TreeViewNode} The node with the given ID if found, or null
+       */
       $_treeView_findById(targetId) {
         let node = null;
 
@@ -176,6 +201,11 @@
 
         return node;
       },
+      /**
+       * Removes and returns the node with the given ID
+       * @param targetId {string} The ID of the node to remove
+       * @returns {TreeViewNode} The node with the given ID if removed, or null
+       */
       $_treeView_removeById(targetId) {
         let node = null;
 
@@ -201,6 +231,10 @@
 
         return node;
       },
+      /**
+       * Traverses the tree depth-first and performs a callback action against each node.
+       * @param nodeActionCallback {function} The action to call against each node, taking that node as a parameter
+       */
       $_treeView_depthFirstTraverse(nodeActionCallback) {
         if (this.model.length === 0) {
           return;
@@ -222,9 +256,15 @@
           continueCallbacks = nodeActionCallback(current);
         }
       },
+      /**
+       * Removes the given node from the array of children if found.
+       * Note that only the node that was deleted fires these, not any subnode, so
+       * this comes from a request from the child node for this node to delete it.
+       * This emits the treeViewNodeDelete event.
+       * @param node {TreeViewNode} The node to remove
+       * @param event {Event} The initial event that triggered the deletion
+       */
       $_treeView_handleChildDeletion(node, event) {
-        // Remove the node from the array of children if this is an immediate child.
-        // Note that only the node that was deleted fires these, not any subnode.
         let targetIndex = this.model.indexOf(node);
         if (targetIndex > -1) {
           this.$_treeViewAria_handleNodeDeletion(node);
@@ -233,10 +273,14 @@
 
         this.$emit(TvEvent.Delete, node, event);
       },
+      /**
+       * For single selection mode, unselect any other selected node.
+       * For selectionFollowsFocus mode, selection state is handled in TreeViewAria.$_treeViewAria_handleFocusableChange.
+       * In all cases this emits treeViewNodeSelectedChange for the node parameter.
+       * @param node {TreeViewNode} The node for which selection changed
+       * @param event {Event} The initial event that triggered the change
+       */
       $_treeView_handleNodeSelectedChange(node, event) {
-        // For single selection mode, unselect any other selected node.
-        // For selectionFollowsFocus mode, selection state is handled in TreeViewAria.$_treeViewAria_handleFocusableChange.
-        // In all cases this emits treeViewNodeSelectedChange for the node parameter.
         if (this.selectionMode === SelectionMode.Single && node.treeNodeSpec.state.selected) {
           this.$_treeView_depthFirstTraverse((current) => {
             if (current.treeNodeSpec.state.selected && current.id !== node.id) {
@@ -249,6 +293,10 @@
 
         this.$emit(TvEvent.SelectedChange, node, event);
       },
+      /**
+       * Enforce single selection mode by deselecting anything except
+       * the first (by depth-first) selected node.
+       */
       $_treeView_enforceSingleSelectionMode() {
         // For single selection mode, only allow one selected node.
         if (this.selectionMode === SelectionMode.Single) {
@@ -268,7 +316,12 @@
     }
   };
 
-  // Fully private methods
+  // Fully private methods -----------------------------------
+
+  /**
+   * Creates an element ID that is unique across the document
+   * @return {string} The generated ID
+   */
   function generateUniqueId() {
     const stem = 'grtv-';
     let treeNum = 1;
