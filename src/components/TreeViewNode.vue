@@ -512,6 +512,12 @@
           }
         }
       },
+      /**
+       * Assigns any properties from the source object to the target object
+       * where the target object doesn't already define that property.
+       * @param {Object} source The source object from which properties are read
+       * @param {Object} target The target object into which missing properties are assigned
+       */
       $_treeViewNode_assignDefaultProps(source, target) {
 
         // Make sure the defaults is an object
@@ -543,12 +549,28 @@
           }
         }
       },
+      /**
+       * Pass the event for checkbox changes up from the node.
+       * Emits a treeViewNodeCheckboxChange event
+       * @param {Event} event The event that triggered the change
+       */
       $_treeViewNode_onCheckboxChange(event) {
         this.$emit(TvEvent.CheckboxChange, this.model, event);
       },
+      /**
+       * Pass the event for radio button changes up from the node.
+       * Emits a treeViewNodeRadioChange event
+       * @param {Event} event The event that triggered the change
+       */
       $_treeViewNode_onRadioChange(event) {
         this.$emit(TvEvent.RadioChange, this.model, event);
       },
+      /**
+       * Expand the children of this node, starting an asynchronous load if needed.
+       * Emits a treeViewNodeExpandedChange event. When children are loaded asynchronously,
+       * Emits a treeViewNodeChildrenLoaded event.
+       * @param {Event} event The event that triggered the expansion toggle
+       */
       async $_treeViewNode_onExpandedChange(event) {
         let spec = this.model.treeNodeSpec;
 
@@ -571,13 +593,23 @@
           spec.state.areChildrenLoading = false;
         }
       },
+      /**
+       * Handle toggling the selected state for this node for Single and Multiple selection modes.
+       * Note that for SelectionFollowsFocus mode the selection change is already handled by the
+       * "model.treeNodeSpec.focusable" watchermethod in TreeViewNodeAria.
+       * @param {Event} event The event that triggered the selection toggle
+       */
       $_treeViewNode_toggleSelected(event) {
-        // Note that selection change is already handled by the "model.treeNodeSpec.focusable" watcher
-        // method in TreeViewNodeAria if selectionMode is SelectionFollowsFocus.
         if (this.model.treeNodeSpec.selectable && [SelectionMode.Single, SelectionMode.Multiple].includes(this.selectionMode)) {
           this.model.treeNodeSpec.state.selected = !this.model.treeNodeSpec.state.selected;
         }
       },
+      /**
+       * Handles clicks on the node. It only performs actions if the click happened on an element
+       * that does not have node clicks explicitly ingored (e.g., the expander button).
+       * Emits a treeViewNodeClick event.
+       * @param {Event} event The click event
+       */
       $_treeViewNode_onClick(event) {
         // Don't fire this if the target is an element which has its own events
         if (!matches(event.target, this.elementsThatIgnoreClicks)) {
@@ -587,15 +619,23 @@
 
         this.$_treeViewNodeAria_onClick();
       },
+      /**
+       * Handles double clicks on the node. It only performs actions if the double click happened on an
+       * element that does not have node clicks explicitly ingored (e.g., the expander button).
+       * Emits a treeViewNodeDblclick event.
+       * @param {Event} event The dblclick event
+       */
       $_treeViewNode_onDblclick(event) {
         // Don't fire this if the target is an element which has its own events
         if (!matches(event.target, this.elementsThatIgnoreClicks)) {
           this.$emit(TvEvent.DoubleClick, this.model, event);
         }
       },
-      /*
+      /**
        * Add a child node to the end of the child nodes list. The child node data is
        * supplied by an async callback which is the addChildCallback parameter of this node's model.
+       * Emits a treeViewNodeAdd if a node is added
+       * @param {Event} event The event that triggered the add
        */
       async $_treeViewNode_onAddChild(event) {
         if (this.model.treeNodeSpec.addChildCallback) {
@@ -612,6 +652,14 @@
           this.$emit(TvEvent.Delete, this.model, event);
         }
       },
+      /**
+       * Removes the given node from the array of children if found.
+       * Note that only the node that was deleted fires these, not any subnode, so
+       * this comes from a request from the child node for this node to delete it.
+       * This emits the treeViewNodeDelete event.
+       * @param node {TreeViewNode} The node to remove
+       * @param event {Event} The initial event that triggered the deletion
+       */
       $_treeViewNode_handleChildDeletion(node, event) {
         // Remove the node from the array of children if this is an immediate child.
         // Note that only the node that was deleted fires these, not any subnode.
@@ -626,6 +674,12 @@
     },
   };
 
+  /**
+   * Returns true if the given element matches the given selector.
+   * @param {Element} target The target element to check
+   * @param {string} selector The selector to check the target against
+   * @returns {Boolean} True if the target element matches the selector, false otherwise.
+   */
   function matches(target, selector) {
     if (Element.prototype.matches) {
       return target.matches(selector);
