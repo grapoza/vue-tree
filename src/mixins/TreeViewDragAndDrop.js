@@ -21,10 +21,6 @@ export default {
     $_treeViewDnd_drop(eventData) {
       let node = eventData.droppedModel;
 
-      if (!node) {
-        return;
-      }
-
       if (eventData.isSameTree) {
         // When dropping within the same tree, move/copy the actual node data.
 
@@ -88,7 +84,7 @@ function resolveNodeIdConflicts(data, treeId) {
 
   let idProp = data.treeNodeSpec.idProperty;
   let nodeId = data[idProp];
-  let children = data[data.treeNodeSpec.childrenProperty] || [];
+  let children = data[data.treeNodeSpec.childrenProperty];
 
   // Copy and move need to set a new, unique Node ID.
   // This is a brute force test to find one that isn't in use.

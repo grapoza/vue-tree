@@ -16,7 +16,6 @@ const getDefaultPropsData = function () {
 let elem;
 
 function createWrapper(customPropsData, customAttrs) {
-  // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
   elem = document.createElement('div');
   if (document.body) {
     document.body.appendChild(elem);
@@ -216,6 +215,38 @@ describe('TreeView.vue (Drag and Drop)', () => {
 
       it('should add the node to the new tree', () => {
         expect(tree2.vm.model.length).to.equal(4);
+      });
+    });
+
+    describe('and node IDs in the dragged data conflict with target tree node IDs', () => {
+
+      let tree2;
+
+      beforeEach(async () => {
+        let tree2Data = getDefaultPropsData();
+
+        wrapper = createWrapper();
+        tree2 = createWrapper(tree2Data, { id: 'grtv-2' });
+
+        // Await here so tree2's ID can trickle down to the nodes' computeds
+        await tree2.vm.$nextTick();
+
+        let startingNode = wrapper.find('#grtv-1-n2 .tree-view-node-self');
+        startingNode.trigger('dragstart', eventData);
+
+        let endingNode = tree2.find('#grtv-2-n0 .tree-view-node-self-prev-target');
+        endingNode.trigger('drop', eventData);
+
+        startingNode.trigger('dragend', eventData);
+      });
+
+      afterEach(() => {
+        tree2.vm.$destroy();
+      });
+
+      it('should assign new IDs to the conflicting nodes', () => {
+        expect(tree2.vm.model[0].id).to.equal('n2-1');
+        expect(tree2.vm.model[0].children[0].id).to.equal('n2n0-1');
       });
     });
   });

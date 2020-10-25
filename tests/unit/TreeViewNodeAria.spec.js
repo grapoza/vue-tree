@@ -44,8 +44,13 @@ function createWrapper(customPropsData) {
 async function triggerKeydown(wrapper, keyCode) {
   var e = new Event('keydown');
   e.keyCode = keyCode;
+
+  jest.spyOn(e, 'stopPropagation');
+  jest.spyOn(e, 'preventDefault');
+
   wrapper.vm.$el.dispatchEvent(e);
   await wrapper.vm.$nextTick();
+  return e;
 }
 
 describe('TreeViewNode.vue (ARIA)', () => {
@@ -61,6 +66,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
   });
 
   afterEach(() => {
+    jest.restoreAllMocks();
     wrapper.vm.$destroy();
     wrapper = null;
   });
@@ -510,18 +516,63 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
       describe('and the node is deletable', () => {
 
-        beforeEach(async () => {
-          let defaultProps = getDefaultPropsData();
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esdf']])[0] }));
-          await triggerKeydown(wrapper.findAllComponents(TreeViewNode).at(1), wrapper.vm.ariaKeyMap.deleteItem[0]);
+        describe('always', () => {
+
+          beforeEach(async () => {
+            let defaultProps = getDefaultPropsData();
+            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esdf']])[0] }));
+            await triggerKeydown(wrapper.findAllComponents(TreeViewNode).at(1), wrapper.vm.ariaKeyMap.deleteItem[0]);
+          });
+
+          it('should delete the current node', () => {
+            // wrapper will emit the event as it bubbles up the tree; the child node
+            // originated it, but is deleted by this point so we can't check it here.
+            expect(wrapper.emitted().treeViewNodeDelete).to.be.an('array').that.has.length(1);
+            expect(wrapper.vm.model.children.length).to.equal(0);
+          });
         });
 
-        it('should delete the current node', () => {
-          // wrapper will emit the event as it bubbles up the tree; the child node
-          // originated it, but is deleted by this point so we can't check it here.
-          expect(wrapper.emitted().treeViewNodeDelete).to.be.an('array').that.has.length(1);
-          expect(wrapper.vm.model.children.length).to.equal(0);
+        describe('and the deleted node is the first of multiple siblings', () => {
+
+          beforeEach(async () => {
+            let defaultProps = getDefaultPropsData();
+            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esdf', 'es']])[0] }));
+            await triggerKeydown(wrapper.findAllComponents(TreeViewNode).at(1), wrapper.vm.ariaKeyMap.deleteItem[0]);
+          });
+
+          it('should focus the next node', () => {
+            expect(wrapper.vm.model.children[0].treeNodeSpec.focusable).to.be.true;
+          });
         });
+
+        describe('and the deleted node is not the first of multiple siblings', () => {
+
+          beforeEach(async () => {
+            let defaultProps = getDefaultPropsData();
+            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['es', 'es', 'esdf']])[0] }));
+            await triggerKeydown(wrapper.findAllComponents(TreeViewNode).at(3), wrapper.vm.ariaKeyMap.deleteItem[0]);
+          });
+
+          it('should focus the previous node', () => {
+            expect(wrapper.vm.model.children[1].treeNodeSpec.focusable).to.be.true;
+          });
+        });
+      });
+    });
+
+    describe('and an unhandled key is pressed', () => {
+
+      let event;
+
+      beforeEach(async () => {
+        wrapper = createWrapper();
+        event = await triggerKeydown(wrapper, 1000);
+      });
+
+      it('should do nothing', () => {
+        expect(Object.getOwnPropertyNames(wrapper.emitted()).length).to.equal(0);
+        expect(event.stopPropagation.mock.calls.length).to.equal(0);
+        expect(event.preventDefault.mock.calls.length).to.equal(0);
       });
     });
   });

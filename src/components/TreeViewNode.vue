@@ -370,11 +370,8 @@
        * Normalizes the data model to the format consumable by TreeViewNode.
        */
       $_treeViewNode_normalizeNodeData() {
-        // The target model must have a treeNodeSpec property to assign defaults into
-        if (!isProbablyObject(this.model.treeNodeSpec)) {
-          this.$set(this.model, 'treeNodeSpec', {});
-        }
-
+        // The target model must have a treeNodeSpec property to assign defaults into; if missing,
+        // it will be normalized into existence in $_treeViewNodeAria_normalizeNodeData().
         this.$_treeViewNode_assignDefaultProps(this.modelDefaults, this.model.treeNodeSpec);
 
         // Set expected properties if not provided
