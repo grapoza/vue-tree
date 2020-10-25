@@ -25,7 +25,12 @@ describe('TreeView.vue (ARIA)', () => {
 
   let wrapper = null;
 
+  beforeEach(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => { });
+  });
+
   afterEach(() => {
+    jest.restoreAllMocks();
     wrapper.vm.$destroy();
     wrapper = null;
   });
@@ -64,7 +69,7 @@ describe('TreeView.vue (ARIA)', () => {
       });
     });
 
-    describe('and customizations are provided', () => {
+    describe('and valid customizations are provided', () => {
 
       const customKeyMap = {
         activateItem: [1],
@@ -89,6 +94,25 @@ describe('TreeView.vue (ARIA)', () => {
       it('should use the custom ARIA key mapping', () => {
         const keyMap = wrapper.vm.ariaKeyMap;
         expect(keyMap).to.deep.equal(customKeyMap);
+      });
+    });
+
+    describe('and invalid non-array customizations are provided', () => {
+
+      const customKeyMap = {
+        activateItem: 1
+      };
+
+      beforeEach(() => {
+        wrapper = createWrapper({
+          initialModel: [],
+          customAriaKeyMap: customKeyMap
+        });
+      });
+
+      it('should log an error', () => {
+        expect(console.error.mock.calls[0][0])
+          .to.equal('customAriaKeyMap properties must be Arrays of numbers (corresponding to keyCodes); property \'activateItem\' fails check.');
       });
     });
   });
@@ -193,6 +217,13 @@ describe('TreeView.vue (ARIA)', () => {
       wrapper.vm.$_treeViewAria_focusLastNode();
 
       expect(wrapper.vm.model[2].treeNodeSpec.focusable).to.be.true;
+    });
+
+    it('should focus the deepest last node', () => {
+      wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'Ecs', ['ecs']]) });
+      wrapper.vm.$_treeViewAria_focusLastNode();
+
+      expect(wrapper.vm.model[2].children[0].treeNodeSpec.focusable).to.be.true;
     });
   });
 
@@ -335,6 +366,28 @@ describe('TreeView.vue (ARIA)', () => {
 
     it('should deselect the previously selected node', () => {
       expect(wrapper.vm.model[0].children[0].treeNodeSpec.state.selected).to.be.false;
+    });
+  });
+
+  describe('when selectionMode is Single', () => {
+
+    beforeEach(async () => {
+      wrapper = createWrapper({ initialModel: generateNodes(['ecS', 'ecs']), selectionMode: SelectionMode.Single });
+    });
+
+    describe('and a node is already selected', () => {
+
+      describe('and a new node is selected', () => {
+
+        beforeEach(async () => {
+          wrapper.vm.model[1].treeNodeSpec.state.selected = true;
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should deselect the previously selected node', () => {
+          expect(wrapper.vm.model[0].treeNodeSpec.state.selected).to.be.false;
+        });
+      });
     });
   });
 });

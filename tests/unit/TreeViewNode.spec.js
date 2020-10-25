@@ -118,7 +118,7 @@ describe('TreeViewNode.vue', () => {
 
     it('should have a title attribute on the node\'s text', () => {
       let elem = wrapper.find(`.tree-view-node-self-text`).element;
-      expect(elem.getAttribute("title")).to.equal("My Title");
+      expect(elem.getAttribute('title')).to.equal('My Title');
     });
   });
 
@@ -126,14 +126,139 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(() => {
       let data = getDefaultPropsData();
-      data.initialModel.treeNodeSpec.title = "My Title";
+      data.initialModel.treeNodeSpec.title = 'My Title';
 
       wrapper = createWrapper(data);
     });
 
     it('should have a title attribute on the node\'s label', () => {
       let elem = wrapper.find(`.tree-view-node-self-label`).element;
-      expect(elem.getAttribute("title")).to.equal("My Title");
+      expect(elem.getAttribute('title')).to.equal('My Title');
+    });
+  });
+
+  describe('when given a name in the model data for an input node', () => {
+
+    describe('and it is a non-radio button input', () => {
+
+      describe('and that name is not a string', () => {
+
+        beforeEach(() => {
+          let data = getDefaultPropsData();
+          data.initialModel.treeNodeSpec.input.name = 42;
+          wrapper = createWrapper(data);
+        });
+
+        it('should set the name to null', () => {
+          expect(wrapper.vm.model.treeNodeSpec.input.name).to.be.null;
+        });
+      });
+
+      describe('and that trimmed name is an empty string', () => {
+
+        beforeEach(() => {
+          let data = getDefaultPropsData();
+          data.initialModel.treeNodeSpec.input.name = ' ';
+          wrapper = createWrapper(data);
+        });
+
+        it('should set the name to null', () => {
+          expect(wrapper.vm.model.treeNodeSpec.input.name).to.be.null;
+        });
+      });
+    });
+
+    describe('and it is a radio button input', () => {
+
+      let data;
+
+      beforeEach(() => {
+        data = getDefaultPropsData();
+        data.initialModel = generateNodes(['r'])[0];
+      });
+
+      describe('and that name is not a string', () => {
+
+        beforeEach(() => {
+          data.initialModel.treeNodeSpec.input.name = 42;
+          wrapper = createWrapper(data);
+        });
+
+        it('should set the name to unspecifiedRadioName', () => {
+          expect(wrapper.vm.model.treeNodeSpec.input.name).to.equal('unspecifiedRadioName');
+        });
+      });
+
+      describe('and that trimmed name is an empty string', () => {
+
+        beforeEach(() => {
+          data.initialModel.treeNodeSpec.input.name = ' ';
+          wrapper = createWrapper(data);
+        });
+
+        it('should set the name to null', () => {
+          expect(wrapper.vm.model.treeNodeSpec.input.name).to.equal('unspecifiedRadioName');
+        });
+      });
+    });
+  });
+
+  describe('when given a value in the model data for an input node', () => {
+
+    describe('and it is a radio button input', () => {
+
+      let data;
+
+      beforeEach(() => {
+        data = getDefaultPropsData();
+        data.initialModel = generateNodes(['r'])[0];
+        data.initialModel.label = 'A \'Label\' & <Thing>/ "Stuff"';
+      });
+
+      describe('and that value is not a string', () => {
+
+        beforeEach(() => {
+          data.initialModel.treeNodeSpec.input.value = 42;
+          wrapper = createWrapper(data);
+        });
+
+        it('should set the value to the label value, minus disallowed characters', () => {
+          expect(wrapper.vm.model.treeNodeSpec.input.value).to.equal('ALabelThingStuff');
+        });
+      });
+
+      describe('and that trimmed value is an empty string', () => {
+
+        beforeEach(() => {
+          data.initialModel.treeNodeSpec.input.value = ' ';
+          wrapper = createWrapper(data);
+        });
+
+        it('should set the value to the label value, minus disallowed characters', () => {
+          expect(wrapper.vm.model.treeNodeSpec.input.value).to.equal('ALabelThingStuff');
+        });
+      });
+    });
+  });
+
+  describe('when given an input model with no input state specified', () => {
+
+    beforeEach(() => {
+      let data = getDefaultPropsData();
+      data.initialModel = generateNodes(['c'])[0];
+      data.initialModel.treeNodeSpec.state.input = null;
+      wrapper = createWrapper(data);
+    });
+
+    it('should default the disabled state to false', () => {
+      expect(wrapper.vm.model.treeNodeSpec.state.input.disabled).to.be.false;
+    });
+
+    describe('and the input is a checkbox', () => {
+
+      it('should set the value of the input to false', () => {
+        expect(wrapper.vm.model.treeNodeSpec.state.input.value).to.be.false;
+      });
     });
   });
 
@@ -193,7 +318,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['esa'], "", addChildCallback)[0],
+        initialModel: generateNodes(['esa'], '', addChildCallback)[0],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
