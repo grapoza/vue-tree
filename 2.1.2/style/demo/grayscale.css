@@ -1,0 +1,93 @@
+.tree-view.grayscale {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: larger;
+}
+
+.tree-view.grayscale .tree-view-node {
+    padding-left: 0;
+}
+
+.tree-view.grayscale .tree-view-node:first-child {
+    margin-top: 0;
+}
+
+.tree-view.grayscale .tree-view-node[role=treeitem]:focus {
+    outline: 0;
+}
+
+.tree-view.grayscale .tree-view-node[role=treeitem]:focus>.tree-view-node-self {
+    outline: 1px dotted #000;
+}
+
+.tree-view.grayscale .tree-view-node-self {
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.tree-view.grayscale .tree-view-node-self-expander {
+    padding: 0;
+    background: none;
+    border: none;
+    height: 1.2rem;
+}
+
+.tree-view.grayscale .tree-view-node-self-expander i.tree-view-node-self-expanded-indicator {
+    font-style: normal;
+}
+
+.tree-view.grayscale .tree-view-node-self-expander.tree-view-node-self-expanded i.tree-view-node-self-expanded-indicator {
+    transform: rotate(90deg);
+}
+
+.tree-view.grayscale .tree-view-node-self-action,
+.tree-view.grayscale .tree-view-node-self-checkbox,
+.tree-view.grayscale .tree-view-node-self-expander,
+.tree-view.grayscale .tree-view-node-self-radio,
+.tree-view.grayscale .tree-view-node-self-spacer {
+    min-width: 1rem;
+}
+
+.tree-view.grayscale .tree-view-node-self-expander,
+.tree-view.grayscale .tree-view-node-self-spacer {
+    margin: 0;
+}
+
+.tree-view.grayscale .tree-view-node-self-checkbox,
+.tree-view.grayscale .tree-view-node-self-radio {
+    margin: 0 0 0 -1.2rem;
+}
+
+.tree-view.grayscale .tree-view-node-self-label,
+.tree-view.grayscale .tree-view-node-self-text {
+    margin-left: 1.2rem;
+}
+
+.tree-view.grayscale .tree-view-node-self-action {
+    padding: 0 0 0 5px;
+    background: none;
+    border: none;
+    height: 1.2rem;
+}
+
+.tree-view.grayscale i.tree-view-node-self-add-child-icon {
+    font-style: normal;
+}
+
+.tree-view.grayscale i.tree-view-node-self-delete-icon {
+    font-style: normal;
+}
+
+.tree-view.grayscale .tree-view-node-children {
+    margin: 0 0 0 2.2rem;
+    padding: 0;
+    list-style: none;
+}
+
+.tree-view.grayscale .action-button:hover {
+	background: #eee;
+	border-radius: 50%;
+}
