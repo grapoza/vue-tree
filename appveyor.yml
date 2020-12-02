@@ -19,7 +19,7 @@ build_script:
 
 after_build:
   # Copy anything that goes into the final package into '/package'
-  - sh: mkdir -p package && cp dist/*.js dist/*.css index.js package.json LICENSE README.md package
+  - sh: mkdir -p package && cp dist/*.js dist/*.css index.js package.json LICENSE README.md src/objectMethods.js package
   - sh: mkdir -p package/components && cp src/components/*.vue package/components
   - sh: mkdir -p package/mixins && cp src/mixins/*.js package/mixins
   - sh: mkdir -p package/enums && cp src/enums/*.js package/enums
