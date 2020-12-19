@@ -4,7 +4,7 @@ vue-tree is a Vue component that implements a TreeView control. Its aim is to pr
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build status](https://ci.appveyor.com/api/projects/status/j8d19gt0vh16amhh/branch/master?svg=true)](https://ci.appveyor.com/project/Gregg/vue-tree/branch/master)
-asdf
+asdfasdf
 ## Full Documentation
 
 See the full documentation over at the [project's Github Pages](https://grapoza.github.io/vue-tree/). This includes information on how to use and configure the treeview, features (both existing and planned) as well as some demos.
