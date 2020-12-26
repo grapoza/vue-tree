@@ -142,9 +142,9 @@ describe('TreeViewNode.vue (ARIA)', () => {
       expect(wrapper.vm.$el).to.equal(document.activeElement);
     });
 
-    it('should emit a treeViewNodeAriaFocusable event', () => {
-      expect(wrapper.emitted().treeViewNodeAriaFocusable).to.be.an('array').that.has.length(1);
-      expect(wrapper.emitted().treeViewNodeAriaFocusable[0][0]).to.equal(wrapper.vm.model);
+    it('should emit a treeViewNodeAriaFocusableChange event', () => {
+      expect(wrapper.emitted().treeViewNodeAriaFocusableChange).to.be.an('array').that.has.length(1);
+      expect(wrapper.emitted().treeViewNodeAriaFocusableChange[0][0]).to.equal(wrapper.vm.model);
     });
   });
 
@@ -354,7 +354,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           });
 
           it('should focus the first child', () => {
-            expect(wrapper.emitted().treeViewNodeAriaFocusable).to.be.an('array').that.has.length(1);
+            expect(wrapper.emitted().treeViewNodeAriaFocusableChange).to.be.an('array').that.has.length(1);
             expect(wrapper.vm.model.children[0].treeNodeSpec.focusable).to.be.true;
           });
         });

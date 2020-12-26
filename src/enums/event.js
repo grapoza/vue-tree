@@ -5,11 +5,11 @@ const events = Object.freeze({
     CheckboxChange: 'treeViewNodeCheckboxChange',
     RadioChange: 'treeViewNodeRadioChange',
     ExpandedChange: 'treeViewNodeExpandedChange',
-    ChildrenLoad: 'treeViewNodeChildrenLoaded',
+    ChildrenLoad: 'treeViewNodeChildrenLoad',
     SelectedChange: 'treeViewNodeSelectedChange',
 
     // Focus
-    FocusableChange: 'treeViewNodeAriaFocusable',
+    FocusableChange: 'treeViewNodeAriaFocusableChange',
     RequestFirstFocus: 'treeViewNodeAriaRequestFirstFocus',
     RequestLastFocus: 'treeViewNodeAriaRequestLastFocus',
     RequestParentFocus: 'treeViewNodeAriaRequestParentFocus',
