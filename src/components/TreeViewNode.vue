@@ -278,7 +278,7 @@
       },
       areChildrenLoaded() {
         const tns = this.model.treeNodeSpec;
-        return typeof tns.loadChildrenAsync !== 'function' || tns.state.areChildrenLoaded;
+        return typeof tns.loadChildrenAsync !== 'function' || tns._.state.areChildrenLoaded;
       },
       ariaExpanded() {
         return this.canExpand ? this.model.treeNodeSpec.state.expanded.toString() : false;
@@ -477,15 +477,19 @@
         if (this.model.treeNodeSpec.state === null || typeof this.model.treeNodeSpec.state !== 'object') {
           this.$set(this.model.treeNodeSpec, 'state', {});
         }
+        if (this.model.treeNodeSpec._.state === null || typeof this.model.treeNodeSpec._.state !== 'object') {
+          this.$set(this.model.treeNodeSpec._, 'state', {});
+        }
 
         let state = this.model.treeNodeSpec.state;
+        let privateState = this.model.treeNodeSpec._.state;
 
         // areChildrenLoaded and areChildrenLoading are internal state used with asynchronous child
         // node loading. Any node with asynchronously loaded children starts as not expanded.
-        this.$set(state, 'areChildrenLoaded', typeof this.model.treeNodeSpec.loadChildrenAsync !== 'function');
-        this.$set(state, 'areChildrenLoading', false);
+        this.$set(privateState, 'areChildrenLoaded', typeof this.model.treeNodeSpec.loadChildrenAsync !== 'function');
+        this.$set(privateState, 'areChildrenLoading', false);
 
-        if (typeof state.expanded !== 'boolean' || !state.areChildrenLoaded) {
+        if (typeof state.expanded !== 'boolean' || !privateState.areChildrenLoaded) {
           this.$set(state, 'expanded', false);
         }
         if (typeof state.selected !== 'boolean') {
@@ -576,18 +580,18 @@
         this.$emit(TvEvent.ExpandedChange, this.model, event);
 
         // If children need to be loaded asynchronously, load them.
-        if (spec.state.expanded && !spec.state.areChildrenLoaded && !spec.state.areChildrenLoading) {
+        if (spec.state.expanded && !spec._.state.areChildrenLoaded && !spec._.state.areChildrenLoading) {
 
-          spec.state.areChildrenLoading = true;
+          spec._.state.areChildrenLoading = true;
           var childrenResult = await spec.loadChildrenAsync(this.model);
 
           if (childrenResult) {
-            spec.state.areChildrenLoaded = true;
+            spec._.state.areChildrenLoaded = true;
             this.children.splice(0, this.children.length, ...childrenResult);
             this.$emit(TvEvent.ChildrenLoad, this.model, event);
           }
 
-          spec.state.areChildrenLoading = false;
+          spec._.state.areChildrenLoading = false;
         }
       },
       /**
