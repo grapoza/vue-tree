@@ -187,11 +187,11 @@
                     @treeViewNodeCheckboxChange="(t, e)=>$emit(TvEvent.CheckboxChange, t, e)"
                     @treeViewNodeRadioChange="(t, e)=>$emit(TvEvent.RadioChange, t, e)"
                     @treeViewNodeExpandedChange="(t, e)=>$emit(TvEvent.ExpandedChange, t, e)"
-                    @treeViewNodeChildrenLoaded="(t, e)=>$emit(TvEvent.ChildrenLoad, t, e)"
+                    @treeViewNodeChildrenLoad="(t, e)=>$emit(TvEvent.ChildrenLoad, t, e)"
                     @treeViewNodeSelectedChange="(t, e)=>$emit(TvEvent.SelectedChange, t, e)"
                     @treeViewNodeAdd="(t, p, e)=>$emit(TvEvent.Add, t, p, e)"
                     @treeViewNodeDelete="$_treeViewNode_handleChildDeletion"
-                    @treeViewNodeAriaFocusable="(t)=>$emit(TvEvent.FocusableChange, t)"
+                    @treeViewNodeAriaFocusableChange="(t)=>$emit(TvEvent.FocusableChange, t)"
                     @treeViewNodeAriaRequestParentFocus="$_treeViewNodeAria_focus"
                     @treeViewNodeAriaRequestFirstFocus="()=>$emit(TvEvent.RequestFirstFocus)"
                     @treeViewNodeAriaRequestLastFocus="()=>$emit(TvEvent.RequestLastFocus)"
@@ -565,7 +565,7 @@
       /**
        * Expand the children of this node, starting an asynchronous load if needed.
        * Emits a treeViewNodeExpandedChange event. When children are loaded asynchronously,
-       * Emits a treeViewNodeChildrenLoaded event.
+       * Emits a treeViewNodeChildrenLoad event.
        * @param {Event} event The event that triggered the expansion toggle
        */
       async $_treeViewNode_onExpandedChange(event) {

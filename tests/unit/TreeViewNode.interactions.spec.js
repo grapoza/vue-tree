@@ -189,8 +189,8 @@ describe('TreeViewNode.vue (interactions)', () => {
           expect(wrapper.findAllComponents(TreeViewNode).length).to.equal(3);
         });
 
-        it('should emit the treeViewNodeChildrenLoaded event', () => {
-          expect(wrapper.emitted().treeViewNodeChildrenLoaded).to.be.an('array').that.has.length(1);
+        it('should emit the treeViewNodeChildrenLoad event', () => {
+          expect(wrapper.emitted().treeViewNodeChildrenLoad).to.be.an('array').that.has.length(1);
         });
       });
     });

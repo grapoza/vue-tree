@@ -265,7 +265,7 @@ If specified, the `modelDefaults` property of the treeview will be merged with n
 | treeViewNodeRadioChange    | Emitted when a node's radio button emits a change event        | `target` The model of the target node <br/> `event` The original event |
 | treeViewNodeExpandedChange | Emitted when a node is expanded or collapsed                   | `target` The model of the target node <br/> `event` The original event |
 | treeViewNodeSelectedChange | Emitted when a node is selected or deselected                  | `target` The model of the target node <br/> `event` The original event |
-| treeViewNodeChildrenLoaded | Emitted when a node's children are done loading asynchronously | `target` The model of the target node <br/> `event` The original event |
+| treeViewNodeChildrenLoad   | Emitted when a node's children are done loading asynchronously | `target` The model of the target node <br/> `event` The original event |
 
 ## CSS Classes
 
