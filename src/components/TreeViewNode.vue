@@ -155,64 +155,67 @@
     </div>
 
     <!-- Children and Loading Placholder -->
-    <slot v-if="model.treeNodeSpec.state.expanded && canExpand && !areChildrenLoaded"
-          name="loading"
-          :model="model"
-          :customClasses="customClasses">
+    <div class="tree-view-node-children-wrapper"
+            :class="customClasses.treeViewNodeChildrenWrapper">
+      <slot v-if="model.treeNodeSpec.state.expanded && canExpand && !areChildrenLoaded"
+            name="loading"
+            :model="model"
+            :customClasses="customClasses">
 
-      <span class="tree-view-node-loading"
-            :class="customClasses.treeViewNodeLoading">
-        ...
-      </span>
-    </slot>
-    <ul v-show="model.treeNodeSpec.state.expanded"
-        v-if="canExpand && areChildrenLoaded"
-        class="tree-view-node-children"
-        :class="customClasses.treeViewNodeChildren"
-        role="group"
-        :aria-hidden="(!model.treeNodeSpec.state.expanded).toString()">
-      <TreeViewNode v-for="nodeModel in children"
-                    :key="nodeModel[nodeModel.treeNodeSpec && nodeModel.treeNodeSpec.idProperty ? nodeModel.treeNodeSpec.idProperty : 'id']"
-                    :depth="depth + 1"
-                    :initial-model="nodeModel"
-                    :model-defaults="modelDefaults"
-                    :parent-id="id"
-                    :selection-mode="selectionMode"
-                    :tree-id="treeId"
-                    :initial-radio-group-values="radioGroupValues"
-                    :aria-key-map="ariaKeyMap"
-                    :is-mounted="isMounted"
-                    @treeViewNodeClick="(t, e)=>$emit(TvEvent.Click, t, e)"
-                    @treeViewNodeDblclick="(t, e)=>$emit(TvEvent.DoubleClick, t, e)"
-                    @treeViewNodeCheckboxChange="(t, e)=>$emit(TvEvent.CheckboxChange, t, e)"
-                    @treeViewNodeRadioChange="(t, e)=>$emit(TvEvent.RadioChange, t, e)"
-                    @treeViewNodeExpandedChange="(t, e)=>$emit(TvEvent.ExpandedChange, t, e)"
-                    @treeViewNodeChildrenLoad="(t, e)=>$emit(TvEvent.ChildrenLoad, t, e)"
-                    @treeViewNodeSelectedChange="(t, e)=>$emit(TvEvent.SelectedChange, t, e)"
-                    @treeViewNodeAdd="(t, p, e)=>$emit(TvEvent.Add, t, p, e)"
-                    @treeViewNodeDelete="$_treeViewNode_handleChildDeletion"
-                    @treeViewNodeAriaFocusableChange="(t)=>$emit(TvEvent.FocusableChange, t)"
-                    @treeViewNodeAriaRequestParentFocus="$_treeViewNodeAria_focus"
-                    @treeViewNodeAriaRequestFirstFocus="()=>$emit(TvEvent.RequestFirstFocus)"
-                    @treeViewNodeAriaRequestLastFocus="()=>$emit(TvEvent.RequestLastFocus)"
-                    @treeViewNodeAriaRequestPreviousFocus="$_treeViewNodeAria_handlePreviousFocus"
-                    @treeViewNodeAriaRequestNextFocus="$_treeViewNodeAria_handleNextFocus"
-                    @treeViewNodeDragMove="$_treeViewNodeDnd_dragMoveChild"
-                    @treeViewNodeDrop="$_treeViewNodeDnd_drop">
-        <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
-          <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
-        </template>
-        <template #radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
-          <slot name="radio" :model="model" :customClasses="customClasses" :inputId="inputId" :inputModel="inputModel" :radioChangeHandler="radioChangeHandler"></slot>
-        </template>
-        <template #text="{ model, customClasses }">
-          <slot name="text" :model="model" :customClasses="customClasses"></slot>
-        </template>
-        <template #loading="{ model, customClasses }">
-          <slot name="loading" :model="model" :customClasses="customClasses"></slot>
-        </template>
-      </TreeViewNode>
-    </ul>
+        <span class="tree-view-node-loading"
+              :class="customClasses.treeViewNodeLoading">
+          ...
+        </span>
+      </slot>
+      <ul v-show="model.treeNodeSpec.state.expanded"
+          v-if="canExpand && areChildrenLoaded"
+          class="tree-view-node-children"
+          :class="customClasses.treeViewNodeChildren"
+          role="group"
+          :aria-hidden="(!model.treeNodeSpec.state.expanded).toString()">
+        <TreeViewNode v-for="nodeModel in children"
+                      :key="nodeModel[nodeModel.treeNodeSpec && nodeModel.treeNodeSpec.idProperty ? nodeModel.treeNodeSpec.idProperty : 'id']"
+                      :depth="depth + 1"
+                      :initial-model="nodeModel"
+                      :model-defaults="modelDefaults"
+                      :parent-id="id"
+                      :selection-mode="selectionMode"
+                      :tree-id="treeId"
+                      :initial-radio-group-values="radioGroupValues"
+                      :aria-key-map="ariaKeyMap"
+                      :is-mounted="isMounted"
+                      @treeViewNodeClick="(t, e)=>$emit(TvEvent.Click, t, e)"
+                      @treeViewNodeDblclick="(t, e)=>$emit(TvEvent.DoubleClick, t, e)"
+                      @treeViewNodeCheckboxChange="(t, e)=>$emit(TvEvent.CheckboxChange, t, e)"
+                      @treeViewNodeRadioChange="(t, e)=>$emit(TvEvent.RadioChange, t, e)"
+                      @treeViewNodeExpandedChange="(t, e)=>$emit(TvEvent.ExpandedChange, t, e)"
+                      @treeViewNodeChildrenLoad="(t, e)=>$emit(TvEvent.ChildrenLoad, t, e)"
+                      @treeViewNodeSelectedChange="(t, e)=>$emit(TvEvent.SelectedChange, t, e)"
+                      @treeViewNodeAdd="(t, p, e)=>$emit(TvEvent.Add, t, p, e)"
+                      @treeViewNodeDelete="$_treeViewNode_handleChildDeletion"
+                      @treeViewNodeAriaFocusableChange="(t)=>$emit(TvEvent.FocusableChange, t)"
+                      @treeViewNodeAriaRequestParentFocus="$_treeViewNodeAria_focus"
+                      @treeViewNodeAriaRequestFirstFocus="()=>$emit(TvEvent.RequestFirstFocus)"
+                      @treeViewNodeAriaRequestLastFocus="()=>$emit(TvEvent.RequestLastFocus)"
+                      @treeViewNodeAriaRequestPreviousFocus="$_treeViewNodeAria_handlePreviousFocus"
+                      @treeViewNodeAriaRequestNextFocus="$_treeViewNodeAria_handleNextFocus"
+                      @treeViewNodeDragMove="$_treeViewNodeDnd_dragMoveChild"
+                      @treeViewNodeDrop="$_treeViewNodeDnd_drop">
+          <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
+            <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
+          </template>
+          <template #radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
+            <slot name="radio" :model="model" :customClasses="customClasses" :inputId="inputId" :inputModel="inputModel" :radioChangeHandler="radioChangeHandler"></slot>
+          </template>
+          <template #text="{ model, customClasses }">
+            <slot name="text" :model="model" :customClasses="customClasses"></slot>
+          </template>
+          <template #loading="{ model, customClasses }">
+            <slot name="loading" :model="model" :customClasses="customClasses"></slot>
+          </template>
+        </TreeViewNode>
+      </ul>
+    </div>
   </li>
 </template>
 
@@ -832,14 +835,12 @@
       }
     }
 
-    // Loading slot content
-    .tree-view-node-loading {
+    .tree-view-node-children-wrapper {
       margin: 0 0 0 (1rem + $itemSpacing);
     }
 
     // The node's child list
     .tree-view-node-children {
-      margin: 0 0 0 (1rem + $itemSpacing);
       padding: 0;
       list-style: none;
     }
