@@ -68,6 +68,7 @@ describe('TreeViewNode.vue (customizations)', () => {
         treeViewNodeSelfAddChildIcon: 'customnodeselfaddchildiconclass',
         treeViewNodeSelfDelete: 'customnodeselfdeleteclass',
         treeViewNodeSelfDeleteIcon: 'customnodeselfdeleteiconclass',
+        treeViewNodeChildrenWrapper: 'customnodechildrenwrapperclass',
         treeViewNodeChildren: 'customnodechildrenclass',
         treeViewNodeLoading: 'customnodeloadingclass'
       }
@@ -175,6 +176,11 @@ describe('TreeViewNode.vue (customizations)', () => {
 
     it('should add the custom class to the tree view node\'s delete icon element', () => {
       let target = wrapper.find('.tree-view-node-self-delete-icon.' + customizations.classes.treeViewNodeSelfDeleteIcon);
+      expect(target.exists()).to.be.true;
+    });
+
+    it('should add the custom class to the tree view node\'s children wrapper element', () => {
+      let target = wrapper.find('.tree-view-node-children-wrapper.' + customizations.classes.treeViewNodeChildrenWrapper);
       expect(target.exists()).to.be.true;
     });
 
