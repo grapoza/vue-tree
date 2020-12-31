@@ -28,15 +28,17 @@ export default [
       {
         id: 'subnode1',
         label: 'This is a subnode',
-        title: 'Even non-input nodes should get a title.',
-        expandable: true,
-        selectable: true,
-        deletable: true,
-        state: {
-          expanded: false,
-          selected: false
-        },
-        children: []
+        children: [],
+        treeNodeSpec: {
+          title: 'Even non-input nodes should get a title.',
+          expandable: true,
+          selectable: true,
+          deletable: true,
+          state: {
+            expanded: false,
+            selected: false
+          }
+        }
       },
       {
         id: 'subnode2',
@@ -46,15 +48,17 @@ export default [
             id: 'subsubnode1',
             label: 'An even deeper node',
             children: [],
-            expandable: true,
-            selectable: true,
-            state: {
-              expanded: false,
-              selected: false
-            },
-            addChildCallback: function () {
-              var entry = prompt("Give it a string.", "");
-              return Promise.resolve(entry ? { id: entry, label: entry, deletable: true, selectable: true } : null);
+            treeNodeSpec: {
+              expandable: true,
+              selectable: true,
+              state: {
+                expanded: false,
+                selected: false
+              },
+              addChildCallback: function () {
+                var entry = prompt("Give it a string.", "");
+                return Promise.resolve(entry ? { id: entry, label: entry, deletable: true, selectable: true } : null);
+              }
             }
           }
         ],
@@ -84,6 +88,39 @@ export default [
         type: 'checkbox',
         name: 'checkbox2'
       },
+      state: {
+        expanded: true,
+        selected: false,
+        input: {
+          value: false,
+          disabled: false
+        }
+      }
+    }
+  },
+  {
+    id: 'node3',
+    label: 'My Third Node',
+    children: [
+      {
+        id: 'subnode31',
+        label: 'This is an expanded subnode',
+        children: [],
+        treeNodeSpec: {
+          expandable: false,
+          selectable: true,
+          deletable: true,
+          state: {
+            expanded: false,
+            selected: false
+          }
+        }
+      }
+    ],
+    treeNodeSpec: {
+      expandable: false,
+      selectable: true,
+      deletable: true,
       state: {
         expanded: true,
         selected: false,

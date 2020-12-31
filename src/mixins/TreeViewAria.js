@@ -134,7 +134,7 @@ export default {
     $_treeViewAria_focusLastNode() {
       let lastModel = this.model[this.model.length - 1];
       let lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
-      while (lastModelChildren.length > 0 && lastModel.treeNodeSpec.expandable && lastModel.treeNodeSpec.state.expanded) {
+      while (lastModelChildren.length > 0 && lastModel.treeNodeSpec.state.expanded) {
         lastModel = lastModelChildren[lastModelChildren.length - 1];
         lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
       }
@@ -169,7 +169,7 @@ export default {
       if (childIndex > 0) {
         let lastModel = this.model[childIndex - 1];
         let lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
-        while (lastModelChildren.length > 0 && lastModel.treeNodeSpec.expandable && lastModel.treeNodeSpec.state.expanded) {
+        while (lastModelChildren.length > 0 && lastModel.treeNodeSpec.state.expanded) {
           lastModel = lastModelChildren[lastModelChildren.length - 1];
           lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
         }
@@ -191,7 +191,7 @@ export default {
       let childIndex = this.model.indexOf(childNode);
       let childNodeChildren = childNode[childNode.treeNodeSpec.childrenProperty];
 
-      if (!ignoreChild && childNodeChildren.length > 0 && childNode.treeNodeSpec.expandable && childNode.treeNodeSpec.state.expanded) {
+      if (!ignoreChild && childNodeChildren.length > 0 && childNode.treeNodeSpec.state.expanded) {
         childNodeChildren[0].treeNodeSpec.focusable = true;
       }
       else if (childIndex < this.model.length - 1) {

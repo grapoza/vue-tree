@@ -91,6 +91,104 @@ The most basic use of the treeview consists of giving it some data and letting t
 ```
 
 <!--- -------------------------------------------------------------------------------------- --->
+### A Static Tree
+
+If all you need is a static tree (no expanding subnodes) then you can just set the `expandable` property to false for each node. You can then just set the `expanded` property through code to hide/show children of a node as needed. The most common case is to always set it to `true` for all nodes.
+
+```{=html5}
+<details>
+<summary>
+```
+```html
+<tree id="customtree-static" :initial-model="model" :model-defaults="modelDefaults"></tree>
+```
+```{=html5}
+</summary>
+```
+<!--- The leading spaces are to render the html aligned correctly --->
+```html
+  <div id="app-static" class="demo-tree">
+  <tree id="customtree-static" :initial-model="model" :model-defaults="modelDefaults"></tree>
+</div>
+<script type='module'>
+  import TreeView from "@grapoza/vue-tree"
+  new Vue({
+    components: {
+      tree: TreeView
+    },
+    data() {
+      return {
+        model: [
+          {
+            id: "node1",
+            label: "Node with no children"
+          },
+          {
+            id: "node2",
+            label: "Node with a child",
+            children: [
+              {
+                id: "childNode1",
+                label: "A child node"
+              }
+            ]
+          }
+        ],
+        modelDefaults: {
+          expandable: false,
+          state: {
+            expanded: true
+          }
+        }
+      };
+    }
+  }).$mount('#app-static');
+</script>
+```
+```{=html5}
+</details>
+```
+
+```{=html5}
+<div id="app-static" class="demo-tree">
+    <tree id="customtree-static" :initial-model="model" :model-defaults="modelDefaults"></tree>
+</div>
+<script type='module'>
+    new Vue({
+      components: {
+        tree: window['vue-tree']
+      },
+      data() {
+        return {
+            model: [
+                {
+                    id: "node1",
+                    label: "Node with no children"
+                },
+                {
+                    id: "node2",
+                    label: "Node with a child",
+                    children: [
+                        {
+                            id: "childNode1",
+                            label: "A child node"
+                        }
+                    ]
+                }
+            ],
+            modelDefaults: {
+                expandable: false,
+                state: {
+                    expanded: true
+                }
+            }
+        };
+      }
+    }).$mount('#app-static');
+</script>
+```
+
+<!--- -------------------------------------------------------------------------------------- --->
 ### Setting Defaults
 
 If there are common settings that should be used by all (or even most) nodes, these can be given to the tree in the `modelDefaults` property. This is a great place to customize things like what model props are used for the nodes' labels and whether all nodes are a certain type of input. Note that the expandable node below is expanded by default, as set from `modelDefaults`. The tree below uses the `identifier` and `description` properties of the node objects instead of `id` and `label`, and has all nodes expanded by default. These are set for all nodes at once by using `modelDefaults`. For more info, see [the docs](/#default-data).

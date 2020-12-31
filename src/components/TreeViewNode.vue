@@ -157,7 +157,7 @@
     <!-- Children and Loading Placholder -->
     <div class="tree-view-node-children-wrapper"
             :class="customClasses.treeViewNodeChildrenWrapper">
-      <slot v-if="model.treeNodeSpec.state.expanded && canExpand && !areChildrenLoaded"
+      <slot v-if="model.treeNodeSpec.state.expanded && !areChildrenLoaded"
             name="loading"
             :model="model"
             :customClasses="customClasses">
@@ -168,7 +168,7 @@
         </span>
       </slot>
       <ul v-show="model.treeNodeSpec.state.expanded"
-          v-if="canExpand && areChildrenLoaded"
+          v-if="this.hasChildren"
           class="tree-view-node-children"
           :class="customClasses.treeViewNodeChildren"
           role="group"
@@ -308,7 +308,7 @@
       canExpand() {
         // A node can be expanded if it is expandable and either has children or has not
         // yet had the asynchronous loader for children called.
-        return (this.children.length > 0 || !this.areChildrenLoaded) && this.model.treeNodeSpec.expandable;
+        return this.mayHaveChildren && this.model.treeNodeSpec.expandable;
       },
       children() {
         return this.model[this.childrenPropName];
@@ -324,6 +324,9 @@
       },
       expanderId() {
         return `${this.nodeId}-exp`;
+      },
+      hasChildren() {
+        return this.children && this.children.length > 0;
       },
       id() {
         return this.model[this.idPropName];
@@ -342,6 +345,9 @@
       },
       labelPropName() {
         return this.model.treeNodeSpec.labelProperty || 'label';
+      },
+      mayHaveChildren() {
+        return this.hasChildren || !this.areChildrenLoaded;
       },
       nodeId() {
         return `${this.treeId}-${this.id}`;

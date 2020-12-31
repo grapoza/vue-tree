@@ -112,11 +112,11 @@ export default {
         // When focus is on a closed node, opens the node; focus does not move.
         // When focus is on a open node, moves focus to the first child node.
         // When focus is on an end node, does nothing.
-        if (this.canExpand) {
-          if (!this.model.treeNodeSpec.state.expanded) {
+        if (this.mayHaveChildren) {
+          if (this.canExpand && !this.model.treeNodeSpec.state.expanded) {
             this.$_treeViewNode_onExpandedChange(event);
           }
-          else {
+          else if (this.model.treeNodeSpec.state.expanded) {
             this.children[0].treeNodeSpec.focusable = true;
           }
         }
@@ -188,7 +188,7 @@ export default {
       else {
         let lastModel = this.children[childIndex - 1];
         let lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
-        while (lastModelChildren.length > 0 && lastModel.treeNodeSpec.expandable && lastModel.treeNodeSpec.state.expanded) {
+        while (lastModelChildren.length > 0 && lastModel.treeNodeSpec.state.expanded) {
           lastModel = lastModelChildren[lastModelChildren.length - 1];
         }
 
@@ -208,7 +208,7 @@ export default {
       // Otherwise, punt this up to this node's parent
       let childIndex = this.children.indexOf(childNode);
       let childNodeChildrenPropName = childNode.treeNodeSpec.childrenProperty;
-      if (!ignoreChild && childNode[childNodeChildrenPropName].length > 0 && childNode.treeNodeSpec.expandable && childNode.treeNodeSpec.state.expanded) {
+      if (!ignoreChild && childNode[childNodeChildrenPropName].length > 0 && childNode.treeNodeSpec.state.expanded) {
         childNode[childNodeChildrenPropName][0].treeNodeSpec.focusable = true;
       }
       else if (childIndex < this.children.length - 1) {
