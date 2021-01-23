@@ -1,5 +1,5 @@
 <template>
-  <ul class="tree-view"
+  <ul class="grtv"
       :class="skinClass"
       role="tree"
       :aria-multiselectable="ariaMultiselectable">
@@ -19,16 +19,16 @@
                     @treeViewNodeRadioChange="(t, e)=>$emit(TvEvent.RadioChange, t, e)"
                     @treeViewNodeExpandedChange="(t, e)=>$emit(TvEvent.ExpandedChange, t, e)"
                     @treeViewNodeChildrenLoad="(t, e)=>$emit(TvEvent.ChildrenLoad, t, e)"
-                    @treeViewNodeSelectedChange="$_treeView_handleNodeSelectedChange"
+                    @treeViewNodeSelectedChange="$_grtv_handleNodeSelectedChange"
                     @treeViewNodeAdd="(t, p, e)=>$emit(TvEvent.Add, t, p, e)"
-                    @treeViewNodeDelete="$_treeView_handleChildDeletion"
-                    @treeViewNodeAriaFocusableChange="$_treeViewAria_handleFocusableChange"
-                    @treeViewNodeAriaRequestFirstFocus="$_treeViewAria_focusFirstNode"
-                    @treeViewNodeAriaRequestLastFocus="$_treeViewAria_focusLastNode"
-                    @treeViewNodeAriaRequestPreviousFocus="$_treeViewAria_handlePreviousFocus"
-                    @treeViewNodeAriaRequestNextFocus="$_treeViewAria_handleNextFocus"
-                    @treeViewNodeDragMove="$_treeViewDnd_dragMoveNode"
-                    @treeViewNodeDrop="$_treeViewDnd_drop">
+                    @treeViewNodeDelete="$_grtv_handleChildDeletion"
+                    @treeViewNodeAriaFocusableChange="$_grtvAria_handleFocusableChange"
+                    @treeViewNodeAriaRequestFirstFocus="$_grtvAria_focusFirstNode"
+                    @treeViewNodeAriaRequestLastFocus="$_grtvAria_focusLastNode"
+                    @treeViewNodeAriaRequestPreviousFocus="$_grtvAria_handlePreviousFocus"
+                    @treeViewNodeAriaRequestNextFocus="$_grtvAria_handleNextFocus"
+                    @treeViewNodeDragMove="$_grtvDnd_dragMoveNode"
+                    @treeViewNodeDrop="$_grtvDnd_drop">
 
       <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
         <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
@@ -84,7 +84,7 @@
       skinClass: {
         type: String,
         required: false,
-        default: 'default-tree-view-skin',
+        default: 'grtv-default-skin',
         validator: function (value) {
           return value === null || !value.match(/\s/);
         }
@@ -114,7 +114,7 @@
       this.$set(this, 'uniqueId', generateUniqueId());
     },
     mounted() {
-      this.$_treeView_enforceSingleSelectionMode();
+      this.$_grtv_enforceSingleSelectionMode();
 
       if (this.$el.id) {
         this.$set(this, 'uniqueId', this.$el.id);
@@ -158,7 +158,7 @@
         let matches = [];
 
         if (typeof matcherFunction === 'function') {
-          this.$_treeView_depthFirstTraverse((current) => {
+          this.$_grtv_depthFirstTraverse((current) => {
             if (matcherFunction(current)) {
               matches.push(current);
             }
@@ -181,7 +181,7 @@
        * @param targetId {string} The ID of the node to find
        * @returns {TreeViewNode} The node with the given ID if found, or null
        */
-      $_treeView_findById(targetId) {
+      $_grtv_findById(targetId) {
         let node = null;
 
         if (typeof targetId === 'string') {
@@ -189,7 +189,7 @@
           node = this.model.find(n => n[n.treeNodeSpec.idProperty] === targetId);
 
           if (!node) {
-            this.$_treeView_depthFirstTraverse((current) => {
+            this.$_grtv_depthFirstTraverse((current) => {
               let children = current[current.treeNodeSpec.childrenProperty];
               node = children.find(n => n[n.treeNodeSpec.idProperty] === targetId);
               if (node) {
@@ -206,7 +206,7 @@
        * @param targetId {string} The ID of the node to remove
        * @returns {TreeViewNode} The node with the given ID if removed, or null
        */
-      $_treeView_removeById(targetId) {
+      $_grtv_removeById(targetId) {
         let node = null;
 
         if (typeof targetId === 'string') {
@@ -217,7 +217,7 @@
             node = this.model.splice(nodeIndex, 1)[0];
           }
           else {
-            this.$_treeView_depthFirstTraverse((current) => {
+            this.$_grtv_depthFirstTraverse((current) => {
               // See if this node has a child that matches
               let children = current[current.treeNodeSpec.childrenProperty];
               nodeIndex = children.findIndex(n => n[n.treeNodeSpec.idProperty] === targetId);
@@ -235,7 +235,7 @@
        * Traverses the tree depth-first and performs a callback action against each node.
        * @param nodeActionCallback {function} The action to call against each node, taking that node as a parameter
        */
-      $_treeView_depthFirstTraverse(nodeActionCallback) {
+      $_grtv_depthFirstTraverse(nodeActionCallback) {
         if (this.model.length === 0) {
           return;
         }
@@ -264,10 +264,10 @@
        * @param node {TreeViewNode} The node to remove
        * @param event {Event} The initial event that triggered the deletion
        */
-      $_treeView_handleChildDeletion(node, event) {
+      $_grtv_handleChildDeletion(node, event) {
         let targetIndex = this.model.indexOf(node);
         if (targetIndex > -1) {
-          this.$_treeViewAria_handleNodeDeletion(node);
+          this.$_grtvAria_handleNodeDeletion(node);
           this.model.splice(targetIndex, 1);
         }
 
@@ -275,14 +275,14 @@
       },
       /**
        * For single selection mode, unselect any other selected node.
-       * For selectionFollowsFocus mode, selection state is handled in TreeViewAria.$_treeViewAria_handleFocusableChange.
+       * For selectionFollowsFocus mode, selection state is handled in TreeViewAria.$_grtvAria_handleFocusableChange.
        * In all cases this emits treeViewNodeSelectedChange for the node parameter.
        * @param node {TreeViewNode} The node for which selection changed
        * @param event {Event} The initial event that triggered the change
        */
-      $_treeView_handleNodeSelectedChange(node, event) {
+      $_grtv_handleNodeSelectedChange(node, event) {
         if (this.selectionMode === SelectionMode.Single && node.treeNodeSpec.state.selected) {
-          this.$_treeView_depthFirstTraverse((current) => {
+          this.$_grtv_depthFirstTraverse((current) => {
             if (current.treeNodeSpec.state.selected && current.id !== node.id) {
               current.treeNodeSpec.state.selected = false;
               return false;
@@ -297,11 +297,11 @@
        * Enforce single selection mode by deselecting anything except
        * the first (by depth-first) selected node.
        */
-      $_treeView_enforceSingleSelectionMode() {
+      $_grtv_enforceSingleSelectionMode() {
         // For single selection mode, only allow one selected node.
         if (this.selectionMode === SelectionMode.Single) {
           let alreadyFoundSelected = false;
-          this.$_treeView_depthFirstTraverse((node) => {
+          this.$_grtv_depthFirstTraverse((node) => {
             if (node.treeNodeSpec.state && node.treeNodeSpec.state.selected === true) {
               if (alreadyFoundSelected) {
                 node.treeNodeSpec.state.selected = false;
@@ -336,8 +336,8 @@
 
 <style lang="scss">
 
-  // Embedded SCSS is the 'default-tree-view-skin' skin
-  .tree-view.default-tree-view-skin {
+  // Embedded SCSS is the 'grtv-default-skin' skin
+  .grtv.grtv-default-skin {
     margin: 0;
     padding: 0;
     list-style: none;

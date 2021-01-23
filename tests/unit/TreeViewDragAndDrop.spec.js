@@ -67,10 +67,10 @@ describe('TreeView.vue (Drag and Drop)', () => {
         describe('and the drop is directly on a node', () => {
 
           beforeEach(() => {
-            let startingNode = wrapper.find('#grtv-1-n0 .tree-view-node-self');
+            let startingNode = wrapper.find('#grtv-1-n0 .grtvn-self');
             startingNode.trigger('dragstart', eventData);
 
-            let endingNode = wrapper.find('#grtv-1-n2 .tree-view-node-self');
+            let endingNode = wrapper.find('#grtv-1-n2 .grtvn-self');
             endingNode.trigger('drop', eventData);
           });
 
@@ -84,10 +84,10 @@ describe('TreeView.vue (Drag and Drop)', () => {
         describe('and the drop is on the prev node marker', () => {
 
           beforeEach(() => {
-            let startingNode = wrapper.find('#grtv-1-n0 .tree-view-node-self');
+            let startingNode = wrapper.find('#grtv-1-n0 .grtvn-self');
             startingNode.trigger('dragstart', eventData);
 
-            let endingNode = wrapper.find('#grtv-1-n2 .tree-view-node-self-prev-target');
+            let endingNode = wrapper.find('#grtv-1-n2 .grtvn-self-prev-target');
             endingNode.trigger('drop', eventData);
           });
 
@@ -100,10 +100,10 @@ describe('TreeView.vue (Drag and Drop)', () => {
         describe('and the drop is on the next node marker', () => {
 
           beforeEach(() => {
-            let startingNode = wrapper.find('#grtv-1-n0 .tree-view-node-self');
+            let startingNode = wrapper.find('#grtv-1-n0 .grtvn-self');
             startingNode.trigger('dragstart', eventData);
 
-            let endingNode = wrapper.find('#grtv-1-n1 .tree-view-node-self-next-target');
+            let endingNode = wrapper.find('#grtv-1-n1 .grtvn-self-next-target');
             endingNode.trigger('drop', eventData);
           });
 
@@ -116,10 +116,10 @@ describe('TreeView.vue (Drag and Drop)', () => {
         describe('and the target node is in a different node level than the source node', () => {
 
           beforeEach(() => {
-            let startingNode = wrapper.find('#grtv-1-n2n0 .tree-view-node-self');
+            let startingNode = wrapper.find('#grtv-1-n2n0 .grtvn-self');
             startingNode.trigger('dragstart', eventData);
 
-            let endingNode = wrapper.find('#grtv-1-n0 .tree-view-node-self-next-target');
+            let endingNode = wrapper.find('#grtv-1-n0 .grtvn-self-next-target');
             endingNode.trigger('drop', eventData);
           });
 
@@ -149,10 +149,10 @@ describe('TreeView.vue (Drag and Drop)', () => {
             wrapper = createWrapper({ initialModel: model });
             wrapper.vm.model[0].treeNodeSpec.focusable = true;
 
-            let startingNode = wrapper.find('#grtv-1-n0 .tree-view-node-self');
+            let startingNode = wrapper.find('#grtv-1-n0 .grtvn-self');
             startingNode.trigger('dragstart', eventData);
 
-            let endingNode = wrapper.find('#grtv-1-n2 .tree-view-node-self-prev-target');
+            let endingNode = wrapper.find('#grtv-1-n2 .grtvn-self-prev-target');
             endingNode.trigger('drop', eventData);
           });
 
@@ -169,10 +169,10 @@ describe('TreeView.vue (Drag and Drop)', () => {
             let model = generateNodes(['ecs', 'ecs', 'ecs', ['ecs', 'ecs', 'ecs']]);
             wrapper = createWrapper({ initialModel: model });
 
-            let startingNode = wrapper.find('#grtv-1-n2n0 .tree-view-node-self');
+            let startingNode = wrapper.find('#grtv-1-n2n0 .grtvn-self');
             startingNode.trigger('dragstart', eventData);
 
-            let endingNode = wrapper.find('#grtv-1-n1 .tree-view-node-self-prev-target');
+            let endingNode = wrapper.find('#grtv-1-n1 .grtvn-self-prev-target');
             endingNode.trigger('drop', eventData);
           });
 
@@ -196,10 +196,10 @@ describe('TreeView.vue (Drag and Drop)', () => {
         // Await here so tree2's ID can trickle down to the nodes' computeds
         await tree2.vm.$nextTick();
 
-        let startingNode = wrapper.find('#grtv-1-n0 .tree-view-node-self');
+        let startingNode = wrapper.find('#grtv-1-n0 .grtvn-self');
         startingNode.trigger('dragstart', eventData);
 
-        let endingNode = tree2.find('#grtv-2-n0 .tree-view-node-self-prev-target');
+        let endingNode = tree2.find('#grtv-2-n0 .grtvn-self-prev-target');
         endingNode.trigger('drop', eventData);
 
         startingNode.trigger('dragend', eventData);
@@ -231,10 +231,10 @@ describe('TreeView.vue (Drag and Drop)', () => {
         // Await here so tree2's ID can trickle down to the nodes' computeds
         await tree2.vm.$nextTick();
 
-        let startingNode = wrapper.find('#grtv-1-n2 .tree-view-node-self');
+        let startingNode = wrapper.find('#grtv-1-n2 .grtvn-self');
         startingNode.trigger('dragstart', eventData);
 
-        let endingNode = tree2.find('#grtv-2-n0 .tree-view-node-self-prev-target');
+        let endingNode = tree2.find('#grtv-2-n0 .grtvn-self-prev-target');
         endingNode.trigger('drop', eventData);
 
         startingNode.trigger('dragend', eventData);

@@ -179,7 +179,7 @@ describe('TreeView.vue (ARIA)', () => {
 
     beforeEach(() => {
       wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs']) });
-      wrapper.vm.$_treeViewAria_handleFocusableChange(wrapper.vm.model[1]);
+      wrapper.vm.$_grtvAria_handleFocusableChange(wrapper.vm.model[1]);
     });
 
     it('should remove focusable from the previous focusable node', () => {
@@ -195,7 +195,7 @@ describe('TreeView.vue (ARIA)', () => {
 
     beforeEach(() => {
       wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']) });
-      wrapper.vm.$_treeViewAria_focusFirstNode();
+      wrapper.vm.$_grtvAria_focusFirstNode();
     });
 
     it('should set the focusable attribute of the first node to true', () => {
@@ -207,21 +207,21 @@ describe('TreeView.vue (ARIA)', () => {
 
     it('should focus the last visible node', () => {
       wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs']) });
-      wrapper.vm.$_treeViewAria_focusLastNode();
+      wrapper.vm.$_grtvAria_focusLastNode();
 
       expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
     });
 
     it('should ignore non-expanded child nodes', () => {
       wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs', ['ecs']]) });
-      wrapper.vm.$_treeViewAria_focusLastNode();
+      wrapper.vm.$_grtvAria_focusLastNode();
 
       expect(wrapper.vm.model[2].treeNodeSpec.focusable).to.be.true;
     });
 
     it('should focus the deepest last node', () => {
       wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'Ecs', ['ecs']]) });
-      wrapper.vm.$_treeViewAria_focusLastNode();
+      wrapper.vm.$_grtvAria_focusLastNode();
 
       expect(wrapper.vm.model[2].children[0].treeNodeSpec.focusable).to.be.true;
     });
@@ -233,7 +233,7 @@ describe('TreeView.vue (ARIA)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs']) });
-        wrapper.vm.$_treeViewAria_handleNodeDeletion(wrapper.vm.model[1]);
+        wrapper.vm.$_grtvAria_handleNodeDeletion(wrapper.vm.model[1]);
       });
 
       it('should not change the focusable node', () => {
@@ -245,7 +245,7 @@ describe('TreeView.vue (ARIA)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs']) });
-        wrapper.vm.$_treeViewAria_handleNodeDeletion(wrapper.vm.model[0]);
+        wrapper.vm.$_grtvAria_handleNodeDeletion(wrapper.vm.model[0]);
       });
 
       it('should set the next node as focusable', () => {
@@ -257,7 +257,7 @@ describe('TreeView.vue (ARIA)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', 'ecsf']) });
-        wrapper.vm.$_treeViewAria_handleNodeDeletion(wrapper.vm.model[2]);
+        wrapper.vm.$_grtvAria_handleNodeDeletion(wrapper.vm.model[2]);
       });
 
       it('should set the previous node as focusable', () => {
@@ -272,7 +272,7 @@ describe('TreeView.vue (ARIA)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs']) });
-        wrapper.vm.$_treeViewAria_handlePreviousFocus(wrapper.vm.model[0]);
+        wrapper.vm.$_grtvAria_handlePreviousFocus(wrapper.vm.model[0]);
       });
 
       it('should not change focusableness', () => {
@@ -284,7 +284,7 @@ describe('TreeView.vue (ARIA)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper({ initialModel: generateNodes(['ecs', ['ecs', 'ecs'], 'ecsf']) });
-        wrapper.vm.$_treeViewAria_handlePreviousFocus(wrapper.vm.model[1]);
+        wrapper.vm.$_grtvAria_handlePreviousFocus(wrapper.vm.model[1]);
       });
 
       it('should set the previous node as focusable', () => {
@@ -296,7 +296,7 @@ describe('TreeView.vue (ARIA)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper({ initialModel: generateNodes(['Ecs', ['ecs', 'ecs'], 'ecsf']) });
-        wrapper.vm.$_treeViewAria_handlePreviousFocus(wrapper.vm.model[1]);
+        wrapper.vm.$_grtvAria_handlePreviousFocus(wrapper.vm.model[1]);
       });
 
       it('should set the last expanded previous node as focusable', () => {
@@ -311,7 +311,7 @@ describe('TreeView.vue (ARIA)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']) });
-        wrapper.vm.$_treeViewAria_handleNextFocus(wrapper.vm.model[1]);
+        wrapper.vm.$_grtvAria_handleNextFocus(wrapper.vm.model[1]);
       });
 
       it('should not change focusableness', () => {
@@ -323,7 +323,7 @@ describe('TreeView.vue (ARIA)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper({ initialModel: generateNodes(['ecsf', ['ecs', 'ecs'], 'ecs']) });
-        wrapper.vm.$_treeViewAria_handleNextFocus(wrapper.vm.model[0]);
+        wrapper.vm.$_grtvAria_handleNextFocus(wrapper.vm.model[0]);
       });
 
       it('should set the next sibling node as focusable', () => {
@@ -338,14 +338,14 @@ describe('TreeView.vue (ARIA)', () => {
       });
 
       it('should set the first expanded child node as focusable', () => {
-        wrapper.vm.$_treeViewAria_handleNextFocus(wrapper.vm.model[0]);
+        wrapper.vm.$_grtvAria_handleNextFocus(wrapper.vm.model[0]);
         expect(wrapper.vm.model[0].children[0].treeNodeSpec.focusable).to.be.true;
       });
 
       describe('and the children are explicitly ignored', () => {
 
         if ('sets the next sibling node as focusable', () => {
-          wrapper.vm.$_treeViewAria_handleNextFocus(wrapper.vm.model[0], true);
+          wrapper.vm.$_grtvAria_handleNextFocus(wrapper.vm.model[0], true);
           expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
         });
       });

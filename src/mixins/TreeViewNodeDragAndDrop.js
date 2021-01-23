@@ -14,10 +14,10 @@ export default {
      * event that triggers this and that event is not propagated from here,
      * so the child should be found in the children prop array here. The event also only
      * fires when dragging between trees; otherwise node deletion happens as part of moving
-     * it within the tree in $_treeViewDnd_drop.
+     * it within the tree in $_grtvDnd_drop.
      * @param {TreeViewNode} node The node which was dragged/dropped
      */
-    $_treeViewNodeDnd_dragMoveChild(node) {
+    $_grtvnDnd_dragMoveChild(node) {
       const targetIndex = this.children.indexOf(node);
       if (targetIndex > -1) {
         this.children.splice(targetIndex, 1);
@@ -36,7 +36,7 @@ export default {
      * @param {Object} data The custom treeViewNodeDrop event data
      * @param {DragEvent} event The original DOM drop event
      */
-    $_treeViewNodeDnd_drop(data, event) {
+    $_grtvnDnd_drop(data, event) {
       data.siblingNodeSet = data.siblingNodeSet || this.children;
       this.$emit(TvEvent.Drop, data, event);
     },
@@ -51,7 +51,7 @@ export default {
      * whether a drop occurred in the origin tree or a different tree.
      * @param {DragEvent} event The original DOM dragStart event
      */
-    $_treeViewNodeDnd_onDragstart(event) {
+    $_grtvnDnd_onDragstart(event) {
       event.stopPropagation();
 
       // Create the JSON copy used for the drag operation, and reset anything
@@ -72,9 +72,9 @@ export default {
      * Checks whether this node can accept the drop and updates the model accordingly.
      * @param {DragEvent} event The original DOM dragEnter event
      */
-    $_treeViewNodeDnd_onDragenter(event) {
-      if (this.$_treeViewNodeDnd_isValidDropTargetForEvent(event)) {
-        this.$_treeViewNodeDnd_setDropTargetProps(event, true);
+    $_grtvnDnd_onDragenter(event) {
+      if (this.$_grtvnDnd_isValidDropTargetForEvent(event)) {
+        this.$_grtvnDnd_setDropTargetProps(event, true);
         event.preventDefault();
       }
     },
@@ -82,9 +82,9 @@ export default {
      * Checks whether this node can accept the drop and updates the model accordingly.
      * @param {DragEvent} event The original DOM dragOver event
      */
-    $_treeViewNodeDnd_onDragover(event) {
-      if (this.$_treeViewNodeDnd_isValidDropTargetForEvent(event)) {
-        this.$_treeViewNodeDnd_setDropTargetProps(event, true);
+    $_grtvnDnd_onDragover(event) {
+      if (this.$_grtvnDnd_isValidDropTargetForEvent(event)) {
+        this.$_grtvnDnd_setDropTargetProps(event, true);
         event.preventDefault();
       }
     },
@@ -92,9 +92,9 @@ export default {
      * Checks whether this node can accept the drop and updates the model accordingly.
      * @param {DragEvent} event The original DOM dragLeave event
      */
-    $_treeViewNodeDnd_onDragleave(event) {
-      if (this.$_treeViewNodeDnd_isValidDropTargetForEvent(event)) {
-        this.$_treeViewNodeDnd_setDropTargetProps(event, false);
+    $_grtvnDnd_onDragleave(event) {
+      if (this.$_grtvnDnd_isValidDropTargetForEvent(event)) {
+        this.$_grtvnDnd_setDropTargetProps(event, false);
       }
     },
     /**
@@ -104,13 +104,13 @@ export default {
      * for handling.
      * @param {DragEvent} event The original DOM drop event
      */
-    $_treeViewNodeDnd_onDrop(event) {
+    $_grtvnDnd_onDrop(event) {
 
       const payload = JSON.parse(event.dataTransfer.getData(MimeType.TreeViewNode));
 
       const tzone =
-          event.target.classList.contains('tree-view-node-self-prev-target') ? TargetZone.Before
-        : event.target.classList.contains('tree-view-node-self-next-target') ? TargetZone.After
+          event.target.classList.contains('grtvn-self-prev-target') ? TargetZone.Before
+        : event.target.classList.contains('grtvn-self-next-target') ? TargetZone.After
         : TargetZone.Child;
 
       // The siblingNodeSet prop will be filled in by the next node up the chain for Before/After inserts
@@ -126,7 +126,7 @@ export default {
 
       this.$emit(TvEvent.Drop, eventData, event);
 
-      this.$_treeViewNodeDnd_setDropTargetProps(event, false);
+      this.$_grtvnDnd_setDropTargetProps(event, false);
 
       event.preventDefault();
     },
@@ -136,12 +136,12 @@ export default {
      * event. In any other case, this node's props are updated as needed.
      * @param {DragEvent} event The original DOM dragEnd event
      */
-    $_treeViewNodeDnd_onDragend(event) {
+    $_grtvnDnd_onDragend(event) {
 
       if (event.dataTransfer.dropEffect === DropEffect.Move) {
         if (this.model.treeNodeSpec._.dragMoved) {
           // If the node was moved within the original tree then it will have
-          // been marked by $_treeViewDnd_drop as such. Just clear the marker.
+          // been marked by $_grtvDnd_drop as such. Just clear the marker.
           this.$delete(this.model.treeNodeSpec._, 'dragMoved');
         }
         else {
@@ -152,7 +152,7 @@ export default {
         }
       }
       else {
-        this.$_treeViewNodeDnd_setDropTargetProps(event, false);
+        this.$_grtvnDnd_setDropTargetProps(event, false);
         this.model.treeNodeSpec._.dragging = false;
       }
     },
@@ -161,10 +161,10 @@ export default {
      * and the event target is not the dragged node or a child element.
      * @param {DragEvent} event The event to check for droppable data
      */
-    $_treeViewNodeDnd_isValidDropTargetForEvent(event) {
+    $_grtvnDnd_isValidDropTargetForEvent(event) {
       return this.model.treeNodeSpec.allowDrop
         && event.dataTransfer.types.includes(MimeType.TreeViewNode)
-        && !closest(event.target, '.tree-view-node-dragging');
+        && !closest(event.target, '.grtvn-dragging');
     },
     /**
      * Sets the model's properties based on whether this node is the current drop target,
@@ -173,9 +173,9 @@ export default {
      * @param {DropEvent} event The event that caused this to trigger
      * @param {Boolean} isTarget True if this node is the drop target, false otherwise
      */
-    $_treeViewNodeDnd_setDropTargetProps(event, isTarget) {
-      const isPrevSiblingTarget = event.target.classList && event.target.classList.contains('tree-view-node-self-prev-target');
-      const isNextSiblingTarget = event.target.classList && event.target.classList.contains('tree-view-node-self-next-target');
+    $_grtvnDnd_setDropTargetProps(event, isTarget) {
+      const isPrevSiblingTarget = event.target.classList && event.target.classList.contains('grtvn-self-prev-target');
+      const isNextSiblingTarget = event.target.classList && event.target.classList.contains('grtvn-self-next-target');
 
       this.$set(this.model.treeNodeSpec._, 'isDropTarget', isTarget);
 

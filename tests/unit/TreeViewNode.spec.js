@@ -117,7 +117,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should have a title attribute on the node\'s text', () => {
-      let elem = wrapper.find(`.tree-view-node-self-text`).element;
+      let elem = wrapper.find(`.grtvn-self-text`).element;
       expect(elem.getAttribute('title')).to.equal('My Title');
     });
   });
@@ -132,7 +132,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should have a title attribute on the node\'s label', () => {
-      let elem = wrapper.find(`.tree-view-node-self-label`).element;
+      let elem = wrapper.find(`.grtvn-self-label`).element;
       expect(elem.getAttribute('title')).to.equal('My Title');
     });
   });
@@ -415,19 +415,19 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an expander', () => {
-        let target = wrapper.find('.tree-view-node-self-expander');
+        let target = wrapper.find('.grtvn-self-expander');
         expect(target.exists()).to.be.true;
       });
 
       describe('and the model is not expanded', () => {
 
         it('should have an aria-expanded attribute set to false', () => {
-          let target = wrapper.find('.tree-view-node[aria-expanded="false"]');
+          let target = wrapper.find('.grtvn[aria-expanded="false"]');
           expect(target.exists()).to.be.true;
         });
 
         it('should have an aria-hidden attribute set to true on the child list', () => {
-          let target = wrapper.find('.tree-view-node-children[aria-hidden="true"]');
+          let target = wrapper.find('.grtvn-children[aria-hidden="true"]');
           expect(target.exists()).to.be.true;
         });
 
@@ -454,12 +454,12 @@ describe('TreeViewNode.vue', () => {
         });
 
         it('should have an aria-expanded attribute set to true', () => {
-          let target = wrapper.find('.tree-view-node[aria-expanded="true"]');
+          let target = wrapper.find('.grtvn[aria-expanded="true"]');
           expect(target.exists()).to.be.true;
         });
 
         it('should have an aria-hidden attribute set to false on the child list', () => {
-          let target = wrapper.find('.tree-view-node-children[aria-hidden="false"]');
+          let target = wrapper.find('.grtvn-children[aria-hidden="false"]');
           expect(target.exists()).to.be.true;
         });
 
@@ -487,7 +487,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should not have an expander', () => {
-        let target = wrapper.find('.tree-view-node-self-expander');
+        let target = wrapper.find('.grtvn-self-expander');
         expect(target.exists()).to.be.false;
       });
     });
@@ -511,7 +511,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should not have an expander', () => {
-      let target = wrapper.find('.tree-view-node-self-expander');
+      let target = wrapper.find('.grtvn-self-expander');
       expect(target.exists()).to.be.false;
     });
 

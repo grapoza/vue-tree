@@ -1,93 +1,93 @@
-.tree-view.grayscale {
+.grtv.grayscale {
     margin: 0;
     padding: 0;
     list-style: none;
     font-size: larger;
 }
 
-.tree-view.grayscale .tree-view-node {
+.grtv.grayscale .grtvn {
     padding-left: 0;
 }
 
-.tree-view.grayscale .tree-view-node:first-child {
+.grtv.grayscale .grtvn:first-child {
     margin-top: 0;
 }
 
-.tree-view.grayscale .tree-view-node[role=treeitem]:focus {
+.grtv.grayscale .grtvn[role=treeitem]:focus {
     outline: 0;
 }
 
-.tree-view.grayscale .tree-view-node[role=treeitem]:focus>.tree-view-node-self {
+.grtv.grayscale .grtvn[role=treeitem]:focus>.grtvn-self {
     outline: 1px dotted #000;
 }
 
-.tree-view.grayscale .tree-view-node-self {
+.grtv.grayscale .grtvn-self {
     display: flex;
     align-items: flex-start;
     line-height: 1.2rem;
     margin-bottom: 0.5rem;
 }
 
-.tree-view.grayscale .tree-view-node-self-expander {
+.grtv.grayscale .grtvn-self-expander {
     padding: 0;
     background: none;
     border: none;
     height: 1.2rem;
 }
 
-.tree-view.grayscale .tree-view-node-self-expander i.tree-view-node-self-expanded-indicator {
+.grtv.grayscale .grtvn-self-expander i.grtvn-self-expanded-indicator {
     font-style: normal;
 }
 
-.tree-view.grayscale .tree-view-node-self-expander.tree-view-node-self-expanded i.tree-view-node-self-expanded-indicator {
+.grtv.grayscale .grtvn-self-expander.grtvn-self-expanded i.grtvn-self-expanded-indicator {
     transform: rotate(90deg);
 }
 
-.tree-view.grayscale .tree-view-node-self-action,
-.tree-view.grayscale .tree-view-node-self-checkbox,
-.tree-view.grayscale .tree-view-node-self-expander,
-.tree-view.grayscale .tree-view-node-self-radio,
-.tree-view.grayscale .tree-view-node-self-spacer {
+.grtv.grayscale .grtvn-self-action,
+.grtv.grayscale .grtvn-self-checkbox,
+.grtv.grayscale .grtvn-self-expander,
+.grtv.grayscale .grtvn-self-radio,
+.grtv.grayscale .grtvn-self-spacer {
     min-width: 1rem;
 }
 
-.tree-view.grayscale .tree-view-node-self-expander,
-.tree-view.grayscale .tree-view-node-self-spacer {
+.grtv.grayscale .grtvn-self-expander,
+.grtv.grayscale .grtvn-self-spacer {
     margin: 0;
 }
 
-.tree-view.grayscale .tree-view-node-self-checkbox,
-.tree-view.grayscale .tree-view-node-self-radio {
+.grtv.grayscale .grtvn-self-checkbox,
+.grtv.grayscale .grtvn-self-radio {
     margin: 0 0 0 -1.2rem;
 }
 
-.tree-view.grayscale .tree-view-node-self-label,
-.tree-view.grayscale .tree-view-node-self-text {
+.grtv.grayscale .grtvn-self-label,
+.grtv.grayscale .grtvn-self-text {
     margin-left: 1.2rem;
 }
 
-.tree-view.grayscale .tree-view-node-self-action {
+.grtv.grayscale .grtvn-self-action {
     padding: 0 0 0 5px;
     background: none;
     border: none;
     height: 1.2rem;
 }
 
-.tree-view.grayscale i.tree-view-node-self-add-child-icon {
+.grtv.grayscale i.grtvn-self-add-child-icon {
     font-style: normal;
 }
 
-.tree-view.grayscale i.tree-view-node-self-delete-icon {
+.grtv.grayscale i.grtvn-self-delete-icon {
     font-style: normal;
 }
 
-.tree-view.grayscale .tree-view-node-children {
+.grtv.grayscale .grtvn-children {
     margin: 0 0 0 2.2rem;
     padding: 0;
     list-style: none;
 }
 
-.tree-view.grayscale .action-button:hover {
+.grtv.grayscale .action-button:hover {
 	background: #eee;
 	border-radius: 50%;
 }

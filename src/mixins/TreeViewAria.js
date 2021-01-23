@@ -47,7 +47,7 @@ export default {
       // If none are found, set to true for the first root, or the first selected node if one exists.
       // If one is found, set any subsequent to false.
       let firstSelectedNode = null;
-      this.$_treeView_depthFirstTraverse((node) => {
+      this.$_grtv_depthFirstTraverse((node) => {
         if (node.treeNodeSpec.focusable) {
           if (this.focusableNodeModel) {
             node.treeNodeSpec.focusable = false;
@@ -72,12 +72,12 @@ export default {
         this.focusableNodeModel.treeNodeSpec.state.selected = true;
       }
 
-      this.$_treeViewNode_enforceSelectionMode();
+      this.$_grtvn_enforceSelectionMode();
     }
   },
   watch: {
     selectionMode() {
-      this.$_treeViewNode_enforceSelectionMode();
+      this.$_grtvn_enforceSelectionMode();
     }
   },
   methods: {
@@ -85,14 +85,14 @@ export default {
      * Enforces the selection mode for the tree, ensuring only the expected
      * node or nodes are selected.
      */
-    $_treeViewNode_enforceSelectionMode() {
+    $_grtvn_enforceSelectionMode() {
       if (this.selectionMode === SelectionMode.Single) {
         // This is in TreeViewAria instead of TreeView because the default mixin merge strategy only keeps one 'watch' per prop.
-        this.$_treeView_enforceSingleSelectionMode();
+        this.$_grtv_enforceSingleSelectionMode();
       }
       else if (this.selectionMode === SelectionMode.SelectionFollowsFocus) {
         // Make sure the actual focusable item is selected if the mode changes, and deselect all others
-        this.$_treeView_depthFirstTraverse((node) => {
+        this.$_grtv_depthFirstTraverse((node) => {
           let idPropName = node.treeNodeSpec.idProperty;
           let focusableIdPropName = this.focusableNodeModel.treeNodeSpec.idProperty;
           if (node[idPropName] === this.focusableNodeModel[focusableIdPropName]) {
@@ -113,7 +113,7 @@ export default {
      * tabbing into it.
      * @param {TreeViewNode} newNodeModel The newly focusable node
      */
-    $_treeViewAria_handleFocusableChange(newNodeModel) {
+    $_grtvAria_handleFocusableChange(newNodeModel) {
       if (this.focusableNodeModel !== newNodeModel) {
         if (this.focusableNodeModel) {
           this.focusableNodeModel.treeNodeSpec.focusable = false;
@@ -125,13 +125,13 @@ export default {
     /**
      * Sets the first node in the tree as focusable.
      */
-    $_treeViewAria_focusFirstNode() {
+    $_grtvAria_focusFirstNode() {
       this.model[0].treeNodeSpec.focusable = true;
     },
     /**
      * Sets the last expanded node in the tree as focusable.
      */
-    $_treeViewAria_focusLastNode() {
+    $_grtvAria_focusLastNode() {
       let lastModel = this.model[this.model.length - 1];
       let lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
       while (lastModelChildren.length > 0 && lastModel.treeNodeSpec.state.expanded) {
@@ -146,15 +146,15 @@ export default {
      * currently focuable node is deleted.
      * @param {TreeViewNode} node The node that was deleted
      */
-    $_treeViewAria_handleNodeDeletion(node) {
+    $_grtvAria_handleNodeDeletion(node) {
       if (node.treeNodeSpec.focusable) {
         if (this.model.indexOf(node) === 0) {
           if (this.model.length > 0) {
-            this.$_treeViewAria_handleNextFocus(node);
+            this.$_grtvAria_handleNextFocus(node);
           }
         }
         else {
-          this.$_treeViewAria_handlePreviousFocus(node);
+          this.$_grtvAria_handlePreviousFocus(node);
         }
       }
     },
@@ -162,7 +162,7 @@ export default {
      * Focuses the previous node in the tree
      * @param {TreeViewNode} childNode The node from which focusable should be moved
      */
-    $_treeViewAria_handlePreviousFocus(childNode) {
+    $_grtvAria_handlePreviousFocus(childNode) {
       // If focusing previous of the first child, do nothing.
       // If focusing previous of any other node, focus the last expanded node within the previous sibling.
       let childIndex = this.model.indexOf(childNode);
@@ -184,7 +184,7 @@ export default {
      * requests to focus the next node while on the last child of this node; the next sibling of
      * this node should gain focus in that case.
      */
-    $_treeViewAria_handleNextFocus(childNode, ignoreChild) {
+    $_grtvAria_handleNextFocus(childNode, ignoreChild) {
       // If the node is expanded, focus first child unless we're ignoring it (this was punted from a grandchild)
       // If the node has a next sibling, focus that
       // Otherwise, do nothing

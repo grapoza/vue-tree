@@ -4,35 +4,35 @@
       for a description of the expected data format.
   -->
   <li :id="nodeId"
-      class="tree-view-node"
+      class="grtvn"
       :class="[customClasses.treeViewNode,
-               model.treeNodeSpec._.dragging ? 'tree-view-node-dragging' : '']"
+               model.treeNodeSpec._.dragging ? 'grtvn-dragging' : '']"
       role="treeitem"
       :tabindex="ariaTabIndex"
       :aria-expanded="ariaExpanded"
       :aria-selected="ariaSelected"
-      @keydown="$_treeViewNodeAria_onKeyDown">
+      @keydown="$_grtvnAria_onKeyDown">
 
-    <div class="tree-view-node-self"
+    <div class="grtvn-self"
          :class="[customClasses.treeViewNodeSelf,
-                  isEffectivelySelected ? 'tree-view-node-self-selected' : '',
+                  isEffectivelySelected ? 'grtvn-self-selected' : '',
                   isEffectivelySelected ? customClasses.treeViewNodeSelfSelected : '',
-                  model.treeNodeSpec._.isDropTarget ? 'tree-view-node-self-drop-target': '',
-                  model.treeNodeSpec._.isChildDropTarget ? 'tree-view-node-self-child-drop-target': '']"
+                  model.treeNodeSpec._.isDropTarget ? 'grtvn-self-drop-target': '',
+                  model.treeNodeSpec._.isChildDropTarget ? 'grtvn-self-child-drop-target': '']"
          :draggable="model.treeNodeSpec.draggable"
          :dragging="model.treeNodeSpec._.dragging"
-         @click="$_treeViewNode_onClick"
-         @dblclick="$_treeViewNode_onDblclick"
-         @dragend="$_treeViewNodeDnd_onDragend"
-         @dragenter="$_treeViewNodeDnd_onDragenter"
-         @dragleave="$_treeViewNodeDnd_onDragleave"
-         @dragover="$_treeViewNodeDnd_onDragover"
-         @dragstart="$_treeViewNodeDnd_onDragstart"
-         @drop="$_treeViewNodeDnd_onDrop">
+         @click="$_grtvn_onClick"
+         @dblclick="$_grtvn_onDblclick"
+         @dragend="$_grtvnDnd_onDragend"
+         @dragenter="$_grtvnDnd_onDragenter"
+         @dragleave="$_grtvnDnd_onDragleave"
+         @dragover="$_grtvnDnd_onDragover"
+         @dragstart="$_grtvnDnd_onDragstart"
+         @drop="$_grtvnDnd_onDrop">
 
       <!-- Top Drop Target -->
-      <div class="tree-view-node-self-sibling-drop-target tree-view-node-self-prev-target"
-           :class="[model.treeNodeSpec._.isPrevDropTarget ? 'tree-view-node-self-sibling-drop-target-hover': '']"></div>
+      <div class="grtvn-self-sibling-drop-target grtvn-self-prev-target"
+           :class="[model.treeNodeSpec._.isPrevDropTarget ? 'grtvn-self-sibling-drop-target-hover': '']"></div>
 
       <!-- Expander -->
       <button :id="expanderId"
@@ -41,15 +41,15 @@
               aria-hidden="true"
               tabindex="-1"
               :title="model.treeNodeSpec.expanderTitle"
-              class="tree-view-node-self-expander"
+              class="grtvn-self-expander"
               :class="[customClasses.treeViewNodeSelfExpander,
-                       model.treeNodeSpec.state.expanded ? 'tree-view-node-self-expanded' : '',
+                       model.treeNodeSpec.state.expanded ? 'grtvn-self-expanded' : '',
                        model.treeNodeSpec.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
-              @click="$_treeViewNode_onExpandedChange">
-              <i class="tree-view-node-self-expanded-indicator"
+              @click="$_grtvn_onExpandedChange">
+              <i class="grtvn-self-expanded-indicator"
                  :class="customClasses.treeViewNodeSelfExpandedIndicator"></i></button>
       <span v-else
-            class="tree-view-node-self-spacer"
+            class="grtvn-self-spacer"
             :class="customClasses.treeViewNodeSelfSpacer"></span>
 
       <!-- Inputs and labels -->
@@ -59,21 +59,21 @@
             :model="model"
             :customClasses="customClasses"
             :inputId="inputId"
-            :checkboxChangeHandler="$_treeViewNode_onCheckboxChange">
+            :checkboxChangeHandler="$_grtvn_onCheckboxChange">
 
         <label :for="inputId"
                :title="model.treeNodeSpec.title"
-               class="tree-view-node-self-label"
+               class="grtvn-self-label"
                :class="customClasses.treeViewNodeSelfLabel">
 
           <input :id="inputId"
                  tabindex="-1"
-                 class="tree-view-node-self-input tree-view-node-self-checkbox"
+                 class="grtvn-self-input grtvn-self-checkbox"
                  :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfCheckbox]"
                  type="checkbox"
                  :disabled="model.treeNodeSpec.state.input.disabled"
                  v-model="model.treeNodeSpec.state.input.value"
-                 @change="$_treeViewNode_onCheckboxChange" />
+                 @change="$_grtvn_onCheckboxChange" />
 
           {{ label }}
         </label>
@@ -86,23 +86,23 @@
             :customClasses="customClasses"
             :inputId="inputId"
             :inputModel="radioGroupValues[model.treeNodeSpec.input.name]"
-            :radioChangeHandler="$_treeViewNode_onRadioChange">
+            :radioChangeHandler="$_grtvn_onRadioChange">
 
         <label :for="inputId"
                :title="model.treeNodeSpec.title"
-               class="tree-view-node-self-label"
+               class="grtvn-self-label"
                :class="customClasses.treeViewNodeSelfLabel">
 
           <input :id="inputId"
                  tabindex="-1"
-                 class="tree-view-node-self-input tree-view-node-self-radio"
+                 class="grtvn-self-input grtvn-self-radio"
                  :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfRadio]"
                  type="radio"
                  :name="model.treeNodeSpec.input.name"
                  :value="model.treeNodeSpec.input.value"
                  :disabled="model.treeNodeSpec.state.input.disabled"
                  v-model="radioGroupValues[model.treeNodeSpec.input.name]"
-                 @change="$_treeViewNode_onRadioChange" />
+                 @change="$_grtvn_onRadioChange" />
 
           {{ label }}
         </label>
@@ -115,7 +115,7 @@
             :customClasses="customClasses">
 
         <span :title="model.treeNodeSpec.title"
-              class="tree-view-node-self-text"
+              class="grtvn-self-text"
               :class="customClasses.treeViewNodeSelfText">
           {{ label }}
         </span>
@@ -128,10 +128,10 @@
               aria-hidden="true"
               tabindex="-1"
               :title="model.treeNodeSpec.addChildTitle"
-              class="tree-view-node-self-action"
+              class="grtvn-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfAddChild]"
-              @click="$_treeViewNode_onAddChild">
-        <i class="tree-view-node-self-add-child-icon"
+              @click="$_grtvn_onAddChild">
+        <i class="grtvn-self-add-child-icon"
             :class="customClasses.treeViewNodeSelfAddChildIcon"></i>
       </button>
 
@@ -142,34 +142,34 @@
               aria-hidden="true"
               tabindex="-1"
               :title="model.treeNodeSpec.deleteTitle"
-              class="tree-view-node-self-action"
+              class="grtvn-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfDelete]"
-              @click="$_treeViewNode_onDelete">
-        <i class="tree-view-node-self-delete-icon"
+              @click="$_grtvn_onDelete">
+        <i class="grtvn-self-delete-icon"
             :class="customClasses.treeViewNodeSelfDeleteIcon"></i>
       </button>
 
       <!-- Bottom Drop Target -->
-      <div class="tree-view-node-self-sibling-drop-target tree-view-node-self-next-target"
-           :class="[model.treeNodeSpec._.isNextDropTarget ? 'tree-view-node-self-sibling-drop-target-hover': '']"></div>
+      <div class="grtvn-self-sibling-drop-target grtvn-self-next-target"
+           :class="[model.treeNodeSpec._.isNextDropTarget ? 'grtvn-self-sibling-drop-target-hover': '']"></div>
     </div>
 
     <!-- Children and Loading Placholder -->
-    <div class="tree-view-node-children-wrapper"
+    <div class="grtvn-children-wrapper"
             :class="customClasses.treeViewNodeChildrenWrapper">
       <slot v-if="model.treeNodeSpec.state.expanded && !areChildrenLoaded"
             name="loading"
             :model="model"
             :customClasses="customClasses">
 
-        <span class="tree-view-node-loading"
+        <span class="grtvn-loading"
               :class="customClasses.treeViewNodeLoading">
           ...
         </span>
       </slot>
       <ul v-show="model.treeNodeSpec.state.expanded"
           v-if="this.hasChildren"
-          class="tree-view-node-children"
+          class="grtvn-children"
           :class="customClasses.treeViewNodeChildren"
           role="group"
           :aria-hidden="(!model.treeNodeSpec.state.expanded).toString()">
@@ -192,15 +192,15 @@
                       @treeViewNodeChildrenLoad="(t, e)=>$emit(TvEvent.ChildrenLoad, t, e)"
                       @treeViewNodeSelectedChange="(t, e)=>$emit(TvEvent.SelectedChange, t, e)"
                       @treeViewNodeAdd="(t, p, e)=>$emit(TvEvent.Add, t, p, e)"
-                      @treeViewNodeDelete="$_treeViewNode_handleChildDeletion"
+                      @treeViewNodeDelete="$_grtvn_handleChildDeletion"
                       @treeViewNodeAriaFocusableChange="(t)=>$emit(TvEvent.FocusableChange, t)"
-                      @treeViewNodeAriaRequestParentFocus="$_treeViewNodeAria_focus"
+                      @treeViewNodeAriaRequestParentFocus="$_grtvnAria_focus"
                       @treeViewNodeAriaRequestFirstFocus="()=>$emit(TvEvent.RequestFirstFocus)"
                       @treeViewNodeAriaRequestLastFocus="()=>$emit(TvEvent.RequestLastFocus)"
-                      @treeViewNodeAriaRequestPreviousFocus="$_treeViewNodeAria_handlePreviousFocus"
-                      @treeViewNodeAriaRequestNextFocus="$_treeViewNodeAria_handleNextFocus"
-                      @treeViewNodeDragMove="$_treeViewNodeDnd_dragMoveChild"
-                      @treeViewNodeDrop="$_treeViewNodeDnd_drop">
+                      @treeViewNodeAriaRequestPreviousFocus="$_grtvnAria_handlePreviousFocus"
+                      @treeViewNodeAriaRequestNextFocus="$_grtvnAria_handleNextFocus"
+                      @treeViewNodeDragMove="$_grtvnDnd_dragMoveChild"
+                      @treeViewNodeDrop="$_grtvnDnd_drop">
           <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
             <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
           </template>
@@ -224,7 +224,6 @@
   import TreeViewNodeDragAndDrop from '../mixins/TreeViewNodeDragAndDrop';
   import SelectionMode from '../enums/selectionMode';
   import InputType from '../enums/inputType';
-  import MimeType from '../enums/mimeType';
   import TvEvent from '../enums/event';
   import { isProbablyObject } from '../objectMethods';
 
@@ -270,7 +269,7 @@
     },
     data() {
       return {
-        elementsThatIgnoreClicks: 'input, .tree-view-node-self-expander, .tree-view-node-self-expander *, .tree-view-node-self-action, .tree-view-node-self-action *',
+        elementsThatIgnoreClicks: 'input, .grtvn-self-expander, .grtvn-self-expander *, .grtvn-self-action, .grtvn-self-action *',
         model: this.initialModel,
         radioGroupValues: this.initialRadioGroupValues
       }
@@ -357,7 +356,7 @@
       }
     },
     created() {
-      this.$_treeViewNode_normalizeNodeData();
+      this.$_grtvn_normalizeNodeData();
 
       // id and label are required; notify the user. Validation is done here instead
       // of at the prop level due to dependency on multiple props at once and defaulting
@@ -378,10 +377,10 @@
       /*
        * Normalizes the data model to the format consumable by TreeViewNode.
        */
-      $_treeViewNode_normalizeNodeData() {
+      $_grtvn_normalizeNodeData() {
         // The target model must have a treeNodeSpec property to assign defaults into; if missing,
-        // it will be normalized into existence in $_treeViewNodeAria_normalizeNodeData().
-        this.$_treeViewNode_assignDefaultProps(this.modelDefaults, this.model.treeNodeSpec);
+        // it will be normalized into existence in $_grtvnAria_normalizeNodeData().
+        this.$_grtvn_assignDefaultProps(this.modelDefaults, this.model.treeNodeSpec);
 
         // Set expected properties if not provided
         if (typeof this.model.treeNodeSpec.childrenProperty !== 'string') {
@@ -442,13 +441,13 @@
         this.$set(this.model.treeNodeSpec, '_', {});
         this.$set(this.model.treeNodeSpec._, 'dragging', false);
 
-        this.$_treeViewNode_normalizeNodeInputData();
-        this.$_treeViewNode_normalizeNodeStateData();
+        this.$_grtvn_normalizeNodeInputData();
+        this.$_grtvn_normalizeNodeStateData();
       },
       /**
        * Normalizes the data model's data related to input element generation.
        */
-      $_treeViewNode_normalizeNodeInputData() {
+      $_grtvn_normalizeNodeInputData() {
 
         let input = this.model.treeNodeSpec.input;
 
@@ -482,7 +481,7 @@
       /**
        * Normalizes the data model's data related to the node's state.
        */
-      $_treeViewNode_normalizeNodeStateData() {
+      $_grtvn_normalizeNodeStateData() {
         if (this.model.treeNodeSpec.state === null || typeof this.model.treeNodeSpec.state !== 'object') {
           this.$set(this.model.treeNodeSpec, 'state', {});
         }
@@ -528,7 +527,7 @@
        * @param {Object} source The source object from which properties are read
        * @param {Object} target The target object into which missing properties are assigned
        */
-      $_treeViewNode_assignDefaultProps(source, target) {
+      $_grtvn_assignDefaultProps(source, target) {
 
         // Make sure the defaults is an object
         if (isProbablyObject(source)) {
@@ -546,7 +545,7 @@
             if (isProbablyObject(propValue)) {
               // Find object properties to deep assign them
               this.$set(target, propName, target[propName] || {});
-              this.$_treeViewNode_assignDefaultProps(propValue, target[propName]);
+              this.$_grtvn_assignDefaultProps(propValue, target[propName]);
             }
             else if (typeof propValue === 'function' && !target[propName]) {
               // Find function properties and assign if missing in target.
@@ -564,7 +563,7 @@
        * Emits a treeViewNodeCheckboxChange event
        * @param {Event} event The event that triggered the change
        */
-      $_treeViewNode_onCheckboxChange(event) {
+      $_grtvn_onCheckboxChange(event) {
         this.$emit(TvEvent.CheckboxChange, this.model, event);
       },
       /**
@@ -572,7 +571,7 @@
        * Emits a treeViewNodeRadioChange event
        * @param {Event} event The event that triggered the change
        */
-      $_treeViewNode_onRadioChange(event) {
+      $_grtvn_onRadioChange(event) {
         this.$emit(TvEvent.RadioChange, this.model, event);
       },
       /**
@@ -581,7 +580,7 @@
        * Emits a treeViewNodeChildrenLoad event.
        * @param {Event} event The event that triggered the expansion toggle
        */
-      async $_treeViewNode_onExpandedChange(event) {
+      async $_grtvn_onExpandedChange(event) {
         let spec = this.model.treeNodeSpec;
 
         // First expand the node (to show either children or a "loading" indicator)
@@ -609,7 +608,7 @@
        * "model.treeNodeSpec.focusable" watchermethod in TreeViewNodeAria.
        * @param {Event} event The event that triggered the selection toggle
        */
-      $_treeViewNode_toggleSelected(event) {
+      $_grtvn_toggleSelected(event) {
         if (this.model.treeNodeSpec.selectable && [SelectionMode.Single, SelectionMode.Multiple].includes(this.selectionMode)) {
           this.model.treeNodeSpec.state.selected = !this.model.treeNodeSpec.state.selected;
         }
@@ -620,14 +619,14 @@
        * Emits a treeViewNodeClick event.
        * @param {Event} event The click event
        */
-      $_treeViewNode_onClick(event) {
+      $_grtvn_onClick(event) {
         // Don't fire this if the target is an element which has its own events
         if (!matches(event.target, this.elementsThatIgnoreClicks)) {
           this.$emit(TvEvent.Click, this.model, event);
-          this.$_treeViewNode_toggleSelected(event);
+          this.$_grtvn_toggleSelected(event);
         }
 
-        this.$_treeViewNodeAria_onClick();
+        this.$_grtvnAria_onClick();
       },
       /**
        * Handles double clicks on the node. It only performs actions if the double click happened on an
@@ -635,7 +634,7 @@
        * Emits a treeViewNodeDblclick event.
        * @param {Event} event The dblclick event
        */
-      $_treeViewNode_onDblclick(event) {
+      $_grtvn_onDblclick(event) {
         // Don't fire this if the target is an element which has its own events
         if (!matches(event.target, this.elementsThatIgnoreClicks)) {
           this.$emit(TvEvent.DoubleClick, this.model, event);
@@ -647,7 +646,7 @@
        * Emits a treeViewNodeAdd if a node is added
        * @param {Event} event The event that triggered the add
        */
-      async $_treeViewNode_onAddChild(event) {
+      async $_grtvn_onAddChild(event) {
         if (this.model.treeNodeSpec.addChildCallback) {
           var childModel = await this.model.treeNodeSpec.addChildCallback(this.model);
 
@@ -657,7 +656,7 @@
           }
         }
       },
-      $_treeViewNode_onDelete(event) {
+      $_grtvn_onDelete(event) {
         if (this.model.treeNodeSpec.deletable) {
           this.$emit(TvEvent.Delete, this.model, event);
         }
@@ -670,12 +669,12 @@
        * @param node {TreeViewNode} The node to remove
        * @param event {Event} The initial event that triggered the deletion
        */
-      $_treeViewNode_handleChildDeletion(node, event) {
+      $_grtvn_handleChildDeletion(node, event) {
         // Remove the node from the array of children if this is an immediate child.
         // Note that only the node that was deleted fires these, not any subnode.
         let targetIndex = this.children.indexOf(node);
         if (targetIndex > -1) {
-          this.$_treeViewNodeAria_handleChildDeletion(node);
+          this.$_grtvnAria_handleChildDeletion(node);
           this.children.splice(targetIndex, 1);
         }
 
@@ -691,17 +690,8 @@
    * @returns {Boolean} True if the target element matches the selector, false otherwise.
    */
   function matches(target, selector) {
-    if (Element.prototype.matches) {
-      return target.matches(selector);
-    }
-    else if (Element.prototype.msMatchesSelector) {
-      return target.msMatchesSelector(selector);
-    }
-    else if (Element.prototype.webkitMatchesSelector) {
-      return target.webkitMatchesSelector(selector);
-    }
-
-    return false;
+    let matchFn = target.matches || target.msMatchesSelector || target.webkitMatchesSelector;
+    return matchFn && matchFn.call(target, selector);
   }
 
 </script>
@@ -710,11 +700,11 @@
   $baseHeight: 1.2rem;
   $itemSpacing: 1.2rem;
 
-  // Everything's in a .tree-view (embedded SCSS is the 'default-tree-view-skin' skin)
-  .tree-view.default-tree-view-skin {
+  // Everything's in a .grtv (embedded SCSS is the 'grtv-default-skin' skin)
+  .grtv.grtv-default-skin {
 
     // The node, including its content and children list
-    .tree-view-node {
+    .grtvn {
       padding-left: 0;
 
       &:first-child {
@@ -725,50 +715,50 @@
       &[role="treeitem"]:focus {
         outline: 0;
 
-        >.tree-view-node-self {
+        >.grtvn-self {
           outline: black dotted 1px;
         }
       }
     }
 
     // The node's content, excluding the list of child nodes
-    .tree-view-node-self {
+    .grtvn-self {
       display: flex;
       align-items: flex-start;
       line-height: $baseHeight;
     }
 
     // Drag and Drop styles
-    .tree-view-node-dragging .tree-view-node-self {
+    .grtvn-dragging .grtvn-self {
       opacity: 0.5;
     }
 
-    .tree-view-node-self-drop-target {
+    .grtvn-self-drop-target {
       flex-wrap: wrap;
 
-      &.tree-view-node-self-child-drop-target {
+      &.grtvn-self-child-drop-target {
         opacity: .5;
       }
 
-      .tree-view-node-self-sibling-drop-target {
+      .grtvn-self-sibling-drop-target {
         width: 100%;
         height: 7px;
         background-color: #dddddd;
 
-        &.tree-view-node-self-sibling-drop-target-hover {
+        &.grtvn-self-sibling-drop-target-hover {
           background-color: #bbbbbb;
         }
       }
     }
 
     // The expander button and indicator content
-    .tree-view-node-self-expander {
+    .grtvn-self-expander {
       padding: 0;
       background: none;
       border: none;
       height: $baseHeight;
 
-      i.tree-view-node-self-expanded-indicator {
+      i.grtvn-self-expanded-indicator {
         font-style: normal;
 
         &::before {
@@ -776,9 +766,9 @@
         }
       }
 
-      &.tree-view-node-self-expanded {
+      &.grtvn-self-expanded {
 
-        i.tree-view-node-self-expanded-indicator {
+        i.grtvn-self-expanded-indicator {
 
           &::before {
             content: '-';
@@ -788,36 +778,36 @@
     }
 
     // The styling for when the node is selected
-    .tree-view-node-self-selected {
+    .grtvn-self-selected {
       background-color: #f0f0f8;
     }
 
     // Spacing
-    .tree-view-node-self-expander,
-    .tree-view-node-self-checkbox,
-    .tree-view-node-self-radio,
-    .tree-view-node-self-spacer,
-    .tree-view-node-self-action {
+    .grtvn-self-expander,
+    .grtvn-self-checkbox,
+    .grtvn-self-radio,
+    .grtvn-self-spacer,
+    .grtvn-self-action {
       min-width: 1rem;
     }
 
-    .tree-view-node-self-expander,
-    .tree-view-node-self-spacer {
+    .grtvn-self-expander,
+    .grtvn-self-spacer {
       margin: 0;
     }
 
-    .tree-view-node-self-checkbox,
-    .tree-view-node-self-radio {
+    .grtvn-self-checkbox,
+    .grtvn-self-radio {
       margin: 0 0 0 (-$itemSpacing);
     }
 
-    .tree-view-node-self-text,
-    .tree-view-node-self-label {
+    .grtvn-self-text,
+    .grtvn-self-label {
       margin-left: $itemSpacing;
     }
 
     // Action buttons section
-    .tree-view-node-self-action {
+    .grtvn-self-action {
       padding: 0;
       background: none;
       border: none;
@@ -825,7 +815,7 @@
     }
 
     // Action buttons (add, delete, etc)
-    i.tree-view-node-self-add-child-icon {
+    i.grtvn-self-add-child-icon {
       font-style: normal;
 
       &::before {
@@ -833,7 +823,7 @@
       }
     }
 
-    i.tree-view-node-self-delete-icon {
+    i.grtvn-self-delete-icon {
       font-style: normal;
 
       &::before {
@@ -841,12 +831,12 @@
       }
     }
 
-    .tree-view-node-children-wrapper {
+    .grtvn-children-wrapper {
       margin: 0 0 0 (1rem + $itemSpacing);
     }
 
     // The node's child list
-    .tree-view-node-children {
+    .grtvn-children {
       padding: 0;
       list-style: none;
     }
