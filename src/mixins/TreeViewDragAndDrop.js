@@ -8,7 +8,7 @@ export default {
      * after a drag-and-drop move operation between trees.
      * @param {Object} node The data for the moved node
      */
-    $_treeViewDnd_dragMoveNode(node) {
+    $_grtvDnd_dragMoveNode(node) {
       const targetIndex = this.model.indexOf(node);
       if (targetIndex > -1) {
         this.model.splice(targetIndex, 1);
@@ -18,7 +18,7 @@ export default {
      * Handles a TreeViewNode getting dropped into this tree.
      * @param {Object} eventData The data about a drop event
      */
-    $_treeViewDnd_drop(eventData) {
+    $_grtvDnd_drop(eventData) {
       let node = eventData.droppedModel;
 
       if (eventData.isSameTree) {
@@ -26,14 +26,14 @@ export default {
 
         if (eventData.dropEffect === DropEffect.Move) {
           // Find and remove the actual dropped node from its current position.
-          node = this.$_treeView_removeById(node[node.treeNodeSpec.idProperty]);
+          node = this.$_grtv_removeById(node[node.treeNodeSpec.idProperty]);
 
-          // Mark the node as moved within the tree so $_treeViewNodeDnd_onDragend
+          // Mark the node as moved within the tree so $_grtvnDnd_onDragend
           // knows not to remove it.
           node.treeNodeSpec._.dragMoved = true;
         }
         else {
-          let originalNode = this.$_treeView_findById(node[node.treeNodeSpec.idProperty]);
+          let originalNode = this.$_grtv_findById(node[node.treeNodeSpec.idProperty]);
           node = cheapCopyObject(originalNode);
           resolveNodeIdConflicts(node, this.uniqueId);
 

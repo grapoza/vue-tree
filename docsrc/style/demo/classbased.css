@@ -3,6 +3,6 @@
   color: gray;
 }
 
-.tree-view .tree-view-node-self.large-line {
+.grtv .grtvn-self.large-line {
   line-height: 2rem;
 }

@@ -101,7 +101,7 @@ To see it in action, try out the [demos](demos.html).
 | customAriaKeyMap  | Object   | An object, the properties of which are arrays to keyCodes for various actions                      | See [Aria](#setting-key-bindings) |          |
 | modelDefaults     | Object   | An object containing defaults for all nodes that do not specify the given properties               | `{}`                              |          |
 | selectionMode     | String   | How selection should operate (see [Selection Mode](#selection-mode))                               | `null` (cannot select nodes)      |          |
-| skinClass         | String   | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins))               | `"default-tree-view-skin"`        |          |
+| skinClass         | String   | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins))               | `"grtv-default-skin"`        |          |
 
 ## Selection Mode
 
@@ -271,34 +271,34 @@ If specified, the `modelDefaults` property of the treeview will be merged with n
 
 The display of the treeview can be customized via CSS using the following classes. Class names are organized in a hierarchy, so a containing node's class is the prefix of its child classes.
 
-| Class                                     | Affects                                                                          |
-|:--------------------------------------------|:-------------------------------------------------------------------------------|
-| `tree-view`                               | The top-level tree view list                                                     |
-| `tree-view-node`                          | A single node's list item                                                        |
-| `tree-view-node-self-selected`            | A selected node                                                                  |
-| `tree-view-node-self`                     | The div containing the current node's UI                                         |
-| `tree-view-node-self-expander`            | The button used to expand the children                                           |
-| `tree-view-node-self-expanded`            | Applied to the expander button when the node is expanded                         |
-| `tree-view-node-self-expanded-indicator`  | The `<i>` element containing the expansion indicator                             |
-| `tree-view-node-self-spacer`              | An empty spacer to replace fixed-width elements, _e.g._ the expander or checkbox |
-| `tree-view-node-self-label`               | The label for the checkbox of checkable nodes                                    |
-| `tree-view-node-self-input`               | Any type of input field within the tree node                                     |
-| `tree-view-node-self-checkbox`            | The checkbox                                                                     |
-| `tree-view-node-self-radio`               | The radio button                                                                 |
-| `tree-view-node-self-text`                | The text for a non-input node                                                    |
-| `tree-view-node-self-action`              | The action buttons (e.g., add child or delete)                                   |
-| `tree-view-node-self-add-child-icon`      | The `<i>` element containing the add child icon                                  |
-| `tree-view-node-self-delete-icon`         | The `<i>` element containing the delete icon                                     |
-| `tree-view-node-self-drop-target`         | A node has another node dragged over it and can accept drops                     |
-| `tree-view-node-self-child-drop-target`   | A node has another node dragged over its child drop target                       |
-| `tree-view-node-self-sibling-drop-target` | Either the previous or next sibling node drop target                             |
-| `tree-view-node-self-sibling-drop-target-hover` | A node has another node dragged over one of the sibling drop targets       |
-| `tree-view-node-self-prev-target`         | The previous sibling node drop target                                            |
-| `tree-view-node-self-next-target`         | The next sibling node drop target                                                |
-| `tree-view-node-children-wrapper`         | The wrapper div around the list of child nodes and the loading placeholder       |
-| `tree-view-node-children`                 | The list of child nodes                                                          |
-| `tree-view-node-loading`                  | The placeholder shown when child nodes are loading asynchronously                |
-| `tree-view-node-dragging`                 | The node is dragged as part of a drag and drop operation                         |
+| Class                                  | Affects                                                                          |
+|:---------------------------------------|:---------------------------------------------------------------------------------|
+| `grtv`                                 | The top-level tree view list                                                     |
+| `grtvn`                                | A single node's list item                                                        |
+| `grtvn-self-selected`                  | A selected node                                                                  |
+| `grtvn-self`                           | The div containing the current node's UI                                         |
+| `grtvn-self-expander`                  | The button used to expand the children                                           |
+| `grtvn-self-expanded`                  | Applied to the expander button when the node is expanded                         |
+| `grtvn-self-expanded-indicator`        | The `<i>` element containing the expansion indicator                             |
+| `grtvn-self-spacer`                    | An empty spacer to replace fixed-width elements, _e.g._ the expander or checkbox |
+| `grtvn-self-label`                     | The label for the checkbox of checkable nodes                                    |
+| `grtvn-self-input`                     | Any type of input field within the tree node                                     |
+| `grtvn-self-checkbox`                  | The checkbox                                                                     |
+| `grtvn-self-radio`                     | The radio button                                                                 |
+| `grtvn-self-text`                      | The text for a non-input node                                                    |
+| `grtvn-self-action`                    | The action buttons (e.g., add child or delete)                                   |
+| `grtvn-self-add-child-icon`            | The `<i>` element containing the add child icon                                  |
+| `grtvn-self-delete-icon`               | The `<i>` element containing the delete icon                                     |
+| `grtvn-self-drop-target`               | A node has another node dragged over it and can accept drops                     |
+| `grtvn-self-child-drop-target`         | A node has another node dragged over its child drop target                       |
+| `grtvn-self-sibling-drop-target`       | Either the previous or next sibling node drop target                             |
+| `grtvn-self-sibling-drop-target-hover` | A node has another node dragged over one of the sibling drop targets             |
+| `grtvn-self-prev-target`               | The previous sibling node drop target                                            |
+| `grtvn-self-next-target`               | The next sibling node drop target                                                |
+| `grtvn-children-wrapper`               | The wrapper div around the list of child nodes and the loading placeholder       |
+| `grtvn-children`                       | The list of child nodes                                                          |
+| `grtvn-loading`                        | The placeholder shown when child nodes are loading asynchronously                |
+| `grtvn-dragging`                       | The node is dragged as part of a drag and drop operation                         |
 
 ## Customizing the TreeView
 
@@ -313,7 +313,7 @@ A customizations object may have the following properties:
 | classes                                   | Object | Properties are classes to add for various parts of a node                                    |
 | classes.treeViewNode                      | String | Classes to add to a node's list item                                                         |
 | classes.treeViewNodeSelf                  | String | Classes to add to the div containing the current node's UI                                   |
-| classes.treeViewNodeSelfSelected          | String | Classes to add to the `tree-view-node-self` div if the node is selected                      |
+| classes.treeViewNodeSelfSelected          | String | Classes to add to the `grtvn-self` div if the node is selected                               |
 | classes.treeViewNodeSelfExpander          | String | Classes to add to the button used to expand the children                                     |
 | classes.treeViewNodeSelfExpanded          | String | Classes to add to the expander button when the node is expanded                              |
 | classes.treeViewNodeSelfExpandedIndicator | String | Classes to add to the `<i>` element containing the expansion indicator                       |
@@ -334,7 +334,7 @@ A customizations object may have the following properties:
 
 ### Skins
 
-If adding classes isn't enough, the entire default styles of the TreeView can be overridden using the `skinClass` property of the TreeView. When this property is set, the TreeView's default class of `default-tree-view-skin` is replaced with your own class name, causing all of the built-in style selectors to not match the tree. Instead, you can create your own stylesheet or modify a copy of the default styles to achieve complete control over the tree styling.
+If adding classes isn't enough, the entire default styles of the TreeView can be overridden using the `skinClass` property of the TreeView. When this property is set, the TreeView's default class of `grtv-default-skin` is replaced with your own class name, causing all of the built-in style selectors to not match the tree. Instead, you can create your own stylesheet or modify a copy of the default styles to achieve complete control over the tree styling.
 
 ### Slots
 
@@ -362,7 +362,7 @@ Example usage:
   <template #text="{ model, customClasses }">
     <!-- The tree view node's model is available, and built-in classes and overrides are available -->
     <marquee :title="model.treeNodeSpec.title"
-              class="tree-view-node-self-text"
+              class="grtvn-self-text"
               :class="customClasses.treeViewNodeSelfText">
           {{ model[model.treeNodeSpec.labelProperty] }}
     <marquee>
@@ -371,7 +371,7 @@ Example usage:
   <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
     <label :for="inputId"
         :title="model.treeNodeSpec.title"
-        class="tree-view-node-self-label"
+        class="grtvn-self-label"
         :class="customClasses.treeViewNodeSelfLabel">
 
       <!-- The generated inputId for the node is available -->

@@ -987,7 +987,7 @@ A treeview has slots available for replacing specific types of nodes. The `text`
             </label>
         </template>
         <template v-slot:loading="{ model, customClasses }">
-          <span class="tree-view-node-loading">LOADING CHILDREN OF {{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
+          <span class="grtvn-loading">LOADING CHILDREN OF {{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
         </template>
     </tree>
 </div>
@@ -1379,7 +1379,7 @@ Some simple customizations can be done by applying custom classes to various par
 </script>
 ```
 
-In the next example, a treeview has been given a `skin-class` prop value of `grayscale`. This effectively swaps out a class named `default-tree-view-skin` on the TreeView for the one specified as the `skin-class`. This _completely removes_ the default styling. To provide new styles, a [new stylesheet](./style/demo/grayscale.css) was created based on the default styles (copied right from the browser). This gives complete control of the styling, allowing for easier usage of things like Font Awesome as seen here.
+In the next example, a treeview has been given a `skin-class` prop value of `grayscale`. This effectively swaps out a class named `grtv-default-skin` on the TreeView for the one specified as the `skin-class`. This _completely removes_ the default styling. To provide new styles, a [new stylesheet](./style/demo/grayscale.css) was created based on the default styles (copied right from the browser). This gives complete control of the styling, allowing for easier usage of things like Font Awesome as seen here.
 
 ```{=html5}
 <details>

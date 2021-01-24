@@ -14,7 +14,7 @@ export default {
     }
   },
   created() {
-    this.$_treeViewNodeAria_normalizeNodeData();
+    this.$_grtvnAria_normalizeNodeData();
   },
   watch: {
     'model.treeNodeSpec.focusable': function(newValue) {
@@ -37,7 +37,7 @@ export default {
     /**
      * Normalize ARIA related node data.
      */
-    $_treeViewNodeAria_normalizeNodeData() {
+    $_grtvnAria_normalizeNodeData() {
       if (!this.model.treeNodeSpec) {
         this.$set(this.model, 'treeNodeSpec', {});
       }
@@ -48,7 +48,7 @@ export default {
     /**
      * Set this node's focusable attribute to true.
      */
-    $_treeViewNodeAria_focus() {
+    $_grtvnAria_focus() {
       // Actual focusing happens in the "model.treeNodeSpec.focusable" watcher method
       this.model.treeNodeSpec.focusable = true;
     },
@@ -56,22 +56,22 @@ export default {
      * Handles updating focus when a child node is deleted.
      * @param {TreeViewNode} node The node which is getting deleted
      */
-    $_treeViewNodeAria_handleChildDeletion(node) {
+    $_grtvnAria_handleChildDeletion(node) {
       if (node.treeNodeSpec.focusable) {
         // When this is the first of several siblings, focus the next node.
         // Otherwise, focus the previous node.
         if (this.children.length > 1 && this.children.indexOf(node) === 0) {
-          this.$_treeViewNodeAria_handleNextFocus(node);
+          this.$_grtvnAria_handleNextFocus(node);
         }
         else {
-          this.$_treeViewNodeAria_handlePreviousFocus(node);
+          this.$_grtvnAria_handlePreviousFocus(node);
         }
       }
     },
     /**
      * Handles setting focusable when the node is clicked.
      */
-    $_treeViewNodeAria_onClick() {
+    $_grtvnAria_onClick() {
       this.model.treeNodeSpec.focusable = true;
     },
     /**
@@ -79,7 +79,7 @@ export default {
      * or activation. Each interaction is detailed in the method body.
      * @param {Event} event The keydown event
      */
-    $_treeViewNodeAria_onKeyDown(event) {
+    $_grtvnAria_onKeyDown(event) {
       let eventHandled = true;
 
       // Do nothing when modifiers or shift are present.
@@ -92,8 +92,8 @@ export default {
         // Note that splitting activation and selection so explicitly differs from
         // https://www.w3.org/TR/wai-aria-practices-1.1/#keyboard-interaction-22 (Enter description, and Selection in multi-select trees)
         if (this.model.treeNodeSpec.input && !this.model.treeNodeSpec.state.input.disabled) {
-          let tvns = this.$el.querySelector('.tree-view-node-self');
-          let target = tvns.querySelector('.tree-view-node-self-input') || tvns.querySelector('input');
+          let tvns = this.$el.querySelector('.grtvn-self');
+          let target = tvns.querySelector('.grtvn-self-input') || tvns.querySelector('input');
 
           if (target) {
             // Note: until there's a need, this just dumbly clicks the .t-v-n-s-i or first input if it exists.
@@ -106,7 +106,7 @@ export default {
         // Toggles selection for the focused node.
         // Note that splitting activation and selection so explicitly differs from
         // https://www.w3.org/TR/wai-aria-practices-1.1/#keyboard-interaction-22 (Enter description, and Selection in multi-select trees)
-        this.$_treeViewNode_toggleSelected(event);
+        this.$_grtvn_toggleSelected(event);
       }
       else if (this.ariaKeyMap.expandFocusedItem.includes(event.keyCode)) {
         // When focus is on a closed node, opens the node; focus does not move.
@@ -114,7 +114,7 @@ export default {
         // When focus is on an end node, does nothing.
         if (this.mayHaveChildren) {
           if (this.canExpand && !this.model.treeNodeSpec.state.expanded) {
-            this.$_treeViewNode_onExpandedChange(event);
+            this.$_grtvn_onExpandedChange(event);
           }
           else if (this.model.treeNodeSpec.state.expanded) {
             this.children[0].treeNodeSpec.focusable = true;
@@ -126,7 +126,7 @@ export default {
         // When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
         // When focus is on a root node that is also either an end node or a closed node, does nothing.
         if (this.canExpand && this.model.treeNodeSpec.state.expanded) {
-          this.$_treeViewNode_onExpandedChange(event);
+          this.$_grtvn_onExpandedChange(event);
         }
         else {
           // Parent handles setting its own focusability.
@@ -158,12 +158,12 @@ export default {
       else if (this.ariaKeyMap.insertItem.includes(event.keyCode)) {
         // Trigger insertion of a new child item if allowed.
         // Focus is not moved.
-        this.$_treeViewNode_onAddChild(event);
+        this.$_grtvn_onAddChild(event);
       }
       else if (this.ariaKeyMap.deleteItem.includes(event.keyCode)) {
         // Trigger deletion of the current node if allowed.
         // Focus is moved to the previous node if available, or the next node.
-        this.$_treeViewNode_onDelete(event);
+        this.$_grtvn_onDelete(event);
       }
       else {
         eventHandled = false;
@@ -178,7 +178,7 @@ export default {
      * Focuses the previous node in the tree
      * @param {TreeViewNode} childNode The node from which focusable should be moved
      */
-    $_treeViewNodeAria_handlePreviousFocus(childNode) {
+    $_grtvnAria_handlePreviousFocus(childNode) {
       // If focusing previous of the first child, focus this parent.
       // If focusing previous of any other node, focus the last expanded node within the previous sibling.
       let childIndex = this.children.indexOf(childNode);
@@ -202,7 +202,7 @@ export default {
      * requests to focus the next node while on the last child of this node; the next sibling of
      * this node should gain focus in that case, or the parent node if there is no next sibling.
      */
-    $_treeViewNodeAria_handleNextFocus(childNode, ignoreChild) {
+    $_grtvnAria_handleNextFocus(childNode, ignoreChild) {
       // If the node is expanded, focus first child unless we're ignoring it (this was punted from a grandchild)
       // If the node has a next sibling, focus that
       // Otherwise, punt this up to this node's parent

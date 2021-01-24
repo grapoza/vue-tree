@@ -56,7 +56,7 @@ describe('TreeViewNode.vue (interactions)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper();
-        nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .tree-view-node-self`);
+        nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .grtvn-self`);
         nodeBody.trigger('click');
       });
 
@@ -69,7 +69,7 @@ describe('TreeViewNode.vue (interactions)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper();
-        nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .tree-view-node-self`);
+        nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .grtvn-self`);
         nodeBody.trigger('click');
       });
 
@@ -82,7 +82,7 @@ describe('TreeViewNode.vue (interactions)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper(Object.assign(getDefaultPropsData(), { selectionMode: SelectionMode.None }));
-        nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .tree-view-node-self`);
+        nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .grtvn-self`);
         nodeBody.trigger('click');
       });
 
@@ -98,7 +98,7 @@ describe('TreeViewNode.vue (interactions)', () => {
 
     beforeEach(() => {
       wrapper = createWrapper();
-      nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .tree-view-node-self`);
+      nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .grtvn-self`);
     });
 
     it('should emit the treeViewNodeDblclick event', () => {
@@ -174,7 +174,7 @@ describe('TreeViewNode.vue (interactions)', () => {
       });
 
       it('should show the loading area while children load', () => {
-        expect(wrapper.find('.tree-view-node-loading').exists()).to.be.true;
+        expect(wrapper.find('.grtvn-loading').exists()).to.be.true;
       });
 
       describe('and the loadChildrenAsync Promise returns', () => {
@@ -185,7 +185,7 @@ describe('TreeViewNode.vue (interactions)', () => {
         });
 
         it('should show the children', () => {
-          expect(wrapper.find('.tree-view-node-loading').exists()).to.be.false;
+          expect(wrapper.find('.grtvn-loading').exists()).to.be.false;
           expect(wrapper.findAllComponents(TreeViewNode).length).to.equal(3);
         });
 

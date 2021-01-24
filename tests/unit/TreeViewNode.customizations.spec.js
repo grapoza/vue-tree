@@ -90,102 +90,102 @@ describe('TreeViewNode.vue (customizations)', () => {
     });
 
     it('should add the custom class to the tree view node\'s root element', () => {
-      let target = wrapper.find('.tree-view-node.' + customizations.classes.treeViewNode);
+      let target = wrapper.find('.grtvn.' + customizations.classes.treeViewNode);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s self element', () => {
-      let target = wrapper.find('.tree-view-node-self.' + customizations.classes.treeViewNodeSelf);
+      let target = wrapper.find('.grtvn-self.' + customizations.classes.treeViewNodeSelf);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s expander element', () => {
-      let target = wrapper.find('.tree-view-node-self-expander.' + customizations.classes.treeViewNodeSelfExpander);
+      let target = wrapper.find('.grtvn-self-expander.' + customizations.classes.treeViewNodeSelfExpander);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s expanded element', () => {
-      let target = wrapper.find('.tree-view-node-self-expanded.' + customizations.classes.treeViewNodeSelfExpanded);
+      let target = wrapper.find('.grtvn-self-expanded.' + customizations.classes.treeViewNodeSelfExpanded);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s expanded indicator element', () => {
-      let target = wrapper.find('.tree-view-node-self-expanded-indicator.' + customizations.classes.treeViewNodeSelfExpandedIndicator);
+      let target = wrapper.find('.grtvn-self-expanded-indicator.' + customizations.classes.treeViewNodeSelfExpandedIndicator);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s selected element', () => {
-      let target = wrapper.find('.tree-view-node-self-selected.' + customizations.classes.treeViewNodeSelfSelected);
+      let target = wrapper.find('.grtvn-self-selected.' + customizations.classes.treeViewNodeSelfSelected);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s spacer element', () => {
-      let target = wrapper.find('.tree-view-node-self-spacer.' + customizations.classes.treeViewNodeSelfSpacer);
+      let target = wrapper.find('.grtvn-self-spacer.' + customizations.classes.treeViewNodeSelfSpacer);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s label element', () => {
-      let target = wrapper.find('.tree-view-node-self-label.' + customizations.classes.treeViewNodeSelfLabel);
+      let target = wrapper.find('.grtvn-self-label.' + customizations.classes.treeViewNodeSelfLabel);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s input element', () => {
-      let target = wrapper.find('.tree-view-node-self-input.' + customizations.classes.treeViewNodeSelfInput);
+      let target = wrapper.find('.grtvn-self-input.' + customizations.classes.treeViewNodeSelfInput);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s checkbox element', () => {
-      let target = wrapper.find('.tree-view-node-self-checkbox.' + customizations.classes.treeViewNodeSelfCheckbox);
+      let target = wrapper.find('.grtvn-self-checkbox.' + customizations.classes.treeViewNodeSelfCheckbox);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s radio button element', () => {
-      let target = wrapper.find('.tree-view-node-self-radio.' + customizations.classes.treeViewNodeSelfRadio);
+      let target = wrapper.find('.grtvn-self-radio.' + customizations.classes.treeViewNodeSelfRadio);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s text element', () => {
-      let target = wrapper.find('.tree-view-node-self-text.' + customizations.classes.treeViewNodeSelfText);
+      let target = wrapper.find('.grtvn-self-text.' + customizations.classes.treeViewNodeSelfText);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom add child class to the tree view node\'s add child element', () => {
-      let target = wrapper.find('.tree-view-node-self-action.' + customizations.classes.treeViewNodeSelfAddChild);
+      let target = wrapper.find('.grtvn-self-action.' + customizations.classes.treeViewNodeSelfAddChild);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom action class to the tree view node\'s add child element', () => {
-      let target = wrapper.find('.tree-view-node-self-action.' + customizations.classes.treeViewNodeSelfAddChild + '.' + customizations.classes.treeViewNodeSelfAction);
+      let target = wrapper.find('.grtvn-self-action.' + customizations.classes.treeViewNodeSelfAddChild + '.' + customizations.classes.treeViewNodeSelfAction);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s add child icon element', () => {
-      let target = wrapper.find('.tree-view-node-self-add-child-icon.' + customizations.classes.treeViewNodeSelfAddChildIcon);
+      let target = wrapper.find('.grtvn-self-add-child-icon.' + customizations.classes.treeViewNodeSelfAddChildIcon);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom delete class to the tree view node\'s delete element', () => {
-      let target = wrapper.find('.tree-view-node-self-action.' + customizations.classes.treeViewNodeSelfDelete);
+      let target = wrapper.find('.grtvn-self-action.' + customizations.classes.treeViewNodeSelfDelete);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom action class to the tree view node\'s delete element', () => {
-      let target = wrapper.find('.tree-view-node-self-action.' + customizations.classes.treeViewNodeSelfDelete + '.' + customizations.classes.treeViewNodeSelfAction);
+      let target = wrapper.find('.grtvn-self-action.' + customizations.classes.treeViewNodeSelfDelete + '.' + customizations.classes.treeViewNodeSelfAction);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s delete icon element', () => {
-      let target = wrapper.find('.tree-view-node-self-delete-icon.' + customizations.classes.treeViewNodeSelfDeleteIcon);
+      let target = wrapper.find('.grtvn-self-delete-icon.' + customizations.classes.treeViewNodeSelfDeleteIcon);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s children wrapper element', () => {
-      let target = wrapper.find('.tree-view-node-children-wrapper.' + customizations.classes.treeViewNodeChildrenWrapper);
+      let target = wrapper.find('.grtvn-children-wrapper.' + customizations.classes.treeViewNodeChildrenWrapper);
       expect(target.exists()).to.be.true;
     });
 
     it('should add the custom class to the tree view node\'s children element', () => {
-      let target = wrapper.find('.tree-view-node-children.' + customizations.classes.treeViewNodeChildren);
+      let target = wrapper.find('.grtvn-children.' + customizations.classes.treeViewNodeChildren);
       expect(target.exists()).to.be.true;
     });
   });

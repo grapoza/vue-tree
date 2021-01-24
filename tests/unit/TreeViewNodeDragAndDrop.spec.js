@@ -82,12 +82,12 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
 
     beforeEach(() => {
       wrapper = createWrapper();
-      let node = wrapper.find('.tree-view-node-self');
+      let node = wrapper.find('.grtvn-self');
       node.trigger('dragstart', eventData);
     });
 
     it('should mark the node as being dragged', () => {
-      expect(wrapper.find('.tree-view-node-dragging').exists()).to.be.true;
+      expect(wrapper.find('.grtvn-dragging').exists()).to.be.true;
     });
 
     it('should set the event.dataTransfer.effectAllowed to CopyMove', () => {
@@ -125,49 +125,49 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should mark the node as a drop target', async () => {
-        let node = wrapper.find('.tree-view-node-self');
+        let node = wrapper.find('.grtvn-self');
         node.trigger('dragenter', eventData);
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.find('.tree-view-node-self-drop-target').exists()).to.be.true;
+        expect(wrapper.find('.grtvn-self-drop-target').exists()).to.be.true;
       });
 
       describe('and the event occurs on the node itself', () => {
 
         beforeEach(async () => {
-          let node = wrapper.find('.tree-view-node-self');
+          let node = wrapper.find('.grtvn-self');
           node.trigger('dragenter', eventData);
           await wrapper.vm.$nextTick();
         });
 
         it('should mark the node as an affected drop target', () => {
-          expect(wrapper.find('.tree-view-node-self-child-drop-target').exists()).to.be.true;
+          expect(wrapper.find('.grtvn-self-child-drop-target').exists()).to.be.true;
         });
       });
 
       describe('and the event occurs on the prev node target', () => {
 
         beforeEach(async () => {
-          let node = wrapper.find('.tree-view-node-self-prev-target');
+          let node = wrapper.find('.grtvn-self-prev-target');
           node.trigger('dragenter', eventData);
           await wrapper.vm.$nextTick();
         });
 
         it('should mark the prev drop target as an affected drop target', () => {
-          expect(wrapper.find('.tree-view-node-self-prev-target.tree-view-node-self-sibling-drop-target-hover').exists()).to.be.true;
+          expect(wrapper.find('.grtvn-self-prev-target.grtvn-self-sibling-drop-target-hover').exists()).to.be.true;
         });
       });
 
       describe('and the event occurs on the next node target', () => {
 
         beforeEach(async () => {
-          let node = wrapper.find('.tree-view-node-self-prev-target');
+          let node = wrapper.find('.grtvn-self-prev-target');
           node.trigger('dragenter', eventData);
           await wrapper.vm.$nextTick();
         });
 
         it('should mark the next drop target as an affected drop target', () => {
-          expect(wrapper.find('.tree-view-node-self-prev-target.tree-view-node-self-sibling-drop-target-hover').exists()).to.be.true;
+          expect(wrapper.find('.grtvn-self-prev-target.grtvn-self-sibling-drop-target-hover').exists()).to.be.true;
         });
       });
     });
@@ -175,11 +175,11 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
     describe('and the node is not a valid drop target', () => {
 
       it('should not mark the node as a drop target', async () => {
-        let node = wrapper.find('.tree-view-node-self');
+        let node = wrapper.find('.grtvn-self');
         node.trigger('dragenter', eventData);
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.find('.tree-view-node-self-drop-target').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-self-drop-target').exists()).to.be.false;
       });
     });
   });
@@ -198,49 +198,49 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should mark the node as a drop target', async () => {
-        let node = wrapper.find('.tree-view-node-self');
+        let node = wrapper.find('.grtvn-self');
         node.trigger('dragover', eventData);
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.find('.tree-view-node-self-drop-target').exists()).to.be.true;
+        expect(wrapper.find('.grtvn-self-drop-target').exists()).to.be.true;
       });
 
       describe('and the event occurs on the node itself', () => {
 
         beforeEach(async () => {
-          let node = wrapper.find('.tree-view-node-self');
+          let node = wrapper.find('.grtvn-self');
           node.trigger('dragover', eventData);
           await wrapper.vm.$nextTick();
         });
 
         it('should mark the node as an affected drop target', () => {
-          expect(wrapper.find('.tree-view-node-self-child-drop-target').exists()).to.be.true;
+          expect(wrapper.find('.grtvn-self-child-drop-target').exists()).to.be.true;
         });
       });
 
       describe('and the event occurs on the prev node target', () => {
 
         beforeEach(async () => {
-          let node = wrapper.find('.tree-view-node-self-prev-target');
+          let node = wrapper.find('.grtvn-self-prev-target');
           node.trigger('dragover', eventData);
           await wrapper.vm.$nextTick();
         });
 
         it('should mark the prev drop target as an affected drop target', () => {
-          expect(wrapper.find('.tree-view-node-self-prev-target.tree-view-node-self-sibling-drop-target-hover').exists()).to.be.true;
+          expect(wrapper.find('.grtvn-self-prev-target.grtvn-self-sibling-drop-target-hover').exists()).to.be.true;
         });
       });
 
       describe('and the event occurs on the next node target', () => {
 
         beforeEach(async () => {
-          let node = wrapper.find('.tree-view-node-self-prev-target');
+          let node = wrapper.find('.grtvn-self-prev-target');
           node.trigger('dragover', eventData);
           await wrapper.vm.$nextTick();
         });
 
         it('should mark the next drop target as an affected drop target', () => {
-          expect(wrapper.find('.tree-view-node-self-prev-target.tree-view-node-self-sibling-drop-target-hover').exists()).to.be.true;
+          expect(wrapper.find('.grtvn-self-prev-target.grtvn-self-sibling-drop-target-hover').exists()).to.be.true;
         });
       });
     });
@@ -248,11 +248,11 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
     describe('and the node is not a valid drop target', () => {
 
       it('should not mark the node as a drop target', async () => {
-        let node = wrapper.find('.tree-view-node-self');
+        let node = wrapper.find('.grtvn-self');
         node.trigger('dragenter', eventData);
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.find('.tree-view-node-self-drop-target').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-self-drop-target').exists()).to.be.false;
       });
     });
   });
@@ -268,42 +268,42 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
     describe('and the drag leaves the node itself', () => {
 
       beforeEach(async () => {
-        let node = wrapper.find('.tree-view-node-self');
+        let node = wrapper.find('.grtvn-self');
         node.trigger('dragenter', eventData);
         node.trigger('dragleave', eventData);
         await wrapper.vm.$nextTick();
       });
 
       it('should unmark the node as an affected drop target', () => {
-        expect(wrapper.find('.tree-view-node-self-child-drop-target').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-self-child-drop-target').exists()).to.be.false;
       });
     });
 
     describe('and the drag leaves the prev node drop zone', () => {
 
       beforeEach(async () => {
-        let node = wrapper.find('.tree-view-node-self-prev-target');
+        let node = wrapper.find('.grtvn-self-prev-target');
         node.trigger('dragenter', eventData);
         node.trigger('dragleave', eventData);
         await wrapper.vm.$nextTick();
       });
 
       it('should unmark the prev drop target as an affected drop target', () => {
-        expect(wrapper.find('.tree-view-node-self-prev-target.tree-view-node-self-sibling-drop-target-hover').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-self-prev-target.grtvn-self-sibling-drop-target-hover').exists()).to.be.false;
       });
     });
 
     describe('and the drag leaves the next node drop zone', () => {
 
       beforeEach(async () => {
-        let node = wrapper.find('.tree-view-node-self-next-target');
+        let node = wrapper.find('.grtvn-self-next-target');
         node.trigger('dragenter', eventData);
         node.trigger('dragleave', eventData);
         await wrapper.vm.$nextTick();
       });
 
       it('should unmark the next drop target as an affected drop target', () => {
-        expect(wrapper.find('.tree-view-node-self-next-target.tree-view-node-self-sibling-drop-target-hover').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-self-next-target.grtvn-self-sibling-drop-target-hover').exists()).to.be.false;
       });
     });
   });
@@ -319,7 +319,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
     describe('always', () => {
 
       beforeEach(async () => {
-        let node = wrapper.find('.tree-view-node-self');
+        let node = wrapper.find('.grtvn-self');
         node.trigger('dragenter', eventData);
         node.trigger('drop', eventData);
         await wrapper.vm.$nextTick();
@@ -342,14 +342,14 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should unmark the node as a drop target', () => {
-        expect(wrapper.find('.tree-view-node-self-drop-target').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-self-drop-target').exists()).to.be.false;
       });
     });
 
     describe('and the source tree is the same as the destination tree', () => {
 
       beforeEach(async () => {
-        let node = wrapper.find('.tree-view-node-self');
+        let node = wrapper.find('.grtvn-self');
         node.trigger('drop', eventData);
         await wrapper.vm.$nextTick();
       });
@@ -363,7 +363,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
 
       beforeEach(async () => {
         eventData.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"different-tree-id","data":${serializedNodeData}}`);
-        let node = wrapper.find('.tree-view-node-self');
+        let node = wrapper.find('.grtvn-self');
         node.trigger('drop', eventData);
         await wrapper.vm.$nextTick();
       });
@@ -376,7 +376,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
     describe('and the drop is on the node itself', () => {
 
       beforeEach(async () => {
-        let node = wrapper.find('.tree-view-node-self');
+        let node = wrapper.find('.grtvn-self');
         node.trigger('dragenter', eventData);
         node.trigger('drop', eventData);
         await wrapper.vm.$nextTick();
@@ -387,14 +387,14 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should unmark the node as an affected drop target', () => {
-        expect(wrapper.find('.tree-view-node-self-child-drop-target').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-self-child-drop-target').exists()).to.be.false;
       });
     });
 
     describe('and the drop is on the prev node drop zone', () => {
 
       beforeEach(async () => {
-        let node = wrapper.find('.tree-view-node-self-prev-target');
+        let node = wrapper.find('.grtvn-self-prev-target');
         node.trigger('dragenter', eventData);
         node.trigger('drop', eventData);
         await wrapper.vm.$nextTick();
@@ -405,14 +405,14 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should unmark the prev drop target as an affected drop target', () => {
-        expect(wrapper.find('.tree-view-node-self-prev-target.tree-view-node-self-sibling-drop-target-hover').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-self-prev-target.grtvn-self-sibling-drop-target-hover').exists()).to.be.false;
       });
     });
 
     describe('and the drop is on the next node drop zone', () => {
 
       beforeEach(async () => {
-        let node = wrapper.find('.tree-view-node-self-next-target');
+        let node = wrapper.find('.grtvn-self-next-target');
         node.trigger('dragenter', eventData);
         node.trigger('drop', eventData);
         await wrapper.vm.$nextTick();
@@ -423,7 +423,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should unmark the next drop target as an affected drop target', () => {
-        expect(wrapper.find('.tree-view-node-self-next-target.tree-view-node-self-sibling-drop-target-hover').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-self-next-target.grtvn-self-sibling-drop-target-hover').exists()).to.be.false;
       });
     });
   });
@@ -441,7 +441,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         beforeEach(() => {
           wrapper = createWrapper();
           wrapper.vm.model.treeNodeSpec._.dragMoved = true;
-          let node = wrapper.find('.tree-view-node-self');
+          let node = wrapper.find('.grtvn-self');
           node.trigger('dragend', eventData);
         });
 
@@ -454,7 +454,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
 
         beforeEach(() => {
           wrapper = createWrapper();
-          let node = wrapper.find('.tree-view-node-self');
+          let node = wrapper.find('.grtvn-self');
           node.trigger('dragend', eventData);
         });
 
@@ -470,18 +470,18 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       beforeEach(() => {
         eventData.dataTransfer.dropEffect = DropEffect.Copy;
         wrapper = createWrapper();
-        let node = wrapper.find('.tree-view-node-self');
+        let node = wrapper.find('.grtvn-self');
         node.trigger('dragend', eventData);
       });
 
       it('should unmark all drop targets', () => {
-        expect(wrapper.find('.tree-view-node-self-sibling-drop-target-hover').exists()).to.be.false;
-        expect(wrapper.find('.tree-view-node-self-drop-target').exists()).to.be.false;
-        expect(wrapper.find('.tree-view-node-self-child-drop-target').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-self-sibling-drop-target-hover').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-self-drop-target').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-self-child-drop-target').exists()).to.be.false;
       });
 
       it('should unmark the node as being dragged', () => {
-        expect(wrapper.find('.tree-view-node-dragging').exists()).to.be.false;
+        expect(wrapper.find('.grtvn-dragging').exists()).to.be.false;
       });
     });
   });
@@ -513,7 +513,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         wrapper.vm.model.treeNodeSpec.allowDrop = true;
         eventData.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"tree-id","data":${serializedNodeData}}`);
 
-        let node = wrapper.findAllComponents(TreeViewNode).at(1).find('.tree-view-node-self');
+        let node = wrapper.findAllComponents(TreeViewNode).at(1).find('.grtvn-self');
         node.trigger('drop', eventData);
       });
 
@@ -531,7 +531,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         wrapper.vm.model.treeNodeSpec.allowDrop = true;
         eventData.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"tree-id","data":${serializedNodeData}}`);
 
-        let node = wrapper.findAllComponents(TreeViewNode).at(1).find('.tree-view-node-self-prev-target');
+        let node = wrapper.findAllComponents(TreeViewNode).at(1).find('.grtvn-self-prev-target');
         node.trigger('drop', eventData);
       });
 
