@@ -47,8 +47,8 @@ after_deploy:
       if [ ${APPVEYOR_REPO_TAG} == "true" ]; then
         # Install pandoc (the apt-get version is way out of date, so manually download the package)
         mkdir -p ../wgetdeb
-        wget -P ../wgetdeb https://github.com/jgm/pandoc/releases/download/2.7.3/pandoc-2.7.3-1-amd64.deb
-        sudo apt-get --assume-yes install ../wgetdeb/pandoc-2.7.3-1-amd64.deb
+        wget -P ../wgetdeb https://github.com/jgm/pandoc/releases/download/2.11.4/pandoc-2.11.4-1-amd64.deb
+        sudo apt-get --assume-yes install ../wgetdeb/pandoc-2.11.4-1-amd64.deb
       fi
   # Generate and update docs
   - ps: |
