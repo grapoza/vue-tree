@@ -42,7 +42,7 @@ describe('TreeView.vue (ARIA)', () => {
     });
 
     it('should have an ARIA role of tree', () => {
-      expect(wrapper.vm.$el.attributes.role.value).to.equal('tree');
+      expect(wrapper.find('.grtv').element.attributes.role.value).to.equal('tree');
     });
   });
 

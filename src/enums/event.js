@@ -1,4 +1,7 @@
 const events = Object.freeze({
+    // Root tree state
+    RootNodesLoad: 'treeViewRootNodesLoad',
+
     // Node state
     Click: 'treeViewNodeClick',
     DoubleClick: 'treeViewNodeDblclick',
