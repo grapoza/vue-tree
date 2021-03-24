@@ -173,8 +173,11 @@ describe('TreeViewNode.vue (interactions)', () => {
         jest.useRealTimers();
       });
 
-      it('should show the loading area while children load', () => {
-        expect(wrapper.find('.grtvn-loading').exists()).to.be.true;
+      describe('and the the loadChildrenAsync Promise has not returned', () => {
+
+        it('should show the loading area while children load', () => {
+          expect(wrapper.find('.grtvn-loading').exists()).to.be.true;
+        });
       });
 
       describe('and the loadChildrenAsync Promise returns', () => {

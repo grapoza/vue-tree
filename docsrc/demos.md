@@ -835,7 +835,7 @@ The convenience method `getSelected` is exposed on the tree component to make it
 <!--- -------------------------------------------------------------------------------------- --->
 ### Slots
 
-A treeview has slots available for replacing specific types of nodes. The `text`, `checkbox`, `radio`, and `loading` slots replace the correpsonding types of nodes. For more info, see [the docs](./#slots).
+A treeview has slots available for replacing specific types of nodes. The `text`, `checkbox`, `radio`, `loading-root` and `loading` slots replace the correpsonding types of nodes. For more info, see [the docs](./#slots).
 
 ```{=html5}
 <details>
@@ -852,7 +852,10 @@ A treeview has slots available for replacing specific types of nodes. The `text`
   <template v-slot:radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
     content
   </template>
-  <template v-slot:text="{ model, customClasses }">
+  <template v-slot:loading="{ model, customClasses }">
+    content
+  </template>
+  <template v-slot:loading-root>
     content
   </template>
 </tree>
@@ -1054,14 +1057,18 @@ A treeview has slots available for replacing specific types of nodes. The `text`
 <!--- -------------------------------------------------------------------------------------- --->
 ### Asynchronous Loading
 
-Child nodes can be loaded asynchronously by providing a function to the `loadChildrenAsync` property in a node's `treeNodeSpec` (or use `modelDefaults` to use the same method for all nodes). The `loadChildrenAsync` can take the parent node's model data as an argument, and should return a Promise that resolves to an array of model data to add as children.
+Two types of asynchronous loading are available. The first loads the root data for the treeview itself, and the second asynchronously loads child data when a node is expanded.
+
+You can load root nodes asynchronously by providing a function to the `loadNodesAsync` property of the treeview. The function should return a Promise that resolves to an array of model data to add as root nodes.
+
+You can load child nodes asynchronously by providing a function to the `loadChildrenAsync` property in a node's `treeNodeSpec` (or use `modelDefaults` to use the same method for all nodes). The function can take the parent node's model data as an argument, and should return a Promise that resolves to an array of model data to add as children.
 
 ```{=html5}
 <details>
 <summary>
 ```
 ```html
-<tree id="customtree-async" :initial-model="model" :model-defaults="modelDefaults"></tree>
+<tree id="customtree-async" :load-nodes-async="loadNodesAsync" :model-defaults="modelDefaults"></tree>
 ```
 ```{=html5}
 </summary>
@@ -1069,7 +1076,7 @@ Child nodes can be loaded asynchronously by providing a function to the `loadChi
 <!--- The leading spaces are to render the html aligned correctly --->
 ```html
   <div id="app-async" class="demo-tree">
-  <tree id="customtree-async" :initial-model="model" :model-defaults="modelDefaults"></tree>
+  <tree id="customtree-async" :load-nodes-async="loadNodesAsync" :model-defaults="modelDefaults"></tree>
 </div>
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
@@ -1079,12 +1086,6 @@ Child nodes can be loaded asynchronously by providing a function to the `loadChi
     },
     data() {
       return {
-        model: [
-          {
-            id: "async-rootnode",
-            label: "Root Node"
-          }
-        ],
         modelDefaults: {
           loadChildrenAsync: this.loadChildrenAsync,
           deleteTitle: 'Delete this node',
@@ -1093,7 +1094,7 @@ Child nodes can be loaded asynchronously by providing a function to the `loadChi
       };
     },
     methods: {
-      loadChildrenAsync(parentModel) {
+      async loadChildrenAsync(parentModel) {
         const id = Date.now();
         return new Promise(resolve => setTimeout(resolve.bind(null, [
           {
@@ -1104,6 +1105,14 @@ Child nodes can be loaded asynchronously by providing a function to the `loadChi
             id: `async-child-node-${id}-2`,
             label: `Child ${id}-2`,
             treeNodeSpec: { deletable: true }
+          }
+        ]), 1000));
+      },
+      async loadNodesAsync() {
+        return new Promise(resolve => setTimeout(resolve.bind(null, [
+          {
+            id: "async-rootnode",
+            label: "Root Node"
           }
         ]), 1000));
       }
@@ -1117,7 +1126,7 @@ Child nodes can be loaded asynchronously by providing a function to the `loadChi
 
 ```{=html5}
 <div id="app-async" class="demo-tree">
-    <tree id="customtree-async" :initial-model="model" :model-defaults="modelDefaults"></tree>
+    <tree id="customtree-async" :load-nodes-async="loadNodesAsync" :model-defaults="modelDefaults"></tree>
 </div>
 <script type='module'>
     new Vue({
@@ -1126,13 +1135,6 @@ Child nodes can be loaded asynchronously by providing a function to the `loadChi
       },
       data() {
         return {
-            childCounter: 0,
-            model: [
-            {
-                id: "async-rootnode",
-                label: "Root Node"
-            }
-            ],
             modelDefaults: {
                 loadChildrenAsync: this.loadChildrenAsync,
                 deleteTitle: 'Delete this node',
@@ -1141,7 +1143,7 @@ Child nodes can be loaded asynchronously by providing a function to the `loadChi
         };
       },
       methods: {
-        loadChildrenAsync(parentModel) {
+        async loadChildrenAsync(parentModel) {
           const id = Date.now();
           return new Promise(resolve => setTimeout(resolve.bind(null, [
             {
@@ -1152,6 +1154,14 @@ Child nodes can be loaded asynchronously by providing a function to the `loadChi
               id: `async-child-node-${id}-2`,
               label: `Child ${id}-2`,
               treeNodeSpec: { deletable: true }
+            }
+          ]), 1000));
+        },
+        async loadNodesAsync() {
+          return new Promise(resolve => setTimeout(resolve.bind(null, [
+            {
+              id: "async-rootnode",
+              label: "Root Node"
             }
           ]), 1000));
         }

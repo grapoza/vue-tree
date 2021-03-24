@@ -701,7 +701,7 @@
   $itemSpacing: 1.2rem;
 
   // Everything's in a .grtv (embedded SCSS is the 'grtv-default-skin' skin)
-  .grtv.grtv-default-skin {
+  .grtv-wrapper.grtv-default-skin {
 
     // The node, including its content and children list
     .grtvn {

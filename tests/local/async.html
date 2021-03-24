@@ -14,13 +14,11 @@
   <div class="container">
     <h1>Async Loading Usage</h1>
     <div id="app">
-      <tree id="customtree" :initial-model="model" :model-defaults="modelDefaults" ref="tree"></tree>
+      <tree id="customtree" :load-nodes-async="loadNodesAsync" :model-defaults="modelDefaults" ref="tree"></tree>
     </div>
   </div>
 
   <script type='module'>
-    import asyncData from './async.js';
-
     new Vue({
       components: {
         tree: window['vue-tree']
@@ -28,7 +26,7 @@
       data() {
         return {
           childCounter: 0,
-          model: asyncData,
+          loadNodesAsync: this.loadRootNodesCallback,
           modelDefaults: {
             loadChildrenAsync: this.loadChildrenCallback,
             deletable: true
@@ -36,10 +34,13 @@
         };
       },
       methods: {
-        loadChildrenCallback(parentModel) {
+        async loadChildrenCallback(parentModel) {
           this.childCounter++;
           let currentCounter = this.childCounter;
           return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: `child-node${currentCounter}`, label: `Child ${currentCounter}` }]), 1000));
+        },
+        async loadRootNodesCallback() {
+          return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: 'rootNode', label: 'Root Node', treeNodeSpec: { deletable: false } } ]), 1000));
         }
       }
     }).$mount('#app');

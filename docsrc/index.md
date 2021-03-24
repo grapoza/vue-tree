@@ -97,11 +97,12 @@ To see it in action, try out the [demos](demos.html).
 
 | Prop              | Type     | Description                                                                                        | Default value                     | Required |
 |:------------------|:---------|:---------------------------------------------------------------------------------------------------|:----------------------------------|:---------|
-| initialModel      | Array    | The data model containing [model data](#model-data)                                                | -                                 | Yes      |
+| initialModel      | Array    | The data model containing [model data](#model-data)                                                | `[]`                              |          |
 | customAriaKeyMap  | Object   | An object, the properties of which are arrays to keyCodes for various actions                      | See [Aria](#setting-key-bindings) |          |
+| loadNodesAsync    | Function | A function that is called on mount to asynchronously load [model data](#model-data)                | `null`                            |          |
 | modelDefaults     | Object   | An object containing defaults for all nodes that do not specify the given properties               | `{}`                              |          |
 | selectionMode     | String   | How selection should operate (see [Selection Mode](#selection-mode))                               | `null` (cannot select nodes)      |          |
-| skinClass         | String   | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins))               | `"grtv-default-skin"`        |          |
+| skinClass         | String   | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins))               | `"grtv-default-skin"`             |          |
 
 ## Selection Mode
 
@@ -116,7 +117,9 @@ When clicking on a node, it is only selected if the click target was not interac
 
 ## Model Data
 
-The data passed to the treeview's `initialModel` prop should be an array of nodes, where each node should have:
+Model data can be loaded either synchronously through the `initialModel` property or asynchronously through the `loadNodesAsync` property. If both are specified then the data from `initialModel` is overwritten when the `loadNodesAsync` function returns data.
+
+The data passed to the treeview's `initialModel` prop or returned from `loadNodesAsync` should be an array of nodes, where each node should have:
 
 * Required: A property with a value that will be used as the node's ID (by default the node looks for a property named `id`)
 * Required: A property with a value that will be used as the node's label (by default the node looks for a property named `label`)
@@ -266,6 +269,7 @@ If specified, the `modelDefaults` property of the treeview will be merged with n
 | treeViewNodeExpandedChange | Emitted when a node is expanded or collapsed                   | `target` The model of the target node <br/> `event` The original event |
 | treeViewNodeSelectedChange | Emitted when a node is selected or deselected                  | `target` The model of the target node <br/> `event` The original event |
 | treeViewNodeChildrenLoad   | Emitted when a node's children are done loading asynchronously | `target` The model of the target node <br/> `event` The original event |
+| treeViewRootNodesLoad      | Emitted when the root nodes are done loading asynchronously    |                                                                        |
 
 ## CSS Classes
 
@@ -273,7 +277,9 @@ The display of the treeview can be customized via CSS using the following classe
 
 | Class                                  | Affects                                                                          |
 |:---------------------------------------|:---------------------------------------------------------------------------------|
-| `grtv`                                 | The top-level tree view list                                                     |
+| `grtv`                                 | The top-level treeview list                                                      |
+| `grtv-wrapper`                         | The wrapper div around the list of root nodes and the loading placeholder        |
+| `grtv-loading`                         | The placeholder shown when root nodes are loading asynchronously                 |
 | `grtvn`                                | A single node's list item                                                        |
 | `grtvn-self-selected`                  | A selected node                                                                  |
 | `grtvn-self`                           | The div containing the current node's UI                                         |
@@ -330,7 +336,7 @@ A customizations object may have the following properties:
 | classes.treeViewNodeSelfDeleteIcon        | String | Classes to add to the `<i>` element containing the delete icon                               |
 | classes.treeViewNodeChildrenWrapper       | String | Classes to add to the wrapper div around the list of child nodes and the loading placeholder |
 | classes.treeViewNodeChildren              | String | Classes to add to the list of child nodes                                                    |
-| classes.treeViewNodeLoading               | String | Classes to add to the loading placeholder                                                    |
+| classes.treeViewNodeLoading               | String | Classes to add to the node children loading placeholder                                      |
 
 ### Skins
 
@@ -340,27 +346,28 @@ If adding classes isn't enough, the entire default styles of the TreeView can be
 
 Sometimes the entire content of a node (_e.g._, the checkbox or text) needs customization beyond what is available through classes. In this case, some slots are available in the TreeView to allow this customization.
 
-| Slot Name | Description                                                 | Props                                                                                              |
-|:----------|:------------------------------------------------------------|:---------------------------------------------------------------------------------------------------|
-| text      | Replaces the span used for non-input content                | model - The TreeViewNode's model                                                                   |
-|           |                                                             | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
-| checkbox  | Replaces the label and content used for checkboxes          | model - The TreeViewNode's model                                                                   |
-|           |                                                             | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
-|           |                                                             | inputId - The ID for the input (as generated by the TreeViewNode)                                  |
-|           |                                                             | checkboxChangeHandler - The handler for checkbox change events. You should fire this on `change`.  |
-| radio     | Replaces the label and content used for radio buttons       | model - The TreeViewNode's model                                                                   |
-|           |                                                             | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
-|           |                                                             | inputId - The ID for the input (as generated by the TreeViewNode)                                  |
-|           |                                                             | radioChangeHandler - The handler for radio button change events. You should fire this on `change`. |
-| loading   | Replaces the span used when loading children asynchronously | model - The TreeViewNode's model                                                                   |
-|           |                                                             | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
+| Slot Name    | Description                                                 | Props                                                                                              |
+|:-------------|:------------------------------------------------------------|:---------------------------------------------------------------------------------------------------|
+| loading-root | Replaces the span used when loading children asynchronously |                                                                                                    |
+| text         | Replaces the span used for non-input content                | model - The TreeViewNode's model                                                                   |
+|              |                                                             | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
+| checkbox     | Replaces the label and content used for checkboxes          | model - The TreeViewNode's model                                                                   |
+|              |                                                             | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
+|              |                                                             | inputId - The ID for the input (as generated by the TreeViewNode)                                  |
+|              |                                                             | checkboxChangeHandler - The handler for checkbox change events. You should fire this on `change`.  |
+| radio        | Replaces the label and content used for radio buttons       | model - The TreeViewNode's model                                                                   |
+|              |                                                             | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
+|              |                                                             | inputId - The ID for the input (as generated by the TreeViewNode)                                  |
+|              |                                                             | radioChangeHandler - The handler for radio button change events. You should fire this on `change`. |
+| loading      | Replaces the span used when loading children asynchronously | model - The TreeViewNode's model                                                                   |
+|              |                                                             | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
 
 Example usage:
 
 ```html
 <tree-view id="customtree" :initial-model="model">
   <template #text="{ model, customClasses }">
-    <!-- The tree view node's model is available, and built-in classes and overrides are available -->
+    <!-- The treeview node's model is available, and built-in classes and overrides are available -->
     <marquee :title="model.treeNodeSpec.title"
               class="grtvn-self-text"
               :class="customClasses.treeViewNodeSelfText">

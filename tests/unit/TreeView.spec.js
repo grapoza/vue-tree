@@ -6,16 +6,13 @@ import SelectionMode from '../../src/enums/selectionMode';
 
 const localVue = createLocalVue();
 
-const getDefaultPropsData = function () {
-  return { initialModel: [] }
-};
-
-function createWrapper(customPropsData, customAttrs) {
+function createWrapper(customPropsData, customAttrs, slotsData) {
   return shallowMount(TreeView, {
     sync: false,
-    propsData: customPropsData || getDefaultPropsData(),
+    propsData: customPropsData || {},
     localVue,
-    attrs: customAttrs
+    attrs: customAttrs,
+    scopedSlots: slotsData
   });
 }
 
@@ -74,7 +71,7 @@ describe('TreeView.vue', () => {
 
     it('should have a class of grtv-default-skin', () => {
       expect(wrapper.vm.skinClass).to.equal('grtv-default-skin');
-      let target = wrapper.find('.grtv.grtv-default-skin');
+      let target = wrapper.find('.grtv-wrapper.grtv-default-skin');
       expect(target.exists()).to.be.true;
     });
   });
@@ -82,17 +79,17 @@ describe('TreeView.vue', () => {
   describe('when passed a skinClass prop', () => {
 
     beforeEach(() => {
-      wrapper = createWrapper(Object.assign(getDefaultPropsData(), { skinClass: "my-skin" }));
+      wrapper = createWrapper({ skinClass: "my-skin" });
     });
 
     it('should have a class of my-skin', () => {
       expect(wrapper.vm.skinClass).to.equal('my-skin');
-      let target = wrapper.find('.grtv.my-skin');
+      let target = wrapper.find('.grtv-wrapper.my-skin');
       expect(target.exists()).to.be.true;
     });
 
     it('should not have a class of grtv-default-skin', () => {
-      let target = wrapper.find('.grtv.grtv-default-skin');
+      let target = wrapper.find('.grtv-wrapper.grtv-default-skin');
       expect(target.exists()).to.be.false;
     });
   });
@@ -178,7 +175,7 @@ describe('TreeView.vue', () => {
     });
 
     it('should not have an aria-multiselectable attribute', () => {
-      expect(wrapper.vm.$el.attributes['aria-multiselectable']).to.be.undefined;
+      expect(wrapper.find('.grtv').element.attributes['aria-multiselectable']).to.be.undefined;
     });
 
     it('should ignore the selected state of nodes', () => {
@@ -194,7 +191,7 @@ describe('TreeView.vue', () => {
     });
 
     it('should have an aria-multiselectable attribute of false', () => {
-      expect(wrapper.vm.$el.attributes['aria-multiselectable'].value).to.equal('false');
+      expect(wrapper.find('.grtv').element.attributes['aria-multiselectable'].value).to.equal('false');
     });
 
     it('should only keep the selectable=true state for the first node with that in the initial model', () => {
@@ -210,7 +207,7 @@ describe('TreeView.vue', () => {
     });
 
     it('should have an aria-multiselectable attribute of false', () => {
-      expect(wrapper.vm.$el.attributes['aria-multiselectable'].value).to.equal('false');
+      expect(wrapper.find('.grtv').element.attributes['aria-multiselectable'].value).to.equal('false');
     });
   });
 
@@ -221,7 +218,66 @@ describe('TreeView.vue', () => {
     });
 
     it('should have an aria-multiselectable attribute of true', () => {
-      expect(wrapper.vm.$el.attributes['aria-multiselectable'].value).to.equal('true');
+      expect(wrapper.find('.grtv').element.attributes['aria-multiselectable'].value).to.equal('true');
+    });
+  });
+
+  describe('when a function is passed for loadNodesAsync', () => {
+
+    let loadNodesPromise = null;
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      loadNodesPromise = new Promise(resolve => setTimeout(resolve.bind(null, generateNodes(['', ''])), 1000));
+      wrapper = createWrapper({ loadNodesAsync: () => loadNodesPromise });
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    describe('and the loadNodesAsync Promise has not returned', () => {
+
+      it('should display the loading placeholder', () => {
+        expect(wrapper.find('.grtv-loading').exists()).to.be.true;
+      });
+
+      describe('and rendering a custom loader message', () => {
+
+        beforeEach(() => {
+          wrapper.vm.$destroy();
+          wrapper = createWrapper(
+            {
+              loadNodesAsync: () => loadNodesPromise
+            },
+            null,
+            {
+              'loading-root': '<span class="loading-slot-content">custom</span>',
+            }
+          );
+        });
+
+        it('should render the slot template', () => {
+          expect(wrapper.find('.loading-slot-content').exists()).to.be.true;
+        });
+      });
+    });
+
+    describe('and the loadNodesAsync Promise returns', () => {
+
+      beforeEach(async () => {
+        jest.runAllTimers();
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should splice those nodes in as the model', () => {
+        expect(wrapper.find('.grtv-loading').exists()).to.be.false;
+        expect(wrapper.vm.model.length).to.equal(2);
+      });
+
+      it('should emit the treeViewRootNodesLoad event', () => {
+        expect(wrapper.emitted().treeViewRootNodesLoad).to.be.an('array').that.has.length(1);
+      });
     });
   });
 });

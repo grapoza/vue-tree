@@ -1,49 +1,59 @@
 <template>
-  <ul class="grtv"
-      :class="skinClass"
-      role="tree"
-      :aria-multiselectable="ariaMultiselectable">
-    <tree-view-node v-for="(nodeModel) in model"
-                    :key="nodeModel[nodeModel.treeNodeSpec && nodeModel.treeNodeSpec.idProperty ? nodeModel.treeNodeSpec.idProperty : 'id']"
-                    :aria-key-map="ariaKeyMap"
-                    :depth="0"
-                    :model-defaults="modelDefaults"
-                    :initial-model="nodeModel"
-                    :selection-mode="selectionMode"
-                    :tree-id="uniqueId"
-                    :is-mounted="isMounted"
-                    :initial-radio-group-values="radioGroupValues"
-                    @treeViewNodeClick="(t, e)=>$emit(TvEvent.Click, t, e)"
-                    @treeViewNodeDblclick="(t, e)=>$emit(TvEvent.DoubleClick, t, e)"
-                    @treeViewNodeCheckboxChange="(t, e)=>$emit(TvEvent.CheckboxChange, t, e)"
-                    @treeViewNodeRadioChange="(t, e)=>$emit(TvEvent.RadioChange, t, e)"
-                    @treeViewNodeExpandedChange="(t, e)=>$emit(TvEvent.ExpandedChange, t, e)"
-                    @treeViewNodeChildrenLoad="(t, e)=>$emit(TvEvent.ChildrenLoad, t, e)"
-                    @treeViewNodeSelectedChange="$_grtv_handleNodeSelectedChange"
-                    @treeViewNodeAdd="(t, p, e)=>$emit(TvEvent.Add, t, p, e)"
-                    @treeViewNodeDelete="$_grtv_handleChildDeletion"
-                    @treeViewNodeAriaFocusableChange="$_grtvAria_handleFocusableChange"
-                    @treeViewNodeAriaRequestFirstFocus="$_grtvAria_focusFirstNode"
-                    @treeViewNodeAriaRequestLastFocus="$_grtvAria_focusLastNode"
-                    @treeViewNodeAriaRequestPreviousFocus="$_grtvAria_handlePreviousFocus"
-                    @treeViewNodeAriaRequestNextFocus="$_grtvAria_handleNextFocus"
-                    @treeViewNodeDragMove="$_grtvDnd_dragMoveNode"
-                    @treeViewNodeDrop="$_grtvDnd_drop">
+  <div class="grtv-wrapper"
+       :class="skinClass">
+    <slot v-if="!areNodesLoaded"
+          name="loading-root">
 
-      <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
-        <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
-      </template>
-      <template #radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
-        <slot name="radio" :model="model" :customClasses="customClasses" :inputId="inputId" :inputModel="inputModel" :radioChangeHandler="radioChangeHandler"></slot>
-      </template>
-      <template #text="{ model, customClasses }">
-        <slot name="text" :model="model" :customClasses="customClasses"></slot>
-      </template>
-      <template #loading="{ model, customClasses }">
-        <slot name="loading" :model="model" :customClasses="customClasses"></slot>
-      </template>
-    </tree-view-node>
-  </ul>
+      <span class="grtv-loading">
+        ...
+      </span>
+    </slot>
+    <ul class="grtv"
+        role="tree"
+        :aria-multiselectable="ariaMultiselectable"
+        v-if="areNodesLoaded">
+      <tree-view-node v-for="(nodeModel) in model"
+                      :key="nodeModel[nodeModel.treeNodeSpec && nodeModel.treeNodeSpec.idProperty ? nodeModel.treeNodeSpec.idProperty : 'id']"
+                      :aria-key-map="ariaKeyMap"
+                      :depth="0"
+                      :model-defaults="modelDefaults"
+                      :initial-model="nodeModel"
+                      :selection-mode="selectionMode"
+                      :tree-id="uniqueId"
+                      :is-mounted="isMounted"
+                      :initial-radio-group-values="radioGroupValues"
+                      @treeViewNodeClick="(t, e)=>$emit(TvEvent.Click, t, e)"
+                      @treeViewNodeDblclick="(t, e)=>$emit(TvEvent.DoubleClick, t, e)"
+                      @treeViewNodeCheckboxChange="(t, e)=>$emit(TvEvent.CheckboxChange, t, e)"
+                      @treeViewNodeRadioChange="(t, e)=>$emit(TvEvent.RadioChange, t, e)"
+                      @treeViewNodeExpandedChange="(t, e)=>$emit(TvEvent.ExpandedChange, t, e)"
+                      @treeViewNodeChildrenLoad="(t, e)=>$emit(TvEvent.ChildrenLoad, t, e)"
+                      @treeViewNodeSelectedChange="$_grtv_handleNodeSelectedChange"
+                      @treeViewNodeAdd="(t, p, e)=>$emit(TvEvent.Add, t, p, e)"
+                      @treeViewNodeDelete="$_grtv_handleChildDeletion"
+                      @treeViewNodeAriaFocusableChange="$_grtvAria_handleFocusableChange"
+                      @treeViewNodeAriaRequestFirstFocus="$_grtvAria_focusFirstNode"
+                      @treeViewNodeAriaRequestLastFocus="$_grtvAria_focusLastNode"
+                      @treeViewNodeAriaRequestPreviousFocus="$_grtvAria_handlePreviousFocus"
+                      @treeViewNodeAriaRequestNextFocus="$_grtvAria_handleNextFocus"
+                      @treeViewNodeDragMove="$_grtvDnd_dragMoveNode"
+                      @treeViewNodeDrop="$_grtvDnd_drop">
+
+        <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
+          <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
+        </template>
+        <template #radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
+          <slot name="radio" :model="model" :customClasses="customClasses" :inputId="inputId" :inputModel="inputModel" :radioChangeHandler="radioChangeHandler"></slot>
+        </template>
+        <template #text="{ model, customClasses }">
+          <slot name="text" :model="model" :customClasses="customClasses"></slot>
+        </template>
+        <template #loading="{ model, customClasses }">
+          <slot name="loading" :model="model" :customClasses="customClasses"></slot>
+        </template>
+      </tree-view-node>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -66,7 +76,13 @@
     props: {
       initialModel: {
         type: Array,
-        required: true
+        required: false,
+        default: function () { return []; }
+      },
+      loadNodesAsync: {
+        type: Function,
+        required: false,
+        default: null
       },
       modelDefaults: {
         type: Object,
@@ -92,13 +108,17 @@
     },
     data() {
       return {
-        uniqueId: null,
+        areNodesAsyncLoaded: false,
+        isMounted: false,
         model: this.initialModel,
         radioGroupValues: {},
-        isMounted: false
+        uniqueId: null
       };
     },
     computed: {
+      areNodesLoaded() {
+        return typeof this.loadNodesAsync !== 'function' || this.areNodesAsyncLoaded;
+      },
       ariaMultiselectable() {
         // If there's no selectionMode, return a boolean so aria-multiselectable isn't included.
         // Otherwise, return either the string 'true' or 'false' as the attribute's value.
@@ -113,7 +133,20 @@
       // it will be set to the element ID if one is present.
       this.$set(this, 'uniqueId', generateUniqueId());
     },
-    mounted() {
+    async mounted() {
+
+      // If nodes need to be loaded asynchronously, load them.
+      if (!this.areNodesLoaded) {
+
+        var nodesResult = await this.loadNodesAsync();
+
+        if (nodesResult) {
+          this.areNodesAsyncLoaded = true;
+          this.model.splice(0, this.model.length, ...nodesResult);
+          this.$emit(TvEvent.RootNodesLoad, this.model);
+        }
+      }
+
       this.$_grtv_enforceSingleSelectionMode();
 
       if (this.$el.id) {
@@ -337,10 +370,13 @@
 <style lang="scss">
 
   // Embedded SCSS is the 'grtv-default-skin' skin
-  .grtv.grtv-default-skin {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  .grtv-wrapper.grtv-default-skin {
+
+    > .grtv {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
   }
 
 </style>
