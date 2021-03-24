@@ -317,6 +317,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         beforeEach(async () => {
           wrapper = createWrapper();
           wrapper.setProps({ selectionMode: SelectionMode.Multiple });
+          await wrapper.vm.$nextTick();
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.selectItem[0]);
           await wrapper.vm.$nextTick();
         });

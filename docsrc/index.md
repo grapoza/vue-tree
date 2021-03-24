@@ -19,7 +19,7 @@ Features include:
 - Addition and removal of nodes
 - Slots for node content
 - Skinning
-- Asynchronous loading of child nodes
+- Asynchronous loading of nodes
 - Follows ARIA guidelines for treeview accessibility
 - Drag and drop (single nodes, works between trees)
 
