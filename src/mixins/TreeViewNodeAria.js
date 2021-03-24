@@ -10,7 +10,7 @@ export default {
   },
   computed: {
     ariaTabIndex() {
-      return this.model.treeNodeSpec.focusable ? 0 : -1;
+      return this.tns.focusable ? 0 : -1;
     }
   },
   created() {
@@ -28,8 +28,8 @@ export default {
       }
 
       // In selectionFollowsFocus selection mode, this focus watch is responsible for updating selection.
-      if (this.model.treeNodeSpec.selectable && this.selectionMode === SelectionMode.SelectionFollowsFocus) {
-        this.model.treeNodeSpec.state.selected = newValue;
+      if (this.tns.selectable && this.selectionMode === SelectionMode.SelectionFollowsFocus) {
+        this.tns.state.selected = newValue;
       }
     }
   },
@@ -38,11 +38,11 @@ export default {
      * Normalize ARIA related node data.
      */
     $_grtvnAria_normalizeNodeData() {
-      if (!this.model.treeNodeSpec) {
+      if (!this.tns) {
         this.$set(this.model, 'treeNodeSpec', {});
       }
-      if (typeof this.model.treeNodeSpec.focusable !== 'boolean') {
-        this.$set(this.model.treeNodeSpec, 'focusable', false);
+      if (typeof this.tns.focusable !== 'boolean') {
+        this.$set(this.tns, 'focusable', false);
       }
     },
     /**
@@ -50,7 +50,7 @@ export default {
      */
     $_grtvnAria_focus() {
       // Actual focusing happens in the "model.treeNodeSpec.focusable" watcher method
-      this.model.treeNodeSpec.focusable = true;
+      this.tns.focusable = true;
     },
     /**
      * Handles updating focus when a child node is deleted.
@@ -72,7 +72,7 @@ export default {
      * Handles setting focusable when the node is clicked.
      */
     $_grtvnAria_onClick() {
-      this.model.treeNodeSpec.focusable = true;
+      this.tns.focusable = true;
     },
     /**
      * Handles key events to trigger interactions such as selection, expansion,
@@ -91,7 +91,7 @@ export default {
         // Performs the default action (e.g. onclick event) for the focused node.
         // Note that splitting activation and selection so explicitly differs from
         // https://www.w3.org/TR/wai-aria-practices-1.1/#keyboard-interaction-22 (Enter description, and Selection in multi-select trees)
-        if (this.model.treeNodeSpec.input && !this.model.treeNodeSpec.state.input.disabled) {
+        if (this.tns.input && !this.tns.state.input.disabled) {
           let tvns = this.$el.querySelector('.grtvn-self');
           let target = tvns.querySelector('.grtvn-self-input') || tvns.querySelector('input');
 
@@ -113,10 +113,10 @@ export default {
         // When focus is on a open node, moves focus to the first child node.
         // When focus is on an end node, does nothing.
         if (this.mayHaveChildren) {
-          if (this.canExpand && !this.model.treeNodeSpec.state.expanded) {
+          if (this.canExpand && !this.tns.state.expanded) {
             this.$_grtvn_onExpandedChange(event);
           }
-          else if (this.model.treeNodeSpec.state.expanded) {
+          else if (this.tns.state.expanded) {
             this.children[0].treeNodeSpec.focusable = true;
           }
         }
@@ -125,7 +125,7 @@ export default {
         // When focus is on an open node, closes the node.
         // When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
         // When focus is on a root node that is also either an end node or a closed node, does nothing.
-        if (this.canExpand && this.model.treeNodeSpec.state.expanded) {
+        if (this.canExpand && this.tns.state.expanded) {
           this.$_grtvn_onExpandedChange(event);
         }
         else {
@@ -183,7 +183,7 @@ export default {
       // If focusing previous of any other node, focus the last expanded node within the previous sibling.
       let childIndex = this.children.indexOf(childNode);
       if (childIndex === 0) {
-        this.model.treeNodeSpec.focusable = true;
+        this.tns.focusable = true;
       }
       else {
         let lastModel = this.children[childIndex - 1];

@@ -61,7 +61,7 @@ export default {
       serialized.treeNodeSpec.focusable = false;
       serialized = JSON.stringify(serialized);
 
-      this.model.treeNodeSpec._.dragging = true;
+      this.tns._.dragging = true;
 
       event.dataTransfer.effectAllowed = EffectAllowed.CopyMove;
       event.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"${this.treeId}","data":${serialized}}`);
@@ -139,10 +139,10 @@ export default {
     $_grtvnDnd_onDragend(event) {
 
       if (event.dataTransfer.dropEffect === DropEffect.Move) {
-        if (this.model.treeNodeSpec._.dragMoved) {
+        if (this.tns._.dragMoved) {
           // If the node was moved within the original tree then it will have
           // been marked by $_grtvDnd_drop as such. Just clear the marker.
-          this.$delete(this.model.treeNodeSpec._, 'dragMoved');
+          this.$delete(this.tns._, 'dragMoved');
         }
         else {
           // If the node was moved to a different tree, delete it from this one
@@ -153,7 +153,7 @@ export default {
       }
       else {
         this.$_grtvnDnd_setDropTargetProps(event, false);
-        this.model.treeNodeSpec._.dragging = false;
+        this.tns._.dragging = false;
       }
     },
     /**
@@ -162,7 +162,7 @@ export default {
      * @param {DragEvent} event The event to check for droppable data
      */
     $_grtvnDnd_isValidDropTargetForEvent(event) {
-      return this.model.treeNodeSpec.allowDrop
+      return this.tns.allowDrop
         && event.dataTransfer.types.includes(MimeType.TreeViewNode)
         && !closest(event.target, '.grtvn-dragging');
     },
@@ -177,18 +177,18 @@ export default {
       const isPrevSiblingTarget = event.target.classList && event.target.classList.contains('grtvn-self-prev-target');
       const isNextSiblingTarget = event.target.classList && event.target.classList.contains('grtvn-self-next-target');
 
-      this.$set(this.model.treeNodeSpec._, 'isDropTarget', isTarget);
+      this.$set(this.tns._, 'isDropTarget', isTarget);
 
       if (isPrevSiblingTarget) {
-        this.$set(this.model.treeNodeSpec._, 'isPrevDropTarget', isTarget);
-        this.$set(this.model.treeNodeSpec._, 'isChildDropTarget', false);
+        this.$set(this.tns._, 'isPrevDropTarget', isTarget);
+        this.$set(this.tns._, 'isChildDropTarget', false);
       }
       else if (isNextSiblingTarget) {
-        this.$set(this.model.treeNodeSpec._, 'isNextDropTarget', isTarget);
-        this.$set(this.model.treeNodeSpec._, 'isChildDropTarget', false);
+        this.$set(this.tns._, 'isNextDropTarget', isTarget);
+        this.$set(this.tns._, 'isChildDropTarget', false);
       }
       else {
-        this.$set(this.model.treeNodeSpec._, 'isChildDropTarget', isTarget);
+        this.$set(this.tns._, 'isChildDropTarget', isTarget);
       }
     }
   }

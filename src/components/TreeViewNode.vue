@@ -6,7 +6,7 @@
   <li :id="nodeId"
       class="grtvn"
       :class="[customClasses.treeViewNode,
-               model.treeNodeSpec._.dragging ? 'grtvn-dragging' : '']"
+               tns._.dragging ? 'grtvn-dragging' : '']"
       role="treeitem"
       :tabindex="ariaTabIndex"
       :aria-expanded="ariaExpanded"
@@ -17,10 +17,10 @@
          :class="[customClasses.treeViewNodeSelf,
                   isEffectivelySelected ? 'grtvn-self-selected' : '',
                   isEffectivelySelected ? customClasses.treeViewNodeSelfSelected : '',
-                  model.treeNodeSpec._.isDropTarget ? 'grtvn-self-drop-target': '',
-                  model.treeNodeSpec._.isChildDropTarget ? 'grtvn-self-child-drop-target': '']"
-         :draggable="model.treeNodeSpec.draggable"
-         :dragging="model.treeNodeSpec._.dragging"
+                  tns._.isDropTarget ? 'grtvn-self-drop-target': '',
+                  tns._.isChildDropTarget ? 'grtvn-self-child-drop-target': '']"
+         :draggable="tns.draggable"
+         :dragging="tns._.dragging"
          @click="$_grtvn_onClick"
          @dblclick="$_grtvn_onDblclick"
          @dragend="$_grtvnDnd_onDragend"
@@ -32,7 +32,7 @@
 
       <!-- Top Drop Target -->
       <div class="grtvn-self-sibling-drop-target grtvn-self-prev-target"
-           :class="[model.treeNodeSpec._.isPrevDropTarget ? 'grtvn-self-sibling-drop-target-hover': '']"></div>
+           :class="[tns._.isPrevDropTarget ? 'grtvn-self-sibling-drop-target-hover': '']"></div>
 
       <!-- Expander -->
       <button :id="expanderId"
@@ -40,11 +40,11 @@
               v-if="canExpand"
               aria-hidden="true"
               tabindex="-1"
-              :title="model.treeNodeSpec.expanderTitle"
+              :title="tns.expanderTitle"
               class="grtvn-self-expander"
               :class="[customClasses.treeViewNodeSelfExpander,
-                       model.treeNodeSpec.state.expanded ? 'grtvn-self-expanded' : '',
-                       model.treeNodeSpec.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
+                       tns.state.expanded ? 'grtvn-self-expanded' : '',
+                       tns.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
               @click="$_grtvn_onExpandedChange">
               <i class="grtvn-self-expanded-indicator"
                  :class="customClasses.treeViewNodeSelfExpandedIndicator"></i></button>
@@ -54,7 +54,7 @@
 
       <!-- Inputs and labels -->
       <!-- Checkbox -->
-      <slot v-if="model.treeNodeSpec.input && model.treeNodeSpec.input.type === 'checkbox'"
+      <slot v-if="tns.input && tns.input.type === 'checkbox'"
             name="checkbox"
             :model="model"
             :customClasses="customClasses"
@@ -62,7 +62,7 @@
             :checkboxChangeHandler="$_grtvn_onCheckboxChange">
 
         <label :for="inputId"
-               :title="model.treeNodeSpec.title"
+               :title="tns.title"
                class="grtvn-self-label"
                :class="customClasses.treeViewNodeSelfLabel">
 
@@ -71,8 +71,8 @@
                  class="grtvn-self-input grtvn-self-checkbox"
                  :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfCheckbox]"
                  type="checkbox"
-                 :disabled="model.treeNodeSpec.state.input.disabled"
-                 v-model="model.treeNodeSpec.state.input.value"
+                 :disabled="tns.state.input.disabled"
+                 v-model="tns.state.input.value"
                  @change="$_grtvn_onCheckboxChange" />
 
           {{ label }}
@@ -80,16 +80,16 @@
       </slot>
 
       <!-- Radiobutton -->
-      <slot v-else-if="model.treeNodeSpec.input && model.treeNodeSpec.input.type === 'radio'"
+      <slot v-else-if="tns.input && tns.input.type === 'radio'"
             name="radio"
             :model="model"
             :customClasses="customClasses"
             :inputId="inputId"
-            :inputModel="radioGroupValues[model.treeNodeSpec.input.name]"
+            :inputModel="radioGroupValues[tns.input.name]"
             :radioChangeHandler="$_grtvn_onRadioChange">
 
         <label :for="inputId"
-               :title="model.treeNodeSpec.title"
+               :title="tns.title"
                class="grtvn-self-label"
                :class="customClasses.treeViewNodeSelfLabel">
 
@@ -98,10 +98,10 @@
                  class="grtvn-self-input grtvn-self-radio"
                  :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfRadio]"
                  type="radio"
-                 :name="model.treeNodeSpec.input.name"
-                 :value="model.treeNodeSpec.input.value"
-                 :disabled="model.treeNodeSpec.state.input.disabled"
-                 v-model="radioGroupValues[model.treeNodeSpec.input.name]"
+                 :name="tns.input.name"
+                 :value="tns.input.value"
+                 :disabled="tns.state.input.disabled"
+                 v-model="radioGroupValues[tns.input.name]"
                  @change="$_grtvn_onRadioChange" />
 
           {{ label }}
@@ -114,7 +114,7 @@
             :model="model"
             :customClasses="customClasses">
 
-        <span :title="model.treeNodeSpec.title"
+        <span :title="tns.title"
               class="grtvn-self-text"
               :class="customClasses.treeViewNodeSelfText">
           {{ label }}
@@ -124,10 +124,10 @@
       <!-- Add Child button -->
       <button :id="addChildId"
               type="button"
-              v-if="model.treeNodeSpec.addChildCallback"
+              v-if="tns.addChildCallback"
               aria-hidden="true"
               tabindex="-1"
-              :title="model.treeNodeSpec.addChildTitle"
+              :title="tns.addChildTitle"
               class="grtvn-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfAddChild]"
               @click="$_grtvn_onAddChild">
@@ -138,10 +138,10 @@
       <!-- Delete button -->
       <button :id="deleteId"
               type="button"
-              v-if="model.treeNodeSpec.deletable"
+              v-if="tns.deletable"
               aria-hidden="true"
               tabindex="-1"
-              :title="model.treeNodeSpec.deleteTitle"
+              :title="tns.deleteTitle"
               class="grtvn-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfDelete]"
               @click="$_grtvn_onDelete">
@@ -151,13 +151,13 @@
 
       <!-- Bottom Drop Target -->
       <div class="grtvn-self-sibling-drop-target grtvn-self-next-target"
-           :class="[model.treeNodeSpec._.isNextDropTarget ? 'grtvn-self-sibling-drop-target-hover': '']"></div>
+           :class="[tns._.isNextDropTarget ? 'grtvn-self-sibling-drop-target-hover': '']"></div>
     </div>
 
     <!-- Children and Loading Placholder -->
     <div class="grtvn-children-wrapper"
             :class="customClasses.treeViewNodeChildrenWrapper">
-      <slot v-if="model.treeNodeSpec.state.expanded && !areChildrenLoaded"
+      <slot v-if="tns.state.expanded && !areChildrenLoaded"
             name="loading"
             :model="model"
             :customClasses="customClasses">
@@ -167,14 +167,14 @@
           ...
         </span>
       </slot>
-      <ul v-show="model.treeNodeSpec.state.expanded"
+      <ul v-show="tns.state.expanded"
           v-if="this.hasChildren"
           class="grtvn-children"
           :class="customClasses.treeViewNodeChildren"
           role="group"
-          :aria-hidden="(!model.treeNodeSpec.state.expanded).toString()">
+          :aria-hidden="(!tns.state.expanded).toString()">
         <TreeViewNode v-for="nodeModel in children"
-                      :key="nodeModel[nodeModel.treeNodeSpec && nodeModel.treeNodeSpec.idProperty ? nodeModel.treeNodeSpec.idProperty : 'id']"
+                      :key="nodeModel[tns && tns.idProperty ? tns.idProperty : 'id']"
                       :depth="depth + 1"
                       :initial-model="nodeModel"
                       :model-defaults="modelDefaults"
@@ -279,16 +279,16 @@
         return `${this.nodeId}-add-child`;
       },
       areChildrenLoaded() {
-        const tns = this.model.treeNodeSpec;
+        const tns = this.tns;
         return typeof tns.loadChildrenAsync !== 'function' || tns._.state.areChildrenLoaded;
       },
       ariaExpanded() {
-        return this.canExpand ? this.model.treeNodeSpec.state.expanded.toString() : false;
+        return this.canExpand ? this.tns.state.expanded.toString() : false;
       },
       ariaSelected() {
         // If selection isn't allowed, don't add an aria-selected attribute.
         // If the tree contains nodes that are not selectable, those nodes do not have the aria-selected state.
-        if (this.selectionMode === SelectionMode.None || !this.model.treeNodeSpec.selectable) {
+        if (this.selectionMode === SelectionMode.None || !this.tns.selectable) {
           return false;
         }
 
@@ -296,27 +296,27 @@
         // If the tree does not support multiple selection, aria-selected is set to true
         // for the selected node and it is not present on any other node in the tree.
         if (this.selectionMode !== SelectionMode.Multiple) {
-          return this.model.treeNodeSpec.state.selected ? 'true' : false;
+          return this.tns.state.selected ? 'true' : false;
         }
 
         // If the tree supports multiple selection:
         //   All selected nodes have aria-selected set to true.
         //   All nodes that are selectable but not selected have aria-selected set to false.
-        return this.model.treeNodeSpec.state.selected.toString();
+        return this.tns.state.selected.toString();
       },
       canExpand() {
         // A node can be expanded if it is expandable and either has children or has not
         // yet had the asynchronous loader for children called.
-        return this.mayHaveChildren && this.model.treeNodeSpec.expandable;
+        return this.mayHaveChildren && this.tns.expandable;
       },
       children() {
         return this.model[this.childrenPropName];
       },
       childrenPropName() {
-        return this.model.treeNodeSpec.childrenProperty || 'children';
+        return this.tns.childrenProperty || 'children';
       },
       customClasses() {
-        return (this.model.treeNodeSpec.customizations || {}).classes || {};
+        return (this.tns.customizations || {}).classes || {};
       },
       deleteId() {
         return `${this.nodeId}-delete`;
@@ -331,25 +331,28 @@
         return this.model[this.idPropName];
       },
       idPropName() {
-        return this.model.treeNodeSpec.idProperty || 'id';
+        return this.tns.idProperty || 'id';
       },
       inputId() {
         return `${this.nodeId}-input`;
       },
       isEffectivelySelected() {
-        return this.selectionMode !== SelectionMode.None && this.model.treeNodeSpec.selectable && this.model.treeNodeSpec.state.selected;
+        return this.selectionMode !== SelectionMode.None && this.tns.selectable && this.tns.state.selected;
       },
       label() {
         return this.model[this.labelPropName];
       },
       labelPropName() {
-        return this.model.treeNodeSpec.labelProperty || 'label';
+        return this.tns.labelProperty || 'label';
       },
       mayHaveChildren() {
         return this.hasChildren || !this.areChildrenLoaded;
       },
       nodeId() {
         return `${this.treeId}-${this.id}`;
+      },
+      tns() {
+        return this.model.treeNodeSpec;
       },
       TvEvent() {
         return TvEvent;
@@ -380,66 +383,66 @@
       $_grtvn_normalizeNodeData() {
         // The target model must have a treeNodeSpec property to assign defaults into; if missing,
         // it will be normalized into existence in $_grtvnAria_normalizeNodeData().
-        this.$_grtvn_assignDefaultProps(this.modelDefaults, this.model.treeNodeSpec);
+        this.$_grtvn_assignDefaultProps(this.modelDefaults, this.tns);
 
         // Set expected properties if not provided
-        if (typeof this.model.treeNodeSpec.childrenProperty !== 'string') {
-          this.$set(this.model.treeNodeSpec, 'childrenProperty', 'children');
+        if (typeof this.tns.childrenProperty !== 'string') {
+          this.$set(this.tns, 'childrenProperty', 'children');
         }
-        if (typeof this.model.treeNodeSpec.idProperty !== 'string') {
-          this.$set(this.model.treeNodeSpec, 'idProperty', 'id');
+        if (typeof this.tns.idProperty !== 'string') {
+          this.$set(this.tns, 'idProperty', 'id');
         }
-        if (typeof this.model.treeNodeSpec.labelProperty !== 'string') {
-          this.$set(this.model.treeNodeSpec, 'labelProperty', 'label');
+        if (typeof this.tns.labelProperty !== 'string') {
+          this.$set(this.tns, 'labelProperty', 'label');
         }
 
         if (!Array.isArray(this.children)) {
           this.$set(this.model, this.childrenPropName, []);
         }
-        if (typeof this.model.treeNodeSpec.expandable !== 'boolean') {
-          this.$set(this.model.treeNodeSpec, 'expandable', true);
+        if (typeof this.tns.expandable !== 'boolean') {
+          this.$set(this.tns, 'expandable', true);
         }
-        if (typeof this.model.treeNodeSpec.selectable !== 'boolean') {
-          this.$set(this.model.treeNodeSpec, 'selectable', false);
+        if (typeof this.tns.selectable !== 'boolean') {
+          this.$set(this.tns, 'selectable', false);
         }
-        if (typeof this.model.treeNodeSpec.deletable !== 'boolean') {
-          this.$set(this.model.treeNodeSpec, 'deletable', false);
+        if (typeof this.tns.deletable !== 'boolean') {
+          this.$set(this.tns, 'deletable', false);
         }
-        if (typeof this.model.treeNodeSpec.draggable !== 'boolean') {
-          this.$set(this.model.treeNodeSpec, 'draggable', false);
+        if (typeof this.tns.draggable !== 'boolean') {
+          this.$set(this.tns, 'draggable', false);
         }
-        if (typeof this.model.treeNodeSpec.allowDrop !== 'boolean') {
-          this.$set(this.model.treeNodeSpec, 'allowDrop', false);
-        }
-
-        if (typeof this.model.treeNodeSpec.addChildCallback !== 'function') {
-          this.$set(this.model.treeNodeSpec, 'addChildCallback', null);
+        if (typeof this.tns.allowDrop !== 'boolean') {
+          this.$set(this.tns, 'allowDrop', false);
         }
 
-        if (typeof this.model.treeNodeSpec.title !== 'string' || this.model.treeNodeSpec.title.trim().length === 0) {
-          this.$set(this.model.treeNodeSpec, 'title', null);
-        }
-        if (typeof this.model.treeNodeSpec.expanderTitle !== 'string' || this.model.treeNodeSpec.expanderTitle.trim().length === 0) {
-          this.$set(this.model.treeNodeSpec, 'expanderTitle', null);
-        }
-        if (typeof this.model.treeNodeSpec.addChildTitle !== 'string' || this.model.treeNodeSpec.addChildTitle.trim().length === 0) {
-          this.$set(this.model.treeNodeSpec, 'addChildTitle', null);
-        }
-        if (typeof this.model.treeNodeSpec.deleteTitle !== 'string' || this.model.treeNodeSpec.deleteTitle.trim().length === 0) {
-          this.$set(this.model.treeNodeSpec, 'deleteTitle', null);
+        if (typeof this.tns.addChildCallback !== 'function') {
+          this.$set(this.tns, 'addChildCallback', null);
         }
 
-        if (this.model.treeNodeSpec.customizations == null || typeof this.model.treeNodeSpec.customizations !== 'object') {
-          this.$set(this.model.treeNodeSpec, 'customizations', {});
+        if (typeof this.tns.title !== 'string' || this.tns.title.trim().length === 0) {
+          this.$set(this.tns, 'title', null);
+        }
+        if (typeof this.tns.expanderTitle !== 'string' || this.tns.expanderTitle.trim().length === 0) {
+          this.$set(this.tns, 'expanderTitle', null);
+        }
+        if (typeof this.tns.addChildTitle !== 'string' || this.tns.addChildTitle.trim().length === 0) {
+          this.$set(this.tns, 'addChildTitle', null);
+        }
+        if (typeof this.tns.deleteTitle !== 'string' || this.tns.deleteTitle.trim().length === 0) {
+          this.$set(this.tns, 'deleteTitle', null);
         }
 
-        if(typeof this.model.treeNodeSpec.loadChildrenAsync !== 'function') {
-          this.$set(this.model.treeNodeSpec, 'loadChildrenAsync', null);
+        if (this.tns.customizations == null || typeof this.tns.customizations !== 'object') {
+          this.$set(this.tns, 'customizations', {});
+        }
+
+        if(typeof this.tns.loadChildrenAsync !== 'function') {
+          this.$set(this.tns, 'loadChildrenAsync', null);
         }
 
         // Internal members
-        this.$set(this.model.treeNodeSpec, '_', {});
-        this.$set(this.model.treeNodeSpec._, 'dragging', false);
+        this.$set(this.tns, '_', {});
+        this.$set(this.tns._, 'dragging', false);
 
         this.$_grtvn_normalizeNodeInputData();
         this.$_grtvn_normalizeNodeStateData();
@@ -449,12 +452,12 @@
        */
       $_grtvn_normalizeNodeInputData() {
 
-        let input = this.model.treeNodeSpec.input;
+        let input = this.tns.input;
 
         // For nodes that are inputs, they must specify at least a type.
         // Only a subset of types are accepted.
         if (input === null || typeof input !== 'object' || !Object.values(InputType).includes(input.type)) {
-          this.$set(this.model.treeNodeSpec, 'input', null);
+          this.$set(this.tns, 'input', null);
         }
         else {
           if (typeof input.name !== 'string' || input.name.trim().length === 0) {
@@ -482,19 +485,19 @@
        * Normalizes the data model's data related to the node's state.
        */
       $_grtvn_normalizeNodeStateData() {
-        if (this.model.treeNodeSpec.state === null || typeof this.model.treeNodeSpec.state !== 'object') {
-          this.$set(this.model.treeNodeSpec, 'state', {});
+        if (this.tns.state === null || typeof this.tns.state !== 'object') {
+          this.$set(this.tns, 'state', {});
         }
-        if (this.model.treeNodeSpec._.state === null || typeof this.model.treeNodeSpec._.state !== 'object') {
-          this.$set(this.model.treeNodeSpec._, 'state', {});
+        if (this.tns._.state === null || typeof this.tns._.state !== 'object') {
+          this.$set(this.tns._, 'state', {});
         }
 
-        let state = this.model.treeNodeSpec.state;
-        let privateState = this.model.treeNodeSpec._.state;
+        let state = this.tns.state;
+        let privateState = this.tns._.state;
 
         // areChildrenLoaded and areChildrenLoading are internal state used with asynchronous child
         // node loading. Any node with asynchronously loaded children starts as not expanded.
-        this.$set(privateState, 'areChildrenLoaded', typeof this.model.treeNodeSpec.loadChildrenAsync !== 'function');
+        this.$set(privateState, 'areChildrenLoaded', typeof this.tns.loadChildrenAsync !== 'function');
         this.$set(privateState, 'areChildrenLoading', false);
 
         if (typeof state.expanded !== 'boolean' || !privateState.areChildrenLoaded) {
@@ -504,7 +507,7 @@
           this.$set(state, 'selected', false);
         }
 
-        if (this.model.treeNodeSpec.input) {
+        if (this.tns.input) {
           if (state.input === null || typeof state.input !== 'object') {
             this.$set(state, 'input', {});
           }
@@ -513,7 +516,7 @@
             this.$set(state.input, 'disabled', false);
           }
 
-          if (this.model.treeNodeSpec.input.type === InputType.Checkbox) {
+          if (this.tns.input.type === InputType.Checkbox) {
 
             if (typeof state.input.value !== 'boolean') {
               this.$set(state.input, 'value', false);
@@ -581,7 +584,7 @@
        * @param {Event} event The event that triggered the expansion toggle
        */
       async $_grtvn_onExpandedChange(event) {
-        let spec = this.model.treeNodeSpec;
+        let spec = this.tns;
 
         // First expand the node (to show either children or a "loading" indicator)
         spec.state.expanded = !spec.state.expanded;
@@ -605,12 +608,12 @@
       /**
        * Handle toggling the selected state for this node for Single and Multiple selection modes.
        * Note that for SelectionFollowsFocus mode the selection change is already handled by the
-       * "model.treeNodeSpec.focusable" watchermethod in TreeViewNodeAria.
+       * "model.treeNodeSpec.focusable" watcher method in TreeViewNodeAria.
        * @param {Event} event The event that triggered the selection toggle
        */
       $_grtvn_toggleSelected(event) {
-        if (this.model.treeNodeSpec.selectable && [SelectionMode.Single, SelectionMode.Multiple].includes(this.selectionMode)) {
-          this.model.treeNodeSpec.state.selected = !this.model.treeNodeSpec.state.selected;
+        if (this.tns.selectable && [SelectionMode.Single, SelectionMode.Multiple].includes(this.selectionMode)) {
+          this.tns.state.selected = !this.tns.state.selected;
         }
       },
       /**
@@ -647,8 +650,8 @@
        * @param {Event} event The event that triggered the add
        */
       async $_grtvn_onAddChild(event) {
-        if (this.model.treeNodeSpec.addChildCallback) {
-          var childModel = await this.model.treeNodeSpec.addChildCallback(this.model);
+        if (this.tns.addChildCallback) {
+          var childModel = await this.tns.addChildCallback(this.model);
 
           if (childModel) {
             this.children.push(childModel);
@@ -657,7 +660,7 @@
         }
       },
       $_grtvn_onDelete(event) {
-        if (this.model.treeNodeSpec.deletable) {
+        if (this.tns.deletable) {
           this.$emit(TvEvent.Delete, this.model, event);
         }
       },
