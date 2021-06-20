@@ -25,7 +25,6 @@ Prerequisites:
 - [Yarn](https://yarnpkg.com/) (latest)
 - [Pandoc](https://pandoc.org/) (optional, used for building documentation)
 - [Powershell](https://docs.microsoft.com/en-us/powershell/scripting/overview) (optional, used for building documentation)
-- [IISExpress](https://docs.microsoft.com/en-us/iis/extensions/introduction-to-iis-express/iis-express-overview) or another server (optional, used for serving test sites via package.json's scripts)
 
 Once you have the prerequisites and a local clone of the repository, open a shell to the root of the cloned repo and run `yarn` to install the packages. Once that's done, you can use `yarn build` to build the component. Other scripts are available in `package.json` for things like building in dev mode, running tests, or building documentation.
 
@@ -63,7 +62,7 @@ describe('myComponent', () => {
 
 When writing tests, it's often required to have node data to test with. There's a helper method available in `tests/data/node-generator.js` that can help with creating various nodes for testing. See existing tests and the comment in that file for examples of how to craft test node data.
 
-In addition to unit tests, a very simple test site is available at `/tests/local/index.html`. If you are using a machine with IISExpress available in the default location, you can run the `test-site` script in `package.json` to start the site. If your changes would make sense with a demonstration, go ahead and add to this site.
+In addition to unit tests, a very simple test site is available at `/tests/local/index.html`. You can run the `test-site` script in `package.json` to start the site. If your changes would make sense with a demonstration, go ahead and add to this site.
 
 #### Update the documentation
 
