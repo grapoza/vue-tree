@@ -1,18 +1,15 @@
 import { expect } from 'chai';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import { generateNodes } from '../data/node-generator.js';
 import SelectionMode from '../../src/enums/selectionMode';
 
-const localVue = createLocalVue();
-
 function createWrapper(customPropsData, customAttrs, slotsData) {
   return shallowMount(TreeView, {
     sync: false,
-    propsData: customPropsData || {},
-    localVue,
+    props: customPropsData || {},
     attrs: customAttrs,
-    scopedSlots: slotsData
+    slots: slotsData
   });
 }
 
@@ -21,7 +18,6 @@ describe('TreeView.vue', () => {
   let wrapper = null;
 
   afterEach(() => {
-    wrapper.vm.$destroy();
     wrapper = null;
   });
 
@@ -113,9 +109,9 @@ describe('TreeView.vue', () => {
       wrapper = createWrapper({ initialModel: nodes });
 
       // Fake the setup of the radio storage since we're shallow mounting
-      wrapper.vm.$set(wrapper.vm, 'radioGroupValues', {});
-      wrapper.vm.$set(wrapper.vm.radioGroupValues, nodes[1].treeNodeSpec.input.name, nodes[1].treeNodeSpec.input.value);
-      wrapper.vm.$set(wrapper.vm.radioGroupValues, nodes[1].children[0].treeNodeSpec.input.name, nodes[1].children[0].treeNodeSpec.input.value);
+      wrapper.vm.radioGroupValues = {};
+      wrapper.vm.radioGroupValues[nodes[1].treeNodeSpec.input.name] = nodes[1].treeNodeSpec.input.value;
+      wrapper.vm.radioGroupValues[nodes[1].children[0].treeNodeSpec.input.name] = nodes[1].children[0].treeNodeSpec.input.value;
     });
 
     it('should return checked radiobutton nodes', () => {
@@ -245,7 +241,6 @@ describe('TreeView.vue', () => {
       describe('and rendering a custom loader message', () => {
 
         beforeEach(() => {
-          wrapper.vm.$destroy();
           wrapper = createWrapper(
             {
               loadNodesAsync: () => loadNodesPromise

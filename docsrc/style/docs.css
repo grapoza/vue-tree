@@ -157,3 +157,8 @@ td {
     padding: 10px;
     border: 1px solid #373737;
 }
+
+blockquote {
+	background: #FDF8CF;
+	padding: .5rem;
+}

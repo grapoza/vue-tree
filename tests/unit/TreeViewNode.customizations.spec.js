@@ -1,10 +1,8 @@
 import { expect } from 'chai';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
 import SelectionMode from '../../src/enums/selectionMode';
-
-const localVue = createLocalVue();
 
 const getDefaultPropsData = function () {
   return {
@@ -32,9 +30,8 @@ const getDefaultPropsData = function () {
 function createWrapper(customPropsData, slotsData) {
   return mount(TreeViewNode, {
     sync: false,
-    propsData: customPropsData || getDefaultPropsData(),
-    localVue,
-    scopedSlots: slotsData
+    props: customPropsData || getDefaultPropsData(),
+    slots: slotsData
   });
 }
 
@@ -43,7 +40,6 @@ describe('TreeViewNode.vue (customizations)', () => {
   let wrapper = null;
 
   afterEach(() => {
-    wrapper.vm.$destroy();
     wrapper = null;
   });
 
@@ -210,7 +206,7 @@ describe('TreeViewNode.vue (customizations)', () => {
             isMounted: false
           },
           {
-            text: '<span :id="props.model.id" class="text-slot-content"><span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span></span>',
+            text: '<template #text="props"><span :id="props.model.id" class="text-slot-content"><span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span></span></template>',
           }
         );
       });
@@ -246,11 +242,11 @@ describe('TreeViewNode.vue (customizations)', () => {
             isMounted: false
           },
           {
-            checkbox: `<span :id="props.model.id" class="text-slot-content">
+            checkbox: `<template #checkbox="props"><span :id="props.model.id" class="text-slot-content">
                           <span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span>
                           <span class="slot-input-id">{{ props.inputId }}</span>
                           <span class="slot-has-handler">{{ typeof props.checkboxChangeHandler == 'function' }}</span>
-                        </span>`,
+                        </span></template>`,
           }
         );
       });
@@ -294,12 +290,12 @@ describe('TreeViewNode.vue (customizations)', () => {
             isMounted: false
           },
           {
-            radio: `<span :id="props.model.id" class="text-slot-content">
+            radio: `<template #radio="props"><span :id="props.model.id" class="text-slot-content">
                       <span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span>
                       <span class="slot-input-id">{{ props.inputId }}</span>
                       <span class="slot-has-handler">{{ typeof props.radioChangeHandler == 'function' }}</span>
                       <span class="slot-input-model">{{ JSON.stringify(props.inputModel) }}</span>
-                    </span>`,
+                    </span></template>`,
           }
         );
       });
@@ -348,7 +344,7 @@ describe('TreeViewNode.vue (customizations)', () => {
             isMounted: false
           },
           {
-            loading: '<span :id="props.model.id" class="loading-slot-content"><span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span></span>',
+            loading: '<template #loading="props"><span :id="props.model.id" class="loading-slot-content"><span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span></span></template>',
           }
         );
 

@@ -1,5 +1,6 @@
 <template>
-  <div class="grtv-wrapper"
+  <div ref="treeElement"
+       class="grtv-wrapper"
        :class="skinClass">
     <slot v-if="!areNodesLoaded"
           name="loading-root">
@@ -106,6 +107,18 @@
         }
       }
     },
+    emits: [
+      TvEvent.Add,
+      TvEvent.CheckboxChange,
+      TvEvent.ChildrenLoad,
+      TvEvent.Click,
+      TvEvent.Delete,
+      TvEvent.DoubleClick,
+      TvEvent.ExpandedChange,
+      TvEvent.RadioChange,
+      TvEvent.RootNodesLoad,
+      TvEvent.SelectedChange
+    ],
     data() {
       return {
         areNodesAsyncLoaded: false,
@@ -120,9 +133,9 @@
         return typeof this.loadNodesAsync !== 'function' || this.areNodesAsyncLoaded;
       },
       ariaMultiselectable() {
-        // If there's no selectionMode, return a boolean so aria-multiselectable isn't included.
+        // If there's no selectionMode, return null so aria-multiselectable isn't included.
         // Otherwise, return either the string 'true' or 'false' as the attribute's value.
-        return this.selectionMode === SelectionMode.None ? false : (this.selectionMode === SelectionMode.Multiple).toString();
+        return this.selectionMode === SelectionMode.None ? null : this.selectionMode === SelectionMode.Multiple;
       },
       TvEvent() {
         return TvEvent;
@@ -131,7 +144,7 @@
     created() {
       // Force a unique tree ID. This will generate a unique ID internally, but on mount
       // it will be set to the element ID if one is present.
-      this.$set(this, 'uniqueId', generateUniqueId());
+      this.uniqueId = generateUniqueId();
     },
     async mounted() {
 
@@ -149,8 +162,8 @@
 
       this.$_grtv_enforceSingleSelectionMode();
 
-      if (this.$el.id) {
-        this.$set(this, 'uniqueId', this.$el.id);
+      if (this.$refs.treeElement.id) {
+        this.uniqueId = this.$refs.treeElement.id;
       }
 
       // Set this in a $nextTick so the focusable watcher

@@ -53,7 +53,7 @@ export default {
             node.treeNodeSpec.focusable = false;
           }
           else {
-            this.$set(this, 'focusableNodeModel', node);
+            this.focusableNodeModel = node;
           }
         }
         if (this.selectionMode !== SelectionMode.None && firstSelectedNode === null && node.treeNodeSpec.state.selected) {
@@ -62,8 +62,8 @@ export default {
       });
 
       if (!this.focusableNodeModel) {
-        this.$set(this, 'focusableNodeModel', firstSelectedNode || this.model[0]);
-        this.$set(this.focusableNodeModel.treeNodeSpec, 'focusable', true);
+        this.focusableNodeModel = firstSelectedNode || this.model[0];
+        this.focusableNodeModel.treeNodeSpec.focusable = true;
       }
 
       // Also default the selection to the focused node if no selected node was found
@@ -119,7 +119,7 @@ export default {
           this.focusableNodeModel.treeNodeSpec.focusable = false;
         }
 
-        this.$set(this, 'focusableNodeModel', newNodeModel);
+        this.focusableNodeModel = newNodeModel;
       }
     },
     /**

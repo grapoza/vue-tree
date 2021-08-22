@@ -21,28 +21,29 @@
     "build": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue",
     "dev": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --mode development",
     "docs": "cd docsrc && @powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./generateDocs.ps1",
-    "docs-resources-serve": "http-server ./dist -d false -i false -p 8082",
-    "docs-site-serve": "http-server ./docsrc/output -d false -i false -p 8081 -o /index.html",
+    "docs-resources-serve": "http-server ./dist -d false -i false -a 127.0.0.1 -p 8082",
+    "docs-site-serve": "http-server ./docsrc/output -d false -i false -a 127.0.0.1 -p 8081 -o /index.html",
     "docs-site": "npm-run-all --parallel docs-resources-serve docs-site-serve",
     "watch": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --watch",
     "test": "./node_modules/.bin/vue-cli-service test:unit",
-    "test-site": "http-server -d false -i false -o /tests/local/index.html"
+    "test-site": "http-server -d false -i false -a 127.0.0.1 -o /tests/local/index.html"
   },
   "dependencies": {
-    "vue": "2.6.12"
+    "vue": "^3.2.6"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "4.5.13",
-    "@vue/cli-plugin-unit-jest": "4.5.13",
-    "@vue/cli-service": "4.5.13",
-    "@vue/test-utils": "1.1.3",
+    "@vue/cli-plugin-babel": "^5.0.0-beta.3",
+    "@vue/cli-plugin-unit-jest": "^5.0.0-beta.3",
+    "@vue/cli-service": "^5.0.0-beta.3",
+    "@vue/compiler-sfc": "3.2.6",
+    "@vue/test-utils": "^2.0.0-rc.12",
     "chai": "4.3.4",
-    "http-server": "0.12.3",
+    "http-server": "13.0.1",
     "npm-run-all": "4.1.5",
-    "sass": "1.32.13",
-    "sass-loader": "10.2.0",
-    "vue-template-compiler": "2.6.12",
-    "webpack": "5.37.0"
+    "sass": "1.38.1",
+    "sass-loader": "12.1.0",
+    "vue-jest": "^5.0.0-alpha.10",
+    "webpack": "5.51.1"
   },
   "browserslist": [
     "defaults",

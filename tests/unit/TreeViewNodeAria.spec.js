@@ -1,10 +1,8 @@
 import { expect } from 'chai';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
 import SelectionMode from '../../src/enums/selectionMode';
-
-const localVue = createLocalVue();
 
 const getDefaultPropsData = function () {
   return {
@@ -29,15 +27,14 @@ const getDefaultPropsData = function () {
   }
 };
 
-function createWrapper(customPropsData) {
+async function createWrapper(customPropsData) {
   var wrapper = mount(TreeViewNode, {
     sync: false,
-    propsData: customPropsData || getDefaultPropsData(),
-    localVue,
+    props: customPropsData || getDefaultPropsData(),
     attachTo: '#root'
   });
 
-  wrapper.setProps({ isMounted: true });
+  await wrapper.setProps({ isMounted: true });
   return wrapper;
 }
 
@@ -48,7 +45,7 @@ async function triggerKeydown(wrapper, keyCode) {
   jest.spyOn(e, 'stopPropagation');
   jest.spyOn(e, 'preventDefault');
 
-  wrapper.vm.$el.dispatchEvent(e);
+  wrapper.vm.$refs.nodeElement.dispatchEvent(e);
   await wrapper.vm.$nextTick();
   return e;
 }
@@ -67,28 +64,27 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
-    wrapper.vm.$destroy();
     wrapper = null;
   });
 
   describe('always', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper();
+    beforeEach(async () => {
+      wrapper = await createWrapper();
     })
 
     it('should have an ARIA role of treeitem', () => {
-      expect(wrapper.vm.$el.attributes.role.value).to.equal('treeitem');
+      expect(wrapper.vm.$refs.nodeElement.attributes.role.value).to.equal('treeitem');
     });
 
     it('should have a tabindex of 0 if focusable', async () => {
       wrapper.vm.model.treeNodeSpec.focusable = true;
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.$el.attributes.tabindex.value).to.equal('0');
+      expect(wrapper.vm.$refs.nodeElement.attributes.tabindex.value).to.equal('0');
     });
 
     it('should have a tabindex of -1 if not focusable', () => {
-      expect(wrapper.vm.$el.attributes.tabindex.value).to.equal('-1');
+      expect(wrapper.vm.$refs.nodeElement.attributes.tabindex.value).to.equal('-1');
     });
   });
 
@@ -96,7 +92,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
     beforeEach(async () => {
       let defaultProps = getDefaultPropsData();
-      wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es', ['es']])[0] }));
+      wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es', ['es']])[0] }));
     });
 
     it('should have an ARIA role of group on the child list', () => {
@@ -106,10 +102,10 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
   describe('when not provided with a focusable property on the initial model data', () => {
 
-    beforeEach(() => {
+    beforeEach(async () => {
       let initialModel = { id: 'my-node', label: 'My Node', expandable: true };
 
-      wrapper = createWrapper({
+      wrapper = await createWrapper({
         ariaKeyMap: {},
         depth: 0,
         initialModel,
@@ -128,7 +124,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
   describe('when focusing via callback', () => {
 
     beforeEach(async () => {
-      wrapper = createWrapper();
+      wrapper = await createWrapper();
       wrapper.vm.$_grtvnAria_focus();
       await wrapper.vm.$nextTick();
     });
@@ -138,8 +134,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     });
 
     it('should focus the node', () => {
-
-      expect(wrapper.vm.$el).to.equal(document.activeElement);
+      expect(wrapper.vm.$refs.nodeElement).to.equal(document.activeElement);
     });
 
     it('should emit a treeViewNodeAriaFocusableChange event', () => {
@@ -151,7 +146,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
   describe('when the node self is clicked', () => {
 
     beforeEach(async () => {
-      wrapper = createWrapper();
+      wrapper = await createWrapper();
       wrapper.find('.grtvn-self').trigger('click');
       await wrapper.vm.$nextTick();
     });
@@ -164,7 +159,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
   describe('when selectionMode is not selectionFollowsFocus', () => {
 
     beforeEach(async () => {
-      wrapper = createWrapper();
+      wrapper = await createWrapper();
       wrapper.find('.grtvn-self').trigger('click');
       await wrapper.vm.$nextTick();
     });
@@ -177,7 +172,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
   describe('when selectionMode is selectionFollowsFocus', () => {
 
     beforeEach(async () => {
-      wrapper = createWrapper(Object.assign(getDefaultPropsData(), { selectionMode: SelectionMode.SelectionFollowsFocus }));
+      wrapper = await createWrapper(Object.assign(getDefaultPropsData(), { selectionMode: SelectionMode.SelectionFollowsFocus }));
       wrapper.find('.grtvn-self').trigger('click');
       await wrapper.vm.$nextTick();
     });
@@ -192,11 +187,11 @@ describe('TreeViewNode.vue (ARIA)', () => {
     describe('and Shift is pressed', () => {
 
       beforeEach(async () => {
-        wrapper = createWrapper();
+        wrapper = await createWrapper();
         var e = new Event('keydown');
         e.shift = true;
         e.keyCode = wrapper.vm.ariaKeyMap.focusPreviousItem[0];
-        wrapper.vm.$el.dispatchEvent(e);
+        wrapper.vm.$refs.nodeElement.dispatchEvent(e);
         await wrapper.vm.$nextTick();
       });
 
@@ -208,11 +203,11 @@ describe('TreeViewNode.vue (ARIA)', () => {
     describe('and Alt is pressed', () => {
 
       beforeEach(async () => {
-        wrapper = createWrapper();
+        wrapper = await createWrapper();
         var e = new Event('keydown');
         e.altKey = true;
         e.keyCode = wrapper.vm.ariaKeyMap.focusPreviousItem[0];
-        wrapper.vm.$el.dispatchEvent(e);
+        wrapper.vm.$refs.nodeElement.dispatchEvent(e);
         await wrapper.vm.$nextTick();
       });
 
@@ -224,11 +219,11 @@ describe('TreeViewNode.vue (ARIA)', () => {
     describe('and Ctrl is pressed', () => {
 
       beforeEach(async () => {
-        wrapper = createWrapper();
+        wrapper = await createWrapper();
         var e = new Event('keydown');
         e.ctrlKey = true;
         e.keyCode = wrapper.vm.ariaKeyMap.focusPreviousItem[0];
-        wrapper.vm.$el.dispatchEvent(e);
+        wrapper.vm.$refs.nodeElement.dispatchEvent(e);
         await wrapper.vm.$nextTick();
       });
 
@@ -240,11 +235,11 @@ describe('TreeViewNode.vue (ARIA)', () => {
     describe('and the meta key is pressed', () => {
 
       beforeEach(async () => {
-        wrapper = createWrapper();
+        wrapper = await createWrapper();
         var e = new Event('keydown');
         e.metaKey = true;
         e.keyCode = wrapper.vm.ariaKeyMap.focusPreviousItem[0];
-        wrapper.vm.$el.dispatchEvent(e);
+        wrapper.vm.$refs.nodeElement.dispatchEvent(e);
         await wrapper.vm.$nextTick();
       });
 
@@ -260,7 +255,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         describe('and the input is enabled', () => {
 
           beforeEach(async () => {
-            wrapper = createWrapper();
+            wrapper = await createWrapper();
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
           });
 
@@ -272,7 +267,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         describe('and the input is disabled', () => {
 
           beforeEach(async () => {
-            wrapper = createWrapper();
+            wrapper = await createWrapper();
             wrapper.vm.model.treeNodeSpec.state.input.disabled = true;
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
           });
@@ -287,7 +282,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es'])[0] }));
+          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es'])[0] }));
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
         });
 
@@ -302,7 +297,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       describe('and the selectionMode is null', () => {
 
         beforeEach(async () => {
-          wrapper = createWrapper();
+          wrapper = await createWrapper();
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.selectItem[0]);
           await wrapper.vm.$nextTick();
         });
@@ -315,8 +310,8 @@ describe('TreeViewNode.vue (ARIA)', () => {
       describe('and the selectionMode is not null', () => {
 
         beforeEach(async () => {
-          wrapper = createWrapper();
-          wrapper.setProps({ selectionMode: SelectionMode.Multiple });
+          wrapper = await createWrapper();
+          await wrapper.setProps({ selectionMode: SelectionMode.Multiple });
           await wrapper.vm.$nextTick();
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.selectItem[0]);
           await wrapper.vm.$nextTick();
@@ -336,7 +331,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['esf', ['s', 's']])[0] }));
+            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['esf', ['s', 's']])[0] }));
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
           });
 
@@ -350,7 +345,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Esf', ['s', 's']])[0] }));
+            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Esf', ['s', 's']])[0] }));
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
           });
 
@@ -365,7 +360,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['sf', ['s', 's']])[0] }));
+          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['sf', ['s', 's']])[0] }));
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
         });
 
@@ -383,12 +378,13 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esf', ['s']]])[0] }));
-            await triggerKeydown(wrapper.findAllComponents(TreeViewNode).at(1), wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
+            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esf', ['s']]])[0] }));
+            await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[0], wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
+            await wrapper.vm.$nextTick();
           });
 
-          it('should focus the parent node', () => {
-            expect(wrapper.findAllComponents(TreeViewNode).at(1).emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
+          it('should focus the parent node', async () => {
+            expect(wrapper.findAllComponents(TreeViewNode)[0].emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
             expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
           });
         });
@@ -397,7 +393,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Esf', ['es']])[0] }));
+            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Esf', ['es']])[0] }));
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
           });
 
@@ -412,12 +408,12 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['sf']])[0] }));
-          await triggerKeydown(wrapper.findAllComponents(TreeViewNode).at(1), wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
+          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['sf']])[0] }));
+          await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[0], wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
         });
 
         it('should focus the parent node', () => {
-          expect(wrapper.findAllComponents(TreeViewNode).at(1).emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
+          expect(wrapper.findAllComponents(TreeViewNode)[0].emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
           expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
         });
       });
@@ -426,7 +422,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     describe('and a focus first item key is pressed', () => {
 
       beforeEach(async () => {
-        wrapper = createWrapper();
+        wrapper = await createWrapper();
         await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.focusFirstItem[0]);
       });
 
@@ -438,7 +434,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     describe('and a focus last item key is pressed', () => {
 
       beforeEach(async () => {
-        wrapper = createWrapper();
+        wrapper = await createWrapper();
         await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.focusLastItem[0]);
       });
 
@@ -450,7 +446,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     describe('and a focus previous item key is pressed', () => {
 
       beforeEach(async () => {
-        wrapper = createWrapper();
+        wrapper = await createWrapper();
         await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.focusPreviousItem[0]);
       });
 
@@ -462,7 +458,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
     describe('and a focus next item key is pressed', () => {
 
       beforeEach(async () => {
-        wrapper = createWrapper();
+        wrapper = await createWrapper();
         await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.focusNextItem[0]);
       });
 
@@ -476,7 +472,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       describe('and there is no addChildCallback defined on the node', () => {
 
         beforeEach(async () => {
-          wrapper = createWrapper();
+          wrapper = await createWrapper();
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.insertItem[0]);
         });
 
@@ -490,7 +486,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
           let nodeAddCallback = function () { return Promise.resolve({ id: 100, label: 'labelText' }) };
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['sf'], "", nodeAddCallback)[0] }));
+          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['sf'], "", nodeAddCallback)[0] }));
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.insertItem[0]);
         });
 
@@ -506,7 +502,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       describe('and the node is not deletable', () => {
 
         beforeEach(async () => {
-          wrapper = createWrapper();
+          wrapper = await createWrapper();
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.deleteItem[0]);
         });
 
@@ -521,8 +517,8 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esdf']])[0] }));
-            await triggerKeydown(wrapper.findAllComponents(TreeViewNode).at(1), wrapper.vm.ariaKeyMap.deleteItem[0]);
+            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esdf']])[0] }));
+            await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[0], wrapper.vm.ariaKeyMap.deleteItem[0]);
           });
 
           it('should delete the current node', () => {
@@ -537,8 +533,8 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esdf', 'es']])[0] }));
-            await triggerKeydown(wrapper.findAllComponents(TreeViewNode).at(1), wrapper.vm.ariaKeyMap.deleteItem[0]);
+            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esdf', 'es']])[0] }));
+            await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[0], wrapper.vm.ariaKeyMap.deleteItem[0]);
           });
 
           it('should focus the next node', () => {
@@ -550,8 +546,8 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['es', 'es', 'esdf']])[0] }));
-            await triggerKeydown(wrapper.findAllComponents(TreeViewNode).at(3), wrapper.vm.ariaKeyMap.deleteItem[0]);
+            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['es', 'es', 'esdf']])[0] }));
+            await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[2], wrapper.vm.ariaKeyMap.deleteItem[0]);
           });
 
           it('should focus the previous node', () => {
@@ -566,7 +562,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       let event;
 
       beforeEach(async () => {
-        wrapper = createWrapper();
+        wrapper = await createWrapper();
         event = await triggerKeydown(wrapper, 1000);
       });
 
@@ -587,7 +583,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
       beforeEach(async () => {
         initialModel = generateNodes(['Es', ['esf']])[0];
-        wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
+        wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
         wrapper.vm.$_grtvnAria_handlePreviousFocus(initialModel.children[0]);
         await wrapper.vm.$nextTick();
       });
@@ -601,7 +597,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
       beforeEach(async () => {
         initialModel = generateNodes(['Es', ['Es', ['s', 's'], 'sf']])[0];
-        wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
+        wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
         wrapper.vm.$_grtvnAria_handlePreviousFocus(initialModel.children[1]);
         await wrapper.vm.$nextTick();
       });
@@ -615,7 +611,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
       beforeEach(async () => {
         initialModel = generateNodes(['Es', ['es', ['s', 's'], 'sf']])[0];
-        wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
+        wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
         wrapper.vm.$_grtvnAria_handlePreviousFocus(initialModel.children[1]);
         await wrapper.vm.$nextTick();
       });
@@ -637,7 +633,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         beforeEach(async () => {
           initialModel = generateNodes(['Es', ['Esf', ['s', 's'], 's']])[0];
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
+          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
           wrapper.vm.$_grtvnAria_handleNextFocus(initialModel.children[0], false);
           await wrapper.vm.$nextTick();
         });
@@ -653,7 +649,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             initialModel = generateNodes(['Es', ['Esf', ['s', 's'], 's']])[0];
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
+            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
             wrapper.vm.$_grtvnAria_handleNextFocus(initialModel.children[0], true);
             await wrapper.vm.$nextTick();
           });
@@ -667,7 +663,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
           beforeEach(async () => {
             initialModel = generateNodes(['Es', ['Esf', ['s', 's']]])[0];
-            wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
+            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
             wrapper.vm.$_grtvnAria_handleNextFocus(initialModel.children[0], true);
             await wrapper.vm.$nextTick();
           });
@@ -686,7 +682,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         beforeEach(async () => {
           initialModel = generateNodes(['Es', ['esf', ['s', 's'], 's']])[0];
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
+          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
           wrapper.vm.$_grtvnAria_handleNextFocus(initialModel.children[0], false);
           await wrapper.vm.$nextTick();
         });
@@ -700,7 +696,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         beforeEach(async () => {
           initialModel = generateNodes(['Es', ['esf', ['s', 's']]])[0];
-          wrapper = createWrapper(Object.assign(defaultProps, { initialModel }));
+          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
           wrapper.vm.$_grtvnAria_handleNextFocus(initialModel.children[0], false);
           await wrapper.vm.$nextTick();
         });

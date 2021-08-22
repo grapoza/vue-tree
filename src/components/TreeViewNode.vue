@@ -4,6 +4,7 @@
       for a description of the expected data format.
   -->
   <li :id="nodeId"
+      ref="nodeElement"
       class="grtvn"
       :class="[customClasses.treeViewNode,
                tns._.dragging ? 'grtvn-dragging' : '']"
@@ -172,7 +173,7 @@
           class="grtvn-children"
           :class="customClasses.treeViewNodeChildren"
           role="group"
-          :aria-hidden="(!tns.state.expanded).toString()">
+          :aria-hidden="!tns.state.expanded">
         <TreeViewNode v-for="nodeModel in children"
                       :key="nodeModel[tns && tns.idProperty ? tns.idProperty : 'id']"
                       :depth="depth + 1"
@@ -267,6 +268,20 @@
         required: true
       }
     },
+    emits: [
+      TvEvent.Add,
+      TvEvent.Click,
+      TvEvent.CheckboxChange,
+      TvEvent.ChildrenLoad,
+      TvEvent.Delete,
+      TvEvent.DoubleClick,
+      TvEvent.ExpandedChange,
+      TvEvent.FocusableChange,
+      TvEvent.RadioChange,
+      TvEvent.RequestFirstFocus,
+      TvEvent.RequestLastFocus,
+      TvEvent.SelectedChange
+    ],
     data() {
       return {
         elementsThatIgnoreClicks: 'input, .grtvn-self-expander, .grtvn-self-expander *, .grtvn-self-action, .grtvn-self-action *',
@@ -283,26 +298,26 @@
         return typeof tns.loadChildrenAsync !== 'function' || tns._.state.areChildrenLoaded;
       },
       ariaExpanded() {
-        return this.canExpand ? this.tns.state.expanded.toString() : false;
+        return this.canExpand ? this.tns.state.expanded : null;
       },
       ariaSelected() {
         // If selection isn't allowed, don't add an aria-selected attribute.
         // If the tree contains nodes that are not selectable, those nodes do not have the aria-selected state.
         if (this.selectionMode === SelectionMode.None || !this.tns.selectable) {
-          return false;
+          return null;
         }
 
         // https://www.w3.org/TR/wai-aria-practices-1.1/#tree_roles_states_props
         // If the tree does not support multiple selection, aria-selected is set to true
         // for the selected node and it is not present on any other node in the tree.
         if (this.selectionMode !== SelectionMode.Multiple) {
-          return this.tns.state.selected ? 'true' : false;
+          return this.tns.state.selected ? true : null;
         }
 
         // If the tree supports multiple selection:
         //   All selected nodes have aria-selected set to true.
         //   All nodes that are selectable but not selected have aria-selected set to false.
-        return this.tns.state.selected.toString();
+        return this.tns.state.selected;
       },
       canExpand() {
         // A node can be expanded if it is expandable and either has children or has not
@@ -387,62 +402,62 @@
 
         // Set expected properties if not provided
         if (typeof this.tns.childrenProperty !== 'string') {
-          this.$set(this.tns, 'childrenProperty', 'children');
+          this.tns.childrenProperty = 'children';
         }
         if (typeof this.tns.idProperty !== 'string') {
-          this.$set(this.tns, 'idProperty', 'id');
+          this.tns.idProperty = 'id';
         }
         if (typeof this.tns.labelProperty !== 'string') {
-          this.$set(this.tns, 'labelProperty', 'label');
+          this.tns.labelProperty = 'label';
         }
 
         if (!Array.isArray(this.children)) {
-          this.$set(this.model, this.childrenPropName, []);
+          this.model[this.childrenPropName] = [];
         }
         if (typeof this.tns.expandable !== 'boolean') {
-          this.$set(this.tns, 'expandable', true);
+          this.tns.expandable = true;
         }
         if (typeof this.tns.selectable !== 'boolean') {
-          this.$set(this.tns, 'selectable', false);
+          this.tns.selectable = false;
         }
         if (typeof this.tns.deletable !== 'boolean') {
-          this.$set(this.tns, 'deletable', false);
+          this.tns.deletable = false;
         }
         if (typeof this.tns.draggable !== 'boolean') {
-          this.$set(this.tns, 'draggable', false);
+          this.tns.draggable = false;
         }
         if (typeof this.tns.allowDrop !== 'boolean') {
-          this.$set(this.tns, 'allowDrop', false);
+          this.tns.allowDrop = false;
         }
 
         if (typeof this.tns.addChildCallback !== 'function') {
-          this.$set(this.tns, 'addChildCallback', null);
+          this.tns.addChildCallback = null;
         }
 
         if (typeof this.tns.title !== 'string' || this.tns.title.trim().length === 0) {
-          this.$set(this.tns, 'title', null);
+          this.tns.title = null;
         }
         if (typeof this.tns.expanderTitle !== 'string' || this.tns.expanderTitle.trim().length === 0) {
-          this.$set(this.tns, 'expanderTitle', null);
+          this.tns.expanderTitle = null;
         }
         if (typeof this.tns.addChildTitle !== 'string' || this.tns.addChildTitle.trim().length === 0) {
-          this.$set(this.tns, 'addChildTitle', null);
+          this.tns.addChildTitle = null;
         }
         if (typeof this.tns.deleteTitle !== 'string' || this.tns.deleteTitle.trim().length === 0) {
-          this.$set(this.tns, 'deleteTitle', null);
+          this.tns.deleteTitle = null;
         }
 
         if (this.tns.customizations == null || typeof this.tns.customizations !== 'object') {
-          this.$set(this.tns, 'customizations', {});
+          this.tns.customizations = {};
         }
 
         if(typeof this.tns.loadChildrenAsync !== 'function') {
-          this.$set(this.tns, 'loadChildrenAsync', null);
+          this.tns.loadChildrenAsync = null;
         }
 
         // Internal members
-        this.$set(this.tns, '_', {});
-        this.$set(this.tns._, 'dragging', false);
+        this.tns._ = {};
+        this.tns._.dragging = false;
 
         this.$_grtvn_normalizeNodeInputData();
         this.$_grtvn_normalizeNodeStateData();
@@ -457,26 +472,25 @@
         // For nodes that are inputs, they must specify at least a type.
         // Only a subset of types are accepted.
         if (input === null || typeof input !== 'object' || !Object.values(InputType).includes(input.type)) {
-          this.$set(this.tns, 'input', null);
+          this.tns.input = null;
         }
         else {
           if (typeof input.name !== 'string' || input.name.trim().length === 0) {
-            this.$set(input, 'name', null);
+            input.name = null;
           }
 
           if (input.type === InputType.RadioButton) {
             if (typeof input.name !== 'string' || input.name.trim().length === 0) {
-              this.$set(input, 'name', 'unspecifiedRadioName');
+              input.name = 'unspecifiedRadioName';
             }
             if (typeof input.value !== 'string' || input.value.trim().length === 0) {
-              this.$set(input, 'value', this.label.replace(/[\s&<>"'\/]/g, ''));
+              input.value = this.label.replace(/[\s&<>"'\/]/g, '');
             }
             if (!this.radioGroupValues.hasOwnProperty(input.name)) {
-              this.$set(this.radioGroupValues, input.name, '');
+              this.radioGroupValues[input.name] = '';
             }
-
             if (input.isInitialRadioGroupValue === true) {
-              this.$set(this.radioGroupValues, input.name, input.value);
+              this.radioGroupValues[input.name] = input.value;
             }
           }
         }
@@ -486,10 +500,10 @@
        */
       $_grtvn_normalizeNodeStateData() {
         if (this.tns.state === null || typeof this.tns.state !== 'object') {
-          this.$set(this.tns, 'state', {});
+          this.tns.state = {};
         }
         if (this.tns._.state === null || typeof this.tns._.state !== 'object') {
-          this.$set(this.tns._, 'state', {});
+          this.tns._.state = {};
         }
 
         let state = this.tns.state;
@@ -497,29 +511,29 @@
 
         // areChildrenLoaded and areChildrenLoading are internal state used with asynchronous child
         // node loading. Any node with asynchronously loaded children starts as not expanded.
-        this.$set(privateState, 'areChildrenLoaded', typeof this.tns.loadChildrenAsync !== 'function');
-        this.$set(privateState, 'areChildrenLoading', false);
+        privateState.areChildrenLoaded = typeof this.tns.loadChildrenAsync !== 'function';
+        privateState.areChildrenLoading = false;
 
         if (typeof state.expanded !== 'boolean' || !privateState.areChildrenLoaded) {
-          this.$set(state, 'expanded', false);
+          state.expanded = false;
         }
         if (typeof state.selected !== 'boolean') {
-          this.$set(state, 'selected', false);
+          state.selected = false;
         }
 
         if (this.tns.input) {
           if (state.input === null || typeof state.input !== 'object') {
-            this.$set(state, 'input', {});
+            state.input = {};
           }
 
           if (state.input.disabled === null || typeof state.input.disabled !== 'boolean') {
-            this.$set(state.input, 'disabled', false);
+            state.input.disabled = false;
           }
 
           if (this.tns.input.type === InputType.Checkbox) {
 
             if (typeof state.input.value !== 'boolean') {
-              this.$set(state.input, 'value', false);
+              state.input.value = false;
             }
           }
         }
@@ -547,7 +561,7 @@
 
             if (isProbablyObject(propValue)) {
               // Find object properties to deep assign them
-              this.$set(target, propName, target[propName] || {});
+              target[propName] = target[propName] || {};
               this.$_grtvn_assignDefaultProps(propValue, target[propName]);
             }
             else if (typeof propValue === 'function' && !target[propName]) {
@@ -556,7 +570,7 @@
             }
             else {
               // Otherwise, copy from the source to the target.
-              this.$set(target, propName, propValue);
+              target[propName] = propValue;
             }
           }
         }
