@@ -1,10 +1,8 @@
 import { expect } from 'chai';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import { generateNodes } from '../data/node-generator.js';
 import SelectionMode from '../../src/enums/selectionMode';
-
-const localVue = createLocalVue();
 
 const getDefaultPropsData = function () {
   return {
@@ -15,8 +13,7 @@ const getDefaultPropsData = function () {
 function createWrapper(customPropsData, customAttrs) {
   return mount(TreeView, {
     sync: false,
-    propsData: customPropsData || getDefaultPropsData(),
-    localVue,
+    props: customPropsData || getDefaultPropsData(),
     attrs: customAttrs
   });
 }
@@ -31,7 +28,6 @@ describe('TreeView.vue (ARIA)', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
-    wrapper.vm.$destroy();
     wrapper = null;
   });
 
@@ -356,7 +352,7 @@ describe('TreeView.vue (ARIA)', () => {
 
     beforeEach(async () => {
       wrapper = createWrapper({ initialModel: generateNodes(['Ecsf', ['ecS', 'ecs'], 'ecs']), selectionMode: SelectionMode.Single });
-      wrapper.setProps({ selectionMode: SelectionMode.SelectionFollowsFocus });
+      await wrapper.setProps({ selectionMode: SelectionMode.SelectionFollowsFocus });
       await wrapper.vm.$nextTick();
     });
 

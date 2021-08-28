@@ -1,11 +1,9 @@
 import { expect } from 'chai';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
 import SelectionMode from '../../src/enums/selectionMode';
-
-const localVue = createLocalVue();
 
 const getDefaultPropsData = function () {
   return { initialModel: [] }
@@ -14,8 +12,7 @@ const getDefaultPropsData = function () {
 function createWrapper(customPropsData, customAttrs) {
   return shallowMount(TreeView, {
     sync: false,
-    propsData: customPropsData || getDefaultPropsData(),
-    localVue,
+    props: customPropsData || getDefaultPropsData(),
     attrs: customAttrs
   });
 }
@@ -25,7 +22,6 @@ describe('TreeView.vue (event handling)', () => {
   let wrapper = null;
 
   afterEach(() => {
-    wrapper.vm.$destroy();
     wrapper = null;
   });
 

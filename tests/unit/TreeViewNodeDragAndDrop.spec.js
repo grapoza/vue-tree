@@ -1,11 +1,9 @@
 import { expect } from 'chai';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
 import { dropEffect as DropEffect, effectAllowed as EffectAllowed } from '../../src/enums/dragDrop';
 import MimeType from '../../src/enums/mimeType';
-
-const localVue = createLocalVue();
 
 const serializedNodeData = '{"id":"n0","label":"Node 0","children":[],"treeNodeSpec":{"childrenProperty":"children","idProperty":"id","labelProperty":"label","loadChildrenAsync":null,"expandable":false,"selectable":true,"deletable":false,"focusable":false,"input":{"type":"checkbox","name":"n0-cbx"},"state":{"expanded":false,"selected":false,"input":{"disabled":false,"value":false}},"addChildCallback":null,"draggable":false,"allowDrop":false,"title":null,"expanderTitle":null,"addChildTitle":null,"deleteTitle":null,"customizations":{},"_":{"dragging":false,"state":{"areChildrenLoaded":true,"areChildrenLoading":false}}}}';
 
@@ -43,8 +41,7 @@ function createWrapper(customPropsData, customAttrs) {
 
   return mount(TreeViewNode, {
     sync: false,
-    propsData: customPropsData || getDefaultPropsData(),
-    localVue,
+    props: customPropsData || getDefaultPropsData(),
     attrs: customAttrs,
     attachTo: elem
   });
@@ -71,7 +68,6 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
   });
 
   afterEach(() => {
-    wrapper.vm.$destroy();
     wrapper = null;
     eventData = null;
 
@@ -493,7 +489,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         initialModel: generateNodes(['ecs', ['ecs']])[0]
       }));
 
-      let node = wrapper.findAllComponents(TreeViewNode).at(1);
+      let node = wrapper.findAllComponents(TreeViewNode)[0];
       node.vm.$emit('treeViewNodeDragMove', node.vm.model);
     });
 
@@ -513,7 +509,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         wrapper.vm.model.treeNodeSpec.allowDrop = true;
         eventData.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"tree-id","data":${serializedNodeData}}`);
 
-        let node = wrapper.findAllComponents(TreeViewNode).at(1).find('.grtvn-self');
+        let node = wrapper.findAllComponents(TreeViewNode)[0].find('.grtvn-self');
         node.trigger('drop', eventData);
       });
 
@@ -531,7 +527,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         wrapper.vm.model.treeNodeSpec.allowDrop = true;
         eventData.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"tree-id","data":${serializedNodeData}}`);
 
-        let node = wrapper.findAllComponents(TreeViewNode).at(1).find('.grtvn-self-prev-target');
+        let node = wrapper.findAllComponents(TreeViewNode)[0].find('.grtvn-self-prev-target');
         node.trigger('drop', eventData);
       });
 

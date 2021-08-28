@@ -9,6 +9,8 @@ title-prefix: Home
 
 vue-tree is a Vue component that implements a TreeView control. Its aim is to provide common tree options in a way that is easy to use and easy to customize.
 
+> From version 4.0.0 this component only works with Vue 3 and up. For Vue 2 support, use [version 3.x](https://grapoza.github.io/vue-tree/3.0.3/).
+
 Features include:
 
 - Works in modern browsers using the precompiled scripts, or can be included in your babel/webpack chain.
@@ -368,11 +370,11 @@ Example usage:
 <tree-view id="customtree" :initial-model="model">
   <template #text="{ model, customClasses }">
     <!-- The treeview node's model is available, and built-in classes and overrides are available -->
-    <marquee :title="model.treeNodeSpec.title"
+    <em :title="model.treeNodeSpec.title"
               class="grtvn-self-text"
               :class="customClasses.treeViewNodeSelfText">
           {{ model[model.treeNodeSpec.labelProperty] }}
-    <marquee>
+    </em>
   </template>
 
   <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
@@ -389,7 +391,7 @@ Example usage:
              v-model="model.treeNodeSpec.state.input.value"
              @change="checkboxChangeHandler" /> <!-- The TreeViewNode change handler is available -->
 
-      <blink>{{ "Slotted Content for " + model[model.treeNodeSpec.labelProperty] }}</blink>
+      <em>{{ "Slotted Content for " + model[model.treeNodeSpec.labelProperty] }}</em>
     </label>
   </template>
 </tree-view>

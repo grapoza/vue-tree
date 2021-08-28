@@ -7,6 +7,10 @@ import {
 import TvEvent from '../enums/event';
 
 export default {
+  emits: [
+    TvEvent.DragMove,
+    TvEvent.Drop
+  ],
   methods: {
     /**
      * Remove the given child node from the array of children.
@@ -142,7 +146,7 @@ export default {
         if (this.tns._.dragMoved) {
           // If the node was moved within the original tree then it will have
           // been marked by $_grtvDnd_drop as such. Just clear the marker.
-          this.$delete(this.tns._, 'dragMoved');
+          delete this.tns._.dragMoved;
         }
         else {
           // If the node was moved to a different tree, delete it from this one
@@ -177,18 +181,18 @@ export default {
       const isPrevSiblingTarget = event.target.classList && event.target.classList.contains('grtvn-self-prev-target');
       const isNextSiblingTarget = event.target.classList && event.target.classList.contains('grtvn-self-next-target');
 
-      this.$set(this.tns._, 'isDropTarget', isTarget);
+      this.tns._.isDropTarget = isTarget;
 
       if (isPrevSiblingTarget) {
-        this.$set(this.tns._, 'isPrevDropTarget', isTarget);
-        this.$set(this.tns._, 'isChildDropTarget', false);
+        this.tns._.isPrevDropTarget = isTarget;
+        this.tns._.isChildDropTarget = false;
       }
       else if (isNextSiblingTarget) {
-        this.$set(this.tns._, 'isNextDropTarget', isTarget);
-        this.$set(this.tns._, 'isChildDropTarget', false);
+        this.tns._.isNextDropTarget = isTarget;
+        this.tns._.isChildDropTarget = false;
       }
       else {
-        this.$set(this.tns._, 'isChildDropTarget', isTarget);
+        this.tns._.isChildDropTarget = isTarget;
       }
     }
   }

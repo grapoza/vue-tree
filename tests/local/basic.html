@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Basic Usage</title>
-    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue@3.2.4"></script>
     <script src="../../dist/vue-tree.umd.js"></script>
     <link rel="stylesheet" href="demo.css">
     <link rel="stylesheet" href="../../dist/vue-tree.css">
@@ -25,7 +25,7 @@
     <script type='module'>
     import basicData from './basic.js';
 
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -42,10 +42,10 @@
       },
       methods: {
         refreshCheckedList() {
-          this.$set(this, 'checkedNodes', this.$refs.tree.getCheckedCheckboxes());
+          this.checkedNodes = this.$refs.tree.getCheckedCheckboxes();
         }
       }
-    }).$mount('#app')
+    }).mount('#app')
     </script>
   </body>
 </html>

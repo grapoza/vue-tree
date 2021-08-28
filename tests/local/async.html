@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <title>Async Loading Usage</title>
-  <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/vue@3.2.4"></script>
   <script src="../../dist/vue-tree.umd.js"></script>
   <link rel="stylesheet" href="demo.css">
   <link rel="stylesheet" href="../../dist/vue-tree.css">
@@ -19,7 +19,7 @@
   </div>
 
   <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -43,7 +43,7 @@
           return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: 'rootNode', label: 'Root Node', treeNodeSpec: { deletable: false } } ]), 1000));
         }
       }
-    }).$mount('#app');
+    }).mount('#app');
   </script>
 </body>
 

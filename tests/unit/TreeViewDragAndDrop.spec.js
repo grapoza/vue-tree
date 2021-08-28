@@ -1,11 +1,9 @@
 import { expect } from 'chai';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
 import { dropEffect as DropEffect } from '../../src/enums/dragDrop';
-
-const localVue = createLocalVue();
 
 const getDefaultPropsData = function () {
   return {
@@ -23,8 +21,7 @@ function createWrapper(customPropsData, customAttrs) {
 
   return mount(TreeView, {
     sync: false,
-    propsData: customPropsData || getDefaultPropsData(),
-    localVue,
+    props: customPropsData || getDefaultPropsData(),
     attrs: customAttrs,
     attachTo: elem
   });
@@ -47,7 +44,6 @@ describe('TreeView.vue (Drag and Drop)', () => {
   });
 
   afterEach(() => {
-    wrapper.vm.$destroy();
     wrapper = null;
     eventData = null;
 
@@ -206,7 +202,7 @@ describe('TreeView.vue (Drag and Drop)', () => {
       });
 
       afterEach(() => {
-        tree2.vm.$destroy();
+        tree2 = null;
       });
 
       it('should remove the node from the original tree', () => {
@@ -241,7 +237,7 @@ describe('TreeView.vue (Drag and Drop)', () => {
       });
 
       afterEach(() => {
-        tree2.vm.$destroy();
+        tree2 = null;
       });
 
       it('should assign new IDs to the conflicting nodes', () => {

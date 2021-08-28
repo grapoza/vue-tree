@@ -8,6 +8,14 @@ export default {
       required: true
     }
   },
+  emits: [
+    TvEvent.FocusableChange,
+    TvEvent.RequestFirstFocus,
+    TvEvent.RequestLastFocus,
+    TvEvent.RequestNextFocus,
+    TvEvent.RequestParentFocus,
+    TvEvent.RequestPreviousFocus
+  ],
   computed: {
     ariaTabIndex() {
       return this.tns.focusable ? 0 : -1;
@@ -22,7 +30,7 @@ export default {
         // If focusable is set to true and the tree is mounted in the DOM,
         // also focus the node's element.
         if (this.isMounted) {
-          this.$el.focus();
+          this.$refs.nodeElement.focus();
         }
         this.$emit(TvEvent.FocusableChange, this.model);
       }
@@ -39,10 +47,10 @@ export default {
      */
     $_grtvnAria_normalizeNodeData() {
       if (!this.tns) {
-        this.$set(this.model, 'treeNodeSpec', {});
+        this.model.treeNodeSpec = {};
       }
       if (typeof this.tns.focusable !== 'boolean') {
-        this.$set(this.tns, 'focusable', false);
+        this.tns.focusable = false;
       }
     },
     /**
@@ -92,7 +100,7 @@ export default {
         // Note that splitting activation and selection so explicitly differs from
         // https://www.w3.org/TR/wai-aria-practices-1.1/#keyboard-interaction-22 (Enter description, and Selection in multi-select trees)
         if (this.tns.input && !this.tns.state.input.disabled) {
-          let tvns = this.$el.querySelector('.grtvn-self');
+          let tvns = this.$refs.nodeElement.querySelector('.grtvn-self');
           let target = tvns.querySelector('.grtvn-self-input') || tvns.querySelector('input');
 
           if (target) {

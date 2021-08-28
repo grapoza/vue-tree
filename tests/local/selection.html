@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>Selection Demo</title>
-    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue@3.2.4"></script>
     <script src="../../dist/vue-tree.umd.js"></script>
     <link rel="stylesheet" href="demo.css">
     <link rel="stylesheet" href="../../dist/vue-tree.css">
@@ -35,7 +35,7 @@
     <script type='module'>
         import selectionData from './selection.js';
 
-        new Vue({
+        Vue.createApp({
             components: {
                 tree: window['vue-tree']
             },
@@ -58,10 +58,10 @@
             },
             methods: {
                 refreshSelectedList() {
-                    this.$set(this, 'selectedNodes', this.$refs.tree.getSelected());
+                    this.selectedNodes = this.$refs.tree.getSelected();
                 }
             }
-        }).$mount('#app')
+        }).mount('#app')
     </script>
 </body>
 

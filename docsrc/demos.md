@@ -26,7 +26,7 @@ The most basic use of the treeview consists of giving it some data and letting t
 </div>
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
-  new Vue({
+  Vue.createApp({
     components: {
       tree: TreeView
     },
@@ -50,7 +50,7 @@ The most basic use of the treeview consists of giving it some data and letting t
         ]
       };
     }
-  }).$mount('#app-basic');
+  }).mount('#app-basic');
 </script>
 ```
 ```{=html5}
@@ -62,7 +62,7 @@ The most basic use of the treeview consists of giving it some data and letting t
     <tree id="customtree-basic" :initial-model="model"></tree>
 </div>
 <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -86,7 +86,7 @@ The most basic use of the treeview consists of giving it some data and letting t
             ]
         };
       }
-    }).$mount('#app-basic');
+    }).mount('#app-basic');
 </script>
 ```
 
@@ -112,7 +112,7 @@ If all you need is a static tree (no expanding subnodes) then you can just set t
 </div>
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
-  new Vue({
+  Vue.createApp({
     components: {
       tree: TreeView
     },
@@ -142,7 +142,7 @@ If all you need is a static tree (no expanding subnodes) then you can just set t
         }
       };
     }
-  }).$mount('#app-static');
+  }).mount('#app-static');
 </script>
 ```
 ```{=html5}
@@ -154,7 +154,7 @@ If all you need is a static tree (no expanding subnodes) then you can just set t
     <tree id="customtree-static" :initial-model="model" :model-defaults="modelDefaults"></tree>
 </div>
 <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -184,7 +184,7 @@ If all you need is a static tree (no expanding subnodes) then you can just set t
             }
         };
       }
-    }).$mount('#app-static');
+    }).mount('#app-static');
 </script>
 ```
 
@@ -210,7 +210,7 @@ If there are common settings that should be used by all (or even most) nodes, th
 </div>
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
-  new Vue({
+  Vue.createApp({
     components: {
       tree: TreeView
     },
@@ -241,7 +241,7 @@ If there are common settings that should be used by all (or even most) nodes, th
         }
       };
     }
-  }).$mount('#app-custom');
+  }).mount('#app-custom');
 </script>
 ```
 ```{=html5}
@@ -253,7 +253,7 @@ If there are common settings that should be used by all (or even most) nodes, th
     <tree id="customtree-custom" :initial-model="model" :model-defaults="modelDefaults"></tree>
 </div>
 <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -284,7 +284,7 @@ If there are common settings that should be used by all (or even most) nodes, th
             }
         };
       }
-    }).$mount('#app-custom');
+    }).mount('#app-custom');
 </script>
 ```
 
@@ -310,7 +310,7 @@ Any node can be marked as deletable or provide a callback used to create a new c
 </div>
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
-  new Vue({
+  Vue.createApp({
     components: {
       tree: TreeView
     },
@@ -341,7 +341,7 @@ Any node can be marked as deletable or provide a callback used to create a new c
         });
       }
     }
-  }).$mount('#app-add-remove');
+  }).mount('#app-add-remove');
 </script>
 ```
 ```{=html5}
@@ -353,7 +353,7 @@ Any node can be marked as deletable or provide a callback used to create a new c
     <tree id="customtree-add-remove" :initial-model="model" :model-defaults="modelDefaults"></tree>
 </div>
 <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -384,7 +384,7 @@ Any node can be marked as deletable or provide a callback used to create a new c
           });
         }
       }
-    }).$mount('#app-add-remove');
+    }).mount('#app-add-remove');
 </script>
 ```
 
@@ -423,7 +423,7 @@ The convenience methods `getCheckedRadioButtons` and `getCheckedCheckboxes` are 
 
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
-  new Vue({
+  Vue.createApp({
     components: {
       tree: TreeView
     },
@@ -499,10 +499,10 @@ The convenience methods `getCheckedRadioButtons` and `getCheckedCheckboxes` are 
       refreshCheckedList() {
         let rbNodes = this.$refs.treeInputs.getCheckedRadioButtons();
         let cbNodes = this.$refs.treeInputs.getCheckedCheckboxes();
-        this.$set(this, 'checkedNodes', [...rbNodes, ...cbNodes]);
+        this.checkedNodes = [...rbNodes, ...cbNodes];
       }
     }
-  }).$mount('#app-inputs')
+  }).mount('#app-inputs')
 </script>
 ```
 ```{=html5}
@@ -521,7 +521,7 @@ The convenience methods `getCheckedRadioButtons` and `getCheckedCheckboxes` are 
 </div>
 
 <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -597,10 +597,10 @@ The convenience methods `getCheckedRadioButtons` and `getCheckedCheckboxes` are 
         refreshCheckedList() {
           let rbNodes = this.$refs.treeInputs.getCheckedRadioButtons();
           let cbNodes = this.$refs.treeInputs.getCheckedCheckboxes();
-          this.$set(this, 'checkedNodes', [...rbNodes, ...cbNodes]);
+          this.checkedNodes = [...rbNodes, ...cbNodes];
         }
       }
-    }).$mount('#app-inputs')
+    }).mount('#app-inputs')
 </script>
 ```
 
@@ -646,7 +646,7 @@ The convenience method `getSelected` is exposed on the tree component to make it
 
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
-  new Vue({
+  Vue.createApp({
     components: {
       tree: TreeView
     },
@@ -721,10 +721,10 @@ The convenience method `getSelected` is exposed on the tree component to make it
     },
     methods: {
       refreshSelectedList() {
-        this.$set(this, 'selectedNodes', this.$refs.treeSelection.getSelected());
+        this.selectedNodes = this.$refs.treeSelection.getSelected();
       }
     }
-  }).$mount('#app-selection');
+  }).mount('#app-selection');
 </script>
 ```
 ```{=html5}
@@ -750,7 +750,7 @@ The convenience method `getSelected` is exposed on the tree component to make it
 </div>
 
 <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -825,10 +825,10 @@ The convenience method `getSelected` is exposed on the tree component to make it
       },
       methods: {
         refreshSelectedList() {
-          this.$set(this, 'selectedNodes', this.$refs.treeSelection.getSelected());
+          this.selectedNodes = this.$refs.treeSelection.getSelected();
         }
       }
-    }).$mount('#app-selection');
+    }).mount('#app-selection');
 </script>
 ```
 
@@ -877,7 +877,7 @@ A treeview has slots available for replacing specific types of nodes. The `text`
                :disabled="model.treeNodeSpec.state.input.disabled"
                v-model="model.treeNodeSpec.state.input.value"
                v-on:change="checkboxChangeHandler" />
-        <marquee style="max-width: 6rem">{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</marquee>
+        <em>{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</em>
       </label>
     </template>
     <template v-slot:radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
@@ -900,7 +900,7 @@ A treeview has slots available for replacing specific types of nodes. The `text`
 
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
-  new Vue({
+  Vue.createApp({
     components: {
       tree: TreeView
     },
@@ -954,7 +954,7 @@ A treeview has slots available for replacing specific types of nodes. The `text`
         ]
       };
     }
-  }).$mount('#app-slots');
+  }).mount('#app-slots');
 </script>
 ```
 ```{=html5}
@@ -974,7 +974,7 @@ A treeview has slots available for replacing specific types of nodes. The `text`
                        :disabled="model.treeNodeSpec.state.input.disabled"
                        v-model="model.treeNodeSpec.state.input.value"
                        v-on:change="checkboxChangeHandler" />
-                <marquee style="max-width: 20rem">{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</marquee>
+                <em style="max-width: 20rem">{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</em>
             </label>
         </template>
         <template v-slot:radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
@@ -996,7 +996,7 @@ A treeview has slots available for replacing specific types of nodes. The `text`
 </div>
 
 <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -1050,7 +1050,7 @@ A treeview has slots available for replacing specific types of nodes. The `text`
           ]
         };
       }
-    }).$mount('#app-slots');
+    }).mount('#app-slots');
 </script>
 ```
 
@@ -1080,7 +1080,7 @@ You can load child nodes asynchronously by providing a function to the `loadChil
 </div>
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
-  new Vue({
+  Vue.createApp({
     components: {
       tree: TreeView
     },
@@ -1117,7 +1117,7 @@ You can load child nodes asynchronously by providing a function to the `loadChil
         ]), 1000));
       }
     }
-  }).$mount('#app-async');
+  }).mount('#app-async');
 </script>
 ```
 ```{=html5}
@@ -1129,7 +1129,7 @@ You can load child nodes asynchronously by providing a function to the `loadChil
     <tree id="customtree-async" :load-nodes-async="loadNodesAsync" :model-defaults="modelDefaults"></tree>
 </div>
 <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -1166,7 +1166,7 @@ You can load child nodes asynchronously by providing a function to the `loadChil
           ]), 1000));
         }
       }
-    }).$mount('#app-async');
+    }).mount('#app-async');
 </script>
 ```
 
@@ -1194,7 +1194,7 @@ First, let's look at the default styles. There's not much to see here, since the
 </div>
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
-  new Vue({
+  Vue.createApp({
     components: {
       tree: TreeView
     },
@@ -1227,7 +1227,7 @@ First, let's look at the default styles. There's not much to see here, since the
         return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
       }
     }
-  }).$mount('#app-custom-default');
+  }).mount('#app-custom-default');
 </script>
 ```
 ```{=html5}
@@ -1239,7 +1239,7 @@ First, let's look at the default styles. There's not much to see here, since the
     <tree id="customtree-default" :initial-model="model" :model-defaults="modelDefaults"></tree>
 </div>
 <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -1272,7 +1272,7 @@ First, let's look at the default styles. There's not much to see here, since the
           return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
         }
       }
-    }).$mount('#app-custom-default');
+    }).mount('#app-custom-default');
 </script>
 ```
 
@@ -1295,7 +1295,7 @@ Some simple customizations can be done by applying custom classes to various par
 </div>
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
-  new Vue({
+  Vue.createApp({
     components: {
       tree: TreeView
     },
@@ -1334,7 +1334,7 @@ Some simple customizations can be done by applying custom classes to various par
         return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
       }
     }
-  }).$mount('#app-custom-classbased');
+  }).mount('#app-custom-classbased');
 </script>
 ```
 ```{=html5}
@@ -1346,7 +1346,7 @@ Some simple customizations can be done by applying custom classes to various par
     <tree id="customtree-classbased" :initial-model="model" :model-defaults="modelDefaults"></tree>
 </div>
 <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -1385,7 +1385,7 @@ Some simple customizations can be done by applying custom classes to various par
           return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
         }
       }
-    }).$mount('#app-custom-classbased');
+    }).mount('#app-custom-classbased');
 </script>
 ```
 
@@ -1408,7 +1408,7 @@ In the next example, a treeview has been given a `skin-class` prop value of `gra
 </div>
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
-  new Vue({
+  Vue.createApp({
     components: {
       tree: TreeView
     },
@@ -1450,7 +1450,7 @@ In the next example, a treeview has been given a `skin-class` prop value of `gra
         return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
       }
     }
-  }).$mount('#app-custom-gray');
+  }).mount('#app-custom-gray');
 </script>
 ```
 ```{=html5}
@@ -1462,7 +1462,7 @@ In the next example, a treeview has been given a `skin-class` prop value of `gra
     <tree id="customtree-gray" :initial-model="model" :model-defaults="modelDefaults" :skin-class="'grayscale'"></tree>
 </div>
 <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -1504,7 +1504,7 @@ In the next example, a treeview has been given a `skin-class` prop value of `gra
           return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
         }
       }
-    }).$mount('#app-custom-gray');
+    }).mount('#app-custom-gray');
 </script>
 ```
 
@@ -1530,7 +1530,7 @@ You can drag a node that has the `draggable` property in a node's `treeNodeSpec`
 </div>
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
-  new Vue({
+  Vue.createApp({
     components: {
       tree: TreeView
     },
@@ -1558,7 +1558,7 @@ You can drag a node that has the `draggable` property in a node's `treeNodeSpec`
         }
       };
     }
-  }).$mount('#app-dnd');
+  }).mount('#app-dnd');
 </script>
 ```
 ```{=html5}
@@ -1573,7 +1573,7 @@ You can drag a node that has the `draggable` property in a node's `treeNodeSpec`
     <tree id="customtree-dnd-2" :initial-model="model2" :model-defaults="modelDefaults"></tree>
 </div>
 <script type='module'>
-    new Vue({
+    Vue.createApp({
       components: {
         tree: window['vue-tree']
       },
@@ -1620,6 +1620,6 @@ You can drag a node that has the `draggable` property in a node's `treeNodeSpec`
             }
         };
       }
-    }).$mount('#app-dnd');
+    }).mount('#app-dnd');
 </script>
 ```

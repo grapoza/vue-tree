@@ -1,10 +1,8 @@
 import { expect } from 'chai';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
 import SelectionMode from '../../src/enums/selectionMode';
-
-const localVue = createLocalVue();
 
 const getDefaultPropsData = function () {
   return {
@@ -22,9 +20,8 @@ const getDefaultPropsData = function () {
 function createWrapper(customPropsData, slotsData) {
   return mount(TreeViewNode, {
     sync: false,
-    propsData: customPropsData || getDefaultPropsData(),
-    localVue,
-    scopedSlots: slotsData
+    props: customPropsData || getDefaultPropsData(),
+    slots: slotsData
   });
 }
 
@@ -34,7 +31,6 @@ describe('TreeViewNode.vue', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
-    wrapper.vm.$destroy();
     wrapper = null;
   });
 
@@ -432,7 +428,7 @@ describe('TreeViewNode.vue', () => {
         });
 
         it('should have an aria-expanded attribute value of false', () => {
-          expect(wrapper.vm.$el.attributes['aria-expanded'].value).to.equal('false');
+          expect(wrapper.vm.$refs.nodeElement.attributes['aria-expanded'].value).to.equal('false');
         });
       });
 
@@ -464,7 +460,7 @@ describe('TreeViewNode.vue', () => {
         });
 
         it('should have an aria-expanded attribute value of true', () => {
-          expect(wrapper.vm.$el.attributes['aria-expanded'].value).to.equal('true');
+          expect(wrapper.vm.$refs.nodeElement.attributes['aria-expanded'].value).to.equal('true');
         });
       });
     });
@@ -516,7 +512,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should not have an aria-expanded attribute', () => {
-      expect(wrapper.vm.$el.attributes['aria-expanded']).to.be.undefined;
+      expect(wrapper.vm.$refs.nodeElement.attributes['aria-expanded']).to.be.undefined;
     });
   });
 
@@ -539,7 +535,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should not have an aria-selected attribute', () => {
-      expect(wrapper.vm.$el.attributes['aria-selected']).to.be.undefined;
+      expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected']).to.be.undefined;
     });
   });
 
@@ -562,7 +558,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should not have an aria-selected attribute', () => {
-      expect(wrapper.vm.$el.attributes['aria-selected']).to.be.undefined;
+      expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected']).to.be.undefined;
     });
   });
 
@@ -587,7 +583,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an aria-selected attribute of true', () => {
-        expect(wrapper.vm.$el.attributes['aria-selected'].value).to.equal('true');
+        expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected'].value).to.equal('true');
       });
     });
 
@@ -610,7 +606,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should not have an aria-selected attribute', () => {
-        expect(wrapper.vm.$el.attributes['aria-selected']).to.be.undefined;
+        expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected']).to.be.undefined;
       });
     });
   });
@@ -636,13 +632,13 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an aria-selected attribute of true', () => {
-        expect(wrapper.vm.$el.attributes['aria-selected'].value).to.equal('true');
+        expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected'].value).to.equal('true');
       });
     });
 
     describe('and the node is not selected', () => {
 
-      beforeEach(() => {
+      beforeEach(async () => {
 
         let initialModel = generateNodes(['s'])[0];
 
@@ -656,10 +652,12 @@ describe('TreeViewNode.vue', () => {
           selectionMode: SelectionMode.SelectionFollowsFocus,
           isMounted: false
         });
+
+        await wrapper.vm.$nextTick();
       });
 
       it('should not have an aria-selected attribute', () => {
-        expect(wrapper.vm.$el.attributes['aria-selected']).to.be.undefined;
+        expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected']).to.be.undefined;
       });
     });
   });
@@ -685,7 +683,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an aria-selected attribute of true', () => {
-        expect(wrapper.vm.$el.attributes['aria-selected'].value).to.equal('true');
+        expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected'].value).to.equal('true');
       });
     });
 
@@ -708,7 +706,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an aria-selected attribute of false', () => {
-        expect(wrapper.vm.$el.attributes['aria-selected'].value).to.equal('false');
+        expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected'].value).to.equal('false');
       });
     });
   });

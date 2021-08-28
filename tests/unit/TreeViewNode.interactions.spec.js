@@ -1,10 +1,8 @@
 import { expect } from 'chai';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
 import SelectionMode from '../../src/enums/selectionMode';
-
-const localVue = createLocalVue();
 
 const getDefaultPropsData = function () {
   return {
@@ -33,9 +31,8 @@ const getDefaultPropsData = function () {
 function createWrapper(customPropsData, slotsData) {
   return mount(TreeViewNode, {
     sync: false,
-    propsData: customPropsData || getDefaultPropsData(),
-    localVue,
-    scopedSlots: slotsData
+    props: customPropsData || getDefaultPropsData(),
+    slots: slotsData
   });
 }
 
@@ -44,7 +41,6 @@ describe('TreeViewNode.vue (interactions)', () => {
   let wrapper = null;
 
   afterEach(() => {
-    wrapper.vm.$destroy();
     wrapper = null;
   });
 
@@ -189,7 +185,7 @@ describe('TreeViewNode.vue (interactions)', () => {
 
         it('should show the children', () => {
           expect(wrapper.find('.grtvn-loading').exists()).to.be.false;
-          expect(wrapper.findAllComponents(TreeViewNode).length).to.equal(3);
+          expect(wrapper.findAllComponents(TreeViewNode).length).to.equal(2);
         });
 
         it('should emit the treeViewNodeChildrenLoad event', () => {
@@ -273,7 +269,6 @@ describe('TreeViewNode.vue (interactions)', () => {
 
     let deleteButton = null;
 
-
     beforeEach(() => {
       wrapper = createWrapper({
         ariaKeyMap: {},
@@ -285,7 +280,8 @@ describe('TreeViewNode.vue (interactions)', () => {
         isMounted: false
       });
 
-      deleteButton = wrapper.find('#' + wrapper.vm.$children[0].nodeId + '-delete');
+      let childNode = wrapper.findComponent(TreeViewNode);
+      deleteButton = wrapper.find('#' + childNode.vm.nodeId + '-delete');
     });
 
     it('should emit the treeViewNodeDelete event', () => {
