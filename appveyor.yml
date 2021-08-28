@@ -6,6 +6,8 @@ init:
   - sh: git config --global core.autocrlf true
   - sh: nvm use 14
 
+shallow_clone: true
+
 install:
   # Get the app version from the package.json's version property, and set the build number
   - ps: $env:package_version = (Get-Content -Raw -Path package.json | ConvertFrom-Json).version
