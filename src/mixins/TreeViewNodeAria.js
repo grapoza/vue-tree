@@ -21,9 +21,6 @@ export default {
       return this.tns.focusable ? 0 : -1;
     }
   },
-  created() {
-    this.$_grtvnAria_normalizeNodeData();
-  },
   watch: {
     'model.treeNodeSpec.focusable': function(newValue) {
       if (newValue === true) {
@@ -42,17 +39,6 @@ export default {
     }
   },
   methods: {
-    /**
-     * Normalize ARIA related node data.
-     */
-    $_grtvnAria_normalizeNodeData() {
-      if (!this.tns) {
-        this.model.treeNodeSpec = {};
-      }
-      if (typeof this.tns.focusable !== 'boolean') {
-        this.tns.focusable = false;
-      }
-    },
     /**
      * Set this node's focusable attribute to true.
      */
