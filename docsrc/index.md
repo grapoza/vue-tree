@@ -7,9 +7,9 @@ title-prefix: Home
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build status](https://ci.appveyor.com/api/projects/status/j8d19gt0vh16amhh/branch/master?svg=true)](https://ci.appveyor.com/project/Gregg/vue-tree/branch/master)
 
-vue-tree is a Vue component that implements a TreeView control. Its aim is to provide common tree options in a way that is easy to use and easy to customize.
+vue-tree is a Vue component that implements a Tree View control. Its aim is to provide common tree options in a way that is easy to use and easy to customize.
 
-> From version 4.0.0 this component only works with Vue 3 and up. For Vue 2 support, use [version 3.x](https://grapoza.github.io/vue-tree/3.0.3/).
+> From version 4.0.0 this component only works with Vue 3 and up. For Vue 2 support, use [version 3.x](https://grapoza.github.io/vue-tree/3.0.4/).
 
 Features include:
 
@@ -108,11 +108,11 @@ To see it in action, try out the [demos](demos.html).
 
 ## Selection Mode
 
-The `selectionMode` property defines how nodes should be selected within the treeview. Allowed values are `null`, `single`, `selectionFollowsFocus`, and `multiple`. Only nodes with the `selectable` model property set to `true` can be selected.
+The `selectionMode` property defines how nodes should be selected within the tree view. Allowed values are `null`, `single`, `selectionFollowsFocus`, and `multiple`. Only nodes with the `selectable` model property set to `true` can be selected.
 
 - If `null` (the default) then selection does not occur.
 - If `single` then one node is selected at a time when the user clicks the node or using the selection keyboard binding (`Enter` by default).
-- If `selectionFollowsFocus` then selection follows the focusable node within the treeview.
+- If `selectionFollowsFocus` then selection follows the focusable node within the tree view.
 - if `mulitple` then multiple nodes can be selected when the user clicks each node or using the selection keyboard binding on each node.
 
 When clicking on a node, it is only selected if the click target was not interactive (_e.g._, clicking a checkbox or expander won't select the node, but clicking a label will).
@@ -121,7 +121,7 @@ When clicking on a node, it is only selected if the click target was not interac
 
 Model data can be loaded either synchronously through the `initialModel` property or asynchronously through the `loadNodesAsync` property. If both are specified then the data from `initialModel` is overwritten when the `loadNodesAsync` function returns data.
 
-The data passed to the treeview's `initialModel` prop or returned from `loadNodesAsync` should be an array of nodes, where each node should have:
+The data passed to the tree view's `initialModel` prop or returned from `loadNodesAsync` should be an array of nodes, where each node should have:
 
 * Required: A property with a value that will be used as the node's ID (by default the node looks for a property named `id`)
 * Required: A property with a value that will be used as the node's label (by default the node looks for a property named `label`)
@@ -129,7 +129,7 @@ The data passed to the treeview's `initialModel` prop or returned from `loadNode
 * Optional: A `treeNodeSpec` property that contains any data about the node's capabilities and its initial state
 * Optional: Any other data you want on your node
 
-The `treeNodeSpec` of the objects in the data model passed to the treeview's `initialModel` property will be updated by the treeview nodes themselves on creation to include missing properties.
+The `treeNodeSpec` of the objects in the data model passed to the tree view's `initialModel` property will be updated by the tree view nodes themselves on creation to include missing properties.
 
 ```javascript
 {
@@ -187,11 +187,11 @@ The properties below can be specified for each node. Note that `id`, `label`, an
 | Prop                 | Type            | Description                                                                | Default value                      | Required |
 |:---------------------|:----------------|:---------------------------------------------------------------------------|:-----------------------------------|:---------|
 | id                   | Number/String   | An ID that uniquely identifies this node within the tree                   | -                                  | Yes      |
-| label                | String          | The text to show in the treeview                                           | -                                  | Yes      |
+| label                | String          | The text to show in the tree view                                          | -                                  | Yes      |
 | children             | Array\<Object\> | The child nodes of this node                                               | `[]`                               |          |
 | treeNodeSpec         | Object          | The object containing data about the node's capabilities and initial state | See next table                     |          |
 
-The `treeNodeSpec` property contains any data about the node's capabilities and its initial state. This keeps the tree-specific data separate from the data of the model itself. This makes it more convenient to drop data into the treeview as-is, potentially with a `modelDefaults` specified on the treeview to define common values used in the `treeNodeSpec` of every node.
+The `treeNodeSpec` property contains any data about the node's capabilities and its initial state. This keeps the tree-specific data separate from the data of the model itself. This makes it more convenient to drop data into the tree view as-is, potentially with a `modelDefaults` specified on the tree view to define common values used in the `treeNodeSpec` of every node.
 
 | Prop                 | Type     | Description                                                                               | Default value                      | Required |
 |:---------------------|:---------|:------------------------------------------------------------------------------------------|:-----------------------------------|:---------|
@@ -202,7 +202,7 @@ The `treeNodeSpec` property contains any data about the node's capabilities and 
 | expandable           | Boolean  | True to show a toggle for expanding nodes' subnode lists                                  | `true`                             |          |
 | selectable           | Boolean  | True to allow the node to be selected                                                     | `false`                            |          |
 | deletable            | Boolean  | True to allow the node to be deleted                                                      | `false`                            |          |
-| focusable            | Boolean  | True to make the node the focus when the treeview is focused                              | See [Aria](#focusable) for details |          |
+| focusable            | Boolean  | True to make the node the focus when the tree view is focused                             | See [Aria](#focusable) for details |          |
 | draggable            | Boolean  | True to make this node draggable                                                          | `false`                            |          |
 | allowDrop            | Boolean  | True to allow dropping TreeViewNode data onto this node                                   | `false`                            |          |
 | expanderTitle        | String   | The text to use as the title for the expander button                                      | `null`                             |          |
@@ -219,7 +219,7 @@ The `treeNodeSpec` property contains any data about the node's capabilities and 
 | state.input          | Object   | Contains any state related to the input field                                             | `{}` for checkbox, otherwise -     |          |
 | state.input.value    | Boolean  | Contains the value of the input                                                           | `false` for checkbox, otherwise -  |          |
 | state.input.disabled | Boolean  | True if the node's input field is disabled                                                | `false`                            |          |
-| customizations       | Object   | A [customizations](#customizing-the-treeview) object                                      | `{}`                               |          |
+| customizations       | Object   | A [customizations](#customizing-the-tree-view) object                                     | `{}`                               |          |
 | addChildCallback     | Function | An async function that resolves to a new node model (called by the add button). The function can take one argument, the model of the parent node. It should return the model of the new child node. | `null` | |
 | loadChildrenAsync    | Function | An async function that resolves to a node's children (called when the parent is expanded). The function can take one argument, the model of the parent node. It should return the models of the children nodes. | `null` | |
 
@@ -229,7 +229,7 @@ The `treeNodeSpec` property contains any data about the node's capabilities and 
 
 ## Default Data
 
-If specified, the `modelDefaults` property of the treeview will be merged with node model's `treeNodeSpec` data such that any data not explicitly specified for the node will be set to the value from `modelDefaults`. This is useful for situations where all (or most) nodes will use the same values. For instance, in a treeview that is all enabled, collapsed, unchecked checkboxes the user could use a `modelDefaults` of
+If specified, the `modelDefaults` property of the TreeView will be merged with node model's `treeNodeSpec` data such that any data not explicitly specified for the node will be set to the value from `modelDefaults`. This is useful for situations where all (or most) nodes will use the same values. For instance, in a tree view that is all enabled, collapsed, unchecked checkboxes the user could use a `modelDefaults` of
 
 ```javascript
 {
@@ -262,24 +262,24 @@ If specified, the `modelDefaults` property of the treeview will be merged with n
 
 | Event                      | Description                                                    | Handler Parameters                                                     |
 |:---------------------------|:---------------------------------------------------------------|:-----------------------------------------------------------------------|
-| treeViewNodeAdd            | Emitted when a node is added                                   | `target` The model of the target (child) node <br/> `parent` The model of the parent node <br/> `event` The original event |
-| treeViewNodeClick          | Emitted when a node is clicked                                 | `target` The model of the target node <br/> `event` The original event |
-| treeViewNodeDblclick       | Emitted when a node is double clicked                          | `target` The model of the target node <br/> `event` The original event |
-| treeViewNodeDelete         | Emitted when a node is deleted                                 | `target` The model of the target node <br/> `event` The original event |
-| treeViewNodeCheckboxChange | Emitted when a node's checkbox emits a change event            | `target` The model of the target node <br/> `event` The original event |
-| treeViewNodeRadioChange    | Emitted when a node's radio button emits a change event        | `target` The model of the target node <br/> `event` The original event |
-| treeViewNodeExpandedChange | Emitted when a node is expanded or collapsed                   | `target` The model of the target node <br/> `event` The original event |
-| treeViewNodeSelectedChange | Emitted when a node is selected or deselected                  | `target` The model of the target node <br/> `event` The original event |
-| treeViewNodeChildrenLoad   | Emitted when a node's children are done loading asynchronously | `target` The model of the target node <br/> `event` The original event |
-| treeViewRootNodesLoad      | Emitted when the root nodes are done loading asynchronously    |                                                                        |
+| treeNodeAdd            | Emitted when a node is added                                   | `target` The model of the target (child) node <br/> `parent` The model of the parent node <br/> `event` The original event |
+| treeNodeClick          | Emitted when a node is clicked                                 | `target` The model of the target node <br/> `event` The original event |
+| treeNodeDblclick       | Emitted when a node is double clicked                          | `target` The model of the target node <br/> `event` The original event |
+| treeNodeDelete         | Emitted when a node is deleted                                 | `target` The model of the target node <br/> `event` The original event |
+| treeNodeCheckboxChange | Emitted when a node's checkbox emits a change event            | `target` The model of the target node <br/> `event` The original event |
+| treeNodeRadioChange    | Emitted when a node's radio button emits a change event        | `target` The model of the target node <br/> `event` The original event |
+| treeNodeExpandedChange | Emitted when a node is expanded or collapsed                   | `target` The model of the target node <br/> `event` The original event |
+| treeNodeSelectedChange | Emitted when a node is selected or deselected                  | `target` The model of the target node <br/> `event` The original event |
+| treeNodeChildrenLoad   | Emitted when a node's children are done loading asynchronously | `target` The model of the target node <br/> `event` The original event |
+| treeRootNodesLoad      | Emitted when the root nodes are done loading asynchronously    |                                                                        |
 
 ## CSS Classes
 
-The display of the treeview can be customized via CSS using the following classes. Class names are organized in a hierarchy, so a containing node's class is the prefix of its child classes.
+The display of the tree view can be customized via CSS using the following classes. Class names are organized in a hierarchy, so a containing node's class is the prefix of its child classes.
 
 | Class                                  | Affects                                                                          |
 |:---------------------------------------|:---------------------------------------------------------------------------------|
-| `grtv`                                 | The top-level treeview list                                                      |
+| `grtv`                                 | The top-level tree view list                                                     |
 | `grtv-wrapper`                         | The wrapper div around the list of root nodes and the loading placeholder        |
 | `grtv-loading`                         | The placeholder shown when root nodes are loading asynchronously                 |
 | `grtvn`                                | A single node's list item                                                        |
@@ -308,7 +308,7 @@ The display of the treeview can be customized via CSS using the following classe
 | `grtvn-loading`                        | The placeholder shown when child nodes are loading asynchronously                |
 | `grtvn-dragging`                       | The node is dragged as part of a drag and drop operation                         |
 
-## Customizing the TreeView
+## Customizing the Tree View
 
 ### Customizations Property
 
@@ -369,7 +369,7 @@ Example usage:
 ```html
 <tree-view id="customtree" :initial-model="model">
   <template #text="{ model, customClasses }">
-    <!-- The treeview node's model is available, and built-in classes and overrides are available -->
+    <!-- The TreeViewNode's model is available, and built-in classes and overrides are available -->
     <em :title="model.treeNodeSpec.title"
               class="grtvn-self-text"
               :class="customClasses.treeViewNodeSelfText">
@@ -428,11 +428,11 @@ When a node is moved or copied to a different tree, the node data that passes be
 
 ## Aria
 
-ARIA Accessibility recommendations have been implemented at a basic level. This means keyboard navigation follows ARIA recommendations, but the component has not been tested with a screen reader and, since many screen readers exhibit different behaviors for treeview controls anyway, it would be expected to fail articulation checks in many cases. Additionally, some recommended keyboard controls are not implemented (e.g., Expand All Nodes, Type-ahead Focusing). When using the component, there are only a couple of things you need to know.
+ARIA Accessibility recommendations have been implemented at a basic level. This means keyboard navigation follows ARIA recommendations, but the component has not been tested with a screen reader and, since many screen readers exhibit different behaviors for tree view controls anyway, it would be expected to fail articulation checks in many cases. Additionally, some recommended keyboard controls are not implemented (e.g., Expand All Nodes, Type-ahead Focusing). When using the component, there are only a couple of things you need to know.
 
 ### Setting Key Bindings
 
-The keys used to navigate the treeview can be customized using the `customAriaKeyMap` prop of the TreeView component. The value of the prop is an object, with each attribute named for a type of action and its value as an Array of integer key codes that trigger that action.
+The keys used to navigate the tree view can be customized using the `customAriaKeyMap` prop of the TreeView component. The value of the prop is an object, with each attribute named for a type of action and its value as an Array of integer key codes that trigger that action.
 
 | Attribute           | Description                                                                                            | Default value            |
 |:--------------------|:-------------------------------------------------------------------------------------------------------|:-------------------------|
@@ -453,8 +453,8 @@ The keys used to navigate the treeview can be customized using the `customAriaKe
 
 ### Focusable
 
-The treeview uses a roaming tab index to maintain focusability in the tree. A node model can specify a `treeNodeSpec.focusable` property of `true` in order for that node to be used as the initial target of keyboard focus within the treeview. If multiple node models specify this then only the first will have `treeNodeSpec.focusable` set to `true` once the treeview is intialized. If no models have it specified then the first selected node in the treeview is given a `treeNodeSpec.focusable` of `true`. If there are no selected nodes then the first node in the treeview is given a `treeNodeSpec.focusable` of `true`.
+The tree view uses a roaming tab index to maintain focusability in the tree. A node model can specify a `treeNodeSpec.focusable` property of `true` in order for that node to be used as the initial target of keyboard focus within the tree view. If multiple node models specify this then only the first will have `treeNodeSpec.focusable` set to `true` once the tree view is intialized. If no models have it specified then the first selected node in the tree view is given a `treeNodeSpec.focusable` of `true`. If there are no selected nodes then the first node in the tree view is given a `treeNodeSpec.focusable` of `true`.
 
-### More about ARIA TreeViews
+### More about ARIA Tree Views
 
 [WAI-ARIA Authoring Best Practices, Tree View](https://www.w3.org/TR/wai-aria-practices-1.1/#TreeView)

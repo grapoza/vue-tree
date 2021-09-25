@@ -1,31 +1,31 @@
 const events = Object.freeze({
     // Root tree state
-    RootNodesLoad: 'treeViewRootNodesLoad',
+    RootNodesLoad: 'treeRootNodesLoad',
 
     // Node state
-    Click: 'treeViewNodeClick',
-    DoubleClick: 'treeViewNodeDblclick',
-    CheckboxChange: 'treeViewNodeCheckboxChange',
-    RadioChange: 'treeViewNodeRadioChange',
-    ExpandedChange: 'treeViewNodeExpandedChange',
-    ChildrenLoad: 'treeViewNodeChildrenLoad',
-    SelectedChange: 'treeViewNodeSelectedChange',
+    Click: 'treeNodeClick',
+    DoubleClick: 'treeNodeDblclick',
+    CheckboxChange: 'treeNodeCheckboxChange',
+    RadioChange: 'treeNodeRadioChange',
+    ExpandedChange: 'treeNodeExpandedChange',
+    ChildrenLoad: 'treeNodeChildrenLoad',
+    SelectedChange: 'treeNodeSelectedChange',
 
     // Focus
-    FocusableChange: 'treeViewNodeAriaFocusableChange',
-    RequestFirstFocus: 'treeViewNodeAriaRequestFirstFocus',
-    RequestLastFocus: 'treeViewNodeAriaRequestLastFocus',
-    RequestParentFocus: 'treeViewNodeAriaRequestParentFocus',
-    RequestPreviousFocus: 'treeViewNodeAriaRequestPreviousFocus',
-    RequestNextFocus: 'treeViewNodeAriaRequestNextFocus',
+    FocusableChange: 'treeNodeAriaFocusableChange',
+    RequestFirstFocus: 'treeNodeAriaRequestFirstFocus',
+    RequestLastFocus: 'treeNodeAriaRequestLastFocus',
+    RequestParentFocus: 'treeNodeAriaRequestParentFocus',
+    RequestPreviousFocus: 'treeNodeAriaRequestPreviousFocus',
+    RequestNextFocus: 'treeNodeAriaRequestNextFocus',
 
     // Hierarchy
-    Add: 'treeViewNodeAdd',
-    Delete: 'treeViewNodeDelete',
+    Add: 'treeNodeAdd',
+    Delete: 'treeNodeDelete',
 
     // Drag and Drop
-    DragMove: 'treeViewNodeDragMove',
-    Drop: 'treeViewNodeDrop'
+    DragMove: 'treeNodeDragMove',
+    Drop: 'treeNodeDrop'
 });
 
 export default events;

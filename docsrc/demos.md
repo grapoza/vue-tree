@@ -7,7 +7,7 @@ title-prefix: Demos
 <!--- -------------------------------------------------------------------------------------- --->
 ### A Basic Tree
 
-The most basic use of the treeview consists of giving it some data and letting the tree populate the model with the default tree node properties, which it does by adding a `treeNodeSpec` property to each object in the hierarchy. This can be useful if you have a model and want it in a treeview, and also don't care if the treeview modifies that data. If you don't want the treeview to modify your data at all, you'll need to make a copy first and provide that to the treeview.
+The most basic use of the tree view consists of giving it some data and letting the tree populate the model with the default tree node properties, which it does by adding a `treeNodeSpec` property to each object in the hierarchy. This can be useful if you have a model and want it in a tree view, and also don't care if the tree view modifies that data. If you don't want the tree view to modify your data at all, you'll need to make a copy first and provide that to the tree view.
 
 ```{=html5}
 <details>
@@ -391,7 +391,7 @@ Any node can be marked as deletable or provide a callback used to create a new c
 <!--- -------------------------------------------------------------------------------------- --->
 ### Inputs
 
-Support for checkboxes and radio buttons is built into the treeview.
+Support for checkboxes and radio buttons is built into the tree view.
 
 To create a checkbox node, specify `input.type = 'checkbox'` on the node's `treeNodeSpec`. To initialize the node as checked, specify `state.input.value = true`.
 
@@ -835,7 +835,7 @@ The convenience method `getSelected` is exposed on the tree component to make it
 <!--- -------------------------------------------------------------------------------------- --->
 ### Slots
 
-A treeview has slots available for replacing specific types of nodes. The `text`, `checkbox`, `radio`, `loading-root` and `loading` slots replace the correpsonding types of nodes. For more info, see [the docs](./#slots).
+A tree view has slots available for replacing specific types of nodes. The `text`, `checkbox`, `radio`, `loading-root` and `loading` slots replace the correpsonding types of nodes. For more info, see [the docs](./#slots).
 
 ```{=html5}
 <details>
@@ -1057,9 +1057,9 @@ A treeview has slots available for replacing specific types of nodes. The `text`
 <!--- -------------------------------------------------------------------------------------- --->
 ### Asynchronous Loading
 
-Two types of asynchronous loading are available. The first loads the root data for the treeview itself, and the second asynchronously loads child data when a node is expanded.
+Two types of asynchronous loading are available. The first loads the root data for the tree view itself, and the second asynchronously loads child data when a node is expanded.
 
-You can load root nodes asynchronously by providing a function to the `loadNodesAsync` property of the treeview. The function should return a Promise that resolves to an array of model data to add as root nodes.
+You can load root nodes asynchronously by providing a function to the `loadNodesAsync` property of the tree view. The function should return a Promise that resolves to an array of model data to add as root nodes.
 
 You can load child nodes asynchronously by providing a function to the `loadChildrenAsync` property in a node's `treeNodeSpec` (or use `modelDefaults` to use the same method for all nodes). The function can take the parent node's model data as an argument, and should return a Promise that resolves to an array of model data to add as children.
 
@@ -1173,9 +1173,9 @@ You can load child nodes asynchronously by providing a function to the `loadChil
 <!--- -------------------------------------------------------------------------------------- --->
 ### Custom Styles
 
-Custom styling is achieved through a combination of using the `customizations` property of TreeViewNode data to apply custom styles to parts of nodes, along with a custom `skinStyle` TreeView prop and associated stylesheet. Of course, you could also just write some very specific selectors to override the default styles. For more info, see [the docs](./#customizing-the-treeview).
+Custom styling is achieved through a combination of using the `customizations` property of TreeViewNode data to apply custom styles to parts of nodes, along with a custom `skinStyle` TreeView prop and associated stylesheet. Of course, you could also just write some very specific selectors to override the default styles. For more info, see [the docs](./#customizing-the-tree-view).
 
-First, let's look at the default styles. There's not much to see here, since the intention is for the user to handle styling the treeview while the component focuses on creating a workable structure. Things generally line up right, but not much more can be said for it.
+First, let's look at the default styles. There's not much to see here, since the intention is for the user to handle styling the tree view while the component focuses on creating a workable structure. Things generally line up right, but not much more can be said for it.
 
 ```{=html5}
 <details>
@@ -1389,7 +1389,7 @@ Some simple customizations can be done by applying custom classes to various par
 </script>
 ```
 
-In the next example, a treeview has been given a `skin-class` prop value of `grayscale`. This effectively swaps out a class named `grtv-default-skin` on the TreeView for the one specified as the `skin-class`. This _completely removes_ the default styling. To provide new styles, a [new stylesheet](./style/demo/grayscale.css) was created based on the default styles (copied right from the browser). This gives complete control of the styling, allowing for easier usage of things like Font Awesome as seen here.
+In the next example, a tree view has been given a `skin-class` prop value of `grayscale`. This effectively swaps out a class named `grtv-default-skin` on the TreeView for the one specified as the `skin-class`. This _completely removes_ the default styling. To provide new styles, a [new stylesheet](./style/demo/grayscale.css) was created based on the default styles (copied right from the browser). This gives complete control of the styling, allowing for easier usage of things like Font Awesome as seen here.
 
 ```{=html5}
 <details>

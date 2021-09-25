@@ -28,7 +28,7 @@ export default {
       }
     },
     /**
-     * Handling for the treeViewNodeDrop event on its way up the tree
+     * Handling for the treeNodeDrop event on its way up the tree
      * to the TreeView component for final handling. The initial event
      * was fired from the node on which the drop happened.
      *
@@ -37,7 +37,7 @@ export default {
      * is the set of nodes that contains the drop target, so if no lower
      * node has set it through this handler then the target must be this
      * node's child.
-     * @param {Object} data The custom treeViewNodeDrop event data
+     * @param {Object} data The custom treeNodeDrop event data
      * @param {DragEvent} event The original DOM drop event
      */
     $_grtvnDnd_drop(data, event) {
@@ -104,7 +104,7 @@ export default {
     /**
      * Handles the drop of a tree node onto this node by deciding what
      * kind of action should occur, crafting eventData, and emitting
-     * the treeViewNodeDrop event so it can bubble up to the TreeView
+     * the treeNodeDrop event so it can bubble up to the TreeView
      * for handling.
      * @param {DragEvent} event The original DOM drop event
      */

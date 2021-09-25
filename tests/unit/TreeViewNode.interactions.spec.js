@@ -56,8 +56,8 @@ describe('TreeViewNode.vue (interactions)', () => {
         nodeBody.trigger('click');
       });
 
-      it('should emit the treeViewNodeClick event', () => {
-        expect(wrapper.emitted().treeViewNodeClick.length).to.equal(1);
+      it('should emit the treeNodeClick event', () => {
+        expect(wrapper.emitted().treeNodeClick.length).to.equal(1);
       });
     });
 
@@ -97,9 +97,9 @@ describe('TreeViewNode.vue (interactions)', () => {
       nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .grtvn-self`);
     });
 
-    it('should emit the treeViewNodeDblclick event', () => {
+    it('should emit the treeNodeDblclick event', () => {
       nodeBody.trigger('dblclick');
-      expect(wrapper.emitted().treeViewNodeDblclick.length).to.equal(1);
+      expect(wrapper.emitted().treeNodeDblclick.length).to.equal(1);
     });
   });
 
@@ -128,19 +128,19 @@ describe('TreeViewNode.vue (interactions)', () => {
         expect(wrapper.vm.model.treeNodeSpec.state.expanded).to.be.true;
       });
 
-      it('should emit the treeViewNodeExpandedChange event', () => {
+      it('should emit the treeNodeExpandedChange event', () => {
         expander.trigger('click');
-        expect(wrapper.emitted().treeViewNodeExpandedChange.length).to.equal(1);
+        expect(wrapper.emitted().treeNodeExpandedChange.length).to.equal(1);
       });
 
-      it('should not emit the treeViewNodeClick event', () => {
+      it('should not emit the treeNodeClick event', () => {
         expander.trigger('click');
-        expect(wrapper.emitted().treeViewNodeClick).to.be.undefined;
+        expect(wrapper.emitted().treeNodeClick).to.be.undefined;
       });
 
-      it('should not emit the treeViewNodeDblclick event', () => {
+      it('should not emit the treeNodeDblclick event', () => {
         expander.trigger('dblclick');
-        expect(wrapper.emitted().treeViewNodeDblclick).to.be.undefined;
+        expect(wrapper.emitted().treeNodeDblclick).to.be.undefined;
       });
     });
 
@@ -188,8 +188,8 @@ describe('TreeViewNode.vue (interactions)', () => {
           expect(wrapper.findAllComponents(TreeViewNode).length).to.equal(2);
         });
 
-        it('should emit the treeViewNodeChildrenLoad event', () => {
-          expect(wrapper.emitted().treeViewNodeChildrenLoad).to.be.an('array').that.has.length(1);
+        it('should emit the treeNodeChildrenLoad event', () => {
+          expect(wrapper.emitted().treeNodeChildrenLoad).to.be.an('array').that.has.length(1);
         });
       });
     });
@@ -209,19 +209,19 @@ describe('TreeViewNode.vue (interactions)', () => {
       expect(wrapper.vm.model.treeNodeSpec.state.input.value).to.be.true;
     });
 
-    it('should emit the treeViewNodeCheckboxChange event', () => {
+    it('should emit the treeNodeCheckboxChange event', () => {
       checkbox.setChecked();
-      expect(wrapper.emitted().treeViewNodeCheckboxChange.length).to.equal(1);
+      expect(wrapper.emitted().treeNodeCheckboxChange.length).to.equal(1);
     });
 
-    it('should not emit the treeViewNodeClick event', () => {
+    it('should not emit the treeNodeClick event', () => {
       checkbox.setChecked();
-      expect(wrapper.emitted().treeViewNodeClick).to.be.undefined;
+      expect(wrapper.emitted().treeNodeClick).to.be.undefined;
     });
 
-    it('should not emit the treeViewNodeDblclick event', () => {
+    it('should not emit the treeNodeDblclick event', () => {
       checkbox.trigger('dblclick');
-      expect(wrapper.emitted().treeViewNodeDblclick).to.be.undefined;
+      expect(wrapper.emitted().treeNodeDblclick).to.be.undefined;
     });
   });
 
@@ -249,19 +249,19 @@ describe('TreeViewNode.vue (interactions)', () => {
       expect(wrapper.vm.radioGroupValues[model.treeNodeSpec.input.name]).to.equal(model.treeNodeSpec.input.value);
     });
 
-    it('should emit the treeViewNodeRadioChange event', () => {
+    it('should emit the treeNodeRadioChange event', () => {
       radioButton.setChecked();
-      expect(wrapper.emitted().treeViewNodeRadioChange.length).to.equal(1);
+      expect(wrapper.emitted().treeNodeRadioChange.length).to.equal(1);
     });
 
-    it('should not emit the treeViewNodeClick event', () => {
+    it('should not emit the treeNodeClick event', () => {
       radioButton.setChecked();
-      expect(wrapper.emitted().treeViewNodeClick).to.be.undefined;
+      expect(wrapper.emitted().treeNodeClick).to.be.undefined;
     });
 
-    it('should not emit the treeViewNodeDblclick event', () => {
+    it('should not emit the treeNodeDblclick event', () => {
       radioButton.trigger('dblclick');
-      expect(wrapper.emitted().treeViewNodeDblclick).to.be.undefined;
+      expect(wrapper.emitted().treeNodeDblclick).to.be.undefined;
     });
   });
 
@@ -280,13 +280,13 @@ describe('TreeViewNode.vue (interactions)', () => {
         isMounted: false
       });
 
-      let childNode = wrapper.findComponent(TreeViewNode);
+      let childNode = wrapper.findAllComponents(TreeViewNode)[0];
       deleteButton = wrapper.find('#' + childNode.vm.nodeId + '-delete');
     });
 
-    it('should emit the treeViewNodeDelete event', () => {
+    it('should emit the treeNodeDelete event', () => {
       deleteButton.trigger('click');
-      expect(wrapper.emitted().treeViewNodeDelete.length).to.equal(1);
+      expect(wrapper.emitted().treeNodeDelete.length).to.equal(1);
     });
 
     it('should remove the target node from the model', () => {
@@ -319,20 +319,20 @@ describe('TreeViewNode.vue (interactions)', () => {
         addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
       });
 
-      it('should emit the treeViewNodeAdd event', async () => {
+      it('should emit the treeNodeAdd event', async () => {
         addChildButton.trigger('click');
 
         await Promise.resolve(); // This just lets the callback resolve before the expect.
 
-        expect(wrapper.emitted().treeViewNodeAdd.length).to.equal(1);
+        expect(wrapper.emitted().treeNodeAdd.length).to.equal(1);
       });
 
-      it('should pass the new node data to the treeViewNodeAdd event', async () => {
+      it('should pass the new node data to the treeNodeAdd event', async () => {
         addChildButton.trigger('click');
 
         await Promise.resolve(); // This just lets the callback resolve before the expect.
 
-        expect(wrapper.emitted().treeViewNodeAdd[0][0].id).to.equal('newId');
+        expect(wrapper.emitted().treeNodeAdd[0][0].id).to.equal('newId');
       });
 
       it('should add a subnode to the target node from the model', async () => {
@@ -364,12 +364,12 @@ describe('TreeViewNode.vue (interactions)', () => {
         addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
       });
 
-      it('should not emit the treeViewNodeAdd event', async () => {
+      it('should not emit the treeNodeAdd event', async () => {
         addChildButton.trigger('click');
 
         await Promise.resolve(); // This just lets the callback resolve before the expect.
 
-        expect(wrapper.emitted().treeViewNodeAdd).to.be.undefined;
+        expect(wrapper.emitted().treeNodeAdd).to.be.undefined;
       });
 
       it('should add a subnode to the target node from the model', async () => {

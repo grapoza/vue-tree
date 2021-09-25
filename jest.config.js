@@ -4,10 +4,11 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.{js,vue}'
   ],
-  "coverageThreshold": {
+  coverageThreshold: {
     "./src/**/*": {
       "statements": 90
     }
   },
+  coveragePathIgnorePatterns: ["/node_modules/", "TreeGrid"],
   verbose: true
 }

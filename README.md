@@ -1,13 +1,13 @@
 # vue-tree
 
-vue-tree is a Vue component that implements a TreeView control. Its aim is to provide common tree options in a way that is easy to use and easy to customize.
+vue-tree is a Vue component that implements a Tree View control. Its aim is to provide common tree options in a way that is easy to use and easy to customize.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build status](https://ci.appveyor.com/api/projects/status/j8d19gt0vh16amhh/branch/master?svg=true)](https://ci.appveyor.com/project/Gregg/vue-tree/branch/master)
 
 ## Full Documentation
 
-See the full documentation over at the [project's Github Pages](https://grapoza.github.io/vue-tree/). This includes information on how to use and configure the treeview, features (both existing and planned) as well as some demos.
+See the full documentation over at the [project's Github Pages](https://grapoza.github.io/vue-tree/). This includes information on how to use and configure the tree view, features (both existing and planned) as well as some demos.
 
 ##  Installation
 
@@ -20,7 +20,7 @@ or
 npm install --save @grapoza/vue-tree
 ```
 
-The default import from this package is the components from the .vue files. In addition to this, pre-compiled versions of the TreeView component and CSS are also available in the package but you will need to reference them manually from your own project.
+The default import from this package is the components from the .vue files. In addition to this, pre-compiled versions of the Tree View component and CSS are also available in the package but you will need to reference them manually from your own project.
 
 ## Usage
 

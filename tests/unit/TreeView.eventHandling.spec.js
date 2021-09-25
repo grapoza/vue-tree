@@ -25,77 +25,77 @@ describe('TreeView.vue (event handling)', () => {
     wrapper = null;
   });
 
-  describe('when a node fires a treeViewNodeClick event', () => {
+  describe('when a node fires a treeNodeClick event', () => {
 
     beforeEach(() => {
       wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
-      wrapper.findComponent(TreeViewNode).vm.$emit('treeViewNodeClick');
+      wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeClick');
     });
 
-    it('should emit a treeViewNodeClick event', () => {
-      expect(wrapper.emitted('treeViewNodeClick').length).to.equal(1);
+    it('should emit a treeNodeClick event', () => {
+      expect(wrapper.emitted('treeNodeClick').length).to.equal(1);
     });
   });
 
-  describe('when a node fires a treeViewNodeDblclick event', () => {
+  describe('when a node fires a treeNodeDblclick event', () => {
 
     beforeEach(() => {
       wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
-      wrapper.findComponent(TreeViewNode).vm.$emit('treeViewNodeDblclick');
+      wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeDblclick');
     });
 
-    it('should emit a treeViewNodeDblclick event', () => {
-      expect(wrapper.emitted('treeViewNodeDblclick').length).to.equal(1);
+    it('should emit a treeNodeDblclick event', () => {
+      expect(wrapper.emitted('treeNodeDblclick').length).to.equal(1);
     });
   });
 
-  describe('when a node fires a treeViewNodeCheckboxChange event', () => {
+  describe('when a node fires a treeNodeCheckboxChange event', () => {
 
     beforeEach(() => {
       wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
-      wrapper.findComponent(TreeViewNode).vm.$emit('treeViewNodeCheckboxChange');
+      wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeCheckboxChange');
     });
 
-    it('should emit a treeViewNodeCheckboxChange event', () => {
-      expect(wrapper.emitted('treeViewNodeCheckboxChange').length).to.equal(1);
+    it('should emit a treeNodeCheckboxChange event', () => {
+      expect(wrapper.emitted('treeNodeCheckboxChange').length).to.equal(1);
     });
   });
 
-  describe('when a node fires a treeViewNodeRadioChange event', () => {
+  describe('when a node fires a treeNodeRadioChange event', () => {
 
     beforeEach(() => {
       wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
-      wrapper.findComponent(TreeViewNode).vm.$emit('treeViewNodeRadioChange');
+      wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeRadioChange');
     });
 
-    it('should emit a treeViewNodeRadioChange event', () => {
-      expect(wrapper.emitted('treeViewNodeRadioChange').length).to.equal(1);
+    it('should emit a treeNodeRadioChange event', () => {
+      expect(wrapper.emitted('treeNodeRadioChange').length).to.equal(1);
     });
   });
 
-  describe('when a node fires a treeViewNodeExpandedChange event', () => {
+  describe('when a node fires a treeNodeExpandedChange event', () => {
 
     beforeEach(() => {
       wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
-      wrapper.findComponent(TreeViewNode).vm.$emit('treeViewNodeExpandedChange');
+      wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeExpandedChange');
     });
 
-    it('should emit a treeViewNodeExpandedChange event', () => {
-      expect(wrapper.emitted('treeViewNodeExpandedChange').length).to.equal(1);
+    it('should emit a treeNodeExpandedChange event', () => {
+      expect(wrapper.emitted('treeNodeExpandedChange').length).to.equal(1);
     });
   });
 
-  describe('when a node fires a treeViewNodeSelectedChange event', () => {
+  describe('when a node fires a treeNodeSelectedChange event', () => {
 
     describe('always', () => {
 
       beforeEach(() => {
         wrapper = createWrapper({ initialModel: generateNodes(['eS', 'es']), selectionMode: SelectionMode.Multiple });
-        wrapper.findComponent(TreeViewNode).vm.$emit('treeViewNodeSelectedChange', wrapper.vm.model[0]);
+        wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeSelectedChange', wrapper.vm.model[0]);
       });
 
-      it('should emit a treeViewNodeSelectedChange event', () => {
-        expect(wrapper.emitted('treeViewNodeSelectedChange').length).to.equal(1);
+      it('should emit a treeNodeSelectedChange event', () => {
+        expect(wrapper.emitted('treeNodeSelectedChange').length).to.equal(1);
       });
     });
 
@@ -105,7 +105,7 @@ describe('TreeView.vue (event handling)', () => {
 
         beforeEach(() => {
           wrapper = createWrapper({ initialModel: generateNodes(['eS', 'eS', 'es']), selectionMode: SelectionMode.Single });
-          wrapper.findComponent(TreeViewNode).vm.$emit('treeViewNodeSelectedChange', wrapper.vm.model[0]);
+          wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeSelectedChange', wrapper.vm.model[0]);
         });
 
         it('should deselect other selected nodes', () => {
@@ -117,7 +117,7 @@ describe('TreeView.vue (event handling)', () => {
 
         beforeEach(() => {
           wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', 'es']), selectionMode: SelectionMode.Single });
-          wrapper.findComponent(TreeViewNode).vm.$emit('treeViewNodeSelectedChange', wrapper.vm.model[0]);
+          wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeSelectedChange', wrapper.vm.model[0]);
         });
 
         it('should not deselect other selected nodes', () => {
@@ -127,27 +127,27 @@ describe('TreeView.vue (event handling)', () => {
     });
   });
 
-  describe('when a node fires a treeViewNodeAdd event', () => {
+  describe('when a node fires a treeNodeAdd event', () => {
 
     beforeEach(() => {
       wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
-      wrapper.findComponent(TreeViewNode).vm.$emit('treeViewNodeAdd');
+      wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeAdd');
     });
 
-    it('should emit a treeViewNodeAdd event', () => {
-      expect(wrapper.emitted('treeViewNodeAdd').length).to.equal(1);
+    it('should emit a treeNodeAdd event', () => {
+      expect(wrapper.emitted('treeNodeAdd').length).to.equal(1);
     });
   });
 
-  describe('when a node fires a treeViewNodeDelete event', () => {
+  describe('when a node fires a treeNodeDelete event', () => {
 
     beforeEach(() => {
       wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
-      wrapper.findComponent(TreeViewNode).vm.$emit('treeViewNodeDelete', wrapper.vm.model[0]);
+      wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeDelete', wrapper.vm.model[0]);
     });
 
-    it('should emit a treeViewNodeDelete event', () => {
-      expect(wrapper.emitted('treeViewNodeDelete').length).to.equal(1);
+    it('should emit a treeNodeDelete event', () => {
+      expect(wrapper.emitted('treeNodeDelete').length).to.equal(1);
     });
 
     it('should delete the child node', () => {
