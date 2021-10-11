@@ -160,16 +160,17 @@
         }
       }
 
-      this.$_grtv_enforceSingleSelectionMode();
-
       if (this.$refs.treeElement.id) {
         this.uniqueId = this.$refs.treeElement.id;
       }
 
-      // Set this in a $nextTick so the focusable watcher
+      // Set isMounted in a $nextTick so the focusable watcher
       // in TreeViewNodeAria fires before isMounted is set.
       // Otherwise, it steals focus when the tree is mounted.
+      // Also wait to enforce single selection mode in case root
+      // nodes load asynchronously so their create hooks fire.
       this.$nextTick(() => {
+        this.$_grtv_enforceSingleSelectionMode();
         this.isMounted = true;
       });
     },
