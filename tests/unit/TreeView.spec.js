@@ -225,7 +225,7 @@ describe('TreeView.vue', () => {
     beforeEach(() => {
       jest.useFakeTimers();
       loadNodesPromise = new Promise(resolve => setTimeout(resolve.bind(null, generateNodes(['', ''])), 1000));
-      wrapper = createWrapper({ loadNodesAsync: () => loadNodesPromise });
+      wrapper = createWrapper({ loadNodesAsync: () => loadNodesPromise, selectionMode: SelectionMode.Single });
     });
 
     afterEach(() => {
