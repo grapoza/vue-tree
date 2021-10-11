@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Gregg Rapoza" />
+  <title>Home – vue-tree</title>
+  <link rel="stylesheet" href="/vue-tree/3.0.4/style/docs.css" />
+  <link rel="stylesheet" href="/vue-tree/3.0.4/style/codeFormatting.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>
+  document.createElement('main'); // For IE 11 to recognize main
+  </script>
+</head>
+
+<body>
+
+<header id="title-block-header">
+  <div class="header-inner">
+    <a id="github-banner" href="https://github.com/grapoza/vue-tree">View on GitHub</a>
+    <h1 class="title"><a href="/vue-tree/3.0.4/">vue-tree</a></h1>
+    <p class="subtitle">Yet another Vue treeview implementation.</p>
+        </div>
+</header>
+
+<div class="content">
+  <nav id="sitenav" aria-labelledby="site-navigation">
+  <h2 id="site-navigation">Site Navigation</h2>
+  <ul>
+  <li><a href="/vue-tree/3.0.4/">Home</a></li>
+  <li><a href="/vue-tree/3.0.4/demos.html">Demos</a></li>
+  </ul>
+  </nav>
+
+    <nav id="TOC" role="doc-toc" aria-labelledby="toc-navigation">
+  <h2 id="toc-navigation">Table of Contents</h2>
+  <ul>
+  <li><a href="#overview">Overview</a></li>
+  <li><a href="#installation">Installation</a></li>
+  <li><a href="#usage">Usage</a></li>
+  <li><a href="#demos">Demos</a></li>
+  <li><a href="#tree-props">Tree Props</a></li>
+  <li><a href="#selection-mode">Selection Mode</a></li>
+  <li><a href="#model-data">Model Data</a></li>
+  <li><a href="#default-data">Default Data</a></li>
+  <li><a href="#public-methods">Public Methods</a></li>
+  <li><a href="#events">Events</a></li>
+  <li><a href="#css-classes">CSS Classes</a></li>
+  <li><a href="#customizing-the-treeview">Customizing the TreeView</a>
+  <ul>
+  <li><a href="#customizations-property">Customizations Property</a></li>
+  <li><a href="#skins">Skins</a></li>
+  <li><a href="#slots">Slots</a></li>
+  </ul></li>
+  <li><a href="#asynchronous-loading">Asynchronous Loading</a></li>
+  <li><a href="#drag-and-drop">Drag and Drop</a></li>
+  <li><a href="#aria">Aria</a>
+  <ul>
+  <li><a href="#setting-key-bindings">Setting Key Bindings</a></li>
+  <li><a href="#focusable">Focusable</a></li>
+  <li><a href="#more-about-aria-treeviews">More about ARIA TreeViews</a></li>
+  </ul></li>
+  </ul>
+  </nav>
+  
+  <main>
+  <h2 id="overview">Overview</h2>
+  <p><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a> <a href="https://ci.appveyor.com/project/Gregg/vue-tree/branch/master"><img src="https://ci.appveyor.com/api/projects/status/j8d19gt0vh16amhh/branch/master?svg=true" alt="Build status" /></a></p>
+  <p>vue-tree is a Vue component that implements a TreeView control. Its aim is to provide common tree options in a way that is easy to use and easy to customize.</p>
+  <p>Features include:</p>
+  <ul>
+  <li>Works in modern browsers using the precompiled scripts, or can be included in your babel/webpack chain.</li>
+  <li>Expandable nodes</li>
+  <li>Checkboxes</li>
+  <li>Radio buttons</li>
+  <li>Node selection</li>
+  <li>Addition and removal of nodes</li>
+  <li>Slots for node content</li>
+  <li>Skinning</li>
+  <li>Asynchronous loading of nodes</li>
+  <li>Follows ARIA guidelines for treeview accessibility</li>
+  <li>Drag and drop (single nodes, works between trees)</li>
+  </ul>
+  <p>For future plans, see the project’s <a href="https://github.com/grapoza/vue-tree/issues">Issues</a> page.</p>
+  <h2 id="installation">Installation</h2>
+  <p>Install the component with your favorite package manager:</p>
+  <pre class="shell"><code>yarn add @grapoza/vue-tree</code></pre>
+  <p>or</p>
+  <pre class="shell"><code>npm install --save @grapoza/vue-tree</code></pre>
+  <h2 id="usage">Usage</h2>
+  <p>If you’re using it in a .vue file:</p>
+  <div class="sourceCode" id="cb3"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;template&gt;</span></span>
+  <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree-view</span><span class="ot">  id=</span><span class="st">&quot;my-tree&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;dataModel&quot;</span><span class="kw">&gt;&lt;/tree-view&gt;</span></span>
+  <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/template&gt;</span></span>
+  <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+  <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script&gt;</span></span>
+  <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+  <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> {</span>
+  <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    TreeView</span>
+  <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+  <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data</span>() {</span>
+  <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+  <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      <span class="dt">dataModel</span><span class="op">:</span> [</span>
+  <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        {<span class="dt">id</span><span class="op">:</span> <span class="st">&quot;numberOrString&quot;</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Root Node&quot;</span><span class="op">,</span> <span class="dt">children</span><span class="op">:</span> [</span>
+  <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>          {<span class="dt">id</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Child Node&quot;</span>}<span class="op">,</span></span>
+  <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>          {<span class="dt">id</span><span class="op">:</span> <span class="st">&quot;node2&quot;</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Second Child&quot;</span>}]</span>
+  <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        }]</span>
+  <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+  <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>}</span>
+  <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  <p>Or, import it into your application:</p>
+  <div class="sourceCode" id="cb4"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Vue<span class="op">.</span><span class="fu">use</span>(TreeView)</span></code></pre></div>
+  <p>Then add the component:</p>
+  <div class="sourceCode" id="cb5"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree-view</span><span class="ot"> id=</span><span class="st">&quot;my-tree&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;dataModel&quot;</span><span class="kw">&gt;&lt;/tree-view&gt;</span></span></code></pre></div>
+  <div class="sourceCode" id="cb6"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> {</span>
+  <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data</span>() {</span>
+  <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+  <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">dataModel</span><span class="op">:</span> [</span>
+  <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        { <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;numberOrString&quot;</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Root Node&quot;</span><span class="op">,</span> <span class="dt">children</span><span class="op">:</span> [</span>
+  <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>          { <span class="dt">id</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Child Node&quot;</span> }<span class="op">,</span></span>
+  <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>          { <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;node2&quot;</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Second Child&quot;</span> }]</span>
+  <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        }]</span>
+  <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+  <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+  <h2 id="demos">Demos</h2>
+  <p>To see it in action, try out the <a href="demos.html">demos</a>.</p>
+  <h2 id="tree-props">Tree Props</h2>
+  <table>
+  <colgroup>
+  <col style="width: 10%" />
+  <col style="width: 5%" />
+  <col style="width: 57%" />
+  <col style="width: 20%" />
+  <col style="width: 5%" />
+  </colgroup>
+  <thead>
+  <tr class="header">
+  <th style="text-align: left;">Prop</th>
+  <th style="text-align: left;">Type</th>
+  <th style="text-align: left;">Description</th>
+  <th style="text-align: left;">Default value</th>
+  <th style="text-align: left;">Required</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr class="odd">
+  <td style="text-align: left;">initialModel</td>
+  <td style="text-align: left;">Array</td>
+  <td style="text-align: left;">The data model containing <a href="#model-data">model data</a></td>
+  <td style="text-align: left;"><code>[]</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">customAriaKeyMap</td>
+  <td style="text-align: left;">Object</td>
+  <td style="text-align: left;">An object, the properties of which are arrays to keyCodes for various actions</td>
+  <td style="text-align: left;">See <a href="#setting-key-bindings">Aria</a></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">loadNodesAsync</td>
+  <td style="text-align: left;">Function</td>
+  <td style="text-align: left;">A function that is called on mount to asynchronously load <a href="#model-data">model data</a></td>
+  <td style="text-align: left;"><code>null</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">modelDefaults</td>
+  <td style="text-align: left;">Object</td>
+  <td style="text-align: left;">An object containing defaults for all nodes that do not specify the given properties</td>
+  <td style="text-align: left;"><code>{}</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">selectionMode</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">How selection should operate (see <a href="#selection-mode">Selection Mode</a>)</td>
+  <td style="text-align: left;"><code>null</code> (cannot select nodes)</td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">skinClass</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">A class name to apply to the tree that specifies a skin to use (see <a href="#skins">Skins</a>)</td>
+  <td style="text-align: left;"><code>"grtv-default-skin"</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  </tbody>
+  </table>
+  <h2 id="selection-mode">Selection Mode</h2>
+  <p>The <code>selectionMode</code> property defines how nodes should be selected within the treeview. Allowed values are <code>null</code>, <code>single</code>, <code>selectionFollowsFocus</code>, and <code>multiple</code>. Only nodes with the <code>selectable</code> model property set to <code>true</code> can be selected.</p>
+  <ul>
+  <li>If <code>null</code> (the default) then selection does not occur.</li>
+  <li>If <code>single</code> then one node is selected at a time when the user clicks the node or using the selection keyboard binding (<code>Enter</code> by default).</li>
+  <li>If <code>selectionFollowsFocus</code> then selection follows the focusable node within the treeview.</li>
+  <li>if <code>mulitple</code> then multiple nodes can be selected when the user clicks each node or using the selection keyboard binding on each node.</li>
+  </ul>
+  <p>When clicking on a node, it is only selected if the click target was not interactive (<em>e.g.</em>, clicking a checkbox or expander won’t select the node, but clicking a label will).</p>
+  <h2 id="model-data">Model Data</h2>
+  <p>Model data can be loaded either synchronously through the <code>initialModel</code> property or asynchronously through the <code>loadNodesAsync</code> property. If both are specified then the data from <code>initialModel</code> is overwritten when the <code>loadNodesAsync</code> function returns data.</p>
+  <p>The data passed to the treeview’s <code>initialModel</code> prop or returned from <code>loadNodesAsync</code> should be an array of nodes, where each node should have:</p>
+  <ul>
+  <li>Required: A property with a value that will be used as the node’s ID (by default the node looks for a property named <code>id</code>)</li>
+  <li>Required: A property with a value that will be used as the node’s label (by default the node looks for a property named <code>label</code>)</li>
+  <li>Optional: A property containing any subnodes (by default the node looks for a property named <code>children</code>)</li>
+  <li>Optional: A <code>treeNodeSpec</code> property that contains any data about the node’s capabilities and its initial state</li>
+  <li>Optional: Any other data you want on your node</li>
+  </ul>
+  <p>The <code>treeNodeSpec</code> of the objects in the data model passed to the treeview’s <code>initialModel</code> property will be updated by the treeview nodes themselves on creation to include missing properties.</p>
+  <div class="sourceCode" id="cb7"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>{</span>
+  <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;node0&quot;</span><span class="op">,</span></span>
+  <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;A checkbox node&quot;</span><span class="op">,</span></span>
+  <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">children</span><span class="op">:</span> []<span class="op">,</span></span>
+  <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="st">&quot;This will be the value of the node text/label&#39;s &#39;title&#39; attribute.&quot;</span><span class="op">,</span></span>
+  <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">expandable</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+  <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">selectable</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+  <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">focusable</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+  <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;checkbox&#39;</span></span>
+  <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">state</span><span class="op">:</span> {</span>
+  <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>      <span class="dt">expanded</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+  <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>      <span class="dt">selected</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+  <span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="dt">value</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+  <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        <span class="dt">disabled</span><span class="op">:</span> <span class="kw">false</span></span>
+  <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>      }</span>
+  <span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+  <span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span></span>
+  <span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>{</span>
+  <span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="dt">otherIdProp</span><span class="op">:</span> <span class="st">&quot;node1&quot;</span><span class="op">,</span></span>
+  <span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="dt">textProp</span><span class="op">:</span> <span class="st">&quot;A radio button node&quot;</span><span class="op">,</span></span>
+  <span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="dt">subThings</span><span class="op">:</span> []<span class="op">,</span></span>
+  <span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="dt">extraIrrelevantData</span><span class="op">:</span> <span class="st">&quot;February&quot;</span><span class="op">,</span></span>
+  <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">idProperty</span><span class="op">:</span> <span class="st">&quot;otherIdProp&quot;</span><span class="op">,</span> <span class="co">// Customize what model props are checked for the id, label, and children</span></span>
+  <span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">labelProperty</span><span class="op">:</span> <span class="st">&quot;textProp&quot;</span><span class="op">,</span></span>
+  <span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">childrenProperty</span><span class="op">:</span> <span class="st">&quot;subThings&quot;</span><span class="op">,</span></span>
+  <span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    <span class="dt">expandable</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+  <span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">selectable</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+  <span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>      <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;radio&#39;</span><span class="op">,</span></span>
+  <span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>      <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;rbGroup1&#39;</span><span class="op">,</span>   <span class="co">// Used as the name attribute for the radio button</span></span>
+  <span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>      <span class="dt">value</span><span class="op">:</span> <span class="st">&#39;thisValue&#39;</span><span class="op">,</span> <span class="co">// Used as the value attribute for the radio button</span></span>
+  <span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>      <span class="dt">isInitialRadioGroupValue</span><span class="op">:</span> <span class="kw">true</span> <span class="co">// Indicates this should be the initially selected value for the group</span></span>
+  <span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    <span class="dt">state</span><span class="op">:</span> {</span>
+  <span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>      <span class="dt">expanded</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+  <span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>      <span class="dt">selected</span><span class="op">:</span> <span class="kw">false</span></span>
+  <span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>      <span class="co">// No input.value here; to let complex radio button groupings work, state value is</span></span>
+  <span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>      <span class="co">// bound to an internal tree-level property. input.disabled, however, is valid here for radio buttons.</span></span>
+  <span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>    <span class="dt">addChildCallback</span><span class="op">:</span> () <span class="kw">=&gt;</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">resolve</span>({ <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;1&#39;</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;label&#39;</span> })</span>
+  <span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>  }</span>
+  <span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+  <p>The properties below can be specified for each node. Note that <code>id</code>, <code>label</code>, and <code>children</code> are the default properties nodes look for to get data, but the names of the properties can be overridden using the <code>treeNodeSpec</code>.</p>
+  <table>
+  <colgroup>
+  <col style="width: 13%" />
+  <col style="width: 10%" />
+  <col style="width: 47%" />
+  <col style="width: 22%" />
+  <col style="width: 6%" />
+  </colgroup>
+  <thead>
+  <tr class="header">
+  <th style="text-align: left;">Prop</th>
+  <th style="text-align: left;">Type</th>
+  <th style="text-align: left;">Description</th>
+  <th style="text-align: left;">Default value</th>
+  <th style="text-align: left;">Required</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr class="odd">
+  <td style="text-align: left;">id</td>
+  <td style="text-align: left;">Number/String</td>
+  <td style="text-align: left;">An ID that uniquely identifies this node within the tree</td>
+  <td style="text-align: left;">-</td>
+  <td style="text-align: left;">Yes</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">label</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">The text to show in the treeview</td>
+  <td style="text-align: left;">-</td>
+  <td style="text-align: left;">Yes</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">children</td>
+  <td style="text-align: left;">Array&lt;Object&gt;</td>
+  <td style="text-align: left;">The child nodes of this node</td>
+  <td style="text-align: left;"><code>[]</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">treeNodeSpec</td>
+  <td style="text-align: left;">Object</td>
+  <td style="text-align: left;">The object containing data about the node’s capabilities and initial state</td>
+  <td style="text-align: left;">See next table</td>
+  <td style="text-align: left;"></td>
+  </tr>
+  </tbody>
+  </table>
+  <p>The <code>treeNodeSpec</code> property contains any data about the node’s capabilities and its initial state. This keeps the tree-specific data separate from the data of the model itself. This makes it more convenient to drop data into the treeview as-is, potentially with a <code>modelDefaults</code> specified on the treeview to define common values used in the <code>treeNodeSpec</code> of every node.</p>
+  <table style="width:100%;">
+  <colgroup>
+  <col style="width: 13%" />
+  <col style="width: 5%" />
+  <col style="width: 53%" />
+  <col style="width: 21%" />
+  <col style="width: 5%" />
+  </colgroup>
+  <thead>
+  <tr class="header">
+  <th style="text-align: left;">Prop</th>
+  <th style="text-align: left;">Type</th>
+  <th style="text-align: left;">Description</th>
+  <th style="text-align: left;">Default value</th>
+  <th style="text-align: left;">Required</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr class="odd">
+  <td style="text-align: left;">idProperty</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">The name of the property with a value that will be used as the node’s ID</td>
+  <td style="text-align: left;"><code>id</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">labelProperty</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">The name of the property with a value that will be used as the node’s label</td>
+  <td style="text-align: left;"><code>label</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">childrenProperty</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">The name of the property with a value that will be used as the node’s subnodes</td>
+  <td style="text-align: left;"><code>children</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">title</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">The text of the node’s text or label’s title attribute</td>
+  <td style="text-align: left;"><code>null</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">expandable</td>
+  <td style="text-align: left;">Boolean</td>
+  <td style="text-align: left;">True to show a toggle for expanding nodes’ subnode lists</td>
+  <td style="text-align: left;"><code>true</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">selectable</td>
+  <td style="text-align: left;">Boolean</td>
+  <td style="text-align: left;">True to allow the node to be selected</td>
+  <td style="text-align: left;"><code>false</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">deletable</td>
+  <td style="text-align: left;">Boolean</td>
+  <td style="text-align: left;">True to allow the node to be deleted</td>
+  <td style="text-align: left;"><code>false</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">focusable</td>
+  <td style="text-align: left;">Boolean</td>
+  <td style="text-align: left;">True to make the node the focus when the treeview is focused</td>
+  <td style="text-align: left;">See <a href="#focusable">Aria</a> for details</td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">draggable</td>
+  <td style="text-align: left;">Boolean</td>
+  <td style="text-align: left;">True to make this node draggable</td>
+  <td style="text-align: left;"><code>false</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">allowDrop</td>
+  <td style="text-align: left;">Boolean</td>
+  <td style="text-align: left;">True to allow dropping TreeViewNode data onto this node</td>
+  <td style="text-align: left;"><code>false</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">expanderTitle</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">The text to use as the title for the expander button</td>
+  <td style="text-align: left;"><code>null</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">addChildTitle</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">The text to use as the title for the Add Child button</td>
+  <td style="text-align: left;"><code>null</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">deleteTitle</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">The text to use as the title for the Delete button</td>
+  <td style="text-align: left;"><code>null</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">input</td>
+  <td style="text-align: left;">Object</td>
+  <td style="text-align: left;">Contains data specific to the node’s <code>input</code> element</td>
+  <td style="text-align: left;"><code>null</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">input.type</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">The type of input; valid values are <code>checkbox</code> or <code>radio</code></td>
+  <td style="text-align: left;">-</td>
+  <td style="text-align: left;">Yes*</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">input.name</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">The name attribute of the input; used with <code>radio</code> type</td>
+  <td style="text-align: left;"><code>'unspecifiedRadioName'</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">input.value</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">The value attribute of the input; used with <code>radio</code> type</td>
+  <td style="text-align: left;"><code>label</code>’s value**</td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">input.isInitialRadioGroupValue</td>
+  <td style="text-align: left;">Boolean</td>
+  <td style="text-align: left;">Indicates this should be the initially selected value for the group</td>
+  <td style="text-align: left;"><code>null</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">state</td>
+  <td style="text-align: left;">Object</td>
+  <td style="text-align: left;">Contains the current state of the node</td>
+  <td style="text-align: left;">-</td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">state.expanded</td>
+  <td style="text-align: left;">Boolean</td>
+  <td style="text-align: left;">True if this node’s subnode list is expanded</td>
+  <td style="text-align: left;"><code>false</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">state.selected</td>
+  <td style="text-align: left;">Boolean</td>
+  <td style="text-align: left;">True if the node is selected</td>
+  <td style="text-align: left;"><code>false</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">state.input</td>
+  <td style="text-align: left;">Object</td>
+  <td style="text-align: left;">Contains any state related to the input field</td>
+  <td style="text-align: left;"><code>{}</code> for checkbox, otherwise -</td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">state.input.value</td>
+  <td style="text-align: left;">Boolean</td>
+  <td style="text-align: left;">Contains the value of the input</td>
+  <td style="text-align: left;"><code>false</code> for checkbox, otherwise -</td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">state.input.disabled</td>
+  <td style="text-align: left;">Boolean</td>
+  <td style="text-align: left;">True if the node’s input field is disabled</td>
+  <td style="text-align: left;"><code>false</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">customizations</td>
+  <td style="text-align: left;">Object</td>
+  <td style="text-align: left;">A <a href="#customizing-the-treeview">customizations</a> object</td>
+  <td style="text-align: left;"><code>{}</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">addChildCallback</td>
+  <td style="text-align: left;">Function</td>
+  <td style="text-align: left;">An async function that resolves to a new node model (called by the add button). The function can take one argument, the model of the parent node. It should return the model of the new child node.</td>
+  <td style="text-align: left;"><code>null</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">loadChildrenAsync</td>
+  <td style="text-align: left;">Function</td>
+  <td style="text-align: left;">An async function that resolves to a node’s children (called when the parent is expanded). The function can take one argument, the model of the parent node. It should return the models of the children nodes.</td>
+  <td style="text-align: left;"><code>null</code></td>
+  <td style="text-align: left;"></td>
+  </tr>
+  </tbody>
+  </table>
+  <p>* If <code>input.type</code> is not supplied, <code>input</code> is forced to <code>null</code>.</p>
+  <p>** If <code>input.value</code> is not supplied, it defaults to the node’s label value replaced with the regular expression <code>/[\s&amp;&lt;&gt;"'\/]/g, ''</code></p>
+  <h2 id="default-data">Default Data</h2>
+  <p>If specified, the <code>modelDefaults</code> property of the treeview will be merged with node model’s <code>treeNodeSpec</code> data such that any data not explicitly specified for the node will be set to the value from <code>modelDefaults</code>. This is useful for situations where all (or most) nodes will use the same values. For instance, in a treeview that is all enabled, collapsed, unchecked checkboxes the user could use a <code>modelDefaults</code> of</p>
+  <div class="sourceCode" id="cb8"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>{</span>
+  <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">expandable</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+  <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">selectable</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+  <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;checkbox&#39;</span><span class="op">,</span></span>
+  <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+  <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">state</span><span class="op">:</span> {</span>
+  <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">expanded</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+  <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">selected</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+  <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">value</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+  <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">disabled</span><span class="op">:</span> <span class="kw">false</span></span>
+  <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+  <span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+  <h2 id="public-methods">Public Methods</h2>
+  <table>
+  <colgroup>
+  <col style="width: 16%" />
+  <col style="width: 31%" />
+  <col style="width: 8%" />
+  <col style="width: 42%" />
+  </colgroup>
+  <thead>
+  <tr class="header">
+  <th style="text-align: left;">Method</th>
+  <th style="text-align: left;">Description</th>
+  <th style="text-align: left;">Parameters</th>
+  <th style="text-align: left;">Returns</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr class="odd">
+  <td style="text-align: left;">getCheckedCheckboxes</td>
+  <td style="text-align: left;">Gets models for checked checkbox nodes</td>
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;">An <code>Array&lt;Object&gt;</code> of models for checked checkbox nodes</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">getCheckedRadioButtons</td>
+  <td style="text-align: left;">Gets models for checked radio nodes</td>
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;">An <code>Array&lt;Object&gt;</code> of models for checked radio button nodes</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">getSelected</td>
+  <td style="text-align: left;">Gets models for selected nodes</td>
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;">An <code>Array&lt;Object&gt;</code> of models for selected nodes</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">getMatching</td>
+  <td style="text-align: left;">Gets models for nodes that match a function</td>
+  <td style="text-align: left;"><code>matcherFunction</code>: A function that takes a node model and returns a boolean indicating whether that node should be returned.</td>
+  <td style="text-align: left;">An <code>Array&lt;Object&gt;</code> of models for matched nodes</td>
+  </tr>
+  </tbody>
+  </table>
+  <h2 id="events">Events</h2>
+  <table>
+  <colgroup>
+  <col style="width: 17%" />
+  <col style="width: 39%" />
+  <col style="width: 43%" />
+  </colgroup>
+  <thead>
+  <tr class="header">
+  <th style="text-align: left;">Event</th>
+  <th style="text-align: left;">Description</th>
+  <th style="text-align: left;">Handler Parameters</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr class="odd">
+  <td style="text-align: left;">treeViewNodeAdd</td>
+  <td style="text-align: left;">Emitted when a node is added</td>
+  <td style="text-align: left;"><code>target</code> The model of the target (child) node <br/> <code>parent</code> The model of the parent node <br/> <code>event</code> The original event</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">treeViewNodeClick</td>
+  <td style="text-align: left;">Emitted when a node is clicked</td>
+  <td style="text-align: left;"><code>target</code> The model of the target node <br/> <code>event</code> The original event</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">treeViewNodeDblclick</td>
+  <td style="text-align: left;">Emitted when a node is double clicked</td>
+  <td style="text-align: left;"><code>target</code> The model of the target node <br/> <code>event</code> The original event</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">treeViewNodeDelete</td>
+  <td style="text-align: left;">Emitted when a node is deleted</td>
+  <td style="text-align: left;"><code>target</code> The model of the target node <br/> <code>event</code> The original event</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">treeViewNodeCheckboxChange</td>
+  <td style="text-align: left;">Emitted when a node’s checkbox emits a change event</td>
+  <td style="text-align: left;"><code>target</code> The model of the target node <br/> <code>event</code> The original event</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">treeViewNodeRadioChange</td>
+  <td style="text-align: left;">Emitted when a node’s radio button emits a change event</td>
+  <td style="text-align: left;"><code>target</code> The model of the target node <br/> <code>event</code> The original event</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">treeViewNodeExpandedChange</td>
+  <td style="text-align: left;">Emitted when a node is expanded or collapsed</td>
+  <td style="text-align: left;"><code>target</code> The model of the target node <br/> <code>event</code> The original event</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">treeViewNodeSelectedChange</td>
+  <td style="text-align: left;">Emitted when a node is selected or deselected</td>
+  <td style="text-align: left;"><code>target</code> The model of the target node <br/> <code>event</code> The original event</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">treeViewNodeChildrenLoad</td>
+  <td style="text-align: left;">Emitted when a node’s children are done loading asynchronously</td>
+  <td style="text-align: left;"><code>target</code> The model of the target node <br/> <code>event</code> The original event</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">treeViewRootNodesLoad</td>
+  <td style="text-align: left;">Emitted when the root nodes are done loading asynchronously</td>
+  <td style="text-align: left;"></td>
+  </tr>
+  </tbody>
+  </table>
+  <h2 id="css-classes">CSS Classes</h2>
+  <p>The display of the treeview can be customized via CSS using the following classes. Class names are organized in a hierarchy, so a containing node’s class is the prefix of its child classes.</p>
+  <table>
+  <colgroup>
+  <col style="width: 32%" />
+  <col style="width: 67%" />
+  </colgroup>
+  <thead>
+  <tr class="header">
+  <th style="text-align: left;">Class</th>
+  <th style="text-align: left;">Affects</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtv</code></td>
+  <td style="text-align: left;">The top-level treeview list</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtv-wrapper</code></td>
+  <td style="text-align: left;">The wrapper div around the list of root nodes and the loading placeholder</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtv-loading</code></td>
+  <td style="text-align: left;">The placeholder shown when root nodes are loading asynchronously</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn</code></td>
+  <td style="text-align: left;">A single node’s list item</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtvn-self-selected</code></td>
+  <td style="text-align: left;">A selected node</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn-self</code></td>
+  <td style="text-align: left;">The div containing the current node’s UI</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtvn-self-expander</code></td>
+  <td style="text-align: left;">The button used to expand the children</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn-self-expanded</code></td>
+  <td style="text-align: left;">Applied to the expander button when the node is expanded</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtvn-self-expanded-indicator</code></td>
+  <td style="text-align: left;">The <code>&lt;i&gt;</code> element containing the expansion indicator</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn-self-spacer</code></td>
+  <td style="text-align: left;">An empty spacer to replace fixed-width elements, <em>e.g.</em> the expander or checkbox</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtvn-self-label</code></td>
+  <td style="text-align: left;">The label for the checkbox of checkable nodes</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn-self-input</code></td>
+  <td style="text-align: left;">Any type of input field within the tree node</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtvn-self-checkbox</code></td>
+  <td style="text-align: left;">The checkbox</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn-self-radio</code></td>
+  <td style="text-align: left;">The radio button</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtvn-self-text</code></td>
+  <td style="text-align: left;">The text for a non-input node</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn-self-action</code></td>
+  <td style="text-align: left;">The action buttons (e.g., add child or delete)</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtvn-self-add-child-icon</code></td>
+  <td style="text-align: left;">The <code>&lt;i&gt;</code> element containing the add child icon</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn-self-delete-icon</code></td>
+  <td style="text-align: left;">The <code>&lt;i&gt;</code> element containing the delete icon</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtvn-self-drop-target</code></td>
+  <td style="text-align: left;">A node has another node dragged over it and can accept drops</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn-self-child-drop-target</code></td>
+  <td style="text-align: left;">A node has another node dragged over its child drop target</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtvn-self-sibling-drop-target</code></td>
+  <td style="text-align: left;">Either the previous or next sibling node drop target</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn-self-sibling-drop-target-hover</code></td>
+  <td style="text-align: left;">A node has another node dragged over one of the sibling drop targets</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtvn-self-prev-target</code></td>
+  <td style="text-align: left;">The previous sibling node drop target</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn-self-next-target</code></td>
+  <td style="text-align: left;">The next sibling node drop target</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtvn-children-wrapper</code></td>
+  <td style="text-align: left;">The wrapper div around the list of child nodes and the loading placeholder</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn-children</code></td>
+  <td style="text-align: left;">The list of child nodes</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"><code>grtvn-loading</code></td>
+  <td style="text-align: left;">The placeholder shown when child nodes are loading asynchronously</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"><code>grtvn-dragging</code></td>
+  <td style="text-align: left;">The node is dragged as part of a drag and drop operation</td>
+  </tr>
+  </tbody>
+  </table>
+  <h2 id="customizing-the-treeview">Customizing the TreeView</h2>
+  <h3 id="customizations-property">Customizations Property</h3>
+  <p>It’s often helpful to be able to make adjustments to the markup or styles for the tree. You can provide an object to the <code>modelDefaults.customizations</code> property of the tree to set a customization affecting all nodes, or to the <code>treeNodeSpec.customizations</code> property of a single node. Node-specific customizations will override <code>modelDefault</code> customizations.</p>
+  <p>A customizations object may have the following properties:</p>
+  <table>
+  <colgroup>
+  <col style="width: 29%" />
+  <col style="width: 5%" />
+  <col style="width: 64%" />
+  </colgroup>
+  <thead>
+  <tr class="header">
+  <th style="text-align: left;">Prop</th>
+  <th style="text-align: left;">Type</th>
+  <th style="text-align: left;">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr class="odd">
+  <td style="text-align: left;">classes</td>
+  <td style="text-align: left;">Object</td>
+  <td style="text-align: left;">Properties are classes to add for various parts of a node</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">classes.treeViewNode</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to a node’s list item</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">classes.treeViewNodeSelf</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the div containing the current node’s UI</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">classes.treeViewNodeSelfSelected</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the <code>grtvn-self</code> div if the node is selected</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">classes.treeViewNodeSelfExpander</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the button used to expand the children</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">classes.treeViewNodeSelfExpanded</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the expander button when the node is expanded</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">classes.treeViewNodeSelfExpandedIndicator</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the <code>&lt;i&gt;</code> element containing the expansion indicator</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">classes.treeViewNodeSelfSpacer</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the fixed-width spacer</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">classes.treeViewNodeSelfLabel</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the label for the checkbox of checkable nodes</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">classes.treeViewNodeSelfInput</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to an input field</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">classes.treeViewNodeSelfCheckbox</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the checkbox</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">classes.treeViewNodeSelfRadio</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the radio button</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">classes.treeViewNodeSelfText</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the text for a non-input node</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">classes.treeViewNodeSelfAction</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the action buttons</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">classes.treeViewNodeSelfAddChild</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the add child buttons</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">classes.treeViewNodeSelfAddChildIcon</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the <code>&lt;i&gt;</code> element containing the add child icon</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">classes.treeViewNodeSelfDelete</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the delete button</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">classes.treeViewNodeSelfDeleteIcon</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the <code>&lt;i&gt;</code> element containing the delete icon</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">classes.treeViewNodeChildrenWrapper</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the wrapper div around the list of child nodes and the loading placeholder</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">classes.treeViewNodeChildren</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the list of child nodes</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">classes.treeViewNodeLoading</td>
+  <td style="text-align: left;">String</td>
+  <td style="text-align: left;">Classes to add to the node children loading placeholder</td>
+  </tr>
+  </tbody>
+  </table>
+  <h3 id="skins">Skins</h3>
+  <p>If adding classes isn’t enough, the entire default styles of the TreeView can be overridden using the <code>skinClass</code> property of the TreeView. When this property is set, the TreeView’s default class of <code>grtv-default-skin</code> is replaced with your own class name, causing all of the built-in style selectors to not match the tree. Instead, you can create your own stylesheet or modify a copy of the default styles to achieve complete control over the tree styling.</p>
+  <h3 id="slots">Slots</h3>
+  <p>Sometimes the entire content of a node (<em>e.g.</em>, the checkbox or text) needs customization beyond what is available through classes. In this case, some slots are available in the TreeView to allow this customization.</p>
+  <table>
+  <colgroup>
+  <col style="width: 8%" />
+  <col style="width: 34%" />
+  <col style="width: 57%" />
+  </colgroup>
+  <thead>
+  <tr class="header">
+  <th style="text-align: left;">Slot Name</th>
+  <th style="text-align: left;">Description</th>
+  <th style="text-align: left;">Props</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr class="odd">
+  <td style="text-align: left;">loading-root</td>
+  <td style="text-align: left;">Replaces the span used when loading children asynchronously</td>
+  <td style="text-align: left;"></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">text</td>
+  <td style="text-align: left;">Replaces the span used for non-input content</td>
+  <td style="text-align: left;">model - The TreeViewNode’s model</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;">customClasses - Any custom classes specified in <code>treeNodeSpec.customizations</code></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">checkbox</td>
+  <td style="text-align: left;">Replaces the label and content used for checkboxes</td>
+  <td style="text-align: left;">model - The TreeViewNode’s model</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;">customClasses - Any custom classes specified in <code>treeNodeSpec.customizations</code></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;">inputId - The ID for the input (as generated by the TreeViewNode)</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;">checkboxChangeHandler - The handler for checkbox change events. You should fire this on <code>change</code>.</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">radio</td>
+  <td style="text-align: left;">Replaces the label and content used for radio buttons</td>
+  <td style="text-align: left;">model - The TreeViewNode’s model</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;">customClasses - Any custom classes specified in <code>treeNodeSpec.customizations</code></td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;">inputId - The ID for the input (as generated by the TreeViewNode)</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;">radioChangeHandler - The handler for radio button change events. You should fire this on <code>change</code>.</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">loading</td>
+  <td style="text-align: left;">Replaces the span used when loading children asynchronously</td>
+  <td style="text-align: left;">model - The TreeViewNode’s model</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;"></td>
+  <td style="text-align: left;">customClasses - Any custom classes specified in <code>treeNodeSpec.customizations</code></td>
+  </tr>
+  </tbody>
+  </table>
+  <p>Example usage:</p>
+  <div class="sourceCode" id="cb9"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree-view</span><span class="ot"> id=</span><span class="st">&quot;customtree&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;template</span><span class="ot"> #text=</span><span class="st">&quot;{ model, customClasses }&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">&lt;!-- The treeview node&#39;s model is available, and built-in classes and overrides are available --&gt;</span></span>
+  <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;marquee</span><span class="ot"> :title=</span><span class="st">&quot;model.treeNodeSpec.title&quot;</span></span>
+  <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ot">              class=</span><span class="st">&quot;grtvn-self-text&quot;</span></span>
+  <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="ot">              :class=</span><span class="st">&quot;customClasses.treeViewNodeSelfText&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>          {{ model[model.treeNodeSpec.labelProperty] }}</span>
+  <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;marquee&gt;</span></span>
+  <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/template&gt;</span></span>
+  <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+  <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;template</span><span class="ot"> #checkbox=</span><span class="st">&quot;{ model, customClasses, inputId, checkboxChangeHandler }&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;label</span><span class="ot"> :for=</span><span class="st">&quot;inputId&quot;</span></span>
+  <span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="ot">        :title=</span><span class="st">&quot;model.treeNodeSpec.title&quot;</span></span>
+  <span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="ot">        class=</span><span class="st">&quot;grtvn-self-label&quot;</span></span>
+  <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="ot">        :class=</span><span class="st">&quot;customClasses.treeViewNodeSelfLabel&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+  <span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>      <span class="co">&lt;!-- The generated inputId for the node is available --&gt;</span></span>
+  <span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;input</span><span class="ot"> :id=</span><span class="st">&quot;inputId&quot;</span></span>
+  <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="ot">             class=</span><span class="st">&quot;my-awesome-checkbox-class&quot;</span></span>
+  <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="ot">             type=</span><span class="st">&quot;checkbox&quot;</span></span>
+  <span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="ot">             :disabled=</span><span class="st">&quot;model.treeNodeSpec.state.input.disabled&quot;</span></span>
+  <span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="ot">             v-model=</span><span class="st">&quot;model.treeNodeSpec.state.input.value&quot;</span></span>
+  <span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>             <span class="er">@change</span><span class="ot">=</span><span class="st">&quot;checkboxChangeHandler&quot;</span> <span class="kw">/&gt;</span> <span class="co">&lt;!-- The TreeViewNode change handler is available --&gt;</span></span>
+  <span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+  <span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;blink&gt;</span>{{ &quot;Slotted Content for &quot; + model[model.treeNodeSpec.labelProperty] }}<span class="kw">&lt;/blink&gt;</span></span>
+  <span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/label&gt;</span></span>
+  <span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/template&gt;</span></span>
+  <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/tree-view&gt;</span></span></code></pre></div>
+  <h2 id="asynchronous-loading">Asynchronous Loading</h2>
+  <p>Child nodes can be loaded asynchronously by providing a method to the <code>treeNodeSpec.loadChildrenAsync</code> property of the model. The method will be called when the node is expanded, and the property containing the node’s children will be <em>overwritten</em> with the results of the async call. For example, the following could be used as <code>modelDefaults</code> that would have every node load children when it was expanded.</p>
+  <div class="sourceCode" id="cb10"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>{</span>
+  <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">expandable</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+  <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">loadChildrenAsync</span><span class="op">:</span> (m) <span class="kw">=&gt;</span> axios<span class="op">.</span><span class="fu">get</span>(<span class="vs">`/children/</span><span class="sc">${</span>m<span class="op">.</span><span class="at">id</span><span class="sc">}</span><span class="vs">`</span>)</span>
+  <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+  <p>The method may accept one argument, which will be the model of the node that has been expanded. It should resolve to an array of child node models.</p>
+  <p>The load method is called once, and after that the children are part of the model and are not reloaded.</p>
+  <h2 id="drag-and-drop">Drag and Drop</h2>
+  <p>A user can drag and drop an individual TreeViewNode. A drag only affects the node where the dragging starts, and has nothing to do with any node selection within the tree. To make a node draggable, the node’s <code>treeNodeSpec.draggable</code> must be <code>true</code>. To make a node accept drops, the node’s <code>treeNodeSpec.allowDrop</code> must be <code>true</code>. Both Move and Copy operations are supported. To copy in most browsers hold down the <code>Ctrl</code> key while dragging.</p>
+  <p>When dropping a node on another node, there are three areas of the target node where a drop can occur. If dropped at the top of the target node in the shaded area then the node will be inserted before the target. If dropped at the bottom of the target node in the shaded area then the node will be inserted after the target. If dropped directly on the of the target node then the node will be inserted as a child of the target. The drop can occur on a node in the same tree or in a different tree as long as the receiving node allows drops.</p>
+  <p>The drop can also occur anywhere that allows dropping data with the <code>application/json</code> or <code>text/plain</code> MIME types (<em>e.g.</em>, a simple text input field or a text editor).</p>
+  <p>When copying a node the newly created node will have its own unique identifier, will not be the currently focusable node even if the source node was the focusable node.</p>
+  <p>When moving a node within the same tree, the actual node is moved within the tree data. If the node is copied within the same tree, any function members of the node data (<em>e.g.</em>, the addChildCallback) are copied.</p>
+  <p>When a node is moved or copied to a different tree, the node data that passes between trees does not contain any of the functions from the original node data.</p>
+  <h2 id="aria">Aria</h2>
+  <p>ARIA Accessibility recommendations have been implemented at a basic level. This means keyboard navigation follows ARIA recommendations, but the component has not been tested with a screen reader and, since many screen readers exhibit different behaviors for treeview controls anyway, it would be expected to fail articulation checks in many cases. Additionally, some recommended keyboard controls are not implemented (e.g., Expand All Nodes, Type-ahead Focusing). When using the component, there are only a couple of things you need to know.</p>
+  <h3 id="setting-key-bindings">Setting Key Bindings</h3>
+  <p>The keys used to navigate the treeview can be customized using the <code>customAriaKeyMap</code> prop of the TreeView component. The value of the prop is an object, with each attribute named for a type of action and its value as an Array of integer key codes that trigger that action.</p>
+  <table>
+  <colgroup>
+  <col style="width: 13%" />
+  <col style="width: 68%" />
+  <col style="width: 17%" />
+  </colgroup>
+  <thead>
+  <tr class="header">
+  <th style="text-align: left;">Attribute</th>
+  <th style="text-align: left;">Description</th>
+  <th style="text-align: left;">Default value</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr class="odd">
+  <td style="text-align: left;">activateItem</td>
+  <td style="text-align: left;">Triggers the default action for input nodes (generally <code>click</code>)</td>
+  <td style="text-align: left;"><code>[32]</code> (Space)</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">selectItem</td>
+  <td style="text-align: left;">Selects the currently focused item</td>
+  <td style="text-align: left;"><code>[13]</code> (Enter)</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">focusLastItem</td>
+  <td style="text-align: left;">Sets focus to the last visible item in the tree</td>
+  <td style="text-align: left;"><code>[35]</code> (End)</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">focusFirstItem</td>
+  <td style="text-align: left;">Sets focus to the first visible item in the tree</td>
+  <td style="text-align: left;"><code>[36]</code> (Home)</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">collapseFocusedItem</td>
+  <td style="text-align: left;">Collapses the currently focused item, if expanded; otherwise focuses the parent node if one exists</td>
+  <td style="text-align: left;"><code>[37]</code> (Left)</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">expandFocusedItem</td>
+  <td style="text-align: left;">Expands the currently focused item, if collapsed; otherwise focuses the first child node if one exists</td>
+  <td style="text-align: left;"><code>[39]</code> (Right)</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">focusPreviousItem</td>
+  <td style="text-align: left;">Focuses the previous visible node* in the tree if one exists.</td>
+  <td style="text-align: left;"><code>[38]</code> (Up)</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">focusNextItem</td>
+  <td style="text-align: left;">Focuses the next visible node** in the tree if one exists.</td>
+  <td style="text-align: left;"><code>[40]</code> (Down)</td>
+  </tr>
+  <tr class="odd">
+  <td style="text-align: left;">insertItem</td>
+  <td style="text-align: left;">Fires the callback to add a new node if the callback exists</td>
+  <td style="text-align: left;"><code>[45]</code> (Insert)</td>
+  </tr>
+  <tr class="even">
+  <td style="text-align: left;">deleteItem</td>
+  <td style="text-align: left;">Deletes the current node, if deletable</td>
+  <td style="text-align: left;"><code>[46]</code> (Delete)</td>
+  </tr>
+  </tbody>
+  </table>
+  <p>* The previous visible node is a)the focused node’s previous sibling’s last child if visible, b)the previous sibling if it has no children or is collapsed, or c)the parent node.</p>
+  <p>** The next visible node is a)the focused node’s first child if one exists and the focused node is expanded, b)the focused node’s next sibling if one exists, or c)the focused node’s parent’s next sibling if one exists.</p>
+  <h3 id="focusable">Focusable</h3>
+  <p>The treeview uses a roaming tab index to maintain focusability in the tree. A node model can specify a <code>treeNodeSpec.focusable</code> property of <code>true</code> in order for that node to be used as the initial target of keyboard focus within the treeview. If multiple node models specify this then only the first will have <code>treeNodeSpec.focusable</code> set to <code>true</code> once the treeview is intialized. If no models have it specified then the first selected node in the treeview is given a <code>treeNodeSpec.focusable</code> of <code>true</code>. If there are no selected nodes then the first node in the treeview is given a <code>treeNodeSpec.focusable</code> of <code>true</code>.</p>
+  <h3 id="more-about-aria-treeviews">More about ARIA TreeViews</h3>
+  <p><a href="https://www.w3.org/TR/wai-aria-practices-1.1/#TreeView">WAI-ARIA Authoring Best Practices, Tree View</a></p>
+    </main>
+</div>
+</body>
+</html>
