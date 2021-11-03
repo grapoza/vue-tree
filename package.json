@@ -1,10 +1,10 @@
 {
   "name": "@grapoza/vue-tree",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "Yet another Vue treeview component.",
   "author": "Gregg Rapoza <grapoza@gmail.com>",
   "license": "MIT",
-  "main": "dist/vue-tree.umd.min.js",
+  "main": "vue-tree.umd.min.js",
   "browser": "index.js",
   "repository": {
     "url": "https://github.com/grapoza/vue-tree",
