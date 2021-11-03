@@ -1,0 +1,93 @@
+.grtv.grayscale {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: larger;
+}
+
+.grtv.grayscale .grtvn {
+    padding-left: 0;
+}
+
+.grtv.grayscale .grtvn:first-child {
+    margin-top: 0;
+}
+
+.grtv.grayscale .grtvn[role=treeitem]:focus {
+    outline: 0;
+}
+
+.grtv.grayscale .grtvn[role=treeitem]:focus>.grtvn-self {
+    outline: 1px dotted #000;
+}
+
+.grtv.grayscale .grtvn-self {
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.grtv.grayscale .grtvn-self-expander {
+    padding: 0;
+    background: none;
+    border: none;
+    height: 1.2rem;
+}
+
+.grtv.grayscale .grtvn-self-expander i.grtvn-self-expanded-indicator {
+    font-style: normal;
+}
+
+.grtv.grayscale .grtvn-self-expander.grtvn-self-expanded i.grtvn-self-expanded-indicator {
+    transform: rotate(90deg);
+}
+
+.grtv.grayscale .grtvn-self-action,
+.grtv.grayscale .grtvn-self-checkbox,
+.grtv.grayscale .grtvn-self-expander,
+.grtv.grayscale .grtvn-self-radio,
+.grtv.grayscale .grtvn-self-spacer {
+    min-width: 1rem;
+}
+
+.grtv.grayscale .grtvn-self-expander,
+.grtv.grayscale .grtvn-self-spacer {
+    margin: 0;
+}
+
+.grtv.grayscale .grtvn-self-checkbox,
+.grtv.grayscale .grtvn-self-radio {
+    margin: 0 0 0 -1.2rem;
+}
+
+.grtv.grayscale .grtvn-self-label,
+.grtv.grayscale .grtvn-self-text {
+    margin-left: 1.2rem;
+}
+
+.grtv.grayscale .grtvn-self-action {
+    padding: 0 0 0 5px;
+    background: none;
+    border: none;
+    height: 1.2rem;
+}
+
+.grtv.grayscale i.grtvn-self-add-child-icon {
+    font-style: normal;
+}
+
+.grtv.grayscale i.grtvn-self-delete-icon {
+    font-style: normal;
+}
+
+.grtv.grayscale .grtvn-children {
+    margin: 0 0 0 2.2rem;
+    padding: 0;
+    list-style: none;
+}
+
+.grtv.grayscale .action-button:hover {
+	background: #eee;
+	border-radius: 50%;
+}
