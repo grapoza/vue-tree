@@ -530,149 +530,100 @@
 
 </script>
 
-<style lang="scss">
-  $baseHeight: 1.2rem;
-  $itemSpacing: 1.2rem;
-
-  // Everything's in a .grtv (embedded SCSS is the 'grtv-default-skin' skin)
-  .grtv-wrapper.grtv-default-skin {
-
-    // The node, including its content and children list
-    .grtvn {
-      padding-left: 0;
-
-      &:first-child {
-        margin-top: 0;
-      }
-
-      // ARIA styles
-      &[role="treeitem"]:focus {
-        outline: 0;
-
-        >.grtvn-self {
-          outline: black dotted 1px;
-        }
-      }
-    }
-
-    // The node's content, excluding the list of child nodes
-    .grtvn-self {
-      display: flex;
-      align-items: flex-start;
-      line-height: $baseHeight;
-    }
-
-    // Drag and Drop styles
-    .grtvn-dragging .grtvn-self {
-      opacity: 0.5;
-    }
-
-    .grtvn-self-drop-target {
-      flex-wrap: wrap;
-
-      &.grtvn-self-child-drop-target {
-        opacity: .5;
-      }
-
-      .grtvn-self-sibling-drop-target {
-        width: 100%;
-        height: 7px;
-        background-color: #dddddd;
-
-        &.grtvn-self-sibling-drop-target-hover {
-          background-color: #bbbbbb;
-        }
-      }
-    }
-
-    // The expander button and indicator content
-    .grtvn-self-expander {
-      padding: 0;
-      background: none;
-      border: none;
-      height: $baseHeight;
-
-      i.grtvn-self-expanded-indicator {
-        font-style: normal;
-
-        &::before {
-          content: '+';
-        }
-      }
-
-      &.grtvn-self-expanded {
-
-        i.grtvn-self-expanded-indicator {
-
-          &::before {
-            content: '-';
-          }
-        }
-      }
-    }
-
-    // The styling for when the node is selected
-    .grtvn-self-selected {
-      background-color: #f0f0f8;
-    }
-
-    // Spacing
-    .grtvn-self-expander,
-    .grtvn-self-checkbox,
-    .grtvn-self-radio,
-    .grtvn-self-spacer,
-    .grtvn-self-action {
-      min-width: 1rem;
-    }
-
-    .grtvn-self-expander,
-    .grtvn-self-spacer {
-      margin: 0;
-    }
-
-    .grtvn-self-checkbox,
-    .grtvn-self-radio {
-      margin: 0 0 0 (-$itemSpacing);
-    }
-
-    .grtvn-self-text,
-    .grtvn-self-label {
-      margin-left: $itemSpacing;
-    }
-
-    // Action buttons section
-    .grtvn-self-action {
-      padding: 0;
-      background: none;
-      border: none;
-      height: $baseHeight;
-    }
-
-    // Action buttons (add, delete, etc)
-    i.grtvn-self-add-child-icon {
-      font-style: normal;
-
-      &::before {
-        content: '+';
-      }
-    }
-
-    i.grtvn-self-delete-icon {
-      font-style: normal;
-
-      &::before {
-        content: 'x';
-      }
-    }
-
-    .grtvn-children-wrapper {
-      margin: 0 0 0 (1rem + $itemSpacing);
-    }
-
-    // The node's child list
-    .grtvn-children {
-      padding: 0;
-      list-style: none;
-    }
+<style>
+  .grtvn {
+  	 --baseHeight: 1.2rem;
+  	 --itemSpacing: 1.2rem;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn {
+  	 padding-left: 0;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn:first-child {
+  	 margin-top: 0;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn[role="treeitem"]:focus {
+  	 outline: 0;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn[role="treeitem"]:focus > .grtvn-self {
+  	 outline: black dotted 1px;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self {
+  	 display: flex;
+  	 align-items: flex-start;
+  	 line-height: var(--baseHeight);
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-dragging .grtvn-self {
+  	 opacity: 0.5;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-drop-target {
+  	 flex-wrap: wrap;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-drop-target.grtvn-self-child-drop-target {
+  	 opacity: 0.5;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-drop-target .grtvn-self-sibling-drop-target {
+  	 width: 100%;
+  	 height: 7px;
+  	 background-color: #ddd;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-drop-target .grtvn-self-sibling-drop-target.grtvn-self-sibling-drop-target-hover {
+	 background-color: #bbb;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-expander {
+  	 padding: 0;
+  	 background: none;
+  	 border: none;
+  	 height: var(--baseHeight);
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-expander i.grtvn-self-expanded-indicator {
+  	 font-style: normal;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-expander i.grtvn-self-expanded-indicator::before {
+  	 content: '+';
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-expander.grtvn-self-expanded i.grtvn-self-expanded-indicator::before {
+  	 content: '-';
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-selected {
+  	 background-color: #f0f0f8;
+  }
+  .grtv-wrapper.grtv-default-skin .grtvn-self-expander, .grtv-wrapper.grtv-default-skin .grtvn-self-checkbox, 
+  .grtv-wrapper.grtv-default-skin .grtvn-self-radio, .grtv-wrapper.grtv-default-skin .grtvn-self-spacer, 
+  .grtv-wrapper.grtv-default-skin .grtvn-self-action {
+	   min-width: 1rem;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-expander, .grtv-wrapper.grtv-default-skin .grtvn-self-spacer {
+  	 margin: 0;
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-checkbox, .grtv-wrapper.grtv-default-skin .grtvn-self-radio {
+  	 margin: 0 0 0 -var(--itemSpacing);
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-text, .grtv-wrapper.grtv-default-skin .grtvn-self-label {
+  	 margin-left: var(--itemSpacing);
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-self-action {
+  	 padding: 0;
+  	 background: none;
+  	 border: none;
+  	 height: var(--baseHeight);
+  }
+   .grtv-wrapper.grtv-default-skin i.grtvn-self-add-child-icon {
+  	 font-style: normal;
+  }
+   .grtv-wrapper.grtv-default-skin i.grtvn-self-add-child-icon::before {
+  	 content: '+';
+  }
+   .grtv-wrapper.grtv-default-skin i.grtvn-self-delete-icon {
+  	 font-style: normal;
+  }
+   .grtv-wrapper.grtv-default-skin i.grtvn-self-delete-icon::before {
+  	 content: 'x';
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-children-wrapper {
+  	 margin: 0 0 0 1remvar(--itemSpacing);
+  }
+   .grtv-wrapper.grtv-default-skin .grtvn-children {
+  	 padding: 0;
+  	 list-style: none;
   }
 </style>
