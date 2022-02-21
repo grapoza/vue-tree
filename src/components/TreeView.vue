@@ -384,10 +384,10 @@
 <style>
 
  // Embedded CSS is the 'grtv-default-skin' skin
-.grtv-wrapper.grtv-default-skin > .grtv {
-	 margin: 0;
-	 padding: 0;
-	 list-style: none;
-}
+  .grtv-wrapper.grtv-default-skin > .grtv {
+    margin: 0;
+	  padding: 0;
+	  list-style: none;
+  }
 
 </style>
