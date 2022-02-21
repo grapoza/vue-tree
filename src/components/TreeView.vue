@@ -381,16 +381,13 @@
   }
 </script>
 
-<style lang="scss">
+<style>
 
-  // Embedded SCSS is the 'grtv-default-skin' skin
-  .grtv-wrapper.grtv-default-skin {
-
-    > .grtv {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-  }
+ // Embedded CSS is the 'grtv-default-skin' skin
+.grtv-wrapper.grtv-default-skin > .grtv {
+	 margin: 0;
+	 padding: 0;
+	 list-style: none;
+}
 
 </style>
