@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Gregg Rapoza" />
+  <title>Demos – vue-tree</title>
+  <link rel="stylesheet" href="/vue-tree/4.0.3/style/docs.css" />
+  <link rel="stylesheet" href="/vue-tree/4.0.3/style/codeFormatting.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>
+  document.createElement('main'); // For IE 11 to recognize main
+  </script>
+  <script src="https://unpkg.com/vue@3.2.4"></script>
+  <script src="https://unpkg.com/@grapoza/vue-tree@4.0.3/vue-tree.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@grapoza/vue-tree@4.0.3/vue-tree.css">
+  <link rel="stylesheet" href="/vue-tree/4.0.3/style/demo/demo.css">
+  <link rel="stylesheet" href="/vue-tree/4.0.3/style/demo/grayscale.css">
+  <link rel="stylesheet" href="/vue-tree/4.0.3/style/demo/classbased.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css">
+</head>
+
+<body>
+
+<header id="title-block-header">
+  <div class="header-inner">
+    <a id="github-banner" href="https://github.com/grapoza/vue-tree">View on GitHub</a>
+    <h1 class="title"><a href="/vue-tree/4.0.3/">vue-tree</a></h1>
+    <p class="subtitle">Yet another Vue tree view implementation.</p>
+        </div>
+</header>
+
+<div class="content">
+  <nav id="sitenav" aria-labelledby="site-navigation">
+  <h2 id="site-navigation">Site Navigation</h2>
+  <ul>
+  <li><a href="/vue-tree/4.0.3/">Home</a></li>
+  <li><a href="/vue-tree/4.0.3/demos.html">Demos</a></li>
+  </ul>
+  </nav>
+
+    <nav id="TOC" role="doc-toc" aria-labelledby="toc-navigation">
+  <h2 id="toc-navigation">Table of Contents</h2>
+  <ul>
+  <li><a href="#demos">Demos</a>
+  <ul>
+  <li><a href="#a-basic-tree">A Basic Tree</a></li>
+  <li><a href="#a-static-tree">A Static Tree</a></li>
+  <li><a href="#setting-defaults">Setting Defaults</a></li>
+  <li><a href="#adding-and-removing-nodes">Adding and Removing Nodes</a></li>
+  <li><a href="#inputs">Inputs</a></li>
+  <li><a href="#selection">Selection</a></li>
+  <li><a href="#slots">Slots</a></li>
+  <li><a href="#asynchronous-loading">Asynchronous Loading</a></li>
+  <li><a href="#custom-styles">Custom Styles</a></li>
+  <li><a href="#drag-and-drop">Drag and Drop</a></li>
+  </ul></li>
+  </ul>
+  </nav>
+  
+  <main>
+  <h2 id="demos">Demos</h2>
+  <!--- -------------------------------------------------------------------------------------- --->
+  <h3 id="a-basic-tree">A Basic Tree</h3>
+  <p>The most basic use of the tree view consists of giving it some data and letting the tree populate the model with the default tree node properties, which it does by adding a <code>treeNodeSpec</code> property to each object in the hierarchy. This can be useful if you have a model and want it in a tree view, and also don’t care if the tree view modifies that data. If you don’t want the tree view to modify your data at all, you’ll need to make a copy first and provide that to the tree view.</p>
+  <details>
+  <summary>
+  <div class="sourceCode" id="cb1"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-basic&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span></code></pre></div>
+  </summary>
+  <!--- The leading spaces are to render the html aligned correctly --->
+  <div class="sourceCode" id="cb2"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;app-basic&quot;</span><span class="ot"> class=</span><span class="st">&quot;demo-tree&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-basic&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span>
+  <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+  <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&#39;module&#39;</span><span class="kw">&gt;</span></span>
+  <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  Vue<span class="op">.</span><span class="fu">createApp</span>({</span>
+  <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tree</span><span class="op">:</span> TreeView</span>
+  <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data</span>() {</span>
+  <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+  <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">model</span><span class="op">:</span> [</span>
+  <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;node1&quot;</span><span class="op">,</span></span>
+  <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Node with no children&quot;</span></span>
+  <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>          }<span class="op">,</span></span>
+  <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;node2&quot;</span><span class="op">,</span></span>
+  <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Node with a child&quot;</span><span class="op">,</span></span>
+  <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>            <span class="dt">children</span><span class="op">:</span> [</span>
+  <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>              {</span>
+  <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;childNode1&quot;</span><span class="op">,</span></span>
+  <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;A child node&quot;</span></span>
+  <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>            ]</span>
+  <span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        ]</span>
+  <span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+  <span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">mount</span>(<span class="st">&#39;#app-basic&#39;</span>)<span class="op">;</span></span>
+  <span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  </details>
+  <div id="app-basic" class="demo-tree">
+      <tree id="customtree-basic" :initial-model="model"></tree>
+  </div>
+  <script type='module'>
+      Vue.createApp({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+              model: [
+                  {
+                      id: "node1",
+                      label: "Node with no children"
+                  },
+                  {
+                      id: "node2",
+                      label: "Node with a child",
+                      children: [
+                          {
+                              id: "childNode1",
+                              label: "A child node"
+                          }
+                      ]
+                  }
+              ]
+          };
+        }
+      }).mount('#app-basic');
+  </script>
+  <!--- -------------------------------------------------------------------------------------- --->
+  <h3 id="a-static-tree">A Static Tree</h3>
+  <p>If all you need is a static tree (no expanding subnodes) then you can just set the <code>expandable</code> property to false for each node. You can then just set the <code>expanded</code> property through code to hide/show children of a node as needed. The most common case is to always set it to <code>true</code> for all nodes.</p>
+  <details>
+  <summary>
+  <div class="sourceCode" id="cb3"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-static&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span></code></pre></div>
+  </summary>
+  <!--- The leading spaces are to render the html aligned correctly --->
+  <div class="sourceCode" id="cb4"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;app-static&quot;</span><span class="ot"> class=</span><span class="st">&quot;demo-tree&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-static&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span>
+  <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+  <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&#39;module&#39;</span><span class="kw">&gt;</span></span>
+  <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  Vue<span class="op">.</span><span class="fu">createApp</span>({</span>
+  <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tree</span><span class="op">:</span> TreeView</span>
+  <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data</span>() {</span>
+  <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+  <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">model</span><span class="op">:</span> [</span>
+  <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;node1&quot;</span><span class="op">,</span></span>
+  <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Node with no children&quot;</span></span>
+  <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>          }<span class="op">,</span></span>
+  <span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;node2&quot;</span><span class="op">,</span></span>
+  <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Node with a child&quot;</span><span class="op">,</span></span>
+  <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>            <span class="dt">children</span><span class="op">:</span> [</span>
+  <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>              {</span>
+  <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>                <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;childNode1&quot;</span><span class="op">,</span></span>
+  <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>                <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;A child node&quot;</span></span>
+  <span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>            ]</span>
+  <span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        ]<span class="op">,</span></span>
+  <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        <span class="dt">modelDefaults</span><span class="op">:</span> {</span>
+  <span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>          <span class="dt">expandable</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+  <span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>          <span class="dt">state</span><span class="op">:</span> {</span>
+  <span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>            <span class="dt">expanded</span><span class="op">:</span> <span class="kw">true</span></span>
+  <span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        }</span>
+  <span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+  <span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">mount</span>(<span class="st">&#39;#app-static&#39;</span>)<span class="op">;</span></span>
+  <span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  </details>
+  <div id="app-static" class="demo-tree">
+      <tree id="customtree-static" :initial-model="model" :model-defaults="modelDefaults"></tree>
+  </div>
+  <script type='module'>
+      Vue.createApp({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+              model: [
+                  {
+                      id: "node1",
+                      label: "Node with no children"
+                  },
+                  {
+                      id: "node2",
+                      label: "Node with a child",
+                      children: [
+                          {
+                              id: "childNode1",
+                              label: "A child node"
+                          }
+                      ]
+                  }
+              ],
+              modelDefaults: {
+                  expandable: false,
+                  state: {
+                      expanded: true
+                  }
+              }
+          };
+        }
+      }).mount('#app-static');
+  </script>
+  <!--- -------------------------------------------------------------------------------------- --->
+  <h3 id="setting-defaults">Setting Defaults</h3>
+  <p>If there are common settings that should be used by all (or even most) nodes, these can be given to the tree in the <code>modelDefaults</code> property. This is a great place to customize things like what model props are used for the nodes’ labels and whether all nodes are a certain type of input. Note that the expandable node below is expanded by default, as set from <code>modelDefaults</code>. The tree below uses the <code>identifier</code> and <code>description</code> properties of the node objects instead of <code>id</code> and <code>label</code>, and has all nodes expanded by default. These are set for all nodes at once by using <code>modelDefaults</code>. For more info, see <a href="/#default-data">the docs</a>.</p>
+  <details>
+  <summary>
+  <div class="sourceCode" id="cb5"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-custom&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span></code></pre></div>
+  </summary>
+  <!--- The leading spaces are to render the html aligned correctly --->
+  <div class="sourceCode" id="cb6"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;app-custom&quot;</span><span class="ot"> class=</span><span class="st">&quot;demo-tree&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-custom&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span>
+  <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+  <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&#39;module&#39;</span><span class="kw">&gt;</span></span>
+  <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  Vue<span class="op">.</span><span class="fu">createApp</span>({</span>
+  <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tree</span><span class="op">:</span> TreeView</span>
+  <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data</span>() {</span>
+  <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+  <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">model</span><span class="op">:</span> [</span>
+  <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>            <span class="dt">identifier</span><span class="op">:</span> <span class="st">&quot;node1&quot;</span><span class="op">,</span></span>
+  <span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>            <span class="dt">description</span><span class="op">:</span> <span class="st">&quot;Node with no children&quot;</span></span>
+  <span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>          }<span class="op">,</span></span>
+  <span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>            <span class="dt">identifier</span><span class="op">:</span> <span class="st">&quot;node2&quot;</span><span class="op">,</span></span>
+  <span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>            <span class="dt">description</span><span class="op">:</span> <span class="st">&quot;Node with a child&quot;</span><span class="op">,</span></span>
+  <span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>            <span class="dt">children</span><span class="op">:</span> [</span>
+  <span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>              {</span>
+  <span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>                <span class="dt">identifier</span><span class="op">:</span> <span class="st">&quot;childNode1&quot;</span><span class="op">,</span></span>
+  <span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>                <span class="dt">description</span><span class="op">:</span> <span class="st">&quot;A child node&quot;</span></span>
+  <span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>            ]</span>
+  <span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        ]<span class="op">,</span></span>
+  <span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        <span class="dt">modelDefaults</span><span class="op">:</span> {</span>
+  <span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>          <span class="dt">idProperty</span><span class="op">:</span> <span class="st">&#39;identifier&#39;</span><span class="op">,</span></span>
+  <span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>          <span class="dt">labelProperty</span><span class="op">:</span> <span class="st">&#39;description&#39;</span><span class="op">,</span></span>
+  <span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>          <span class="dt">state</span><span class="op">:</span> {</span>
+  <span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>            <span class="dt">expanded</span><span class="op">:</span> <span class="kw">true</span></span>
+  <span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        }</span>
+  <span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+  <span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">mount</span>(<span class="st">&#39;#app-custom&#39;</span>)<span class="op">;</span></span>
+  <span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  </details>
+  <div id="app-custom" class="demo-tree">
+      <tree id="customtree-custom" :initial-model="model" :model-defaults="modelDefaults"></tree>
+  </div>
+  <script type='module'>
+      Vue.createApp({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+              model: [
+                  {
+                      identifier: "node1",
+                      description: "Node with no children"
+                  },
+                  {
+                      identifier: "node2",
+                      description: "Node with a child",
+                      children: [
+                          {
+                              identifier: "childNode1",
+                              description: "A child node"
+                          }
+                      ]
+                  }
+              ],
+              modelDefaults: {
+                  idProperty: 'identifier',
+                  labelProperty: 'description',
+                  state: {
+                      expanded: true
+                  }
+              }
+          };
+        }
+      }).mount('#app-custom');
+  </script>
+  <!--- -------------------------------------------------------------------------------------- --->
+  <h3 id="adding-and-removing-nodes">Adding and Removing Nodes</h3>
+  <p>Any node can be marked as deletable or provide a callback used to create a new child node. To make a node deletable, just set a <code>deletable</code> property to <code>true</code> in that node’s <code>treeNodeSpec</code>. To allow a node to have children added, set an <code>addChildCallback</code> property on the node’s <code>treeNodeSpec</code> (or use <code>modelDefaults</code> to use the same callback for all nodes). The <code>addChildCallback</code> can take the parent node’s model data as an argument, and should return a Promise that resolves to the node data to add.</p>
+  <details>
+  <summary>
+  <div class="sourceCode" id="cb7"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-add-remove&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span></code></pre></div>
+  </summary>
+  <!--- The leading spaces are to render the html aligned correctly --->
+  <div class="sourceCode" id="cb8"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;app-add-remove&quot;</span><span class="ot"> class=</span><span class="st">&quot;demo-tree&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-add-remove&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span>
+  <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+  <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&#39;module&#39;</span><span class="kw">&gt;</span></span>
+  <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  Vue<span class="op">.</span><span class="fu">createApp</span>({</span>
+  <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tree</span><span class="op">:</span> TreeView</span>
+  <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data</span>() {</span>
+  <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+  <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">childCounter</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+  <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">model</span><span class="op">:</span> [</span>
+  <span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;add-remove-rootnode&quot;</span><span class="op">,</span></span>
+  <span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Root Node&quot;</span></span>
+  <span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        ]<span class="op">,</span></span>
+  <span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        <span class="dt">modelDefaults</span><span class="op">:</span> {</span>
+  <span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>          <span class="dt">addChildCallback</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span><span class="at">addChildCallback</span><span class="op">,</span></span>
+  <span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>          <span class="dt">addChildTitle</span><span class="op">:</span> <span class="st">&#39;Add a new child node&#39;</span><span class="op">,</span></span>
+  <span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>          <span class="dt">deleteTitle</span><span class="op">:</span> <span class="st">&#39;Delete this node&#39;</span><span class="op">,</span></span>
+  <span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>          <span class="dt">expanderTitle</span><span class="op">:</span> <span class="st">&#39;Expand this node&#39;</span></span>
+  <span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>        }</span>
+  <span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+  <span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">methods</span><span class="op">:</span> {</span>
+  <span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">addChildCallback</span>(parentModel) {</span>
+  <span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="at">childCounter</span><span class="op">++;</span></span>
+  <span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">resolve</span>({</span>
+  <span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>          <span class="dt">id</span><span class="op">:</span> <span class="vs">`add-remove-child-node-</span><span class="sc">${</span><span class="kw">this</span><span class="op">.</span><span class="at">childCounter</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+  <span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>          <span class="dt">label</span><span class="op">:</span> <span class="vs">`Added Child </span><span class="sc">${</span><span class="kw">this</span><span class="op">.</span><span class="at">childCounter</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+  <span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>          <span class="dt">treeNodeSpec</span><span class="op">:</span> { <span class="dt">deletable</span><span class="op">:</span> <span class="kw">true</span> }</span>
+  <span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>        })<span class="op">;</span></span>
+  <span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>      }</span>
+  <span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">mount</span>(<span class="st">&#39;#app-add-remove&#39;</span>)<span class="op">;</span></span>
+  <span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  </details>
+  <div id="app-add-remove" class="demo-tree">
+      <tree id="customtree-add-remove" :initial-model="model" :model-defaults="modelDefaults"></tree>
+  </div>
+  <script type='module'>
+      Vue.createApp({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+              childCounter: 0,
+              model: [
+              {
+                  id: "add-remove-rootnode",
+                  label: "Root Node"
+              }
+              ],
+              modelDefaults: {
+                  addChildCallback: this.addChildCallback,
+                  addChildTitle: 'Add a new child node',
+                  deleteTitle: 'Delete this node',
+                  expanderTitle: 'Expand this node'
+              }
+          };
+        },
+        methods: {
+          addChildCallback(parentModel) {
+            this.childCounter++;
+            return Promise.resolve({
+              id: `add-remove-child-node-${this.childCounter}`,
+              label: `Added Child ${this.childCounter}`,
+              treeNodeSpec: { deletable: true }
+            });
+          }
+        }
+      }).mount('#app-add-remove');
+  </script>
+  <!--- -------------------------------------------------------------------------------------- --->
+  <h3 id="inputs">Inputs</h3>
+  <p>Support for checkboxes and radio buttons is built into the tree view.</p>
+  <p>To create a checkbox node, specify <code>input.type = 'checkbox'</code> on the node’s <code>treeNodeSpec</code>. To initialize the node as checked, specify <code>state.input.value = true</code>.</p>
+  <p>To create a radio button node, specify <code>input.type = 'radio'</code> on the node’s <code>treeNodeSpec</code>, give the node a name using the <code>input.name</code> property, and give the node a value using <code>input.value</code>. The name will determine the radio button group to which the radio button belongs. To initialize a node as checked set the node’s <code>input.isInitialRadioGroupValue</code> to <code>true</code>. If multiple nodes within a radio button group are specified as <code>isInitialRadioGroupValue</code>, the last one in wins.</p>
+  <p>The convenience methods <code>getCheckedRadioButtons</code> and <code>getCheckedCheckboxes</code> are exposed on the tree component to make it easy to get the nodes that have been checked.</p>
+  <details>
+  <summary>
+  <div class="sourceCode" id="cb9"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-inputs&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> ref=</span><span class="st">&quot;treeInputs&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span></code></pre></div>
+  </summary>
+  <!--- The leading spaces are to render the html aligned correctly --->
+  <div class="sourceCode" id="cb10"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;app-inputs&quot;</span><span class="ot"> class=</span><span class="st">&quot;demo-tree&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-inputs&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> ref=</span><span class="st">&quot;treeInputs&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span>
+  <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;section</span><span class="ot"> id=</span><span class="st">&quot;checked-stuff-inputs&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;button</span><span class="ot"> type=</span><span class="st">&quot;button&quot;</span><span class="ot"> class=</span><span class="st">&quot;tree-processor-trigger&quot;</span><span class="ot"> v-on:click=</span><span class="st">&quot;refreshCheckedList&quot;</span><span class="kw">&gt;</span>What&#39;s been checked?<span class="kw">&lt;/button&gt;</span></span>
+  <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;ul</span><span class="ot"> id=</span><span class="st">&quot;checked-list-inputs&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;li</span><span class="ot"> v-for=</span><span class="st">&quot;checkedNode in checkedNodes&quot;</span><span class="kw">&gt;</span>{{ checkedNode.id }}<span class="kw">&lt;/li&gt;</span></span>
+  <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/ul&gt;</span></span>
+  <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/section&gt;</span></span>
+  <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+  <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+  <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&#39;module&#39;</span><span class="kw">&gt;</span></span>
+  <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  Vue<span class="op">.</span><span class="fu">createApp</span>({</span>
+  <span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tree</span><span class="op">:</span> TreeView</span>
+  <span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data</span>() {</span>
+  <span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+  <span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>        <span class="dt">model</span><span class="op">:</span> [</span>
+  <span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;inputs-radio-1&#39;</span><span class="op">,</span></span>
+  <span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;My First Node&#39;</span><span class="op">,</span></span>
+  <span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>            <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>              <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>                <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;radio&#39;</span><span class="op">,</span></span>
+  <span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>                <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;radio1&#39;</span><span class="op">,</span></span>
+  <span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>                <span class="dt">value</span><span class="op">:</span> <span class="st">&#39;aValueToSubmit&#39;</span><span class="op">,</span></span>
+  <span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>                <span class="dt">isInitialRadioGroupValue</span><span class="op">:</span> <span class="kw">true</span></span>
+  <span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>            }</span>
+  <span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>          }<span class="op">,</span></span>
+  <span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;inputs-radio-2&#39;</span><span class="op">,</span></span>
+  <span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;My Second Node&#39;</span><span class="op">,</span></span>
+  <span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>            <span class="dt">children</span><span class="op">:</span> [</span>
+  <span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>              {</span>
+  <span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>                <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;inputs-radio-2-sub-1&#39;</span><span class="op">,</span></span>
+  <span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>                <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;This is a subnode&#39;</span><span class="op">,</span></span>
+  <span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>                <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;radio&#39;</span><span class="op">,</span></span>
+  <span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;radio2&#39;</span></span>
+  <span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>                  }</span>
+  <span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>                }</span>
+  <span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>              }<span class="op">,</span></span>
+  <span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>              {</span>
+  <span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>                <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;inputs-radio-2-sub-2&#39;</span><span class="op">,</span></span>
+  <span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>                <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;This is another subnode&#39;</span><span class="op">,</span></span>
+  <span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>                <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;radio&#39;</span><span class="op">,</span></span>
+  <span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;radio2&#39;</span></span>
+  <span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>                  }</span>
+  <span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>                }</span>
+  <span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>            ]<span class="op">,</span></span>
+  <span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>            <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>              <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>                <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;radio&#39;</span><span class="op">,</span></span>
+  <span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>                <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;radio1&#39;</span></span>
+  <span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>              }<span class="op">,</span></span>
+  <span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a>              <span class="dt">state</span><span class="op">:</span> {</span>
+  <span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>                <span class="dt">expanded</span><span class="op">:</span> <span class="kw">true</span></span>
+  <span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>            }</span>
+  <span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>          }<span class="op">,</span></span>
+  <span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;inputs-checkbox-1&#39;</span><span class="op">,</span></span>
+  <span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;Checkbox node&#39;</span><span class="op">,</span></span>
+  <span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>            <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>              <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>                <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;checkbox&#39;</span></span>
+  <span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>              }<span class="op">,</span></span>
+  <span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>              <span class="dt">state</span><span class="op">:</span> {</span>
+  <span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>                <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">value</span><span class="op">:</span> <span class="kw">true</span></span>
+  <span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>                }</span>
+  <span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a>            }</span>
+  <span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a>        ]<span class="op">,</span></span>
+  <span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>        <span class="dt">checkedNodes</span><span class="op">:</span> []</span>
+  <span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+  <span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>    <span class="dt">methods</span><span class="op">:</span> {</span>
+  <span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a>      <span class="fu">refreshCheckedList</span>() {</span>
+  <span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> rbNodes <span class="op">=</span> <span class="kw">this</span><span class="op">.</span><span class="at">$refs</span><span class="op">.</span><span class="at">treeInputs</span><span class="op">.</span><span class="fu">getCheckedRadioButtons</span>()<span class="op">;</span></span>
+  <span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> cbNodes <span class="op">=</span> <span class="kw">this</span><span class="op">.</span><span class="at">$refs</span><span class="op">.</span><span class="at">treeInputs</span><span class="op">.</span><span class="fu">getCheckedCheckboxes</span>()<span class="op">;</span></span>
+  <span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="at">checkedNodes</span> <span class="op">=</span> [<span class="op">...</span>rbNodes<span class="op">,</span> <span class="op">...</span>cbNodes]<span class="op">;</span></span>
+  <span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a>      }</span>
+  <span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">mount</span>(<span class="st">&#39;#app-inputs&#39;</span>)</span>
+  <span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  </details>
+  <div id="app-inputs" class="demo-tree">
+      <tree id="customtree-inputs" :initial-model="model" ref="treeInputs"></tree>
+      <section id="checked-stuff-inputs">
+          <button type="button" class="tree-processor-trigger" v-on:click="refreshCheckedList">What's been checked?</button>
+          <ul id="checked-list-inputs">
+              <li v-for="checkedNode in checkedNodes">{{ checkedNode.id }}</li>
+          </ul>
+      </section>
+  </div>
+
+  <script type='module'>
+      Vue.createApp({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+            model: [
+              {
+                id: 'inputs-radio-1',
+                label: 'My First Node',
+                treeNodeSpec: {
+                  input: {
+                    type: 'radio',
+                    name: 'radio1',
+                    value: 'aValueToSubmit',
+                    isInitialRadioGroupValue: true
+                  }
+                }
+              },
+              {
+                id: 'inputs-radio-2',
+                label: 'My Second Node',
+                children: [
+                  {
+                    id: 'inputs-radio-2-sub-1',
+                    label: 'This is a subnode',
+                    treeNodeSpec: {
+                    input: {
+                      type: 'radio',
+                      name: 'radio2'
+                    }
+                  }
+                  },
+                  {
+                    id: 'inputs-radio-2-sub-2',
+                    label: 'This is another subnode',
+                    treeNodeSpec: {
+                      input: {
+                        type: 'radio',
+                        name: 'radio2'
+                      }
+                    }
+                  }
+                ],
+                treeNodeSpec: {
+                  input: {
+                    type: 'radio',
+                    name: 'radio1'
+                  },
+                  state: {
+                    expanded: true
+                  }
+                }
+              },
+              {
+                id: 'inputs-checkbox-1',
+                label: 'Checkbox node',
+                treeNodeSpec: {
+                  input: {
+                    type: 'checkbox'
+                  },
+                  state: {
+                    input: {
+                        value: true
+                    }
+                  }
+                }
+              }
+            ],
+            checkedNodes: []
+          };
+        },
+        methods: {
+          refreshCheckedList() {
+            let rbNodes = this.$refs.treeInputs.getCheckedRadioButtons();
+            let cbNodes = this.$refs.treeInputs.getCheckedCheckboxes();
+            this.checkedNodes = [...rbNodes, ...cbNodes];
+          }
+        }
+      }).mount('#app-inputs')
+  </script>
+  <!--- -------------------------------------------------------------------------------------- --->
+  <h3 id="selection">Selection</h3>
+  <p>Any node can be marked as selectable. To set a node’s selectability, set a <code>selectable</code> property to <code>true</code> or <code>false</code> (the default) in that node’s <code>treeNodeSpec</code>. Different selection modes allow different selection behavior, but only affect nodes that are selectable.</p>
+  <p>The convenience method <code>getSelected</code> is exposed on the tree component to make it easy to get the nodes that have been selected. For more info see <a href="./#selection-mode">the docs</a>.</p>
+  <details>
+  <summary>
+  <div class="sourceCode" id="cb11"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-selection&quot;</span></span>
+  <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ot">      :initial-model=</span><span class="st">&quot;model&quot;</span></span>
+  <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ot">      :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span></span>
+  <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="ot">      :selection-mode=</span><span class="st">&quot;normalizedSelectionMode&quot;</span></span>
+  <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="ot">      ref=</span><span class="st">&quot;treeSelection&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span></code></pre></div>
+  </summary>
+  <!--- The leading spaces are to render the html aligned correctly --->
+  <div class="sourceCode" id="cb12"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;app-selection&quot;</span><span class="ot"> class=</span><span class="st">&quot;demo-tree&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;label</span><span class="ot"> for=</span><span class="st">&quot;modeSelect&quot;</span><span class="kw">&gt;</span>Selection Mode<span class="kw">&lt;/label&gt;</span></span>
+  <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;select</span><span class="ot"> v-model=</span><span class="st">&quot;selectionMode&quot;</span><span class="ot"> id=</span><span class="st">&quot;modeSelect&quot;</span><span class="ot"> style=</span><span class="st">&quot;margin-bottom: 2rem;&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;option</span><span class="ot"> value=</span><span class="st">&quot;single&quot;</span><span class="kw">&gt;</span>Single<span class="kw">&lt;/option&gt;</span></span>
+  <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;option</span><span class="ot"> value=</span><span class="st">&quot;selectionFollowsFocus&quot;</span><span class="kw">&gt;</span>Selection Follows Focus<span class="kw">&lt;/option&gt;</span></span>
+  <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;option</span><span class="ot"> value=</span><span class="st">&quot;multiple&quot;</span><span class="kw">&gt;</span>Multiple<span class="kw">&lt;/option&gt;</span></span>
+  <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;option</span><span class="ot"> value=</span><span class="st">&quot;&quot;</span><span class="kw">&gt;</span>No Selection<span class="kw">&lt;/option&gt;</span></span>
+  <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/select&gt;</span></span>
+  <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-selection&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="ot"> :selection-mode=</span><span class="st">&quot;normalizedSelectionMode&quot;</span><span class="ot"> ref=</span><span class="st">&quot;treeSelection&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span>
+  <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;section</span><span class="ot"> id=</span><span class="st">&quot;selected-stuff&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;button</span><span class="ot"> type=</span><span class="st">&quot;button&quot;</span><span class="ot"> class=</span><span class="st">&quot;tree-processor-trigger&quot;</span> <span class="er">@click</span><span class="ot">=</span><span class="st">&quot;refreshSelectedList&quot;</span><span class="kw">&gt;</span>What&#39;s selected?<span class="kw">&lt;/button&gt;</span></span>
+  <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;ul</span><span class="ot"> id=</span><span class="st">&quot;selectedList&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;li</span><span class="ot"> v-for=</span><span class="st">&quot;selectedNode in selectedNodes&quot;</span><span class="kw">&gt;</span>{{ selectedNode.id }}<span class="kw">&lt;/li&gt;</span></span>
+  <span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/ul&gt;</span></span>
+  <span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/section&gt;</span></span>
+  <span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+  <span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+  <span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&#39;module&#39;</span><span class="kw">&gt;</span></span>
+  <span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  Vue<span class="op">.</span><span class="fu">createApp</span>({</span>
+  <span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tree</span><span class="op">:</span> TreeView</span>
+  <span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data</span>() {</span>
+  <span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+  <span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        <span class="dt">model</span><span class="op">:</span> [</span>
+  <span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;node1&#39;</span><span class="op">,</span></span>
+  <span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;My First Node&#39;</span><span class="op">,</span></span>
+  <span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>            <span class="dt">children</span><span class="op">:</span> []<span class="op">,</span></span>
+  <span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>            <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>              <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>                <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;checkbox&#39;</span><span class="op">,</span></span>
+  <span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>                <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;checkbox1&#39;</span></span>
+  <span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>            }</span>
+  <span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>          }<span class="op">,</span></span>
+  <span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;node2&#39;</span><span class="op">,</span></span>
+  <span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;My Second Node&#39;</span><span class="op">,</span></span>
+  <span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>            <span class="dt">children</span><span class="op">:</span> [</span>
+  <span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>              {</span>
+  <span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>                <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;subnode1&#39;</span><span class="op">,</span></span>
+  <span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>                <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;This is a subnode&#39;</span><span class="op">,</span></span>
+  <span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>                <span class="dt">children</span><span class="op">:</span> []<span class="op">,</span></span>
+  <span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>                <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">title</span><span class="op">:</span> <span class="st">&#39;Even non-input nodes should get a title.&#39;</span></span>
+  <span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>                }</span>
+  <span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>              }<span class="op">,</span></span>
+  <span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>              {</span>
+  <span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>                <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;subnode2&#39;</span><span class="op">,</span></span>
+  <span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>                <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;This is a checkable, checked subnode&#39;</span><span class="op">,</span></span>
+  <span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>                <span class="dt">children</span><span class="op">:</span> [</span>
+  <span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>                  {</span>
+  <span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;subsubnode1&#39;</span><span class="op">,</span></span>
+  <span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;An even deeper node&#39;</span><span class="op">,</span></span>
+  <span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">children</span><span class="op">:</span> []</span>
+  <span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>                  }</span>
+  <span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>                ]<span class="op">,</span></span>
+  <span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>                <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;checkbox&#39;</span><span class="op">,</span></span>
+  <span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;checkbox3&#39;</span></span>
+  <span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>                  }</span>
+  <span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>                }</span>
+  <span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>            ]<span class="op">,</span></span>
+  <span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>            <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>              <span class="dt">title</span><span class="op">:</span> <span class="st">&#39;My second node, and its fantastic title&#39;</span><span class="op">,</span></span>
+  <span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>              <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>                <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;checkbox&#39;</span><span class="op">,</span></span>
+  <span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>                <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;checkbox2&#39;</span></span>
+  <span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>              }<span class="op">,</span></span>
+  <span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>              <span class="dt">state</span><span class="op">:</span> {</span>
+  <span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a>                <span class="dt">expanded</span><span class="op">:</span> <span class="kw">true</span></span>
+  <span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>            }</span>
+  <span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>        ]<span class="op">,</span></span>
+  <span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>        <span class="dt">modelDefaults</span><span class="op">:</span> {</span>
+  <span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>          <span class="dt">selectable</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+  <span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>          <span class="dt">expanderTitle</span><span class="op">:</span> <span class="st">&#39;Expand this node&#39;</span></span>
+  <span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>        }<span class="op">,</span></span>
+  <span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selectionMode</span><span class="op">:</span> <span class="st">&#39;single&#39;</span><span class="op">,</span></span>
+  <span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selectedNodes</span><span class="op">:</span> []</span>
+  <span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+  <span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>    <span class="dt">computed</span><span class="op">:</span> {</span>
+  <span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>      <span class="fu">normalizedSelectionMode</span>() {</span>
+  <span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="kw">this</span><span class="op">.</span><span class="at">selectionMode</span> <span class="op">===</span> <span class="st">&#39;&#39;</span> <span class="op">?</span> <span class="kw">null</span> <span class="op">:</span> <span class="kw">this</span><span class="op">.</span><span class="at">selectionMode</span><span class="op">;</span></span>
+  <span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>      }</span>
+  <span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>    <span class="dt">methods</span><span class="op">:</span> {</span>
+  <span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a>      <span class="fu">refreshSelectedList</span>() {</span>
+  <span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="at">selectedNodes</span> <span class="op">=</span> <span class="kw">this</span><span class="op">.</span><span class="at">$refs</span><span class="op">.</span><span class="at">treeSelection</span><span class="op">.</span><span class="fu">getSelected</span>()<span class="op">;</span></span>
+  <span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>      }</span>
+  <span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">mount</span>(<span class="st">&#39;#app-selection&#39;</span>)<span class="op">;</span></span>
+  <span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  </details>
+  <div id="app-selection" class="demo-tree">
+      <label for="modeSelect">Selection Mode</label>
+      <select v-model="selectionMode" id="modeSelect" style="margin-bottom: 2rem;">
+          <option value="single">Single</option>
+          <option value="selectionFollowsFocus">Selection Follows Focus</option>
+          <option value="multiple">Multiple</option>
+          <option value="">No Selection</option>
+      </select>
+      <tree id="customtree-selection" :initial-model="model" :model-defaults="modelDefaults" :selection-mode="normalizedSelectionMode" ref="treeSelection"></tree>
+      <section id="selected-stuff">
+          <button type="button" class="tree-processor-trigger" @click="refreshSelectedList">What's selected?</button>
+          <ul id="selectedList">
+              <li v-for="selectedNode in selectedNodes">{{ selectedNode.id }}</li>
+          </ul>
+      </section>
+  </div>
+
+  <script type='module'>
+      Vue.createApp({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+            model: [
+              {
+                id: 'node1-selection',
+                label: 'My First Node',
+                children: [],
+                treeNodeSpec: {
+                  input: {
+                    type: 'checkbox',
+                    name: 'checkbox1'
+                  }
+                }
+              },
+              {
+                id: 'node2-selection',
+                label: 'My Second Node',
+                children: [
+                  {
+                    id: 'subnode1-selection',
+                    label: 'This is a subnode',
+                    children: [],
+                    treeNodeSpec: {
+                      title: 'Even non-input nodes should get a title.'
+                    }
+                  },
+                  {
+                    id: 'subnode2-selection',
+                    label: 'This is a checkable, checked subnode',
+                    children: [
+                      {
+                        id: 'subsubnode1',
+                        label: 'An even deeper node',
+                        children: []
+                      }
+                    ],
+                    treeNodeSpec: {
+                      input: {
+                        type: 'checkbox',
+                        name: 'checkbox3'
+                      }
+                    }
+                  }
+                ],
+                treeNodeSpec: {
+                  title: 'My second node, and its fantastic title',
+                  input: {
+                    type: 'checkbox',
+                    name: 'checkbox2'
+                  },
+                  state: {
+                    expanded: true
+                  }
+                }
+              }
+            ],
+            modelDefaults: {
+              selectable: true,
+              expanderTitle: 'Expand this node'
+            },
+            selectionMode: 'single',
+            selectedNodes: []
+          };
+        },
+        computed: {
+          normalizedSelectionMode() {
+            return this.selectionMode === '' ? null : this.selectionMode;
+          }
+        },
+        methods: {
+          refreshSelectedList() {
+            this.selectedNodes = this.$refs.treeSelection.getSelected();
+          }
+        }
+      }).mount('#app-selection');
+  </script>
+  <!--- -------------------------------------------------------------------------------------- --->
+  <h3 id="slots">Slots</h3>
+  <p>A tree view has slots available for replacing specific types of nodes. The <code>text</code>, <code>checkbox</code>, <code>radio</code>, <code>loading-root</code> and <code>loading</code> slots replace the correpsonding types of nodes. For more info, see <a href="./#slots">the docs</a>.</p>
+  <details>
+  <summary>
+  <div class="sourceCode" id="cb13"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-slots&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;template</span><span class="ot"> v-slot:text=</span><span class="st">&quot;{ model, customClasses }&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    content</span>
+  <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/template&gt;</span></span>
+  <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;template</span><span class="ot"> v-slot:checkbox=</span><span class="st">&quot;{ model, customClasses, inputId, checkboxChangeHandler }&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    content</span>
+  <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/template&gt;</span></span>
+  <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;template</span><span class="ot"> v-slot:radio=</span><span class="st">&quot;{ model, customClasses, inputId, inputModel, radioChangeHandler }&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    content</span>
+  <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/template&gt;</span></span>
+  <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;template</span><span class="ot"> v-slot:loading=</span><span class="st">&quot;{ model, customClasses }&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    content</span>
+  <span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/template&gt;</span></span>
+  <span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;template</span><span class="ot"> v-slot:loading-root</span><span class="kw">&gt;</span></span>
+  <span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    content</span>
+  <span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/template&gt;</span></span>
+  <span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/tree&gt;</span></span></code></pre></div>
+  </summary>
+  <!--- The leading spaces are to render the html aligned correctly --->
+  <div class="sourceCode" id="cb14"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;app-slots&quot;</span><span class="ot"> class=</span><span class="st">&quot;demo-tree&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-slots&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;template</span><span class="ot"> v-slot:text=</span><span class="st">&quot;{ model, customClasses }&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;span</span><span class="ot"> style=</span><span class="st">&quot;color: red;&quot;</span><span class="kw">&gt;</span>{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}<span class="kw">&lt;/span&gt;</span></span>
+  <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/template&gt;</span></span>
+  <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;template</span><span class="ot"> v-slot:checkbox=</span><span class="st">&quot;{ model, customClasses, inputId, checkboxChangeHandler }&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;label</span><span class="ot"> :for=</span><span class="st">&quot;inputId&quot;</span><span class="ot"> :title=</span><span class="st">&quot;model.treeNodeSpec.title&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">&lt;input</span><span class="ot"> :id=</span><span class="st">&quot;inputId&quot;</span></span>
+  <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="ot">               type=</span><span class="st">&quot;checkbox&quot;</span></span>
+  <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="ot">               :disabled=</span><span class="st">&quot;model.treeNodeSpec.state.input.disabled&quot;</span></span>
+  <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="ot">               v-model=</span><span class="st">&quot;model.treeNodeSpec.state.input.value&quot;</span></span>
+  <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="ot">               v-on:change=</span><span class="st">&quot;checkboxChangeHandler&quot;</span> <span class="kw">/&gt;</span></span>
+  <span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">&lt;em&gt;</span>{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}<span class="kw">&lt;/em&gt;</span></span>
+  <span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;/label&gt;</span></span>
+  <span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/template&gt;</span></span>
+  <span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;template</span><span class="ot"> v-slot:radio=</span><span class="st">&quot;{ model, customClasses, inputId, inputModel, radioChangeHandler }&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;label</span><span class="ot"> :for=</span><span class="st">&quot;inputId&quot;</span><span class="ot"> :title=</span><span class="st">&quot;model.treeNodeSpec.title&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">&lt;input</span><span class="ot"> :id=</span><span class="st">&quot;inputId&quot;</span></span>
+  <span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="ot">               type=</span><span class="st">&quot;radio&quot;</span></span>
+  <span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="ot">               :name=</span><span class="st">&quot;model.treeNodeSpec.input.name&quot;</span></span>
+  <span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="ot">               :value=</span><span class="st">&quot;model.treeNodeSpec.input.value&quot;</span></span>
+  <span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="ot">               :disabled=</span><span class="st">&quot;model.treeNodeSpec.state.input.disabled&quot;</span></span>
+  <span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="ot">               v-model=</span><span class="st">&quot;inputModel&quot;</span></span>
+  <span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="ot">               v-on:change=</span><span class="st">&quot;radioChangeHandler&quot;</span> <span class="kw">/&gt;</span></span>
+  <span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">&lt;span</span><span class="ot"> style=</span><span class="st">&quot;font-weight: bolder&quot;</span><span class="kw">&gt;</span>{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}<span class="kw">&lt;/span&gt;</span></span>
+  <span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;/label&gt;</span></span>
+  <span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/template&gt;</span></span>
+  <span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;template</span><span class="ot"> v-slot:loading=</span><span class="st">&quot;{ model, customClasses }&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;span</span><span class="ot"> style=</span><span class="st">&quot;&quot;</span><span class="kw">&gt;</span>LOADING CHILDREN OF {{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}<span class="kw">&lt;/span&gt;</span></span>
+  <span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/template&gt;</span></span>
+  <span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/tree&gt;</span></span>
+  <span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+  <span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a></span>
+  <span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&#39;module&#39;</span><span class="kw">&gt;</span></span>
+  <span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>  Vue<span class="op">.</span><span class="fu">createApp</span>({</span>
+  <span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>    <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tree</span><span class="op">:</span> TreeView</span>
+  <span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data</span>() {</span>
+  <span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+  <span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>        <span class="dt">model</span><span class="op">:</span> [</span>
+  <span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;node1-slots&#39;</span><span class="op">,</span></span>
+  <span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;Checkbox Node&#39;</span><span class="op">,</span></span>
+  <span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>            <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>              <span class="dt">customizations</span><span class="op">:</span> {</span>
+  <span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>                <span class="dt">classes</span><span class="op">:</span> {</span>
+  <span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">treeViewNode</span><span class="op">:</span> <span class="st">&#39;beep&#39;</span></span>
+  <span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>                }</span>
+  <span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>              }<span class="op">,</span></span>
+  <span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>              <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>                <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;checkbox&#39;</span><span class="op">,</span></span>
+  <span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>                <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;checkbox1&#39;</span></span>
+  <span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>            }</span>
+  <span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>          }<span class="op">,</span></span>
+  <span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;node2-slots&#39;</span><span class="op">,</span></span>
+  <span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;Radio Button Node&#39;</span><span class="op">,</span></span>
+  <span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>            <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a>              <span class="dt">customizations</span><span class="op">:</span> {</span>
+  <span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a>                <span class="dt">classes</span><span class="op">:</span> {</span>
+  <span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">treeViewNode</span><span class="op">:</span> <span class="st">&#39;boop&#39;</span></span>
+  <span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>                }</span>
+  <span id="cb14-66"><a href="#cb14-66" aria-hidden="true" tabindex="-1"></a>              }<span class="op">,</span></span>
+  <span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a>              <span class="dt">input</span><span class="op">:</span> {</span>
+  <span id="cb14-68"><a href="#cb14-68" aria-hidden="true" tabindex="-1"></a>                <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;radio&#39;</span><span class="op">,</span></span>
+  <span id="cb14-69"><a href="#cb14-69" aria-hidden="true" tabindex="-1"></a>                <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;radiobutton1&#39;</span></span>
+  <span id="cb14-70"><a href="#cb14-70" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb14-71"><a href="#cb14-71" aria-hidden="true" tabindex="-1"></a>            }</span>
+  <span id="cb14-72"><a href="#cb14-72" aria-hidden="true" tabindex="-1"></a>          }<span class="op">,</span></span>
+  <span id="cb14-73"><a href="#cb14-73" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb14-74"><a href="#cb14-74" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;node3-slots&#39;</span><span class="op">,</span></span>
+  <span id="cb14-75"><a href="#cb14-75" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;Text Node&#39;</span><span class="op">,</span></span>
+  <span id="cb14-76"><a href="#cb14-76" aria-hidden="true" tabindex="-1"></a>            <span class="dt">children</span><span class="op">:</span> []<span class="op">,</span></span>
+  <span id="cb14-77"><a href="#cb14-77" aria-hidden="true" tabindex="-1"></a>            <span class="dt">treeNodeSpec</span><span class="op">:</span> {</span>
+  <span id="cb14-78"><a href="#cb14-78" aria-hidden="true" tabindex="-1"></a>              <span class="dt">expandable</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+  <span id="cb14-79"><a href="#cb14-79" aria-hidden="true" tabindex="-1"></a>              <span class="dt">loadChildrenAsync</span><span class="op">:</span> (m) <span class="kw">=&gt;</span> axios<span class="op">.</span><span class="fu">get</span>(<span class="vs">`/children/</span><span class="sc">${</span>m<span class="op">.</span><span class="at">id</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">,</span></span>
+  <span id="cb14-80"><a href="#cb14-80" aria-hidden="true" tabindex="-1"></a>              <span class="dt">customizations</span><span class="op">:</span> {</span>
+  <span id="cb14-81"><a href="#cb14-81" aria-hidden="true" tabindex="-1"></a>                <span class="dt">classes</span><span class="op">:</span> {</span>
+  <span id="cb14-82"><a href="#cb14-82" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">treeViewNode</span><span class="op">:</span> <span class="st">&#39;plop&#39;</span></span>
+  <span id="cb14-83"><a href="#cb14-83" aria-hidden="true" tabindex="-1"></a>                }</span>
+  <span id="cb14-84"><a href="#cb14-84" aria-hidden="true" tabindex="-1"></a>              }<span class="op">,</span></span>
+  <span id="cb14-85"><a href="#cb14-85" aria-hidden="true" tabindex="-1"></a>            }</span>
+  <span id="cb14-86"><a href="#cb14-86" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb14-87"><a href="#cb14-87" aria-hidden="true" tabindex="-1"></a>        ]</span>
+  <span id="cb14-88"><a href="#cb14-88" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+  <span id="cb14-89"><a href="#cb14-89" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb14-90"><a href="#cb14-90" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">mount</span>(<span class="st">&#39;#app-slots&#39;</span>)<span class="op">;</span></span>
+  <span id="cb14-91"><a href="#cb14-91" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  </details>
+  <div id="app-slots" class="demo-tree">
+      <tree id="customtree-slots" :initial-model="model">
+          <template v-slot:text="{ model, customClasses }">
+              <span style="color: red;">{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
+          </template>
+          <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
+              <label :for="inputId" :title="model.treeNodeSpec.title">
+                  <input :id="inputId"
+                         type="checkbox"
+                         :disabled="model.treeNodeSpec.state.input.disabled"
+                         v-model="model.treeNodeSpec.state.input.value"
+                         v-on:change="checkboxChangeHandler" />
+                  <em style="max-width: 20rem">{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</em>
+              </label>
+          </template>
+          <template v-slot:radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
+              <label :for="inputId" :title="model.treeNodeSpec.title">
+                  <input :id="inputId"
+                         type="radio"
+                         :name="model.treeNodeSpec.input.name"
+                         :value="model.treeNodeSpec.input.value"
+                         :disabled="model.treeNodeSpec.state.input.disabled"
+                         v-model="inputModel"
+                         v-on:change="radioChangeHandler" />
+                  <span style="font-weight: bolder">{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
+              </label>
+          </template>
+          <template v-slot:loading="{ model, customClasses }">
+            <span class="grtvn-loading">LOADING CHILDREN OF {{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
+          </template>
+      </tree>
+  </div>
+
+  <script type='module'>
+      Vue.createApp({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+            model: [
+              {
+                id: 'node1-slots',
+                label: 'Checkbox Node',
+                treeNodeSpec: {
+                  customizations: {
+                    classes: {
+                      treeViewNode: 'beep'
+                    }
+                  },
+                  input: {
+                    type: 'checkbox',
+                    name: 'checkbox1'
+                  }
+                }
+              },
+              {
+                id: 'node2-slots',
+                label: 'Radio Button Node',
+                treeNodeSpec: {
+                  customizations: {
+                    classes: {
+                      treeViewNode: 'boop'
+                    }
+                  },
+                  input: {
+                    type: 'radio',
+                    name: 'radiobutton1'
+                  }
+                }
+              },
+              {
+                id: 'node3-slots',
+                label: 'Text Node',
+                children: [],
+                treeNodeSpec: {
+                  expandable: true,
+                  loadChildrenAsync: (m) => new Promise(() => {}), // Never resolve so the demo node stays up.
+                  customizations: {
+                    classes: {
+                      treeViewNode: 'plop'
+                    }
+                  },
+                }
+              }
+            ]
+          };
+        }
+      }).mount('#app-slots');
+  </script>
+  <!--- -------------------------------------------------------------------------------------- --->
+  <h3 id="asynchronous-loading">Asynchronous Loading</h3>
+  <p>Two types of asynchronous loading are available. The first loads the root data for the tree view itself, and the second asynchronously loads child data when a node is expanded.</p>
+  <p>You can load root nodes asynchronously by providing a function to the <code>loadNodesAsync</code> property of the tree view. The function should return a Promise that resolves to an array of model data to add as root nodes.</p>
+  <p>You can load child nodes asynchronously by providing a function to the <code>loadChildrenAsync</code> property in a node’s <code>treeNodeSpec</code> (or use <code>modelDefaults</code> to use the same method for all nodes). The function can take the parent node’s model data as an argument, and should return a Promise that resolves to an array of model data to add as children.</p>
+  <details>
+  <summary>
+  <div class="sourceCode" id="cb15"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-async&quot;</span><span class="ot"> :load-nodes-async=</span><span class="st">&quot;loadNodesAsync&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span></code></pre></div>
+  </summary>
+  <!--- The leading spaces are to render the html aligned correctly --->
+  <div class="sourceCode" id="cb16"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;app-async&quot;</span><span class="ot"> class=</span><span class="st">&quot;demo-tree&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-async&quot;</span><span class="ot"> :load-nodes-async=</span><span class="st">&quot;loadNodesAsync&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span>
+  <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+  <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&#39;module&#39;</span><span class="kw">&gt;</span></span>
+  <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  Vue<span class="op">.</span><span class="fu">createApp</span>({</span>
+  <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tree</span><span class="op">:</span> TreeView</span>
+  <span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data</span>() {</span>
+  <span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+  <span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">modelDefaults</span><span class="op">:</span> {</span>
+  <span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>          <span class="dt">loadChildrenAsync</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span><span class="at">loadChildrenAsync</span><span class="op">,</span></span>
+  <span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>          <span class="dt">deleteTitle</span><span class="op">:</span> <span class="st">&#39;Delete this node&#39;</span><span class="op">,</span></span>
+  <span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>          <span class="dt">expanderTitle</span><span class="op">:</span> <span class="st">&#39;Expand this node&#39;</span></span>
+  <span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        }</span>
+  <span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+  <span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">methods</span><span class="op">:</span> {</span>
+  <span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>      <span class="kw">async</span> <span class="fu">loadChildrenAsync</span>(parentModel) {</span>
+  <span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">const</span> id <span class="op">=</span> <span class="bu">Date</span><span class="op">.</span><span class="fu">now</span>()<span class="op">;</span></span>
+  <span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="kw">new</span> <span class="bu">Promise</span>(resolve <span class="kw">=&gt;</span> <span class="pp">setTimeout</span>(resolve<span class="op">.</span><span class="fu">bind</span>(<span class="kw">null</span><span class="op">,</span> [</span>
+  <span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="vs">`async-child-node-</span><span class="sc">${</span>id<span class="sc">}</span><span class="vs">-1`</span><span class="op">,</span></span>
+  <span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="vs">`Child </span><span class="sc">${</span>id<span class="sc">}</span><span class="vs">-1`</span></span>
+  <span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>          }<span class="op">,</span></span>
+  <span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="vs">`async-child-node-</span><span class="sc">${</span>id<span class="sc">}</span><span class="vs">-2`</span><span class="op">,</span></span>
+  <span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="vs">`Child </span><span class="sc">${</span>id<span class="sc">}</span><span class="vs">-2`</span><span class="op">,</span></span>
+  <span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>            <span class="dt">treeNodeSpec</span><span class="op">:</span> { <span class="dt">deletable</span><span class="op">:</span> <span class="kw">true</span> }</span>
+  <span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>        ])<span class="op">,</span> <span class="dv">1000</span>))<span class="op">;</span></span>
+  <span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+  <span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>      <span class="kw">async</span> <span class="fu">loadNodesAsync</span>() {</span>
+  <span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="kw">new</span> <span class="bu">Promise</span>(resolve <span class="kw">=&gt;</span> <span class="pp">setTimeout</span>(resolve<span class="op">.</span><span class="fu">bind</span>(<span class="kw">null</span><span class="op">,</span> [</span>
+  <span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;async-rootnode&quot;</span><span class="op">,</span></span>
+  <span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Root Node&quot;</span></span>
+  <span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>        ])<span class="op">,</span> <span class="dv">1000</span>))<span class="op">;</span></span>
+  <span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>      }</span>
+  <span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">mount</span>(<span class="st">&#39;#app-async&#39;</span>)<span class="op">;</span></span>
+  <span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  </details>
+  <div id="app-async" class="demo-tree">
+      <tree id="customtree-async" :load-nodes-async="loadNodesAsync" :model-defaults="modelDefaults"></tree>
+  </div>
+  <script type='module'>
+      Vue.createApp({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+              modelDefaults: {
+                  loadChildrenAsync: this.loadChildrenAsync,
+                  deleteTitle: 'Delete this node',
+                  expanderTitle: 'Expand this node'
+              }
+          };
+        },
+        methods: {
+          async loadChildrenAsync(parentModel) {
+            const id = Date.now();
+            return new Promise(resolve => setTimeout(resolve.bind(null, [
+              {
+                id: `async-child-node-${id}-1`,
+                label: `Child ${id}-1`
+              },
+              {
+                id: `async-child-node-${id}-2`,
+                label: `Child ${id}-2`,
+                treeNodeSpec: { deletable: true }
+              }
+            ]), 1000));
+          },
+          async loadNodesAsync() {
+            return new Promise(resolve => setTimeout(resolve.bind(null, [
+              {
+                id: "async-rootnode",
+                label: "Root Node"
+              }
+            ]), 1000));
+          }
+        }
+      }).mount('#app-async');
+  </script>
+  <!--- -------------------------------------------------------------------------------------- --->
+  <h3 id="custom-styles">Custom Styles</h3>
+  <p>Custom styling is achieved through a combination of using the <code>customizations</code> property of TreeViewNode data to apply custom styles to parts of nodes, along with a custom <code>skinStyle</code> TreeView prop and associated stylesheet. Of course, you could also just write some very specific selectors to override the default styles. For more info, see <a href="./#customizing-the-tree-view">the docs</a>.</p>
+  <p>First, let’s look at the default styles. There’s not much to see here, since the intention is for the user to handle styling the tree view while the component focuses on creating a workable structure. Things generally line up right, but not much more can be said for it.</p>
+  <details>
+  <summary>
+  <div class="sourceCode" id="cb17"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-default&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span></code></pre></div>
+  </summary>
+  <!--- The leading spaces are to render the html aligned correctly --->
+  <div class="sourceCode" id="cb18"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;app-custom-default&quot;</span><span class="ot"> class=</span><span class="st">&quot;demo-tree&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-default&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span>
+  <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+  <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&#39;module&#39;</span><span class="kw">&gt;</span></span>
+  <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  Vue<span class="op">.</span><span class="fu">createApp</span>({</span>
+  <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tree</span><span class="op">:</span> TreeView</span>
+  <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data</span>() {</span>
+  <span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+  <span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">childCounter</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+  <span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">model</span><span class="op">:</span> [</span>
+  <span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;rootNode&#39;</span><span class="op">,</span></span>
+  <span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;Root Node&#39;</span><span class="op">,</span></span>
+  <span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>            <span class="dt">children</span><span class="op">:</span> [</span>
+  <span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>              {</span>
+  <span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>                <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;subNode&#39;</span><span class="op">,</span></span>
+  <span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>                <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;Subnode&#39;</span></span>
+  <span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>            ]</span>
+  <span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>        ]<span class="op">,</span></span>
+  <span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>        <span class="dt">modelDefaults</span><span class="op">:</span> {</span>
+  <span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>          <span class="dt">addChildCallback</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span><span class="at">addChildCallback</span><span class="op">,</span></span>
+  <span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>          <span class="dt">addChildTitle</span><span class="op">:</span> <span class="st">&#39;Add a new child node&#39;</span><span class="op">,</span></span>
+  <span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>          <span class="dt">deleteTitle</span><span class="op">:</span> <span class="st">&#39;Delete this node&#39;</span><span class="op">,</span></span>
+  <span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>          <span class="dt">expanderTitle</span><span class="op">:</span> <span class="st">&#39;Expand this node&#39;</span></span>
+  <span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>        }</span>
+  <span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+  <span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">methods</span><span class="op">:</span> {</span>
+  <span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">addChildCallback</span>(parentModel) {</span>
+  <span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="at">childCounter</span><span class="op">++;</span></span>
+  <span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">resolve</span>({ <span class="dt">id</span><span class="op">:</span> <span class="vs">`child-node</span><span class="sc">${</span><span class="kw">this</span><span class="op">.</span><span class="at">childCounter</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="vs">`Added Child </span><span class="sc">${</span><span class="kw">this</span><span class="op">.</span><span class="at">childCounter</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span> <span class="dt">treeNodeSpec</span><span class="op">:</span> { <span class="dt">deletable</span><span class="op">:</span> <span class="kw">true</span> } })<span class="op">;</span></span>
+  <span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>      }</span>
+  <span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">mount</span>(<span class="st">&#39;#app-custom-default&#39;</span>)<span class="op">;</span></span>
+  <span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  </details>
+  <div id="app-custom-default" class="demo-tree">
+      <tree id="customtree-default" :initial-model="model" :model-defaults="modelDefaults"></tree>
+  </div>
+  <script type='module'>
+      Vue.createApp({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+              childCounter: 0,
+              model: [
+                {
+                  id: 'rootNode',
+                  label: 'Root Node',
+                  children: [
+                    {
+                      id: 'subNode',
+                      label: 'Subnode'
+                    }
+                  ]
+                }
+              ],
+              modelDefaults: {
+                  addChildCallback: this.addChildCallback,
+                  addChildTitle: 'Add a new child node',
+                  deleteTitle: 'Delete this node',
+                  expanderTitle: 'Expand this node'
+              }
+          };
+        },
+        methods: {
+          addChildCallback(parentModel) {
+            this.childCounter++;
+            return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
+          }
+        }
+      }).mount('#app-custom-default');
+  </script>
+  <p>Some simple customizations can be done by applying custom classes to various parts of the tree using the <code>customizations</code> property, most likely in the <code>modelDefaults</code> parameter of the TreeView itself. In this example, <code>customizations.classes.treeViewNodeSelfText</code> is given a value of <code>big-text</code>. The <code>big-text</code> class is defined in a <a href="./style/demo/classbased.css">classbased.css stylesheet</a>.</p>
+  <details>
+  <summary>
+  <div class="sourceCode" id="cb19"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-classbased&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span></code></pre></div>
+  </summary>
+  <!--- The leading spaces are to render the html aligned correctly --->
+  <div class="sourceCode" id="cb20"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;app-custom-classbased&quot;</span><span class="ot"> class=</span><span class="st">&quot;demo-tree&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-classbased&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span>
+  <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+  <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&#39;module&#39;</span><span class="kw">&gt;</span></span>
+  <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  Vue<span class="op">.</span><span class="fu">createApp</span>({</span>
+  <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tree</span><span class="op">:</span> TreeView</span>
+  <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data</span>() {</span>
+  <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+  <span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">childCounter</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+  <span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">model</span><span class="op">:</span> [</span>
+  <span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;rootNode&#39;</span><span class="op">,</span></span>
+  <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;Root Node&#39;</span><span class="op">,</span></span>
+  <span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>            <span class="dt">children</span><span class="op">:</span> [</span>
+  <span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>              {</span>
+  <span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>                <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;subNode&#39;</span><span class="op">,</span></span>
+  <span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>                <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;Subnode&#39;</span></span>
+  <span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>            ]</span>
+  <span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>        ]<span class="op">,</span></span>
+  <span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>        <span class="dt">modelDefaults</span><span class="op">:</span> {</span>
+  <span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>          <span class="dt">addChildCallback</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span><span class="at">addChildCallback</span><span class="op">,</span></span>
+  <span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>          <span class="dt">addChildTitle</span><span class="op">:</span> <span class="st">&#39;Add a new child node&#39;</span><span class="op">,</span></span>
+  <span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>          <span class="dt">deleteTitle</span><span class="op">:</span> <span class="st">&#39;Delete this node&#39;</span><span class="op">,</span></span>
+  <span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>          <span class="dt">expanderTitle</span><span class="op">:</span> <span class="st">&#39;Expand this node&#39;</span><span class="op">,</span></span>
+  <span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>          <span class="dt">customizations</span><span class="op">:</span> {</span>
+  <span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>            <span class="dt">classes</span><span class="op">:</span> {</span>
+  <span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>              <span class="dt">treeViewNodeSelf</span><span class="op">:</span> <span class="st">&#39;large-line&#39;</span><span class="op">,</span></span>
+  <span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>              <span class="dt">treeViewNodeSelfText</span><span class="op">:</span> <span class="st">&#39;big-text&#39;</span></span>
+  <span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>            }</span>
+  <span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>        }</span>
+  <span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+  <span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>    <span class="dt">methods</span><span class="op">:</span> {</span>
+  <span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">addChildCallback</span>(parentModel) {</span>
+  <span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="at">childCounter</span><span class="op">++;</span></span>
+  <span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">resolve</span>({ <span class="dt">id</span><span class="op">:</span> <span class="vs">`child-node</span><span class="sc">${</span><span class="kw">this</span><span class="op">.</span><span class="at">childCounter</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="vs">`Added Child </span><span class="sc">${</span><span class="kw">this</span><span class="op">.</span><span class="at">childCounter</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span> <span class="dt">treeNodeSpec</span><span class="op">:</span> { <span class="dt">deletable</span><span class="op">:</span> <span class="kw">true</span> } })<span class="op">;</span></span>
+  <span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>      }</span>
+  <span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">mount</span>(<span class="st">&#39;#app-custom-classbased&#39;</span>)<span class="op">;</span></span>
+  <span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  </details>
+  <div id="app-custom-classbased" class="demo-tree">
+      <tree id="customtree-classbased" :initial-model="model" :model-defaults="modelDefaults"></tree>
+  </div>
+  <script type='module'>
+      Vue.createApp({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+              childCounter: 0,
+              model: [
+                {
+                  id: 'rootNode',
+                  label: 'Root Node',
+                  children: [
+                    {
+                      id: 'subNode',
+                      label: 'Subnode'
+                    }
+                  ]
+                }
+              ],
+              modelDefaults: {
+                  addChildCallback: this.addChildCallback,
+                  addChildTitle: 'Add a new child node',
+                  deleteTitle: 'Delete this node',
+                  expanderTitle: 'Expand this node',
+                  customizations: {
+                      classes: {
+                          treeViewNodeSelf: 'large-line',
+                          treeViewNodeSelfText: 'big-text'
+                      }
+                  }
+              }
+          };
+        },
+        methods: {
+          addChildCallback(parentModel) {
+            this.childCounter++;
+            return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
+          }
+        }
+      }).mount('#app-custom-classbased');
+  </script>
+  <p>In the next example, a tree view has been given a <code>skin-class</code> prop value of <code>grayscale</code>. This effectively swaps out a class named <code>grtv-default-skin</code> on the TreeView for the one specified as the <code>skin-class</code>. This <em>completely removes</em> the default styling. To provide new styles, a <a href="./style/demo/grayscale.css">new stylesheet</a> was created based on the default styles (copied right from the browser). This gives complete control of the styling, allowing for easier usage of things like Font Awesome as seen here.</p>
+  <details>
+  <summary>
+  <div class="sourceCode" id="cb21"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-gray&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="ot"> :skin-class=</span><span class="st">&quot;&#39;grayscale&#39;&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span></code></pre></div>
+  </summary>
+  <!--- The leading spaces are to render the html aligned correctly --->
+  <div class="sourceCode" id="cb22"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;app-custom-gray&quot;</span><span class="ot"> class=</span><span class="st">&quot;demo-tree&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-gray&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="ot"> :skin-class=</span><span class="st">&quot;&#39;grayscale&#39;&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span>
+  <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+  <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&#39;module&#39;</span><span class="kw">&gt;</span></span>
+  <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  Vue<span class="op">.</span><span class="fu">createApp</span>({</span>
+  <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tree</span><span class="op">:</span> TreeView</span>
+  <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data</span>() {</span>
+  <span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+  <span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">childCounter</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+  <span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">model</span><span class="op">:</span> [</span>
+  <span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;rootNode&#39;</span><span class="op">,</span></span>
+  <span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;Root Node&#39;</span><span class="op">,</span></span>
+  <span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>            <span class="dt">children</span><span class="op">:</span> [</span>
+  <span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>              {</span>
+  <span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>                <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;subNode&#39;</span><span class="op">,</span></span>
+  <span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>                <span class="dt">label</span><span class="op">:</span> <span class="st">&#39;Subnode&#39;</span></span>
+  <span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>            ]</span>
+  <span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>        ]<span class="op">,</span></span>
+  <span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>        <span class="dt">modelDefaults</span><span class="op">:</span> {</span>
+  <span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>          <span class="dt">addChildCallback</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span><span class="at">addChildCallback</span><span class="op">,</span></span>
+  <span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>          <span class="dt">addChildTitle</span><span class="op">:</span> <span class="st">&#39;Add a new child node&#39;</span><span class="op">,</span></span>
+  <span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>          <span class="dt">deleteTitle</span><span class="op">:</span> <span class="st">&#39;Delete this node&#39;</span><span class="op">,</span></span>
+  <span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>          <span class="dt">expanderTitle</span><span class="op">:</span> <span class="st">&#39;Expand this node&#39;</span><span class="op">,</span></span>
+  <span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>          <span class="dt">customizations</span><span class="op">:</span> {</span>
+  <span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>            <span class="dt">classes</span><span class="op">:</span> {</span>
+  <span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>              <span class="dt">treeViewNodeSelfExpander</span><span class="op">:</span> <span class="st">&#39;action-button&#39;</span><span class="op">,</span></span>
+  <span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>              <span class="dt">treeViewNodeSelfExpandedIndicator</span><span class="op">:</span> <span class="st">&#39;fas fa-chevron-right&#39;</span><span class="op">,</span></span>
+  <span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>              <span class="dt">treeViewNodeSelfAction</span><span class="op">:</span> <span class="st">&#39;action-button&#39;</span><span class="op">,</span></span>
+  <span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>              <span class="dt">treeViewNodeSelfAddChildIcon</span><span class="op">:</span> <span class="st">&#39;fas fa-plus-circle&#39;</span><span class="op">,</span></span>
+  <span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>              <span class="dt">treeViewNodeSelfDeleteIcon</span><span class="op">:</span> <span class="st">&#39;fas fa-minus-circle&#39;</span></span>
+  <span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>            }</span>
+  <span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>        }</span>
+  <span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+  <span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>    <span class="dt">methods</span><span class="op">:</span> {</span>
+  <span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>      <span class="fu">addChildCallback</span>(parentModel) {</span>
+  <span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="at">childCounter</span><span class="op">++;</span></span>
+  <span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">resolve</span>({ <span class="dt">id</span><span class="op">:</span> <span class="vs">`child-node</span><span class="sc">${</span><span class="kw">this</span><span class="op">.</span><span class="at">childCounter</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="vs">`Added Child </span><span class="sc">${</span><span class="kw">this</span><span class="op">.</span><span class="at">childCounter</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span> <span class="dt">treeNodeSpec</span><span class="op">:</span> { <span class="dt">deletable</span><span class="op">:</span> <span class="kw">true</span> } })<span class="op">;</span></span>
+  <span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>      }</span>
+  <span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">mount</span>(<span class="st">&#39;#app-custom-gray&#39;</span>)<span class="op">;</span></span>
+  <span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  </details>
+  <div id="app-custom-gray" class="demo-tree">
+      <tree id="customtree-gray" :initial-model="model" :model-defaults="modelDefaults" :skin-class="'grayscale'"></tree>
+  </div>
+  <script type='module'>
+      Vue.createApp({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+              childCounter: 0,
+              model: [
+                {
+                  id: 'rootNode',
+                  label: 'Root Node',
+                  children: [
+                    {
+                      id: 'subNode',
+                      label: 'Subnode'
+                    }
+                  ]
+                }
+              ],
+              modelDefaults: {
+                  addChildCallback: this.addChildCallback,
+                  addChildTitle: 'Add a new child node',
+                  deleteTitle: 'Delete this node',
+                  expanderTitle: 'Expand this node',
+                  customizations: {
+                      classes: {
+                          treeViewNodeSelfExpander: 'action-button',
+                          treeViewNodeSelfExpandedIndicator: 'fas fa-chevron-right',
+                          treeViewNodeSelfAction: 'action-button',
+                          treeViewNodeSelfAddChildIcon: 'fas fa-plus-circle',
+                          treeViewNodeSelfDeleteIcon: 'fas fa-minus-circle'
+                      }
+                  }
+              }
+          };
+        },
+        methods: {
+          addChildCallback(parentModel) {
+            this.childCounter++;
+            return Promise.resolve({ id: `child-node${this.childCounter}`, label: `Added Child ${this.childCounter}`, treeNodeSpec: { deletable: true } });
+          }
+        }
+      }).mount('#app-custom-gray');
+  </script>
+  <!--- -------------------------------------------------------------------------------------- --->
+  <h3 id="drag-and-drop">Drag and Drop</h3>
+  <p>You can drag a node that has the <code>draggable</code> property in a node’s <code>treeNodeSpec</code> set to <code>true</code>. Any node with <code>allowDrop</code> set to <code>true</code> in the <code>treeNodeSpec</code> can accept a drop from any TreeView.</p>
+  <details>
+  <summary>
+  <div class="sourceCode" id="cb23"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-dnd&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span></code></pre></div>
+  </summary>
+  <!--- The leading spaces are to render the html aligned correctly --->
+  <div class="sourceCode" id="cb24"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;app-dnd&quot;</span><span class="ot"> class=</span><span class="st">&quot;demo-tree&quot;</span><span class="kw">&gt;</span></span>
+  <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;tree</span><span class="ot"> id=</span><span class="st">&quot;customtree-dnd&quot;</span><span class="ot"> :initial-model=</span><span class="st">&quot;model&quot;</span><span class="ot"> :model-defaults=</span><span class="st">&quot;modelDefaults&quot;</span><span class="kw">&gt;&lt;/tree&gt;</span></span>
+  <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+  <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">&#39;module&#39;</span><span class="kw">&gt;</span></span>
+  <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> TreeView <span class="im">from</span> <span class="st">&quot;@grapoza/vue-tree&quot;</span></span>
+  <span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  Vue<span class="op">.</span><span class="fu">createApp</span>({</span>
+  <span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">components</span><span class="op">:</span> {</span>
+  <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tree</span><span class="op">:</span> TreeView</span>
+  <span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+  <span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data</span>() {</span>
+  <span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+  <span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">model</span><span class="op">:</span> [</span>
+  <span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>          {</span>
+  <span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>            <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;dnd-rootnode&quot;</span><span class="op">,</span></span>
+  <span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Root Node&quot;</span><span class="op">,</span></span>
+  <span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>            <span class="dt">children</span><span class="op">:</span> [</span>
+  <span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>              {</span>
+  <span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>                <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;child-1&quot;</span><span class="op">,</span></span>
+  <span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>                <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Subnode 1&quot;</span></span>
+  <span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>              }<span class="op">,</span></span>
+  <span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>              {</span>
+  <span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>                <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;child-2&quot;</span><span class="op">,</span></span>
+  <span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>                <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Subnode 2&quot;</span></span>
+  <span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>              }</span>
+  <span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>            ]</span>
+  <span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>          }</span>
+  <span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>        ]<span class="op">,</span></span>
+  <span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>        <span class="dt">modelDefaults</span><span class="op">:</span> {</span>
+  <span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>          <span class="dt">draggable</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+  <span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>          <span class="dt">allowDrop</span><span class="op">:</span> <span class="kw">true</span></span>
+  <span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>        }</span>
+  <span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+  <span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>    }</span>
+  <span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">mount</span>(<span class="st">&#39;#app-dnd&#39;</span>)<span class="op">;</span></span>
+  <span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+  </details>
+  <div id="app-dnd" class="demo-tree">
+      <h4>Tree 1</h4>
+      <tree id="customtree-dnd-1" :initial-model="model1" :model-defaults="modelDefaults"></tree>
+      <h4>Tree 2</h4>
+      <tree id="customtree-dnd-2" :initial-model="model2" :model-defaults="modelDefaults"></tree>
+  </div>
+  <script type='module'>
+      Vue.createApp({
+        components: {
+          tree: window['vue-tree']
+        },
+        data() {
+          return {
+              model1: [
+                {
+                  id: "dnd-rootnode-1",
+                  label: "Root Node 1",
+                  children: [
+                    {
+                      id: "child-1",
+                      label: "Subnode 1"
+                    },
+                    {
+                      id: "child-2",
+                      label: "Subnode 2"
+                    }
+                  ]
+                }
+              ],
+              model2: [
+                {
+                  id: "dnd-rootnode-2",
+                  label: "Root Node 2",
+                  children: [
+                    {
+                      id: "child-3",
+                      label: "Subnode 3"
+                    },
+                    {
+                      id: "child-4",
+                      label: "Subnode 4"
+                    }
+                  ]
+                }
+              ],
+              modelDefaults: {
+                draggable: true,
+                allowDrop: true,
+                state: {
+                  expanded: true
+                }
+              }
+          };
+        }
+      }).mount('#app-dnd');
+  </script>
+    </main>
+</div>
+</body>
+</html>
