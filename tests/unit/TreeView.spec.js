@@ -1,16 +1,20 @@
 import { expect } from 'chai';
-import { shallowMount } from '@vue/test-utils';
+import { flushPromises, shallowMount } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import { generateNodes } from '../data/node-generator.js';
 import SelectionMode from '../../src/enums/selectionMode';
 
-function createWrapper(customPropsData, customAttrs, slotsData) {
-  return shallowMount(TreeView, {
+async function createWrapper(customPropsData, customAttrs, slotsData) {
+  let wrapper = shallowMount(TreeView, {
     sync: false,
     props: customPropsData || {},
     attrs: customAttrs,
     slots: slotsData
   });
+
+  await flushPromises();
+
+  return wrapper;
 }
 
 describe('TreeView.vue', () => {
@@ -23,8 +27,8 @@ describe('TreeView.vue', () => {
 
   describe('when on an element with an ID', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper(null, { id: 'my-id' });
+    beforeEach(async () => {
+      wrapper = await createWrapper(null, { id: 'my-id' });
     });
 
     it('should have a uniqueId of the root element ID', () => {
@@ -36,13 +40,13 @@ describe('TreeView.vue', () => {
 
     let newDiv;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       // Add a node that uses the first auto-generated ID to test collision logic.
       newDiv = document.createElement('div');
       newDiv.id = 'grtv-1';
       document.body.appendChild(newDiv);
 
-      wrapper = createWrapper();
+      wrapper = await createWrapper();
     });
 
     afterEach(() => {
@@ -61,8 +65,8 @@ describe('TreeView.vue', () => {
 
   describe('when not passed a skinClass prop', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper();
+    beforeEach(async () => {
+      wrapper = await createWrapper();
     });
 
     it('should have a class of grtv-default-skin', () => {
@@ -74,8 +78,8 @@ describe('TreeView.vue', () => {
 
   describe('when passed a skinClass prop', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper({ skinClass: "my-skin" });
+    beforeEach(async () => {
+      wrapper = await createWrapper({ skinClass: "my-skin" });
     });
 
     it('should have a class of my-skin', () => {
@@ -92,8 +96,8 @@ describe('TreeView.vue', () => {
 
   describe('when getCheckedCheckboxes() is called', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]) });
+    beforeEach(async () => {
+      wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]) });
     });
 
     it('should return checked checkbox nodes', () => {
@@ -104,9 +108,9 @@ describe('TreeView.vue', () => {
 
   describe('when getCheckedRadioButtons() is called', () => {
 
-    beforeEach(() => {
+    beforeEach(async () => {
       let nodes = generateNodes(['ers', 'eRs', ['eRs', 'ers']]);
-      wrapper = createWrapper({ initialModel: nodes });
+      wrapper = await createWrapper({ initialModel: nodes });
 
       // Fake the setup of the radio storage since we're shallow mounting
       wrapper.vm.radioGroupValues = {};
@@ -124,8 +128,8 @@ describe('TreeView.vue', () => {
 
     describe('and there are nodes present', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['es', 'ES', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['es', 'ES', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
       });
 
       it('should return nodes matched by the function argument', () => {
@@ -141,8 +145,8 @@ describe('TreeView.vue', () => {
 
     describe('and there are no nodes present', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper();
+      beforeEach(async () => {
+        wrapper = await createWrapper();
       });
 
       it('should return an empty array', () => {
@@ -154,8 +158,8 @@ describe('TreeView.vue', () => {
 
   describe('when getSelected() is called', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
+    beforeEach(async () => {
+      wrapper = await createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
     });
 
     it('should return selected nodes', () => {
@@ -166,8 +170,8 @@ describe('TreeView.vue', () => {
 
   describe('when selectionMode is null', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.None });
+    beforeEach(async () => {
+      wrapper = await createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.None });
     });
 
     it('should not have an aria-multiselectable attribute', () => {
@@ -182,8 +186,8 @@ describe('TreeView.vue', () => {
 
   describe('when selectionMode is `single`', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Single });
+    beforeEach(async () => {
+      wrapper = await createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Single });
     });
 
     it('should have an aria-multiselectable attribute of false', () => {
@@ -198,8 +202,8 @@ describe('TreeView.vue', () => {
 
   describe('when selectionMode is `selectionFollowsFocus`', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.SelectionFollowsFocus });
+    beforeEach(async () => {
+      wrapper = await createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.SelectionFollowsFocus });
     });
 
     it('should have an aria-multiselectable attribute of false', () => {
@@ -209,8 +213,8 @@ describe('TreeView.vue', () => {
 
   describe('when selectionMode is `multiple`', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
+    beforeEach(async () => {
+      wrapper = await createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
     });
 
     it('should have an aria-multiselectable attribute of true', () => {
@@ -222,10 +226,10 @@ describe('TreeView.vue', () => {
 
     let loadNodesPromise = null;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       jest.useFakeTimers();
       loadNodesPromise = new Promise(resolve => setTimeout(resolve.bind(null, generateNodes(['', ''])), 1000));
-      wrapper = createWrapper({ loadNodesAsync: () => loadNodesPromise, selectionMode: SelectionMode.Single });
+      wrapper = await createWrapper({ loadNodesAsync: () => loadNodesPromise, selectionMode: SelectionMode.Single });
     });
 
     afterEach(() => {
@@ -240,8 +244,8 @@ describe('TreeView.vue', () => {
 
       describe('and rendering a custom loader message', () => {
 
-        beforeEach(() => {
-          wrapper = createWrapper(
+        beforeEach(async () => {
+          wrapper = await createWrapper(
             {
               loadNodesAsync: () => loadNodesPromise
             },
@@ -270,8 +274,8 @@ describe('TreeView.vue', () => {
         expect(wrapper.vm.model.length).to.equal(2);
       });
 
-      it('should emit the treeViewRootNodesLoad event', () => {
-        expect(wrapper.emitted().treeViewRootNodesLoad).to.be.an('array').that.has.length(1);
+      it('should emit the treeRootNodesLoad event', () => {
+        expect(wrapper.emitted().treeRootNodesLoad).to.be.an('array').that.has.length(1);
       });
     });
   });

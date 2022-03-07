@@ -47,7 +47,7 @@ export default {
       // If none are found, set to true for the first root, or the first selected node if one exists.
       // If one is found, set any subsequent to false.
       let firstSelectedNode = null;
-      this.$_grtv_depthFirstTraverse((node) => {
+      this.$_grt_depthFirstTraverse((node) => {
         if (node.treeNodeSpec.focusable) {
           if (this.focusableNodeModel) {
             node.treeNodeSpec.focusable = false;
@@ -72,12 +72,12 @@ export default {
         this.focusableNodeModel.treeNodeSpec.state.selected = true;
       }
 
-      this.$_grtvn_enforceSelectionMode();
+      this.$_grtv_enforceSelectionMode();
     }
   },
   watch: {
     selectionMode() {
-      this.$_grtvn_enforceSelectionMode();
+      this.$_grtv_enforceSelectionMode();
     }
   },
   methods: {
@@ -85,14 +85,14 @@ export default {
      * Enforces the selection mode for the tree, ensuring only the expected
      * node or nodes are selected.
      */
-    $_grtvn_enforceSelectionMode() {
+    $_grtv_enforceSelectionMode() {
       if (this.selectionMode === SelectionMode.Single) {
         // This is in TreeViewAria instead of TreeView because the default mixin merge strategy only keeps one 'watch' per prop.
-        this.$_grtv_enforceSingleSelectionMode();
+        this.$_grt_enforceSingleSelectionMode();
       }
       else if (this.selectionMode === SelectionMode.SelectionFollowsFocus) {
         // Make sure the actual focusable item is selected if the mode changes, and deselect all others
-        this.$_grtv_depthFirstTraverse((node) => {
+        this.$_grt_depthFirstTraverse((node) => {
           let idPropName = node.treeNodeSpec.idProperty;
           let focusableIdPropName = this.focusableNodeModel.treeNodeSpec.idProperty;
           if (node[idPropName] === this.focusableNodeModel[focusableIdPropName]) {

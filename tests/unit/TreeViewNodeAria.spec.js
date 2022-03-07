@@ -138,8 +138,8 @@ describe('TreeViewNode.vue (ARIA)', () => {
     });
 
     it('should emit a treeViewNodeAriaFocusableChange event', () => {
-      expect(wrapper.emitted().treeViewNodeAriaFocusableChange).to.be.an('array').that.has.length(1);
-      expect(wrapper.emitted().treeViewNodeAriaFocusableChange[0][0]).to.equal(wrapper.vm.model);
+      expect(wrapper.emitted().treeNodeAriaFocusableChange).to.be.an('array').that.has.length(1);
+      expect(wrapper.emitted().treeNodeAriaFocusableChange[0][0]).to.equal(wrapper.vm.model);
     });
   });
 
@@ -196,7 +196,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       });
 
       it('should ignore the keydown', () => {
-        expect(wrapper.emitted().treeViewNodeAriaRequestPreviousFocus).not.to.exist;
+        expect(wrapper.emitted().treeNodeAriaRequestPreviousFocus).not.to.exist;
       });
     });
 
@@ -212,7 +212,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       });
 
       it('should ignore the keydown', () => {
-        expect(wrapper.emitted().treeViewNodeAriaRequestPreviousFocus).not.to.exist;
+        expect(wrapper.emitted().treeNodeAriaRequestPreviousFocus).not.to.exist;
       });
     });
 
@@ -228,7 +228,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       });
 
       it('should ignore the keydown', () => {
-        expect(wrapper.emitted().treeViewNodeAriaRequestPreviousFocus).not.to.exist;
+        expect(wrapper.emitted().treeNodeAriaRequestPreviousFocus).not.to.exist;
       });
     });
 
@@ -244,7 +244,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       });
 
       it('should ignore the keydown', () => {
-        expect(wrapper.emitted().treeViewNodeAriaRequestPreviousFocus).not.to.exist;
+        expect(wrapper.emitted().treeNodeAriaRequestPreviousFocus).not.to.exist;
       });
     });
 
@@ -336,7 +336,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           });
 
           it('should not expand the node', () => {
-            expect(wrapper.emitted().treeViewNodeExpandedChange).to.be.an('array').that.has.length(1);
+            expect(wrapper.emitted().treeNodeExpandedChange).to.be.an('array').that.has.length(1);
             expect(wrapper.vm.model.treeNodeSpec.state.expanded).to.be.true;
           });
         });
@@ -350,7 +350,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           });
 
           it('should focus the first child', () => {
-            expect(wrapper.emitted().treeViewNodeAriaFocusableChange).to.be.an('array').that.has.length(1);
+            expect(wrapper.emitted().treeNodeAriaFocusableChange).to.be.an('array').that.has.length(1);
             expect(wrapper.vm.model.children[0].treeNodeSpec.focusable).to.be.true;
           });
         });
@@ -365,7 +365,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         });
 
         it('should ignore the keydown', () => {
-          expect(wrapper.emitted().treeViewNodeExpandedChange).not.to.exist;
+          expect(wrapper.emitted().treeNodeExpandedChange).not.to.exist;
         });
       });
     });
@@ -384,7 +384,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           });
 
           it('should focus the parent node', async () => {
-            expect(wrapper.findAllComponents(TreeViewNode)[0].emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
+            expect(wrapper.findAllComponents(TreeViewNode)[0].emitted().treeNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
             expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
           });
         });
@@ -398,7 +398,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           });
 
           it('should collapse the node', () => {
-            expect(wrapper.emitted().treeViewNodeExpandedChange).to.be.an('array').that.has.length(1);
+            expect(wrapper.emitted().treeNodeExpandedChange).to.be.an('array').that.has.length(1);
             expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
           });
         });
@@ -413,7 +413,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         });
 
         it('should focus the parent node', () => {
-          expect(wrapper.findAllComponents(TreeViewNode)[0].emitted().treeViewNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
+          expect(wrapper.findAllComponents(TreeViewNode)[0].emitted().treeNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
           expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.true;
         });
       });
@@ -427,7 +427,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       });
 
       it('should emit a treeViewNodeAriaRequestFirstFocus event', () => {
-        expect(wrapper.emitted().treeViewNodeAriaRequestFirstFocus).to.be.an('array').that.has.length(1);
+        expect(wrapper.emitted().treeNodeAriaRequestFirstFocus).to.be.an('array').that.has.length(1);
       });
     });
 
@@ -439,7 +439,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       });
 
       it('should emit a treeViewNodeAriaRequestLastFocus event', () => {
-        expect(wrapper.emitted().treeViewNodeAriaRequestLastFocus).to.be.an('array').that.has.length(1);
+        expect(wrapper.emitted().treeNodeAriaRequestLastFocus).to.be.an('array').that.has.length(1);
       });
     });
 
@@ -451,7 +451,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       });
 
       it('should emit a treeViewNodeAriaRequestPreviousFocus event', () => {
-        expect(wrapper.emitted().treeViewNodeAriaRequestPreviousFocus).to.be.an('array').that.has.length(1);
+        expect(wrapper.emitted().treeNodeAriaRequestPreviousFocus).to.be.an('array').that.has.length(1);
       });
     });
 
@@ -463,7 +463,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
       });
 
       it('should emit a treeViewNodeAriaRequestNextFocus event', () => {
-        expect(wrapper.emitted().treeViewNodeAriaRequestNextFocus).to.be.an('array').that.has.length(1);
+        expect(wrapper.emitted().treeNodeAriaRequestNextFocus).to.be.an('array').that.has.length(1);
       });
     });
 
@@ -477,7 +477,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         });
 
         it('should do nothing', () => {
-          expect(wrapper.emitted().treeViewNodeAdd).not.to.exist;
+          expect(wrapper.emitted().treeNodeAdd).not.to.exist;
         });
       });
 
@@ -491,7 +491,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         });
 
         it('should add a child to the current node', () => {
-          expect(wrapper.emitted().treeViewNodeAdd).to.be.an('array').that.has.length(1);
+          expect(wrapper.emitted().treeNodeAdd).to.be.an('array').that.has.length(1);
           expect(wrapper.vm.model.children.length).to.equal(1);
         });
       });
@@ -507,7 +507,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
         });
 
         it('should do nothing', () => {
-          expect(wrapper.emitted().treeViewNodeDelete).not.to.exist;
+          expect(wrapper.emitted().treeNodeDelete).not.to.exist;
         });
       });
 
@@ -524,7 +524,7 @@ describe('TreeViewNode.vue (ARIA)', () => {
           it('should delete the current node', () => {
             // wrapper will emit the event as it bubbles up the tree; the child node
             // originated it, but is deleted by this point so we can't check it here.
-            expect(wrapper.emitted().treeViewNodeDelete).to.be.an('array').that.has.length(1);
+            expect(wrapper.emitted().treeNodeDelete).to.be.an('array').that.has.length(1);
             expect(wrapper.vm.model.children.length).to.equal(0);
           });
         });
@@ -669,8 +669,8 @@ describe('TreeViewNode.vue (ARIA)', () => {
           });
 
           it('should pass up the chain to this node\'s parent, ignoring children', () => {
-            expect(wrapper.emitted().treeViewNodeAriaRequestNextFocus).to.be.an('array').that.has.length(1);
-            expect(wrapper.emitted().treeViewNodeAriaRequestNextFocus[0][1]).to.be.true;
+            expect(wrapper.emitted().treeNodeAriaRequestNextFocus).to.be.an('array').that.has.length(1);
+            expect(wrapper.emitted().treeNodeAriaRequestNextFocus[0][1]).to.be.true;
           });
         });
       });
@@ -702,8 +702,8 @@ describe('TreeViewNode.vue (ARIA)', () => {
         });
 
         it('should pass up the chain to this node\'s parent, ignoring children', () => {
-          expect(wrapper.emitted().treeViewNodeAriaRequestNextFocus).to.be.an('array').that.has.length(1);
-          expect(wrapper.emitted().treeViewNodeAriaRequestNextFocus[0][1]).to.be.true;
+          expect(wrapper.emitted().treeNodeAriaRequestNextFocus).to.be.an('array').that.has.length(1);
+          expect(wrapper.emitted().treeNodeAriaRequestNextFocus[0][1]).to.be.true;
         });
       });
     });

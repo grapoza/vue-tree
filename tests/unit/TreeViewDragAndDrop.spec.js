@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { mount } from '@vue/test-utils';
+import { mount, flushPromises } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
@@ -13,18 +13,22 @@ const getDefaultPropsData = function () {
 
 let elem;
 
-function createWrapper(customPropsData, customAttrs) {
+async function createWrapper(customPropsData, customAttrs) {
   elem = document.createElement('div');
   if (document.body) {
     document.body.appendChild(elem);
   }
 
-  return mount(TreeView, {
+  let wrapper = mount(TreeView, {
     sync: false,
     props: customPropsData || getDefaultPropsData(),
     attrs: customAttrs,
     attachTo: elem
   });
+
+  await flushPromises();
+
+  return wrapper;
 };
 
 describe('TreeView.vue (Drag and Drop)', () => {
@@ -56,8 +60,8 @@ describe('TreeView.vue (Drag and Drop)', () => {
 
       describe('and it is a Move operation', () => {
 
-        beforeEach(() => {
-          wrapper = createWrapper();
+        beforeEach(async () => {
+          wrapper = await createWrapper();
         });
 
         describe('and the drop is directly on a node', () => {
@@ -135,14 +139,14 @@ describe('TreeView.vue (Drag and Drop)', () => {
 
         describe('always', () => {
 
-          beforeEach(() => {
+          beforeEach(async () => {
 
             // Set a node ID that collides with the first
             // available name for the node ID collision resolution
             let model = generateNodes(['ecs', 'ecs', 'ecs', ['ecs', 'ecs', 'ecs']]);
             model[1].id = 'n0-1';
 
-            wrapper = createWrapper({ initialModel: model });
+            wrapper = await createWrapper({ initialModel: model });
             wrapper.vm.model[0].treeNodeSpec.focusable = true;
 
             let startingNode = wrapper.find('#grtv-1-n0 .grtvn-self');
@@ -161,9 +165,9 @@ describe('TreeView.vue (Drag and Drop)', () => {
 
         describe('and the target node is in a different node level than the source node', () => {
 
-          beforeEach(() => {
+          beforeEach(async () => {
             let model = generateNodes(['ecs', 'ecs', 'ecs', ['ecs', 'ecs', 'ecs']]);
-            wrapper = createWrapper({ initialModel: model });
+            wrapper = await createWrapper({ initialModel: model });
 
             let startingNode = wrapper.find('#grtv-1-n2n0 .grtvn-self');
             startingNode.trigger('dragstart', eventData);
@@ -186,11 +190,8 @@ describe('TreeView.vue (Drag and Drop)', () => {
       let tree2;
 
       beforeEach(async () => {
-        wrapper = createWrapper();
-        tree2 = createWrapper(null, { id: 'grtv-2' });
-
-        // Await here so tree2's ID can trickle down to the nodes' computeds
-        await tree2.vm.$nextTick();
+        wrapper = await createWrapper();
+        tree2 = await createWrapper(null, { id: 'grtv-2' });
 
         let startingNode = wrapper.find('#grtv-1-n0 .grtvn-self');
         startingNode.trigger('dragstart', eventData);
@@ -221,8 +222,8 @@ describe('TreeView.vue (Drag and Drop)', () => {
       beforeEach(async () => {
         let tree2Data = getDefaultPropsData();
 
-        wrapper = createWrapper();
-        tree2 = createWrapper(tree2Data, { id: 'grtv-2' });
+        wrapper = await createWrapper();
+        tree2 = await createWrapper(tree2Data, { id: 'grtv-2' });
 
         // Await here so tree2's ID can trickle down to the nodes' computeds
         await tree2.vm.$nextTick();
@@ -249,10 +250,10 @@ describe('TreeView.vue (Drag and Drop)', () => {
 
   describe('when a child node has emitted treeViewNodeDragMove', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper();
+    beforeEach(async () => {
+      wrapper = await createWrapper();
       let node = wrapper.findComponent(TreeViewNode);
-      node.vm.$emit('treeViewNodeDragMove', node.vm.model);
+      node.vm.$emit('treeNodeDragMove', node.vm.model);
     });
 
     it('should remove that node from the list of children', () => {

@@ -719,8 +719,8 @@ describe('TreeViewNode.vue', () => {
       await wrapper.vm.$nextTick();
     });
 
-    it('should emit the treeViewNodeSelectedChange event', () => {
-      expect(wrapper.emitted().treeViewNodeSelectedChange).to.be.an('array').that.has.length(1);
+    it('should emit the treeNodeSelectedChange event', () => {
+      expect(wrapper.emitted().treeNodeSelectedChange).to.be.an('array').that.has.length(1);
     });
   });
 

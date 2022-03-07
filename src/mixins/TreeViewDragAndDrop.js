@@ -26,14 +26,14 @@ export default {
 
         if (eventData.dropEffect === DropEffect.Move) {
           // Find and remove the actual dropped node from its current position.
-          node = this.$_grtv_removeById(node[node.treeNodeSpec.idProperty]);
+          node = this.$_grt_removeById(node[node.treeNodeSpec.idProperty]);
 
           // Mark the node as moved within the tree so $_grtvnDnd_onDragend
           // knows not to remove it.
           node.treeNodeSpec._.dragMoved = true;
         }
         else {
-          let originalNode = this.$_grtv_findById(node[node.treeNodeSpec.idProperty]);
+          let originalNode = this.$_grt_findById(node[node.treeNodeSpec.idProperty]);
           node = cheapCopyObject(originalNode);
           resolveNodeIdConflicts(node, this.uniqueId);
 

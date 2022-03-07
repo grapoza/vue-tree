@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { mount } from '@vue/test-utils';
+import { mount, flushPromises } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import { generateNodes } from '../data/node-generator.js';
 import SelectionMode from '../../src/enums/selectionMode';
@@ -10,12 +10,16 @@ const getDefaultPropsData = function () {
   }
 };
 
-function createWrapper(customPropsData, customAttrs) {
-  return mount(TreeView, {
+async function createWrapper(customPropsData, customAttrs) {
+  let wrapper = mount(TreeView, {
     sync: false,
     props: customPropsData || getDefaultPropsData(),
     attrs: customAttrs
   });
+
+  await flushPromises();
+
+  return wrapper;
 }
 
 describe('TreeView.vue (ARIA)', () => {
@@ -33,8 +37,8 @@ describe('TreeView.vue (ARIA)', () => {
 
   describe('always', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper();
+    beforeEach(async () => {
+      wrapper = await createWrapper();
     });
 
     it('should have an ARIA role of tree', () => {
@@ -46,8 +50,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('and no customizations are provided', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper();
+      beforeEach(async () => {
+        wrapper = await createWrapper();
       });
 
       it('should have an ARIA key mapping', () => {
@@ -80,8 +84,8 @@ describe('TreeView.vue (ARIA)', () => {
         deleteItem: [10]
       };
 
-      beforeEach(() => {
-        wrapper = createWrapper({
+      beforeEach(async () => {
+        wrapper = await createWrapper({
           initialModel: [],
           customAriaKeyMap: customKeyMap
         });
@@ -99,8 +103,8 @@ describe('TreeView.vue (ARIA)', () => {
         activateItem: 1
       };
 
-      beforeEach(() => {
-        wrapper = createWrapper({
+      beforeEach(async () => {
+        wrapper = await createWrapper({
           initialModel: [],
           customAriaKeyMap: customKeyMap
         });
@@ -117,8 +121,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('and no selected nodes', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]), selectionMode: SelectionMode.Multiple });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]), selectionMode: SelectionMode.Multiple });
       });
 
       it('should set the first node as focusable', () => {
@@ -128,8 +132,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('and selected nodes', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCS', 'ecs']]), selectionMode: SelectionMode.Multiple });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCS', 'ecs']]), selectionMode: SelectionMode.Multiple });
       });
 
       it('should set the first selected node as focusable', () => {
@@ -142,8 +146,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('always', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf', ['eCsf', 'ecs']]), selectionMode: SelectionMode.Multiple });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCsf', ['eCsf', 'ecs']]), selectionMode: SelectionMode.Multiple });
       });
 
       it('should keep that node as focusable', () => {
@@ -159,8 +163,8 @@ describe('TreeView.vue (ARIA)', () => {
 
       describe('and a selectable focusable node', () => {
 
-        beforeEach(() => {
-          wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']), selectionMode: SelectionMode.SelectionFollowsFocus });
+        beforeEach(async () => {
+          wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']), selectionMode: SelectionMode.SelectionFollowsFocus });
         });
 
         it('should select the focused node', () => {
@@ -173,8 +177,8 @@ describe('TreeView.vue (ARIA)', () => {
 
   describe('when handling a focus change', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs']) });
+    beforeEach(async () => {
+      wrapper = await createWrapper({ initialModel: generateNodes(['ecsf', 'eCs']) });
       wrapper.vm.$_grtvAria_handleFocusableChange(wrapper.vm.model[1]);
     });
 
@@ -189,8 +193,8 @@ describe('TreeView.vue (ARIA)', () => {
 
   describe('when focusing the first node', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']) });
+    beforeEach(async () => {
+      wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']) });
       wrapper.vm.$_grtvAria_focusFirstNode();
     });
 
@@ -201,22 +205,22 @@ describe('TreeView.vue (ARIA)', () => {
 
   describe('when focusing the last node', () => {
 
-    it('should focus the last visible node', () => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs']) });
+    it('should focus the last visible node', async () => {
+      wrapper = await createWrapper({ initialModel: generateNodes(['ecsf', 'eCs']) });
       wrapper.vm.$_grtvAria_focusLastNode();
 
       expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
     });
 
-    it('should ignore non-expanded child nodes', () => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs', ['ecs']]) });
+    it('should ignore non-expanded child nodes', async () => {
+      wrapper = await createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs', ['ecs']]) });
       wrapper.vm.$_grtvAria_focusLastNode();
 
       expect(wrapper.vm.model[2].treeNodeSpec.focusable).to.be.true;
     });
 
-    it('should focus the deepest last node', () => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'Ecs', ['ecs']]) });
+    it('should focus the deepest last node', async () => {
+      wrapper = await createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'Ecs', ['ecs']]) });
       wrapper.vm.$_grtvAria_focusLastNode();
 
       expect(wrapper.vm.model[2].children[0].treeNodeSpec.focusable).to.be.true;
@@ -227,8 +231,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('and the node is not the currently focusable node', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs']) });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs']) });
         wrapper.vm.$_grtvAria_handleNodeDeletion(wrapper.vm.model[1]);
       });
 
@@ -239,8 +243,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('and the node is not the last node', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs']) });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs']) });
         wrapper.vm.$_grtvAria_handleNodeDeletion(wrapper.vm.model[0]);
       });
 
@@ -251,8 +255,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('and the node is the last node', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCs', 'ecsf']) });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCs', 'ecsf']) });
         wrapper.vm.$_grtvAria_handleNodeDeletion(wrapper.vm.model[2]);
       });
 
@@ -266,8 +270,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('and the first node is focused', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecsf', 'eCs']) });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['ecsf', 'eCs']) });
         wrapper.vm.$_grtvAria_handlePreviousFocus(wrapper.vm.model[0]);
       });
 
@@ -278,8 +282,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('and the previous node does not have any expanded children', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', ['ecs', 'ecs'], 'ecsf']) });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['ecs', ['ecs', 'ecs'], 'ecsf']) });
         wrapper.vm.$_grtvAria_handlePreviousFocus(wrapper.vm.model[1]);
       });
 
@@ -290,8 +294,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('and the previous node has expanded children', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['Ecs', ['ecs', 'ecs'], 'ecsf']) });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['Ecs', ['ecs', 'ecs'], 'ecsf']) });
         wrapper.vm.$_grtvAria_handlePreviousFocus(wrapper.vm.model[1]);
       });
 
@@ -305,8 +309,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('and the last node is focused', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']) });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']) });
         wrapper.vm.$_grtvAria_handleNextFocus(wrapper.vm.model[1]);
       });
 
@@ -317,8 +321,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('and the current node does not have any expanded children', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['ecsf', ['ecs', 'ecs'], 'ecs']) });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['ecsf', ['ecs', 'ecs'], 'ecs']) });
         wrapper.vm.$_grtvAria_handleNextFocus(wrapper.vm.model[0]);
       });
 
@@ -329,8 +333,8 @@ describe('TreeView.vue (ARIA)', () => {
 
     describe('and the current node has expanded children', () => {
 
-      beforeEach(() => {
-        wrapper = createWrapper({ initialModel: generateNodes(['Ecsf', ['ecs', 'ecs'], 'ecs']) });
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['Ecsf', ['ecs', 'ecs'], 'ecs']) });
       });
 
       it('should set the first expanded child node as focusable', () => {
@@ -351,7 +355,7 @@ describe('TreeView.vue (ARIA)', () => {
   describe('when selectionMode changes to selectionFollowsFocus', () => {
 
     beforeEach(async () => {
-      wrapper = createWrapper({ initialModel: generateNodes(['Ecsf', ['ecS', 'ecs'], 'ecs']), selectionMode: SelectionMode.Single });
+      wrapper = await createWrapper({ initialModel: generateNodes(['Ecsf', ['ecS', 'ecs'], 'ecs']), selectionMode: SelectionMode.Single });
       await wrapper.setProps({ selectionMode: SelectionMode.SelectionFollowsFocus });
       await wrapper.vm.$nextTick();
     });
@@ -368,7 +372,7 @@ describe('TreeView.vue (ARIA)', () => {
   describe('when selectionMode is Single', () => {
 
     beforeEach(async () => {
-      wrapper = createWrapper({ initialModel: generateNodes(['ecS', 'ecs']), selectionMode: SelectionMode.Single });
+      wrapper = await createWrapper({ initialModel: generateNodes(['ecS', 'ecs']), selectionMode: SelectionMode.Single });
     });
 
     describe('and a node is already selected', () => {

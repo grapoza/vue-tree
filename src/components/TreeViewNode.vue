@@ -23,7 +23,7 @@
          :draggable="tns.draggable"
          :dragging="tns._.dragging"
          @click="$_grtvn_onClick"
-         @dblclick="$_grtvn_onDblclick"
+         @dblclick="$_grtn_onDblclick"
          @dragend="$_grtvnDnd_onDragend"
          @dragenter="$_grtvnDnd_onDragenter"
          @dragleave="$_grtvnDnd_onDragleave"
@@ -185,23 +185,23 @@
                       :initial-radio-group-values="radioGroupValues"
                       :aria-key-map="ariaKeyMap"
                       :is-mounted="isMounted"
-                      @treeViewNodeClick="(t, e)=>$emit(TvEvent.Click, t, e)"
-                      @treeViewNodeDblclick="(t, e)=>$emit(TvEvent.DoubleClick, t, e)"
-                      @treeViewNodeCheckboxChange="(t, e)=>$emit(TvEvent.CheckboxChange, t, e)"
-                      @treeViewNodeRadioChange="(t, e)=>$emit(TvEvent.RadioChange, t, e)"
-                      @treeViewNodeExpandedChange="(t, e)=>$emit(TvEvent.ExpandedChange, t, e)"
-                      @treeViewNodeChildrenLoad="(t, e)=>$emit(TvEvent.ChildrenLoad, t, e)"
-                      @treeViewNodeSelectedChange="(t, e)=>$emit(TvEvent.SelectedChange, t, e)"
-                      @treeViewNodeAdd="(t, p, e)=>$emit(TvEvent.Add, t, p, e)"
-                      @treeViewNodeDelete="$_grtvn_handleChildDeletion"
-                      @treeViewNodeAriaFocusableChange="(t)=>$emit(TvEvent.FocusableChange, t)"
-                      @treeViewNodeAriaRequestParentFocus="$_grtvnAria_focus"
-                      @treeViewNodeAriaRequestFirstFocus="()=>$emit(TvEvent.RequestFirstFocus)"
-                      @treeViewNodeAriaRequestLastFocus="()=>$emit(TvEvent.RequestLastFocus)"
-                      @treeViewNodeAriaRequestPreviousFocus="$_grtvnAria_handlePreviousFocus"
-                      @treeViewNodeAriaRequestNextFocus="$_grtvnAria_handleNextFocus"
-                      @treeViewNodeDragMove="$_grtvnDnd_dragMoveChild"
-                      @treeViewNodeDrop="$_grtvnDnd_drop">
+                      @treeNodeClick="(t, e)=>$emit(TreeEvent.Click, t, e)"
+                      @treeNodeDblclick="(t, e)=>$emit(TreeEvent.DoubleClick, t, e)"
+                      @treeNodeCheckboxChange="(t, e)=>$emit(TreeEvent.CheckboxChange, t, e)"
+                      @treeNodeRadioChange="(t, e)=>$emit(TreeEvent.RadioChange, t, e)"
+                      @treeNodeExpandedChange="(t, e)=>$emit(TreeEvent.ExpandedChange, t, e)"
+                      @treeNodeChildrenLoad="(t, e)=>$emit(TreeEvent.ChildrenLoad, t, e)"
+                      @treeNodeSelectedChange="(t, e)=>$emit(TreeEvent.SelectedChange, t, e)"
+                      @treeNodeAdd="(t, p, e)=>$emit(TreeEvent.Add, t, p, e)"
+                      @treeNodeDelete="$_grtvn_handleChildDeletion"
+                      @treeNodeAriaFocusableChange="(t)=>$emit(TreeEvent.FocusableChange, t)"
+                      @treeNodeAriaRequestParentFocus="$_grtvnAria_focus"
+                      @treeNodeAriaRequestFirstFocus="()=>$emit(TreeEvent.RequestFirstFocus)"
+                      @treeNodeAriaRequestLastFocus="()=>$emit(TreeEvent.RequestLastFocus)"
+                      @treeNodeAriaRequestPreviousFocus="$_grtvnAria_handlePreviousFocus"
+                      @treeNodeAriaRequestNextFocus="$_grtvnAria_handleNextFocus"
+                      @treeNodeDragMove="$_grtvnDnd_dragMoveChild"
+                      @treeNodeDrop="$_grtvnDnd_drop">
           <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
             <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
           </template>
@@ -221,38 +221,22 @@
 </template>
 
 <script>
-  import NodeDataNormalizer from '../mixins/NodeDataNormalizer';
+  import TreeNode from './TreeNode.vue';
   import TreeViewNodeAria from '../mixins/TreeViewNodeAria';
   import TreeViewNodeDragAndDrop from '../mixins/TreeViewNodeDragAndDrop';
   import SelectionMode from '../enums/selectionMode';
-  import TvEvent from '../enums/event';
+  import TreeEvent from '../enums/event';
 
   export default {
+    extends: TreeNode,
     name: 'TreeViewNode',
     mixins: [
-      NodeDataNormalizer,
       TreeViewNodeAria,
       TreeViewNodeDragAndDrop
     ],
     props: {
-      depth: {
-        type: Number,
-        required: true
-      },
-      initialModel: {
-        type: Object,
-        required: true
-      },
       isMounted: {
         type: Boolean,
-        required: true
-      },
-      modelDefaults: {
-        type: Object,
-        required: true
-      },
-      initialRadioGroupValues: {
-        type: Object,
         required: true
       },
       selectionMode: {
@@ -262,43 +246,29 @@
         validator: function (value) {
           return Object.values(SelectionMode).includes(value);
         }
-      },
-      treeId: {
-        type: String,
-        required: true
       }
     },
     emits: [
-      TvEvent.Add,
-      TvEvent.Click,
-      TvEvent.CheckboxChange,
-      TvEvent.ChildrenLoad,
-      TvEvent.Delete,
-      TvEvent.DoubleClick,
-      TvEvent.ExpandedChange,
-      TvEvent.FocusableChange,
-      TvEvent.RadioChange,
-      TvEvent.RequestFirstFocus,
-      TvEvent.RequestLastFocus,
-      TvEvent.SelectedChange
+      TreeEvent.Add,
+      TreeEvent.Click,
+      TreeEvent.CheckboxChange,
+      TreeEvent.ChildrenLoad,
+      TreeEvent.Delete,
+      TreeEvent.ExpandedChange,
+      TreeEvent.FocusableChange,
+      TreeEvent.RadioChange,
+      TreeEvent.RequestFirstFocus,
+      TreeEvent.RequestLastFocus,
+      TreeEvent.SelectedChange
     ],
     data() {
       return {
-        elementsThatIgnoreClicks: 'input, .grtvn-self-expander, .grtvn-self-expander *, .grtvn-self-action, .grtvn-self-action *',
-        model: this.initialModel,
-        radioGroupValues: this.initialRadioGroupValues
+        elementsThatIgnoreClicks: 'input, .grtvn-self-expander, .grtvn-self-expander *, .grtvn-self-action, .grtvn-self-action *'
       }
     },
     computed: {
       addChildId() {
         return `${this.nodeId}-add-child`;
-      },
-      areChildrenLoaded() {
-        const tns = this.tns;
-        return typeof tns.loadChildrenAsync !== 'function' || tns._.state.areChildrenLoaded;
-      },
-      ariaExpanded() {
-        return this.canExpand ? this.tns.state.expanded : null;
       },
       ariaSelected() {
         // If selection isn't allowed, don't add an aria-selected attribute.
@@ -319,99 +289,48 @@
         //   All nodes that are selectable but not selected have aria-selected set to false.
         return this.tns.state.selected;
       },
-      canExpand() {
-        // A node can be expanded if it is expandable and either has children or has not
-        // yet had the asynchronous loader for children called.
-        return this.mayHaveChildren && this.tns.expandable;
-      },
-      children() {
-        return this.model[this.childrenPropName];
-      },
-      childrenPropName() {
-        return this.tns.childrenProperty || 'children';
-      },
-      customClasses() {
-        return (this.tns.customizations || {}).classes || {};
-      },
       deleteId() {
         return `${this.nodeId}-delete`;
-      },
-      expanderId() {
-        return `${this.nodeId}-exp`;
-      },
-      hasChildren() {
-        return this.children && this.children.length > 0;
-      },
-      id() {
-        return this.model[this.idPropName];
-      },
-      idPropName() {
-        return this.tns.idProperty || 'id';
-      },
-      inputId() {
-        return `${this.nodeId}-input`;
       },
       isEffectivelySelected() {
         return this.selectionMode !== SelectionMode.None && this.tns.selectable && this.tns.state.selected;
       },
-      label() {
-        return this.model[this.labelPropName];
-      },
-      labelPropName() {
-        return this.tns.labelProperty || 'label';
-      },
-      mayHaveChildren() {
-        return this.hasChildren || !this.areChildrenLoaded;
-      },
-      nodeId() {
-        return `${this.treeId}-${this.id}`;
-      },
-      tns() {
-        return this.model.treeNodeSpec;
-      },
-      TvEvent() {
-        return TvEvent;
+      TreeEvent() {
+        return TreeEvent;
       }
     },
     created() {
-      this.$_grndn_normalizeNodeData();
-
-      // id and label are required; notify the user. Validation is done here instead
-      // of at the prop level due to dependency on multiple props at once and defaulting
-      // that takes place in the normalization process
-      if (!this.id || (typeof this.id !== 'number' && typeof this.id !== 'string')) {
-        console.error(`initialModel id is required and must be a number or string. Expected prop ${this.idPropName} to exist on the model.`);
-      }
+      // This runs after the parent component's created hook
       if(!this.label || typeof this.label !== 'string') {
         console.error(`initialModel label is required and must be a string. Expected prop ${this.labelPropName} to exist on the model.`);
       }
     },
     watch: {
       'model.treeNodeSpec.state.selected': function(newValue) {
-          this.$emit(TvEvent.SelectedChange, this.model);
+          this.$emit(TreeEvent.SelectedChange, this.model);
       }
     },
     methods: {
       /**
        * Pass the event for checkbox changes up from the node.
-       * Emits a treeViewNodeCheckboxChange event
+       * Emits a treeNodeCheckboxChange event
        * @param {Event} event The event that triggered the change
        */
       $_grtvn_onCheckboxChange(event) {
-        this.$emit(TvEvent.CheckboxChange, this.model, event);
+        this.$emit(TreeEvent.CheckboxChange, this.model, event);
       },
       /**
        * Pass the event for radio button changes up from the node.
-       * Emits a treeViewNodeRadioChange event
+       * Emits a treeNodeRadioChange event
        * @param {Event} event The event that triggered the change
        */
       $_grtvn_onRadioChange(event) {
-        this.$emit(TvEvent.RadioChange, this.model, event);
+        this.$emit(TreeEvent.RadioChange, this.model, event);
       },
       /**
        * Expand the children of this node, starting an asynchronous load if needed.
-       * Emits a treeViewNodeExpandedChange event. When children are loaded asynchronously,
-       * Emits a treeViewNodeChildrenLoad event.
+       * Emits a treeNodeExpandedChange event. When children are loaded asynchronously,
+       * Emits a treeNodeChildrenLoad event.
        * @param {Event} event The event that triggered the expansion toggle
        */
       async $_grtvn_onExpandedChange(event) {
@@ -419,7 +338,7 @@
 
         // First expand the node (to show either children or a "loading" indicator)
         spec.state.expanded = !spec.state.expanded;
-        this.$emit(TvEvent.ExpandedChange, this.model, event);
+        this.$emit(TreeEvent.ExpandedChange, this.model, event);
 
         // If children need to be loaded asynchronously, load them.
         if (spec.state.expanded && !spec._.state.areChildrenLoaded && !spec._.state.areChildrenLoading) {
@@ -430,7 +349,7 @@
           if (childrenResult) {
             spec._.state.areChildrenLoaded = true;
             this.children.splice(0, this.children.length, ...childrenResult);
-            this.$emit(TvEvent.ChildrenLoad, this.model, event);
+            this.$emit(TreeEvent.ChildrenLoad, this.model, event);
           }
 
           spec._.state.areChildrenLoading = false;
@@ -450,34 +369,22 @@
       /**
        * Handles clicks on the node. It only performs actions if the click happened on an element
        * that does not have node clicks explicitly ingored (e.g., the expander button).
-       * Emits a treeViewNodeClick event.
+       * Emits a treeNodeClick event.
        * @param {Event} event The click event
        */
       $_grtvn_onClick(event) {
         // Don't fire this if the target is an element which has its own events
-        if (!matches(event.target, this.elementsThatIgnoreClicks)) {
-          this.$emit(TvEvent.Click, this.model, event);
+        if (!event.target.matches(this.elementsThatIgnoreClicks)) {
+          this.$emit(TreeEvent.Click, this.model, event);
           this.$_grtvn_toggleSelected(event);
         }
 
         this.$_grtvnAria_onClick();
       },
       /**
-       * Handles double clicks on the node. It only performs actions if the double click happened on an
-       * element that does not have node clicks explicitly ingored (e.g., the expander button).
-       * Emits a treeViewNodeDblclick event.
-       * @param {Event} event The dblclick event
-       */
-      $_grtvn_onDblclick(event) {
-        // Don't fire this if the target is an element which has its own events
-        if (!matches(event.target, this.elementsThatIgnoreClicks)) {
-          this.$emit(TvEvent.DoubleClick, this.model, event);
-        }
-      },
-      /**
        * Add a child node to the end of the child nodes list. The child node data is
        * supplied by an async callback which is the addChildCallback parameter of this node's model.
-       * Emits a treeViewNodeAdd if a node is added
+       * Emits a treeNodeAdd if a node is added
        * @param {Event} event The event that triggered the add
        */
       async $_grtvn_onAddChild(event) {
@@ -486,20 +393,20 @@
 
           if (childModel) {
             this.children.push(childModel);
-            this.$emit(TvEvent.Add, childModel, this.model, event);
+            this.$emit(TreeEvent.Add, childModel, this.model, event);
           }
         }
       },
       $_grtvn_onDelete(event) {
         if (this.tns.deletable) {
-          this.$emit(TvEvent.Delete, this.model, event);
+          this.$emit(TreeEvent.Delete, this.model, event);
         }
       },
       /**
        * Removes the given node from the array of children if found.
        * Note that only the node that was deleted fires these, not any subnode, so
        * this comes from a request from the child node for this node to delete it.
-       * This emits the treeViewNodeDelete event.
+       * This emits the treeNodeDelete event.
        * @param node {TreeViewNode} The node to remove
        * @param event {Event} The initial event that triggered the deletion
        */
@@ -512,21 +419,10 @@
           this.children.splice(targetIndex, 1);
         }
 
-        this.$emit(TvEvent.Delete, node, event);
+        this.$emit(TreeEvent.Delete, node, event);
       }
     },
   };
-
-  /**
-   * Returns true if the given element matches the given selector.
-   * @param {Element} target The target element to check
-   * @param {string} selector The selector to check the target against
-   * @returns {Boolean} True if the target element matches the selector, false otherwise.
-   */
-  function matches(target, selector) {
-    let matchFn = target.matches || target.msMatchesSelector || target.webkitMatchesSelector;
-    return matchFn && matchFn.call(target, selector);
-  }
 
 </script>
 
@@ -534,7 +430,7 @@
   $baseHeight: 1.2rem;
   $itemSpacing: 1.2rem;
 
-  // Everything's in a .grtv (embedded SCSS is the 'grtv-default-skin' skin)
+  // Everything's in a .grtv-wrapper (embedded SCSS is the 'grtv-default-skin' skin)
   .grtv-wrapper.grtv-default-skin {
 
     // The node, including its content and children list

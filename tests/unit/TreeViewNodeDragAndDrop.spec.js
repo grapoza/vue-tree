@@ -321,20 +321,20 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('should emit a treeViewNodeDrop event', () => {
-        expect(wrapper.emitted().treeViewNodeDrop.length).to.equal(1);
+      it('should emit a treeNodeDrop event', () => {
+        expect(wrapper.emitted().treeNodeDrop.length).to.equal(1);
       });
 
-      it('should include the dropped model data in the treeViewNodeDrop event', () => {
-        expect(wrapper.emitted().treeViewNodeDrop[0][0].droppedModel).to.eql(JSON.parse(serializedNodeData));
+      it('should include the dropped model data in the treeNodeDrop event', () => {
+        expect(wrapper.emitted().treeNodeDrop[0][0].droppedModel).to.eql(JSON.parse(serializedNodeData));
       });
 
-      it('should include the target model in the treeViewNodeDrop event', () => {
-        expect(wrapper.emitted().treeViewNodeDrop[0][0].targetModel).to.eql(wrapper.vm.model);
+      it('should include the target model in the treeNodeDrop event', () => {
+        expect(wrapper.emitted().treeNodeDrop[0][0].targetModel).to.eql(wrapper.vm.model);
       });
 
-      it('should include the drop effect in the treeViewNodeDrop event', () => {
-        expect(wrapper.emitted().treeViewNodeDrop[0][0].dropEffect).to.eql(eventData.dataTransfer.dropEffect);
+      it('should include the drop effect in the treeNodeDrop event', () => {
+        expect(wrapper.emitted().treeNodeDrop[0][0].dropEffect).to.eql(eventData.dataTransfer.dropEffect);
       });
 
       it('should unmark the node as a drop target', () => {
@@ -350,8 +350,8 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('should have isSameTree === true in the treeViewNodeDrop event', () => {
-        expect(wrapper.emitted().treeViewNodeDrop[0][0].isSameTree).to.be.true;
+      it('should have isSameTree === true in the treeNodeDrop event', () => {
+        expect(wrapper.emitted().treeNodeDrop[0][0].isSameTree).to.be.true;
       });
     });
 
@@ -364,8 +364,8 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('should have isSameTree === false in the treeViewNodeDrop event', () => {
-        expect(wrapper.emitted().treeViewNodeDrop[0][0].isSameTree).to.be.false;
+      it('should have isSameTree === false in the treeNodeDrop event', () => {
+        expect(wrapper.emitted().treeNodeDrop[0][0].isSameTree).to.be.false;
       });
     });
 
@@ -378,8 +378,8 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('should include the children of the current node as the sibling node set in the treeViewNodeDrop event', () => {
-        expect(wrapper.emitted().treeViewNodeDrop[0][0].siblingNodeSet).to.eql(wrapper.vm.model.children);
+      it('should include the children of the current node as the sibling node set in the treeNodeDrop event', () => {
+        expect(wrapper.emitted().treeNodeDrop[0][0].siblingNodeSet).to.eql(wrapper.vm.model.children);
       });
 
       it('should unmark the node as an affected drop target', () => {
@@ -396,8 +396,8 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('should have a null sibling node set in the treeViewNodeDrop event', () => {
-        expect(wrapper.emitted().treeViewNodeDrop[0][0].siblingNodeSet).to.be.null;
+      it('should have a null sibling node set in the treeNodeDrop event', () => {
+        expect(wrapper.emitted().treeNodeDrop[0][0].siblingNodeSet).to.be.null;
       });
 
       it('should unmark the prev drop target as an affected drop target', () => {
@@ -414,8 +414,8 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('should have a null sibling node set in the treeViewNodeDrop event', () => {
-        expect(wrapper.emitted().treeViewNodeDrop[0][0].siblingNodeSet).to.be.null;
+      it('should have a null sibling node set in the treeNodeDrop event', () => {
+        expect(wrapper.emitted().treeNodeDrop[0][0].siblingNodeSet).to.be.null;
       });
 
       it('should unmark the next drop target as an affected drop target', () => {
@@ -455,8 +455,8 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         });
 
         it('should emit a treeViewNodeDragMove', () => {
-          expect(wrapper.emitted().treeViewNodeDragMove.length).to.equal(1);
-          expect(wrapper.emitted().treeViewNodeDragMove[0][0]).to.eql(wrapper.vm.model);
+          expect(wrapper.emitted().treeNodeDragMove.length).to.equal(1);
+          expect(wrapper.emitted().treeNodeDragMove[0][0]).to.eql(wrapper.vm.model);
         });
       });
     });
@@ -490,7 +490,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       }));
 
       let node = wrapper.findAllComponents(TreeViewNode)[0];
-      node.vm.$emit('treeViewNodeDragMove', node.vm.model);
+      node.vm.$emit('treeNodeDragMove', node.vm.model);
     });
 
     it('should remove that node from the list of children', () => {
@@ -498,7 +498,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
     });
   });
 
-  describe('when a child node has emitted a treeViewNodeDrop event', () => {
+  describe('when a child node has emitted a treeNodeDrop event', () => {
 
     describe('always', () => {
 
@@ -514,7 +514,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should re-emit the event', () => {
-        expect(wrapper.emitted().treeViewNodeDrop.length).to.equal(1);
+        expect(wrapper.emitted().treeNodeDrop.length).to.equal(1);
       });
     });
 
@@ -532,7 +532,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should populate the sibling node set with its children', () => {
-        expect(wrapper.emitted().treeViewNodeDrop[0][0].siblingNodeSet).to.eql(wrapper.vm.model.children);
+        expect(wrapper.emitted().treeNodeDrop[0][0].siblingNodeSet).to.eql(wrapper.vm.model.children);
       });
     });
   });
