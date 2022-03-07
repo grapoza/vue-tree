@@ -1,6 +1,6 @@
 {
   "name": "@grapoza/vue-tree",
-  "version": "4.0.3",
+  "version": "5.0.0",
   "description": "Yet another Vue tree view component.",
   "author": "Gregg Rapoza <grapoza@gmail.com>",
   "license": "MIT",
