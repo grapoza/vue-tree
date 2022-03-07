@@ -426,149 +426,143 @@
 
 </script>
 
-<style lang="scss">
-  $baseHeight: 1.2rem;
-  $itemSpacing: 1.2rem;
+<style>
 
-  // Everything's in a .grtv-wrapper (embedded SCSS is the 'grtv-default-skin' skin)
+  /* Everything's in a .grtv-wrapper (embedded SCSS is the 'grtv-default-skin' skin) */
   .grtv-wrapper.grtv-default-skin {
+    --baseHeight: 1.2rem;
+    --itemSpacing: 1.2rem;
+  }
 
-    // The node, including its content and children list
-    .grtvn {
-      padding-left: 0;
+  /* The node, including its content and children list */
+  .grtv-wrapper.grtv-default-skin .grtvn {
+    padding-left: 0;
+  }
 
-      &:first-child {
-        margin-top: 0;
-      }
+  .grtv-wrapper.grtv-default-skin .grtvn:first-child {
+    margin-top: 0;
+  }
 
-      // ARIA styles
-      &[role="treeitem"]:focus {
-        outline: 0;
+  /* ARIA styles */
+  .grtv-wrapper.grtv-default-skin .grtvn[role="treeitem"]:focus {
+    outline: 0;
+  }
 
-        >.grtvn-self {
-          outline: black dotted 1px;
-        }
-      }
-    }
+  .grtv-wrapper.grtv-default-skin .grtvn[role="treeitem"]:focus >.grtvn-self {
+    outline: black dotted 1px;
+  }
 
-    // The node's content, excluding the list of child nodes
-    .grtvn-self {
-      display: flex;
-      align-items: flex-start;
-      line-height: $baseHeight;
-    }
+  /* The node's content, excluding the list of child nodes */
+  .grtv-wrapper.grtv-default-skin .grtvn-self {
+    display: flex;
+    align-items: flex-start;
+    line-height: var(--baseHeight);
+  }
 
-    // Drag and Drop styles
-    .grtvn-dragging .grtvn-self {
-      opacity: 0.5;
-    }
+  /* Drag and Drop styles */
+  .grtv-wrapper.grtv-default-skin .grtvn-dragging .grtvn-self {
+    opacity: 0.5;
+  }
 
-    .grtvn-self-drop-target {
-      flex-wrap: wrap;
+  .grtv-wrapper.grtv-default-skin .grtvn-self-drop-target {
+    flex-wrap: wrap;
+  }
 
-      &.grtvn-self-child-drop-target {
-        opacity: .5;
-      }
+  .grtv-wrapper.grtv-default-skin .grtvn-self-drop-target.grtvn-self-child-drop-target {
+    opacity: .5;
+  }
 
-      .grtvn-self-sibling-drop-target {
-        width: 100%;
-        height: 7px;
-        background-color: #dddddd;
+  .grtv-wrapper.grtv-default-skin .grtvn-self-drop-target .grtvn-self-sibling-drop-target {
+    width: 100%;
+    height: 7px;
+    background-color: #dddddd;
+  }
 
-        &.grtvn-self-sibling-drop-target-hover {
-          background-color: #bbbbbb;
-        }
-      }
-    }
+  .grtv-wrapper.grtv-default-skin .grtvn-self-drop-target .grtvn-self-sibling-drop-target.grtvn-self-sibling-drop-target-hover {
+    background-color: #bbbbbb;
+  }
 
-    // The expander button and indicator content
-    .grtvn-self-expander {
-      padding: 0;
-      background: none;
-      border: none;
-      height: $baseHeight;
+  /* The expander button and indicator content */
+  .grtv-wrapper.grtv-default-skin .grtvn-self-expander {
+    padding: 0;
+    background: none;
+    border: none;
+    height: var(--baseHeight);
+  }
 
-      i.grtvn-self-expanded-indicator {
-        font-style: normal;
+  .grtv-wrapper.grtv-default-skin .grtvn-self-expander i.grtvn-self-expanded-indicator {
+    font-style: normal;
+  }
 
-        &::before {
-          content: '+';
-        }
-      }
+  .grtv-wrapper.grtv-default-skin .grtvn-self-expander i.grtvn-self-expanded-indicator::before {
+    content: '+';
+  }
 
-      &.grtvn-self-expanded {
+  .grtv-wrapper.grtv-default-skin .grtvn-self-expander.grtvn-self-expanded i.grtvn-self-expanded-indicator::before {
+    content: '-';
+  }
 
-        i.grtvn-self-expanded-indicator {
+  /* The styling for when the node is selected */
+  .grtv-wrapper.grtv-default-skin .grtvn-self-selected {
+    background-color: #f0f0f8;
+  }
 
-          &::before {
-            content: '-';
-          }
-        }
-      }
-    }
+  /* Spacing */
+  .grtv-wrapper.grtv-default-skin .grtvn-self-expander,
+  .grtv-wrapper.grtv-default-skin .grtvn-self-checkbox,
+  .grtv-wrapper.grtv-default-skin .grtvn-self-radio,
+  .grtv-wrapper.grtv-default-skin .grtvn-self-spacer,
+  .grtv-wrapper.grtv-default-skin .grtvn-self-action {
+    min-width: 1rem;
+  }
 
-    // The styling for when the node is selected
-    .grtvn-self-selected {
-      background-color: #f0f0f8;
-    }
+  .grtv-wrapper.grtv-default-skin .grtvn-self-expander,
+  .grtv-wrapper.grtv-default-skin .grtvn-self-spacer {
+    margin: 0;
+  }
 
-    // Spacing
-    .grtvn-self-expander,
-    .grtvn-self-checkbox,
-    .grtvn-self-radio,
-    .grtvn-self-spacer,
-    .grtvn-self-action {
-      min-width: 1rem;
-    }
+  .grtv-wrapper.grtv-default-skin .grtvn-self-checkbox,
+  .grtv-wrapper.grtv-default-skin .grtvn-self-radio {
+    margin: 0 0 0 calc(-1 * var(--itemSpacing));
+  }
 
-    .grtvn-self-expander,
-    .grtvn-self-spacer {
-      margin: 0;
-    }
+  .grtv-wrapper.grtv-default-skin .grtvn-self-text,
+  .grtv-wrapper.grtv-default-skin .grtvn-self-label {
+    margin-left: var(--itemSpacing);
+  }
 
-    .grtvn-self-checkbox,
-    .grtvn-self-radio {
-      margin: 0 0 0 (-$itemSpacing);
-    }
+  /* Action buttons section */
+  .grtv-wrapper.grtv-default-skin .grtvn-self-action {
+    padding: 0;
+    background: none;
+    border: none;
+    height: var(--baseHeight);
+  }
 
-    .grtvn-self-text,
-    .grtvn-self-label {
-      margin-left: $itemSpacing;
-    }
+  /* Action buttons (add, delete, etc) */
+  .grtv-wrapper.grtv-default-skin i.grtvn-self-add-child-icon {
+    font-style: normal;
+  }
 
-    // Action buttons section
-    .grtvn-self-action {
-      padding: 0;
-      background: none;
-      border: none;
-      height: $baseHeight;
-    }
+  .grtv-wrapper.grtv-default-skin i.grtvn-self-add-child-icon::before {
+    content: '+';
+  }
 
-    // Action buttons (add, delete, etc)
-    i.grtvn-self-add-child-icon {
-      font-style: normal;
+  .grtv-wrapper.grtv-default-skin i.grtvn-self-delete-icon {
+    font-style: normal;
+  }
 
-      &::before {
-        content: '+';
-      }
-    }
+  .grtv-wrapper.grtv-default-skin i.grtvn-self-delete-icon::before {
+    content: 'x';
+  }
 
-    i.grtvn-self-delete-icon {
-      font-style: normal;
+  .grtv-wrapper.grtv-default-skin .grtvn-children-wrapper {
+    margin: 0 0 0 calc(1rem + var(--itemSpacing));
+  }
 
-      &::before {
-        content: 'x';
-      }
-    }
-
-    .grtvn-children-wrapper {
-      margin: 0 0 0 (1rem + $itemSpacing);
-    }
-
-    // The node's child list
-    .grtvn-children {
-      padding: 0;
-      list-style: none;
-    }
+  /* The node's child list */
+  .grtv-wrapper.grtv-default-skin .grtvn-children {
+    padding: 0;
+    list-style: none;
   }
 </style>

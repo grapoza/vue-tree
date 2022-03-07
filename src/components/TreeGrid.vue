@@ -112,15 +112,12 @@
   };
 </script>
 
-<style lang="scss">
+<style>
 
-  // Embedded SCSS is the 'grtg-default-skin' skin
-  .grtg-wrapper.grtg-default-skin {
-
-    > .grtg {
-      margin: 0;
-      padding: 0;
-    }
+  /* Embedded CSS is the 'grtg-default-skin' skin */
+  .grtg-wrapper.grtg-default-skin > .grtg {
+    margin: 0;
+    padding: 0;
   }
 
 </style>

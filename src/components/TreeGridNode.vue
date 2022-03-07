@@ -266,60 +266,47 @@
   };
 </script>
 
-<style lang="scss">
-
-  $baseHeight: 1.2rem;
-  $itemSpacing: 1.2rem;
-
-  // Everything's in a .grtg-wrapper (embedded SCSS is the 'grtg-default-skin' skin)
+<style>
+  /* Everything's in a .grtg-wrapper (embedded SCSS is the 'grtg-default-skin' skin) */
   .grtg-wrapper.grtg-default-skin {
+    --baseHeight: 1.2rem;
+    --itemSpacing: 1.2rem;
+  }
 
-    // Spacing
-    .grtgn-self-expander,
-    .grtgn-self-checkbox,
-    .grtgn-self-radio,
-    .grtgn-self-spacer,
-    .grtgn-self-action {
-      display: inline-block;
-      min-width: 1rem;
-    }
+  /* Spacing */
+  .grtg-wrapper.grtg-default-skin .grtgn-self-expander,
+  .grtg-wrapper.grtg-default-skin .grtgn-self-checkbox,
+  .grtg-wrapper.grtg-default-skin .grtgn-self-radio,
+  .grtg-wrapper.grtg-default-skin .grtgn-self-spacer,
+  .grtg-wrapper.grtg-default-skin .grtgn-self-action {
+    display: inline-block;
+    min-width: 1rem;
+  }
 
-    // The expander button and indicator content
-    .grtgn-self-expander {
-      padding: 0;
-      background: none;
-      border: none;
-      height: $baseHeight;
+  /* The expander button and indicator content */
+  .grtg-wrapper.grtg-default-skin .grtgn-self-expander {
+    padding: 0;
+    background: none;
+    border: none;
+    height: var(--baseHeight);
+  }
 
-      i.grtgn-self-expanded-indicator {
-        font-style: normal;
+  .grtg-wrapper.grtg-default-skin .grtgn-self-expander i.grtgn-self-expanded-indicator::before {
+    content: '+';
+  }
 
-        &::before {
-          content: '+';
-        }
-      }
+  .grtg-wrapper.grtg-default-skin .grtgn-self-expander.grtgn-self-expanded i.grtgn-self-expanded-indicator::before {
+    content: '-';
+  }
 
-      &.grtgn-self-expanded {
+  .grtg-wrapper.grtg-default-skin .grtgn-self-checkbox,
+  .grtg-wrapper.grtg-default-skin .grtgn-self-radio {
+    margin: 0 0 0 calc(-1 * var(--itemSpacing));
+  }
 
-        i.grtgn-self-expanded-indicator {
-
-          &::before {
-            content: '-';
-          }
-        }
-      }
-    }
-
-    .grtgn-self-checkbox,
-    .grtgn-self-radio {
-      margin: 0 0 0 (-$itemSpacing);
-    }
-
-    .grtgn-self-text,
-    .grtgn-self-label,
-    .grtgn-self-omit-input {
-      margin-left: $itemSpacing;
-    }
-
+  .grtg-wrapper.grtg-default-skin .grtgn-self-text,
+  .grtg-wrapper.grtg-default-skin .grtgn-self-label,
+  .grtg-wrapper.grtg-default-skin .grtgn-self-omit-input {
+    margin-left: var(--itemSpacing);
   }
 </style>
