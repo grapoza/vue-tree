@@ -19,14 +19,16 @@ export default [
   {
     id: 'node2',
     label: 'Radiobutton Node',
-    input: {
-      type: 'radio',
-      name: 'radiobutton1'
-    },
-    state: {
+    treeNodeSpec: {
       input: {
-        value: false,
-        disabled: false
+        type: 'radio',
+        name: 'radiobutton1'
+      },
+      state: {
+        input: {
+          value: false,
+          disabled: false
+        }
       }
     }
   },
