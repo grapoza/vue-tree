@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';

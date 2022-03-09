@@ -1,11 +1,9 @@
 {
   "name": "@grapoza/vue-tree",
   "version": "5.0.0",
-  "description": "Yet another Vue tree view component.",
+  "description": "Tree components for Vue 3",
   "author": "Gregg Rapoza <grapoza@gmail.com>",
   "license": "MIT",
-  "main": "vue-tree.umd.min.js",
-  "browser": "index.js",
   "repository": {
     "url": "https://github.com/grapoza/vue-tree",
     "type": "git"
@@ -17,32 +15,42 @@
     "tree",
     "treeview"
   ],
+  "files": [
+    "dist"
+  ],
+  "main": "dist/grapoza-tree-lib.umd.js",
+  "module": "dist/grapoza-tree-lib.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/grapoza-tree-lib.es.js",
+      "require": "./dist/grapoza-tree-lib.umd.js"
+    },
+    "./css": "./dist/style.css"
+  },
   "scripts": {
-    "build": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue",
-    "dev": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --mode development",
+    "build": "vite build",
+    "dev": "vite --open --host",
     "docs": "cd docsrc && @powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./generateDocs.ps1",
     "docs-resources-serve": "http-server ./dist -d false -i false -a 127.0.0.1 -p 8082",
     "docs-site-serve": "http-server ./docsrc/output -d false -i false -a 127.0.0.1 -p 8081 -o /index.html",
     "docs-site": "npm-run-all --parallel docs-resources-serve docs-site-serve",
-    "watch": "./node_modules/.bin/vue-cli-service build --target lib --name vue-tree src/components/TreeView.vue --watch",
-    "test": "./node_modules/.bin/vue-cli-service test:unit",
+    "serve": "vite preview",
+    "test": "vitest run --coverage",
     "test-site": "http-server -d false -i false -a 127.0.0.1 -o /tests/local/index.html"
   },
   "dependencies": {
     "vue": "^3.2.6"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^5.0.0-beta.3",
-    "@vue/cli-plugin-unit-jest": "^5.0.0-beta.3",
-    "@vue/cli-service": "^5.0.0-beta.3",
+    "@vitejs/plugin-vue": "^2.2.4",
     "@vue/compiler-sfc": "3.2.31",
     "@vue/test-utils": "^2.0.0-rc.17",
-    "@vue/vue3-jest": "^27.0.0-alpha.4",
-    "chai": "4.3.4",
+    "c8": "^7.11.0",
     "http-server": "13.0.1",
+    "jsdom": "^19.0.0",
     "npm-run-all": "4.1.5",
-    "vue-jest": "^5.0.0-alpha.10",
-    "webpack": "5.51.1"
+    "vite": "^2.8.6",
+    "vitest": "^0.6.0"
   },
   "browserslist": [
     "defaults",

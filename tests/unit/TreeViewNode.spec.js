@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
@@ -30,7 +30,6 @@ describe('TreeViewNode.vue', () => {
   let wrapper = null;
 
   afterEach(() => {
-    jest.restoreAllMocks();
     wrapper = null;
   });
 
@@ -762,7 +761,7 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
 
-      jest.spyOn(console, 'error').mockImplementation(() => { });
+      vi.spyOn(console, 'error').mockImplementation(() => { });
 
       wrapper = createWrapper({
         ariaKeyMap: {},
@@ -819,7 +818,7 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
 
-      jest.spyOn(console, 'error').mockImplementation(() => { });
+      vi.spyOn(console, 'error').mockImplementation(() => { });
 
       wrapper = createWrapper({
         ariaKeyMap: {},

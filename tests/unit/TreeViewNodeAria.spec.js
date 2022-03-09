@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
@@ -42,8 +42,8 @@ async function triggerKeydown(wrapper, keyCode) {
   var e = new Event('keydown');
   e.keyCode = keyCode;
 
-  jest.spyOn(e, 'stopPropagation');
-  jest.spyOn(e, 'preventDefault');
+  vi.spyOn(e, 'stopPropagation');
+  vi.spyOn(e, 'preventDefault');
 
   wrapper.vm.$refs.nodeElement.dispatchEvent(e);
   await wrapper.vm.$nextTick();
@@ -63,7 +63,6 @@ describe('TreeViewNode.vue (ARIA)', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
     wrapper = null;
   });
 

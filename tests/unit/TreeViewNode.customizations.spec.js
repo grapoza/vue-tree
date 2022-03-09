@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';

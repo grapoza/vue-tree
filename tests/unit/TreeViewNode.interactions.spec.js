@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
@@ -147,7 +147,6 @@ describe('TreeViewNode.vue (interactions)', () => {
     describe('and the children should be loaded asynchronously', () => {
 
       beforeEach(() => {
-        jest.useFakeTimers();
 
         let loadChildrenAsync = () => new Promise(resolve => setTimeout(resolve.bind(null, generateNodes(['', ''])), 1000));
         let initialModel = generateNodes(['ces'], '', null, loadChildrenAsync)[0];
@@ -162,11 +161,13 @@ describe('TreeViewNode.vue (interactions)', () => {
           isMounted: false
         });
 
-        expander = wrapper.find('#' + wrapper.vm.expanderId).trigger('click');
+        vi.useFakeTimers();
+
+        wrapper.find('#' + wrapper.vm.expanderId).trigger('click');
       });
 
       afterEach(() => {
-        jest.useRealTimers();
+        vi.useRealTimers();
       });
 
       describe('and the the loadChildrenAsync Promise has not returned', () => {
@@ -179,7 +180,7 @@ describe('TreeViewNode.vue (interactions)', () => {
       describe('and the loadChildrenAsync Promise returns', () => {
 
         beforeEach(async () => {
-          jest.runAllTimers();
+          vi.runAllTimers();
           await wrapper.vm.$nextTick();
         });
 

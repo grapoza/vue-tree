@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
 import { flushPromises, shallowMount } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import { generateNodes } from '../data/node-generator.js';
@@ -227,13 +227,13 @@ describe('TreeView.vue', () => {
     let loadNodesPromise = null;
 
     beforeEach(async () => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       loadNodesPromise = new Promise(resolve => setTimeout(resolve.bind(null, generateNodes(['', ''])), 1000));
       wrapper = await createWrapper({ loadNodesAsync: () => loadNodesPromise, selectionMode: SelectionMode.Single });
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     describe('and the loadNodesAsync Promise has not returned', () => {
@@ -265,7 +265,7 @@ describe('TreeView.vue', () => {
     describe('and the loadNodesAsync Promise returns', () => {
 
       beforeEach(async () => {
-        jest.runAllTimers();
+        vi.runAllTimers();
         await wrapper.vm.$nextTick();
       });
 

@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import { generateNodes } from '../data/node-generator.js';
@@ -27,11 +27,10 @@ describe('TreeView.vue (ARIA)', () => {
   let wrapper = null;
 
   beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => { });
+    vi.spyOn(console, 'error').mockImplementation(() => { });
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
     wrapper = null;
   });
 
@@ -344,7 +343,7 @@ describe('TreeView.vue (ARIA)', () => {
 
       describe('and the children are explicitly ignored', () => {
 
-        if ('sets the next sibling node as focusable', () => {
+        it('sets the next sibling node as focusable', () => {
           wrapper.vm.$_grtvAria_handleNextFocus(wrapper.vm.model[0], true);
           expect(wrapper.vm.model[1].treeNodeSpec.focusable).to.be.true;
         });
