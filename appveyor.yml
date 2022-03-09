@@ -20,19 +20,14 @@ build_script:
   - sh: yarn build
 
 after_build:
-  # Copy anything that goes into the final package into '/package'
-  - sh: mkdir -p package && cp dist/*.js dist/*.css index.js package.json LICENSE README.md src/objectMethods.js package
-  - sh: mkdir -p package/components && cp src/components/*.vue package/components
-  - sh: mkdir -p package/mixins && cp src/mixins/*.js package/mixins
-  - sh: mkdir -p package/enums && cp src/enums/*.js package/enums
-  # Zip up the package files, along with the .map files for debugging
-  - sh: 7z a -tzip artifacts.zip ./package/* ./dist/*.map
+  # Create a package file
+  - sh: npm pack
 
 test_script:
   - sh: yarn test
 
 artifacts:
-  - path: 'artifacts.zip'
+  - path: 'grapoza-vue-tree-$(package_version).tgz'
 
 deploy_script:
   - ps: |
@@ -41,7 +36,7 @@ deploy_script:
         # Publish the package
         # npm_auth_token defined in the appveyor project on the site. https://www.appveyor.com/docs/lang/nodejs-iojs/#authenticating-npm-for-publishing-packages
         "//registry.npmjs.org/:_authToken=$env:npm_auth_token`n" | out-file (Join-Path $Home "/.npmrc") -Encoding ASCII
-        npm publish package/ --access public
+        npm publish --access public
       }
 
 after_deploy:
@@ -49,8 +44,8 @@ after_deploy:
       if [ ${APPVEYOR_REPO_TAG} == "true" ]; then
         # Install pandoc (the apt-get version is way out of date, so manually download the package)
         mkdir -p ../wgetdeb
-        wget -P ../wgetdeb https://github.com/jgm/pandoc/releases/download/2.11.4/pandoc-2.11.4-1-amd64.deb
-        sudo apt-get --assume-yes install ../wgetdeb/pandoc-2.11.4-1-amd64.deb
+        wget -P ../wgetdeb https://github.com/jgm/pandoc/releases/download/2.17.1.1/pandoc-2.17.1.1-1-amd64.deb
+        sudo apt-get --assume-yes install ../wgetdeb/pandoc-2.17.1.1-1-amd64.deb
       fi
   # Generate and update docs
   - ps: |

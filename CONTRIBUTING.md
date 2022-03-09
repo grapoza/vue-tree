@@ -40,7 +40,7 @@ This project includes a `.editorconfig` which should help with basic formatting.
 
 #### Update the tests
 
-Unit tests are written as Jest specs. The spec files are split into separate files based on broad concerns. Each component has a main spec file containing tests for top level concerns like defaults and property usage. Further separation may be done if the size of a test file becomes burdensome (_e.g._, customizations and interactions are tested in separate files for the TreeViewNode component). If you feel like your changes may benefit from their own test file, bring it up in the conversation for the issue you're working on.
+Unit tests are written as Vitest specs. The spec files are split into separate files based on broad concerns. Each component has a main spec file containing tests for top level concerns like defaults and property usage. Further separation may be done if the size of a test file becomes burdensome (_e.g._, customizations and interactions are tested in separate files for the TreeViewNode component). If you feel like your changes may benefit from their own test file, bring it up in the conversation for the issue you're working on.
 
 The specs are organized in a fairly standard hierarchy. Each test file should have one outermost `describe` for the component (or the part of the component under test). Within that, another level of `describe`s outline the scenario under test. This may be a top-level `describe` with more specific `describe`s nested inside it. These top-level `describe`s should start with "when" in their descriptions. Nested `describe`s should start with "and" in their descriptions. Finally, `it` is used for the actual test and should start with "should" in their descriptions. For example:
 

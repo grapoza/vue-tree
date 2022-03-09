@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, describe, it } from 'vitest';
 import { isProbablyObject, cheapCopyObject } from '../../src/objectMethods.js';
 
 describe('objectMethods.js', () => {
