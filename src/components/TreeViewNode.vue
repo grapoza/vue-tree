@@ -86,7 +86,7 @@
             :model="model"
             :customClasses="customClasses"
             :inputId="inputId"
-            :inputModel="radioGroupValues[tns.input.name]"
+            :radioGroupValues="radioGroupValues"
             :radioChangeHandler="$_grtvn_onRadioChange">
 
         <label :for="inputId"
@@ -205,8 +205,8 @@
           <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
             <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
           </template>
-          <template #radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
-            <slot name="radio" :model="model" :customClasses="customClasses" :inputId="inputId" :inputModel="inputModel" :radioChangeHandler="radioChangeHandler"></slot>
+          <template #radio="{ model, customClasses, inputId, radioGroupValues, radioChangeHandler }">
+            <slot name="radio" :model="model" :customClasses="customClasses" :inputId="inputId" :radioGroupValues="radioGroupValues" :radioChangeHandler="radioChangeHandler"></slot>
           </template>
           <template #text="{ model, customClasses }">
             <slot name="text" :model="model" :customClasses="customClasses"></slot>

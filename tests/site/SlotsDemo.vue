@@ -1,19 +1,8 @@
-﻿<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Slot Usage</title>
-    <script src="https://unpkg.com/vue@3.2.4"></script>
-    <script src="../../dist/vue-tree.umd.js"></script>
-    <link rel="stylesheet" href="demo.css">
-    <link rel="stylesheet" href="../../dist/vue-tree.css">
-  </head>
-  <body>
-    <div class="container">
-      <h1>Slot Treeview Demo</h1>
-      <div id="app">
-        <div id="app">
-          <tree id="customtree" :initial-model="model">
+<template>
+<div class="container">
+    <h1>Slots Tree View Demo</h1>
+    <div id="tree-view">
+      <tree-view id="customtreeview" :initial-model="tvModel" ref="treeViewRef">
 
             <template #text="{ model, customClasses }">
               <span>{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
@@ -24,22 +13,24 @@
 
                 <input :id="inputId"
                        type="checkbox"
-                       :disabled="model.treeNodeSpec.state.input.disabled" v-model="model.treeNodeSpec.state.input.value"
+                       :disabled="model.treeNodeSpec.state.input.disabled"
+                       v-model="model.treeNodeSpec.state.input.value"
                        @change="checkboxChangeHandler" />
 
                 <em style="max-width: 6rem">{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</em>
               </label>
             </template>
 
-            <template #radio="{ model, customClasses, inputId, inputModel, radioChangeHandler }">
+            <template #radio="{ model, customClasses, inputId, radioGroupValues, radioChangeHandler }">
               <label :for="inputId" :title="model.treeNodeSpec.title">
 
-                <input :id="inputId"
+                <input v-if="radioGroupValues"
+                       :id="inputId"
                        type="radio"
                        :name="model.treeNodeSpec.input.name"
                        :value="model.treeNodeSpec.input.value"
                        :disabled="model.treeNodeSpec.state.input.disabled"
-                       v-model="inputModel"
+                       v-model="radioGroupValues[model.treeNodeSpec.input.name]"
                        @change="radioChangeHandler" />
 
                 <span style="font-weight: bolder">{{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}</span>
@@ -51,30 +42,17 @@
                 LOADING PLACHOLDER FOR CHILDREN OF {{ model[model.treeNodeSpec.labelProperty] }}. Custom Classes: {{ JSON.stringify(customClasses) }}
               </span>
             </template>
-          </tree>
-        </div>
-      </div>
+
+        </tree-view>
     </div>
+  </div>
+</template>
 
-    <script type='module'>
-    import slotsData from './slots.js';
+<script setup>
+import { ref } from "vue";
+import TreeView from "../../src/components/TreeView.vue";
+import treeViewData from './slotsTreeViewData.js';
 
-    Vue.createApp({
-      components: {
-        tree: window['vue-tree']
-      },
-      data() {
-        return {
-          model: slotsData,
-          checkedNodes: []
-        };
-      },
-      methods: {
-        refreshCheckedList() {
-          this.checkedNodes = this.$refs.tree.getCheckedCheckboxes();
-        }
-      }
-    }).mount('#app')
-    </script>
-  </body>
-</html>
+const tvModel = ref(treeViewData);
+
+</script>

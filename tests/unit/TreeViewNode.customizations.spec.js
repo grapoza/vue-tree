@@ -294,7 +294,7 @@ describe('TreeViewNode.vue (customizations)', () => {
                       <span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span>
                       <span class="slot-input-id">{{ props.inputId }}</span>
                       <span class="slot-has-handler">{{ typeof props.radioChangeHandler == 'function' }}</span>
-                      <span class="slot-input-model">{{ JSON.stringify(props.inputModel) }}</span>
+                      <span class="slot-radio-group-values">{{ JSON.stringify(props.radioGroupValues) }}</span>
                     </span></template>`,
           }
         );
@@ -316,8 +316,8 @@ describe('TreeViewNode.vue (customizations)', () => {
         expect(wrapper.find('span.slot-input-id').text()).to.equal('tree-baseIdn0-input');
       });
 
-      it('should get an inputModel property', () => {
-        expect(wrapper.find('span.slot-input-model').text()).to.equal('"baseIdn0-val"');
+      it('should get a radioGroupValues property', () => {
+        expect(wrapper.find('span.slot-radio-group-values').text()).to.equal('{"baseId-rb":"baseIdn0-val"}');
       });
 
       it('should get a radioChangeHandler property function', () => {
