@@ -291,6 +291,10 @@
     height: var(--baseHeight);
   }
 
+  .grtg-wrapper.grtg-default-skin .grtgn-self-expander i.grtgn-self-expanded-indicator {
+    font-style: normal;
+  }
+
   .grtg-wrapper.grtg-default-skin .grtgn-self-expander i.grtgn-self-expanded-indicator::before {
     content: '+';
   }

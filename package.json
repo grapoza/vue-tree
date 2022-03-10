@@ -29,22 +29,21 @@
   },
   "scripts": {
     "build": "vite build",
-    "dev": "vite --open --host",
+    "dev": "vite --open",
     "docs": "cd docsrc && @powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./generateDocs.ps1",
     "docs-resources-serve": "http-server ./dist -d false -i false -a 127.0.0.1 -p 8082",
     "docs-site-serve": "http-server ./docsrc/output -d false -i false -a 127.0.0.1 -p 8081 -o /index.html",
     "docs-site": "npm-run-all --parallel docs-resources-serve docs-site-serve",
     "serve": "vite preview",
-    "test": "vitest run --coverage",
-    "test-site": "http-server -d false -i false -a 127.0.0.1 -o /tests/local/index.html"
+    "test": "vitest run --coverage"
   },
   "dependencies": {
     "vue": "^3.2.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.2.4",
-    "@vue/compiler-sfc": "3.2.31",
     "@vue/test-utils": "^2.0.0-rc.17",
+    "vue-router": "^4.0.13",
     "c8": "^7.11.0",
     "http-server": "13.0.1",
     "jsdom": "^19.0.0",
