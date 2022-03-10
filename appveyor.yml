@@ -4,7 +4,7 @@ image: Ubuntu
 
 init:
   - sh: git config --global core.autocrlf true
-  - sh: nvm use 14
+  - sh: nvm use 16
 
 shallow_clone: true
 
