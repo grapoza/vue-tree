@@ -285,8 +285,9 @@ describe('TreeViewNode.vue (ARIA)', () => {
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
         });
 
-        it('should not fire any events', () => {
-          expect(wrapper.emitted()).to.deep.equal({});
+        it('should not fire any custom events', () => {
+          expect(Object.getOwnPropertyNames(wrapper.emitted()).length).to.equal(1);
+          expect(Object.getOwnPropertyNames(wrapper.emitted())[0]).to.equal('keydown');
         });
       });
     });
@@ -566,7 +567,8 @@ describe('TreeViewNode.vue (ARIA)', () => {
       });
 
       it('should do nothing', () => {
-        expect(Object.getOwnPropertyNames(wrapper.emitted()).length).to.equal(0);
+        expect(Object.getOwnPropertyNames(wrapper.emitted()).length).to.equal(1);
+        expect(Object.getOwnPropertyNames(wrapper.emitted())[0]).to.equal('keydown');
         expect(event.stopPropagation.mock.calls.length).to.equal(0);
         expect(event.preventDefault.mock.calls.length).to.equal(0);
       });

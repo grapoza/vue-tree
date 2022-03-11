@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.2.4",
+    "@vue/compiler-dom": "^3.2.31",
     "@vue/test-utils": "^2.0.0-rc.17",
     "c8": "^7.11.0",
     "http-server": "13.0.1",

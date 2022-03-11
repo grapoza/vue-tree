@@ -7,9 +7,9 @@ export default defineConfig({
   ],
   test: {
     coverage: {
-      src: "src/",
+      include: ["src/**/*"],
       all: true,
-      statements: 90
+      statements: 90,
     },
     environment: 'jsdom',
     restoreMocks: true,
