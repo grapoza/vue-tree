@@ -269,13 +269,14 @@
    * @return {string} The generated ID
    */
   function generateUniqueId() {
-    const stem = 'grtv-';
-    let treeNum = 1;
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let newId = 'grt-';
 
-    while (document.getElementById(stem + treeNum)) {
-      treeNum++;
+    do {
+      newId += possible.charAt(Math.floor(Math.random() * possible.length));
     }
+    while (newId.length < 8 || document.getElementById(newId))
 
-    return stem + treeNum;
+    return newId;
   }
 </script>
