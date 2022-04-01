@@ -28,6 +28,10 @@ yarn-error.log*
 # Documentation output
 /docsrc/output
 
+# Storybook
+
+storybook-static
+
 # Local scratchpad document
 scratchpad.md
 

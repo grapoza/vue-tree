@@ -29,28 +29,35 @@
   },
   "scripts": {
     "build": "vite build",
-    "dev": "vite --open",
-    "docs": "cd docsrc && @powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./generateDocs.ps1",
-    "docs-resources-serve": "http-server ./dist -d false -i false -a 127.0.0.1 -p 8082",
-    "docs-site-serve": "http-server ./docsrc/output -d false -i false -a 127.0.0.1 -p 8081 -o /index.html",
-    "docs-site": "npm-run-all --parallel docs-resources-serve docs-site-serve",
-    "serve": "vite preview",
-    "test": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "storybook": "start-storybook -p 6006",
+    "storybook-docs": "start-storybook -p 6007 --docs --no-manager-cache",
+    "build-storybook-docs": "build-storybook --docs --no-manager-cache"
   },
   "dependencies": {
     "vue": "^3.2.6"
   },
   "devDependencies": {
+    "@babel/core": "^7.17.5",
+    "@mdx-js/react": "^1.6.22",
+    "@storybook/addon-actions": "^6.4.19",
+    "@storybook/addon-docs": "^6.4.19",
+    "@storybook/addon-essentials": "^6.4.19",
+    "@storybook/addon-events": "^6.2.9",
+    "@storybook/addon-links": "^6.4.19",
+    "@storybook/vue3": "^6.4.19",
     "@vitejs/plugin-vue": "^2.2.4",
     "@vue/compiler-dom": "^3.2.31",
+    "@vue/compiler-sfc": "^3.2.31",
     "@vue/test-utils": "^2.0.0-rc.17",
+    "babel-loader": "^8.2.3",
     "c8": "^7.11.0",
-    "http-server": "13.0.1",
     "jsdom": "^19.0.0",
-    "npm-run-all": "4.1.5",
+    "react": "^16.8.0",
     "vite": "^2.8.6",
     "vitest": "^0.6.0",
-    "vue-router": "^4.0.13"
+    "vue-router": "^4.0.13",
+    "webpack": "^5.70.0"
   },
   "browserslist": [
     "defaults",

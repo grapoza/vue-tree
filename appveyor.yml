@@ -40,25 +40,17 @@ deploy_script:
       }
 
 after_deploy:
-  - sh: |
-      if [ ${APPVEYOR_REPO_TAG} == "true" ]; then
-        # Install pandoc (the apt-get version is way out of date, so manually download the package)
-        mkdir -p ../wgetdeb
-        wget -P ../wgetdeb https://github.com/jgm/pandoc/releases/download/2.17.1.1/pandoc-2.17.1.1-1-amd64.deb
-        sudo apt-get --assume-yes install ../wgetdeb/pandoc-2.17.1.1-1-amd64.deb
-      fi
   # Generate and update docs
   - ps: |
       if ($env:APPVEYOR_REPO_TAG -eq "true")
       {
         # Publish the docs to the gh-pages branch
         # github_auth_token defined in the appveyor project on the site. https://www.appveyor.com/docs/how-to/git-push/
-        cd docsrc
-        .\generateDocs.ps1
-        cd ..\..
+        yarn build-storybook-docs
+        cd ..
         git clone --depth=1 --branch=gh-pages https://$($env:github_auth_token):x-oauth-basic@github.com/grapoza/vue-tree.git "pagesbranch" 2>&1 | % { $_.ToString() }
         cd pagesbranch
-        Copy-Item -Path "..\vue-tree\docsrc\output" -Destination ".\$env:package_version" -Recurse
+        Copy-Item -Path "..\vue-tree\storybook-static" -Destination ".\$env:package_version" -Recurse
         git add "$env:package_version"
         New-Item -Path . -Name "index.html" -ItemType "file" -Value "<html><head><title>Redirect</title></head><body><script>window.location.replace(`"https://grapoza.github.io/vue-tree/$env:package_version/`");</script></body></html>" -Force
         git add index.html

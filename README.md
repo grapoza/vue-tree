@@ -32,7 +32,7 @@ If you're using it in a .vue file:
 </template>
 
 <script>
-import TreeView from "@grapoza/vue-tree"
+import { TreeView } from "@grapoza/vue-tree"
 
 export default {
   components: {
@@ -54,7 +54,7 @@ export default {
 Or, import it into your application:
 
 ```javascript
-import TreeView from "@grapoza/vue-tree"
+import { TreeView } from "@grapoza/vue-tree"
 Vue.use(TreeView)
 ```
 Then add the component:

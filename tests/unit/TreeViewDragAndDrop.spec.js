@@ -19,10 +19,12 @@ async function createWrapper(customPropsData, customAttrs) {
     document.body.appendChild(elem);
   }
 
+  let attrs = customAttrs || { id: 'grtv-1' };
+
   let wrapper = mount(TreeView, {
     sync: false,
     props: customPropsData || getDefaultPropsData(),
-    attrs: customAttrs,
+    attrs: attrs,
     attachTo: elem
   });
 
@@ -61,7 +63,7 @@ describe('TreeView.vue (Drag and Drop)', () => {
       describe('and it is a Move operation', () => {
 
         beforeEach(async () => {
-          wrapper = await createWrapper();
+          wrapper = await createWrapper(null, { id: 'grtv-1' });
         });
 
         describe('and the drop is directly on a node', () => {
