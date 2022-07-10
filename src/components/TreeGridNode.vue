@@ -267,7 +267,7 @@
 </script>
 
 <style>
-  /* Everything's in a .grtg-wrapper (embedded SCSS is the 'grtg-default-skin' skin) */
+  /* Everything's in a .grtg-wrapper (embedded CSS is the 'grtg-default-skin' skin) */
   .grtg-wrapper.grtg-default-skin {
     --baseHeight: 1.2rem;
     --itemSpacing: 1.2rem;

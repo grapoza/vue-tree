@@ -428,7 +428,7 @@
 
 <style>
 
-  /* Everything's in a .grtv-wrapper (embedded SCSS is the 'grtv-default-skin' skin) */
+  /* Everything's in a .grtv-wrapper (embedded CSS is the 'grtv-default-skin' skin) */
   .grtv-wrapper.grtv-default-skin {
     --baseHeight: 1.2rem;
     --itemSpacing: 1.2rem;
