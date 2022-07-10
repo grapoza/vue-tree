@@ -8,7 +8,7 @@ export default defineConfig({
   test: {
     coverage: {
       include: ["src/**/*"],
-      exclude: ["src/stories/**/*"],
+      exclude: ["src/stories/**/*", "src/components/TreeGrid*"],
       all: true,
       statements: 90,
     },

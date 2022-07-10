@@ -253,9 +253,16 @@ describe('TreeViewNode.vue (ARIA)', () => {
 
         describe('and the input is enabled', () => {
 
+          const curWindow = window;
+
           beforeEach(async () => {
             wrapper = await createWrapper();
+            window = null; // HACK TODO - Work around for what may be an webidl2js issue in JSDOM usage? Err: Failed to construct 'MouseEvent': member view is not of type Window.
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
+          });
+
+          afterEach(() => {
+            window = curWindow;
           });
 
           it('should perform the default action on the node', () => {
