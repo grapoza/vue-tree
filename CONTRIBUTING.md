@@ -23,8 +23,6 @@ You can start by forking the [grapoza/vue-tree](https://github.com/grapoza/vue-t
 Prerequisites:
 
 - [Yarn](https://yarnpkg.com/) (latest)
-- [Pandoc](https://pandoc.org/) (optional, used for building documentation)
-- [Powershell](https://docs.microsoft.com/en-us/powershell/scripting/overview) (optional, used for building documentation)
 
 Once you have the prerequisites and a local clone of the repository, open a shell to the root of the cloned repo and run `yarn` to install the packages. Once that's done, you can use `yarn build` to build the component. Other scripts are available in `package.json` for things like building in dev mode, running tests, or building documentation.
 
@@ -66,9 +64,7 @@ In addition to unit tests, a very simple test site is available at `/tests/local
 
 #### Update the documentation
 
-Documentation is created using [pandoc](https://pandoc.org/). `package.json` includes the `docs` script to build documentation and the `docs-site` script to run a a preview of the site for testing. The `docsrc` folder contains the sources you'll edit when making changes or additions to the documentation, and only the sources in this folder get comitted.
-
-Pandoc uses the base template (in `templates/base.html5`) along with processed Markdown files to produce HTML documentation. The `docs` script will handle processing the raw files to create the final site. When running locally, the site will point to your locally built component, allowing you to test the site with your changes (very handy when you update the demos on the site). When a new version of vue-tree is released, the documentation that is built as part of CI will point to the new version.
+Documentation is created using [Storybook](https://storybook.js.org/). `package.json` includes the `build-storybook-docs` script to build documentation and the `storybook-docs` script to run a a preview of the site for testing. The `src/stories` folder contains the sources you'll edit when making changes or additions to the documentation, and only the sources in this folder get comitted.
 
 ### Submit your changes
 
