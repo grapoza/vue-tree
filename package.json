@@ -29,8 +29,7 @@
   },
   "scripts": {
     "build": "vite build",
-    "test": "vitest run",
-    "vitest": "vitest run --coverage",
+    "test": "vitest run --coverage",
     "storybook": "start-storybook -p 6006",
     "storybook-docs": "start-storybook -p 6007 --docs --no-manager-cache",
     "build-storybook-docs": "build-storybook --docs --no-manager-cache"
