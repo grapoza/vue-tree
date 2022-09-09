@@ -219,15 +219,17 @@ function getCheckedRadioButtons() {
  * Gets any nodes matched by the given function.
  * @param matcherFunction {function} A function which takes a node as an argument
  * and returns a boolean indicating a match for some condition
+ * @param maxMatches {integer} The maximum number of matches to return
  * @returns {Array<TreeNode>} An array of any nodes matched by the given function
  */
-function getMatching(matcherFunction) {
+function getMatching(matcherFunction, maxMatches = 0) {
   let matches = [];
 
   if (typeof matcherFunction === 'function') {
     depthFirstTraverse((current) => {
       if (matcherFunction(current)) {
         matches.push(current);
+        return maxMatches < 1 || matches.length < maxMatches;
       }
     });
   }
