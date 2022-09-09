@@ -138,6 +138,18 @@ describe('TreeView.vue', () => {
         expect(nodes.length).to.equal(0);
       });
     });
+
+    describe('and maxMatches argumetn is provided (> 0)', () => {
+
+      beforeEach(async () => {
+        wrapper = await createWrapper({ initialModel: generateNodes(['es', 'ES', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
+      });
+
+      it('should return up to maxMatches matches', () => {
+        let nodes = wrapper.vm.getMatching(() => true, 2);
+        expect(nodes.length).to.equal(2);
+      });
+    });
   });
 
   describe('when getSelected() is called', () => {
