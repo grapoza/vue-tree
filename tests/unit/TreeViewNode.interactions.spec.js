@@ -226,6 +226,31 @@ describe('TreeViewNode.vue (interactions)', () => {
     });
   });
 
+  describe('when a child node\'s checkbox is toggled', () => {
+
+    let checkbox = null;
+
+    beforeEach(() => {
+      wrapper = createWrapper({
+        ariaKeyMap: {},
+        initialModel: generateNodes(['es', ['ces']])[0],
+        modelDefaults: {},
+        depth: 0,
+        treeId: 'tree',
+        initialRadioGroupValues: {},
+        isMounted: false
+      });
+
+      const childWrapper = wrapper.find('.grtvn-children').findComponent(TreeViewNode);
+      checkbox = childWrapper.find('#' + childWrapper.vm.inputId);
+    });
+
+    it('should emit the treeNodeChildCheckboxChange event', () => {
+      checkbox.setChecked();
+      expect(wrapper.emitted().treeNodeCheckboxChange.length).to.equal(1);
+    });
+  });
+
   describe('when the node\'s radiobutton is toggled', () => {
 
     let radioButton = null;
