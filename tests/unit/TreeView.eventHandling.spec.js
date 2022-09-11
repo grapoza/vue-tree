@@ -61,6 +61,18 @@ describe('TreeView.vue (event handling)', () => {
     });
   });
 
+  describe('when a node fires a treeNodeChildCheckboxChange event', () => {
+
+    beforeEach(() => {
+      wrapper = createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
+      wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeChildCheckboxChange');
+    });
+
+    it('should emit a treeNodeChildCheckboxChange event', () => {
+      expect(wrapper.emitted('treeNodeChildCheckboxChange').length).to.equal(1);
+    });
+  });
+
   describe('when a node fires a treeNodeRadioChange event', () => {
 
     beforeEach(() => {

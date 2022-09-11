@@ -20,6 +20,7 @@
         @treeNodeClick="(t, e)=>$emit(TreeEvent.Click, t, e)"
         @treeNodeDblclick="(t, e)=>$emit(TreeEvent.DoubleClick, t, e)"
         @treeNodeCheckboxChange="(t, e)=>$emit(TreeEvent.CheckboxChange, t, e)"
+        @treeNodeChildCheckboxChange="(t, c, e)=>$emit(TreeEvent.ChildCheckboxChange, t, c, e)"
         @treeNodeRadioChange="(t, e)=>$emit(TreeEvent.RadioChange, t, e)"
         @treeNodeExpandedChange="(t, e)=>$emit(TreeEvent.ExpandedChange, t, e)"
         @treeNodeChildrenLoad="(t, e)=>$emit(TreeEvent.ChildrenLoad, t, e)"
@@ -121,6 +122,7 @@ const emit = defineEmits([
   TreeEvent.Add,
   TreeEvent.CheckboxChange,
   TreeEvent.ChildrenLoad,
+  TreeEvent.ChildCheckboxChange,
   TreeEvent.Click,
   TreeEvent.Delete,
   TreeEvent.DoubleClick,
@@ -220,7 +222,7 @@ function getCheckedRadioButtons() {
  * @param matcherFunction {function} A function which takes a node as an argument
  * and returns a boolean indicating a match for some condition
  * @param maxMatches {integer} The maximum number of matches to return
- * @returns {Array<TreeNode>} An array of any nodes matched by the given function
+ * @returns {Array<TreeViewNode>} An array of any nodes matched by the given function
  */
 function getMatching(matcherFunction, maxMatches = 0) {
   let matches = [];

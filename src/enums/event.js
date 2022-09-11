@@ -6,6 +6,7 @@ const events = Object.freeze({
     Click: 'treeNodeClick',
     DoubleClick: 'treeNodeDblclick',
     CheckboxChange: 'treeNodeCheckboxChange',
+    ChildCheckboxChange: 'treeNodeChildCheckboxChange',
     RadioChange: 'treeNodeRadioChange',
     ExpandedChange: 'treeNodeExpandedChange',
     ChildrenLoad: 'treeNodeChildrenLoad',

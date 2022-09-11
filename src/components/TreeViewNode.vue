@@ -187,7 +187,8 @@
                       :is-mounted="isMounted"
                       @treeNodeClick="(t, e)=>$emit(TreeEvent.Click, t, e)"
                       @treeNodeDblclick="(t, e)=>$emit(TreeEvent.DoubleClick, t, e)"
-                      @treeNodeCheckboxChange="(t, e)=>$emit(TreeEvent.CheckboxChange, t, e)"
+                      @treeNodeCheckboxChange="handleCheckboxChange"
+                      @treeNodeChildCheckboxChange="(t, c, e)=>$emit(TreeEvent.ChildCheckboxChange, t, c, e)"
                       @treeNodeRadioChange="(t, e)=>$emit(TreeEvent.RadioChange, t, e)"
                       @treeNodeExpandedChange="(t, e)=>$emit(TreeEvent.ExpandedChange, t, e)"
                       @treeNodeChildrenLoad="(t, e)=>$emit(TreeEvent.ChildrenLoad, t, e)"
@@ -277,6 +278,7 @@ const emit = defineEmits([
   TreeEvent.Add,
   TreeEvent.Click,
   TreeEvent.CheckboxChange,
+  TreeEvent.ChildCheckboxChange,
   TreeEvent.ChildrenLoad,
   TreeEvent.Delete,
   TreeEvent.DoubleClick,
@@ -528,6 +530,20 @@ function handleChildDeletion(node, event) {
   }
 
   emit(TreeEvent.Delete, node, event);
+}
+
+/**
+ * Emits the treeNodeCheckboxChange event, and if the event is for
+ * a direct child then it also emits the treeNodeChildCheckboxChange event.
+ * @param {TreeViewNode} node The node on which the checkbox changed
+ * @param {Event} event The event that triggered the change
+ */
+function handleCheckboxChange(node, event) {
+  emit(TreeEvent.CheckboxChange, node, event);
+
+  if (children.value.includes(node)) {
+    emit(TreeEvent.ChildCheckboxChange, model.value, node, event);
+  }
 }
 
 // CREATION LOGIC
