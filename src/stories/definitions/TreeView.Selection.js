@@ -1,8 +1,8 @@
 import TreeView from '../../components/TreeView.vue';
 import selectionTreeData from "../data/selectionTreeViewData";
 
-const selectionTemplateHtml =
-`<label for="modeSelect">Selection Mode</label>
+const selectionTemplateHtml = `<span>
+<label for="modeSelect">Selection Mode</label>
 <select v-model="selectionMode" id="modeSelect" style="margin: 0 0 2rem 1rem;">
   <option value="single">Single</option>
   <option value="selectionFollowsFocus">Selection Follows Focus</option>
@@ -15,7 +15,8 @@ const selectionTemplateHtml =
   <ul id="selectedList">
     <li v-for="selectedNode in selectedNodes">{{ selectedNode.id }}</li>
   </ul>
-</section>`;
+</section>
+</span>`;
 
 const Template = (args) => ({
   components: { TreeView },
@@ -53,7 +54,7 @@ const docSourceCode = `
 </template>
 <script setup>
 import { ref } from "vue";
-import TreeView from "../../src/components/TreeView.vue";
+import { TreeView } from "@grapoza/vue-tree";
 import treeViewData from "../data/selectionTreeViewData";
 
 const tvModel = ref(treeViewData);

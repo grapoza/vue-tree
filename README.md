@@ -31,23 +31,44 @@ If you're using it in a .vue file:
   <tree-view  id="my-tree" :initial-model="dataModel"></tree-view>
 </template>
 
+// Options API
 <script>
 import { TreeView } from "@grapoza/vue-tree"
 
 export default {
   components: {
-	  TreeView
+    TreeView
   },
   data() {
     return {
       dataModel: [
-        {id: "numberOrString", label: "Root Node", children: [
-          {id: 1, label: "Child Node"},
-          {id: "node2", label: "Second Child"}]
-        }]
+        {
+          id: "numberOrString",
+          label: "Root Node",
+          children: [
+            {id: 1, label: "Child Node"},
+            {id: "node2", label: "Second Child"}
+          ]
+        }
+      ]
     }
   }
 }
+</script>
+
+// Composition API
+<script setup>
+import { TreeView } from "@grapoza/vue-tree"
+const dataModel = ref([
+  {
+    id: "numberOrString",
+    label: "Root Node",
+    children: [
+      {id: 1, label: "Child Node"},
+      {id: "node2", label: "Second Child"}
+    ]
+  }
+])
 </script>
 ```
 

@@ -6,7 +6,8 @@ const Template = (args) => ({
   setup() {
     return { args };
   },
-  template: `<tree-view v-bind="args">
+  template: `<span>
+  <tree-view v-bind="args">
   <template v-slot:loading-root>Root loading custom slot (Not used in this demo)</template>
   <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
     <label :for="inputId" :title="model.treeNodeSpec.title">
@@ -37,7 +38,8 @@ const Template = (args) => ({
       LOADING PLACHOLDER FOR CHILDREN OF {{ model[model.treeNodeSpec.labelProperty] }}. This is custom slot content.
     </span>
   </template>
-</tree-view>`
+</tree-view>
+</span>`
 });
 
 export const Slots = Template.bind({});
@@ -82,7 +84,7 @@ const docsSourceCode = `
 </template>
 <script setup>
 import { ref } from "vue";
-import TreeView from "../../src/components/TreeView.vue";
+import { TreeView } from "@grapoza/vue-tree";
 import treeViewData from "../data/basicTreeViewData";
 
 const tvModel = ref(treeViewData);

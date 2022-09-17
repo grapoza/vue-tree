@@ -6,13 +6,15 @@ const Template = (args) => ({
   setup() {
     return { args };
   },
-  template: `<tree-view v-bind="args" ref="treeViewRef"></tree-view>
+  template: `<span>
+<tree-view v-bind="args" ref="treeViewRef"></tree-view>
 <section class="checked-nodes">
   <button type="button" style="margin-top: 1rem" @click="refreshCheckedTvList">What's been checked?</button>
   <ul id="checkedList">
     <li v-for="checkedNode in checkedTvNodes">{{ checkedNode.id }}</li>
   </ul>
-</section>`,
+</section>
+</span>`,
   data() {
     return {
       checkedTvNodes: []
@@ -41,7 +43,7 @@ const docSourceCode = `
 </template>
 <script setup>
 import { ref } from "vue";
-import TreeView from "../../src/components/TreeView.vue";
+import { TreeView } from "@grapoza/vue-tree";
 import treeViewData from "../data/checkboxesTreeViewData";
 
 const modelDefaults = ref({
