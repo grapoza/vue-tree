@@ -50,6 +50,7 @@ If you're using it in a .vue file:
   <tree-view  id="my-tree" :initial-model="dataModel"></tree-view>
 </template>
 
+// Options API
 <script>
 import { TreeView } from "@grapoza/vue-tree"
 
@@ -72,6 +73,21 @@ export default {
     }
   }
 }
+</script>
+
+// Composition API
+<script setup>
+import { TreeView } from "@grapoza/vue-tree"
+const dataModel = ref([
+  {
+    id: "numberOrString",
+    label: "Root Node",
+    children: [
+      {id: 1, label: "Child Node"},
+      {id: "node2", label: "Second Child"}
+    ]
+  }
+])
 </script>
 ```
 
@@ -201,7 +217,7 @@ The properties below can be specified for each node. Note that `id`, `label`, an
 |:---------------------|:----------------|:---------------------------------------------------------------------------|:-----------------------------------|:---------|
 | id                   | Number/String   | An ID that uniquely identifies this node within the tree                   | -                                  | Yes      |
 | label                | String          | The text to show in the tree view                                          | -                                  | Yes      |
-| children             | Array\<Object\> | The child nodes of this node                                               | `[]`                               |          |
+| children             | Array<Object\>  | The child nodes of this node                                               | `[]`                               |          |
 | treeNodeSpec         | Object          | The object containing data about the node's capabilities and initial state | See next table                     |          |
 
 The `treeNodeSpec` property contains any data about the node's capabilities and its initial state. This keeps the tree-specific data separate from the data of the model itself. This makes it more convenient to drop data into the tree view as-is, potentially with a `modelDefaults` specified on the tree view to define common values used in the `treeNodeSpec` of every node.

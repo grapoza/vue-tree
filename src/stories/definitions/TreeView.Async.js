@@ -29,7 +29,7 @@ const docSourceCode = `
 </template>
 <script setup>
 import { ref } from "vue";
-import TreeView from "../../src/components/TreeView.vue";
+import { TreeView } from "@grapoza/vue-tree";
 
 const modelDefaults = ref({ loadChildrenAsync: loadChildrenCallback });
 

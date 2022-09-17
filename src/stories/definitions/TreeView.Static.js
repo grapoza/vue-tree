@@ -26,7 +26,7 @@ const docsSourceCode = `
 </template>
 <script setup>
 import { ref } from "vue";
-import TreeView from "../../src/components/TreeView.vue";
+import { TreeView } from "@grapoza/vue-tree";
 import treeViewData from "../data/staticTreeViewData";
 
 const modelDefaults = ref({

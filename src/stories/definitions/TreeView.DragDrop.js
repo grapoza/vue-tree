@@ -1,13 +1,14 @@
 import TreeView from '../../components/TreeView.vue';
 import dragDropTreeData from "../data/dragDropTreeViewData";
 
-const dragDropTemplateHtml =
-`<h2>Tree 1</h2>
+const dragDropTemplateHtml = `<span>
+<h2>Tree 1</h2>
 <tree-view :initial-model="args.initialModel.tree1Data" :model-defaults="args.modelDefaults"></tree-view>
 <h2>Tree 2</h2>
 <tree-view :initial-model="args.initialModel.tree2Data" :model-defaults="args.modelDefaults"></tree-view>
 <h2>Text Drop Target</h2>
-<textarea style="width: 90%" rows="10"></textarea>`;
+<textarea style="width: 90%" rows="10"></textarea>
+</span>`;
 
 const Template = (args) => ({
     components: { TreeView },
@@ -41,7 +42,7 @@ const docSourceCode = `
 </template>
 <script setup>
 import { ref } from "vue";
-import TreeView from "../../src/components/TreeView.vue";
+import { TreeView } from "@grapoza/vue-tree";
 import treeViewData from "../data/checkboxesTreeViewData";
 
 const modelDefaults = ref({
