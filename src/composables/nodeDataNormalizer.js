@@ -1,7 +1,10 @@
+import { effectAllowed as EffectAllowed } from '../enums/dragDrop.js'
 import InputType from '../enums/inputType';
 import { useObjectMethods } from './objectMethods.js';
 
 const { isProbablyObject } = useObjectMethods();
+
+const allowedEffectAllowedValues = [EffectAllowed.Copy, EffectAllowed.Move, EffectAllowed.CopyMove, EffectAllowed.None];
 
 export function useNodeDataNormalizer(model, modelDefaults, children, childrenPropName, label, radioGroupValues) {
 
@@ -47,6 +50,9 @@ export function useNodeDataNormalizer(model, modelDefaults, children, childrenPr
     }
     if (typeof tns.allowDrop !== 'boolean') {
       tns.allowDrop = false;
+    }
+    if (typeof tns.dataTransferEffectAllowed !== 'string' || !allowedEffectAllowedValues.includes(tns.dataTransferEffectAllowed)) {
+      tns.dataTransferEffectAllowed = EffectAllowed.CopyMove;
     }
     if (typeof tns.focusable !== 'boolean') {
       tns.focusable = false;

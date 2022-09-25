@@ -5,7 +5,7 @@ import { generateNodes } from '../data/node-generator.js';
 import { dropEffect as DropEffect, effectAllowed as EffectAllowed } from '../../src/enums/dragDrop';
 import MimeType from '../../src/enums/mimeType';
 
-const serializedNodeData = '{"id":"n0","label":"Node 0","children":[],"treeNodeSpec":{"childrenProperty":"children","idProperty":"id","labelProperty":"label","loadChildrenAsync":null,"expandable":false,"selectable":true,"deletable":false,"focusable":false,"input":{"type":"checkbox","name":"n0-cbx"},"state":{"expanded":false,"selected":false,"input":{"disabled":false,"value":false}},"addChildCallback":null,"draggable":false,"allowDrop":false,"title":null,"expanderTitle":null,"addChildTitle":null,"deleteTitle":null,"customizations":{},"_":{"dragging":false,"state":{"areChildrenLoaded":true,"areChildrenLoading":false}}}}';
+const serializedNodeData = '{"id":"n0","label":"Node 0","children":[],"treeNodeSpec":{"childrenProperty":"children","idProperty":"id","labelProperty":"label","loadChildrenAsync":null,"expandable":false,"selectable":true,"deletable":false,"focusable":false,"input":{"type":"checkbox","name":"n0-cbx"},"state":{"expanded":false,"selected":false,"input":{"disabled":false,"value":false}},"addChildCallback":null,"draggable":false,"allowDrop":false,"dataTransferEffectAllowed":"copyMove","title":null,"expanderTitle":null,"addChildTitle":null,"deleteTitle":null,"customizations":{},"_":{"dragging":false,"state":{"areChildrenLoaded":true,"areChildrenLoading":false}}}}';
 
 const getDefaultPropsData = function () {
   return {
@@ -76,34 +76,84 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
 
   describe('when a node is starting to get dragged', () => {
 
-    beforeEach(() => {
-      wrapper = createWrapper();
-      let node = wrapper.find('.grtvn-self');
-      node.trigger('dragstart', eventData);
+    describe('always', () => {
+
+      beforeEach(() => {
+        wrapper = createWrapper();
+        let node = wrapper.find('.grtvn-self');
+        node.trigger('dragstart', eventData);
+      });
+
+      it('should mark the node as being dragged', () => {
+        expect(wrapper.find('.grtvn-dragging').exists()).to.be.true;
+      });
+
+      it('should set the MimeType.TreeViewNode data to a wrapped serialized node', () => {
+        expect(eventData.dataTransfer.getData(MimeType.TreeViewNode)).to.equal(`{"treeId":"tree-id","data":${serializedNodeData}}`);
+      });
+
+      it('should set the MimeType.Json data to a wrapped serialized node', () => {
+        expect(eventData.dataTransfer.getData(MimeType.Json)).to.equal(serializedNodeData);
+      });
+
+      it('should set the MimeType.PlainText data to a wrapped serialized node', () => {
+        expect(eventData.dataTransfer.getData(MimeType.PlainText)).to.equal(serializedNodeData);
+      });
+
+      it('should set the focusable attribute to false for the serialized node', () => {
+        expect(eventData.dataTransfer.getData(MimeType.Json)).to.contain('"focusable":false');
+      });
     });
 
-    it('should mark the node as being dragged', () => {
-      expect(wrapper.find('.grtvn-dragging').exists()).to.be.true;
+    describe('and the node specifies an allowed dataTransferEffectAllowed property', () => {
+
+      beforeEach(() => {
+        const nodeModel = generateNodes(['ecs', ['ecs']])[0];
+        nodeModel.treeNodeSpec.dataTransferEffectAllowed = EffectAllowed.Move;
+        wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
+          initialModel: nodeModel
+        }));
+        let node = wrapper.find('.grtvn-self');
+        node.trigger('dragstart', eventData);
+      });
+
+      it('should set the event.dataTransfer.effectAllowed to that value', () => {
+        expect(eventData.dataTransfer.effectAllowed).to.equal(EffectAllowed.Move);
+      });
     });
 
-    it('should set the event.dataTransfer.effectAllowed to CopyMove', () => {
-      expect(eventData.dataTransfer.effectAllowed).to.equal(EffectAllowed.CopyMove);
+    describe('and the node specifies a disallowed dataTransferEffectAllowed property', () => {
+
+      beforeEach(() => {
+        const nodeModel = generateNodes(['ecs', ['ecs']])[0];
+        nodeModel.treeNodeSpec.dataTransferEffectAllowed = EffectAllowed.Link;
+        wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
+          initialModel: nodeModel
+        }));
+        let node = wrapper.find('.grtvn-self');
+        node.trigger('dragstart', eventData);
+      });
+
+      it('should set the event.dataTransfer.effectAllowed to CopyMove', () => {
+        expect(eventData.dataTransfer.effectAllowed).to.equal(EffectAllowed.CopyMove);
+      });
     });
 
-    it('should set the MimeType.TreeViewNode data to a wrapped serialized node', () => {
-      expect(eventData.dataTransfer.getData(MimeType.TreeViewNode)).to.equal(`{"treeId":"tree-id","data":${serializedNodeData}}`);
-    });
+    describe('and the node specifies an invalid dataTransferEffectAllowed property', () => {
 
-    it('should set the MimeType.Json data to a wrapped serialized node', () => {
-      expect(eventData.dataTransfer.getData(MimeType.Json)).to.equal(serializedNodeData);
-    });
+      beforeEach(() => {
+        const nodeModel = generateNodes(['ecs', ['ecs']])[0];
+        nodeModel.treeNodeSpec.dataTransferEffectAllowed = 'cow';
+        wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
+          initialModel: nodeModel
+        }));
+        let node = wrapper.find('.grtvn-self');
+        node.trigger('dragstart', eventData);
+      });
 
-    it('should set the MimeType.PlainText data to a wrapped serialized node', () => {
-      expect(eventData.dataTransfer.getData(MimeType.PlainText)).to.equal(serializedNodeData);
-    });
-
-    it('should set the focusable attribute to false for the serialized node', () => {
-      expect(eventData.dataTransfer.getData(MimeType.Json)).to.contain('"focusable":false');
+      it('should set the event.dataTransfer.effectAllowed to CopyMove', () => {
+        expect(eventData.dataTransfer.effectAllowed).to.equal(EffectAllowed.CopyMove);
+      });
     });
   });
 
