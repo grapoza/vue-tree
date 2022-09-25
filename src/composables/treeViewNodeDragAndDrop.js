@@ -1,7 +1,6 @@
 import MimeType from '../enums/mimeType.js';
 import {
   dropEffect as DropEffect,
-  effectAllowed as EffectAllowed,
   targetZone as TargetZone
 } from '../enums/dragDrop.js';
 import TvEvent from '../enums/event.js';
@@ -70,7 +69,7 @@ export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
 
     tns._.dragging = true;
 
-    event.dataTransfer.effectAllowed = EffectAllowed.CopyMove;
+    event.dataTransfer.effectAllowed = tns.dataTransferEffectAllowed;
     event.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"${treeId.value}","data":${serialized}}`);
     event.dataTransfer.setData(MimeType.Json, serialized);
     event.dataTransfer.setData(MimeType.PlainText, serialized);
