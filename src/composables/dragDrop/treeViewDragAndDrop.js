@@ -1,20 +1,22 @@
-import { dropEffect as DropEffect, targetZone as TargetZone } from '../enums/dragDrop.js';
-import { useObjectMethods } from './objectMethods.js';
-import { useIdGeneration } from './idGeneration.js'
+import { dropEffect as DropEffect, targetZone as TargetZone } from '../../enums/dragDrop.js';
+import { useObjectMethods } from '../objectMethods.js';
+import { useIdGeneration } from '../idGeneration.js'
+import { useFocus } from '../focus/focus.js';
 
 const { resolveNodeIdConflicts } = useIdGeneration();
 const { cheapCopyObject } = useObjectMethods();
+const { unfocus } = useFocus();
 
-export function useTreeViewDragAndDrop(model, uniqueId, findById, removeById) {
+export function useTreeViewDragAndDrop(treeModel, uniqueId, findById, removeById) {
   /**
    * Removes the given node from this node's children
    * after a drag-and-drop move operation between trees.
    * @param {Object} node The data for the moved node
    */
   function dragMoveNode(node) {
-    const targetIndex = model.value.indexOf(node);
+    const targetIndex = treeModel.value.indexOf(node);
     if (targetIndex > -1) {
-      model.value.splice(targetIndex, 1);
+      treeModel.value.splice(targetIndex, 1);
     }
   }
 
@@ -42,7 +44,7 @@ export function useTreeViewDragAndDrop(model, uniqueId, findById, removeById) {
         resolveNodeIdConflicts(node, uniqueId.value);
 
         // Force the copied node to not be focusable, in case the dragged node was.
-        node.treeNodeSpec.focusable = false;
+        unfocus(node);
       }
     }
     else {
@@ -54,7 +56,7 @@ export function useTreeViewDragAndDrop(model, uniqueId, findById, removeById) {
     if (node) {
       // If there's no sibling nodes in the event, use the top level.
       // Use that to find the target node's index (i.e. the drop location).
-      let siblings = eventData.siblingNodeSet || model.value;
+      let siblings = eventData.siblingNodeSet || treeModel.value;
       let targetIndex = siblings.indexOf(eventData.targetModel);
 
       // Add the node into the new position

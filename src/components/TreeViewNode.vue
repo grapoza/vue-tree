@@ -7,19 +7,19 @@
       ref="nodeElement"
       class="grtvn"
       :class="[customClasses.treeViewNode,
-               tns._.dragging ? 'grtvn-dragging' : '']"
+      tns._.dragging ? 'grtvn-dragging' : '']"
       role="treeitem"
-      :tabindex="ariaTabIndex"
+      :tabindex="tabIndex"
       :aria-expanded="ariaExpanded"
       :aria-selected="ariaSelected"
       @keydown="onKeyDown">
 
     <div class="grtvn-self"
          :class="[customClasses.treeViewNodeSelf,
-                  isEffectivelySelected ? 'grtvn-self-selected' : '',
-                  isEffectivelySelected ? customClasses.treeViewNodeSelfSelected : '',
-                  tns._.isDropTarget ? 'grtvn-self-drop-target': '',
-                  tns._.isChildDropTarget ? 'grtvn-self-child-drop-target': '']"
+         isEffectivelySelected ? 'grtvn-self-selected' : '',
+         isEffectivelySelected ? customClasses.treeViewNodeSelfSelected : '',
+         tns._.isDropTarget ? 'grtvn-self-drop-target': '',
+         tns._.isChildDropTarget ? 'grtvn-self-child-drop-target': '']"
          :draggable="tns.draggable"
          :dragging="tns._.dragging"
          @click="onClick"
@@ -44,9 +44,9 @@
               :title="tns.expanderTitle"
               class="grtvn-self-expander"
               :class="[customClasses.treeViewNodeSelfExpander,
-                       tns.state.expanded ? 'grtvn-self-expanded' : '',
-                       tns.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
-              @click="onExpandedChange">
+              tns.state.expanded ? 'grtvn-self-expanded' : '',
+              tns.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
+              @click="toggleNodeExpanded">
               <i class="grtvn-self-expanded-indicator"
                  :class="customClasses.treeViewNodeSelfExpandedIndicator"></i></button>
       <span v-else
@@ -131,7 +131,7 @@
               :title="tns.addChildTitle"
               class="grtvn-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfAddChild]"
-              @click="onAddChild">
+              @click="addChild">
         <i class="grtvn-self-add-child-icon"
             :class="customClasses.treeViewNodeSelfAddChildIcon"></i>
       </button>
@@ -175,7 +175,7 @@
           role="group"
           :aria-hidden="!tns.state.expanded">
         <TreeViewNode v-for="nodeModel in children"
-                      :key="nodeModel[tns && tns.idProperty ? tns.idProperty : 'id']"
+                      :key="nodeModel[nodeModel.treeNodeSpec?.idProperty ?? 'id']"
                       :depth="depth + 1"
                       :initial-model="nodeModel"
                       :model-defaults="modelDefaults"
@@ -190,17 +190,17 @@
                       @treeNodeCheckboxChange="handleCheckboxChange"
                       @treeNodeChildCheckboxChange="(t, c, e)=>$emit(TreeEvent.ChildCheckboxChange, t, c, e)"
                       @treeNodeRadioChange="(t, e)=>$emit(TreeEvent.RadioChange, t, e)"
-                      @treeNodeExpandedChange="(t, e)=>$emit(TreeEvent.ExpandedChange, t, e)"
-                      @treeNodeChildrenLoad="(t, e)=>$emit(TreeEvent.ChildrenLoad, t, e)"
-                      @treeNodeSelectedChange="(t, e)=>$emit(TreeEvent.SelectedChange, t, e)"
-                      @treeNodeAdd="(t, p, e)=>$emit(TreeEvent.Add, t, p, e)"
+                      @treeNodeExpandedChange="(t)=>$emit(TreeEvent.ExpandedChange, t)"
+                      @treeNodeChildrenLoad="(t)=>$emit(TreeEvent.ChildrenLoad, t)"
+                      @treeNodeSelectedChange="(t)=>$emit(TreeEvent.SelectedChange, t)"
+                      @treeNodeAdd="(t, p)=>$emit(TreeEvent.Add, t, p)"
                       @treeNodeDelete="handleChildDeletion"
                       @treeNodeAriaFocusableChange="(t)=>$emit(TreeEvent.FocusableChange, t)"
-                      @treeNodeAriaRequestParentFocus="()=>focusNode(model)"
+                      @treeNodeAriaRequestParentFocus="()=>focusNode()"
                       @treeNodeAriaRequestFirstFocus="()=>$emit(TreeEvent.RequestFirstFocus)"
                       @treeNodeAriaRequestLastFocus="()=>$emit(TreeEvent.RequestLastFocus)"
-                      @treeNodeAriaRequestPreviousFocus="handlePreviousFocus"
-                      @treeNodeAriaRequestNextFocus="handleNextFocus"
+                      @treeNodeAriaRequestPreviousFocus="focusPreviousNode"
+                      @treeNodeAriaRequestNextFocus="focusNextNode"
                       @treeNodeDragMove="dragMoveChild"
                       @treeNodeDrop="drop">
           <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
@@ -223,13 +223,16 @@
 
 <script setup>
 
-import { computed, ref, watch } from 'vue'
+import { computed, ref, toRef } from 'vue'
 import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer.js';
-import { useTreeViewNodeAria } from '../composables/treeViewNodeAria.js';
-import { useTreeViewNodeDragAndDrop } from '../composables/treeViewNodeDragAndDrop.js';
-import {  useTreeViewFocus } from '../composables/treeViewFocus.js';
-import SelectionMode from '../enums/selectionMode';
-import TreeEvent from '../enums/event';
+import { useTreeViewNodeChildren } from '../composables/children/treeViewNodeChildren.js';
+import { useTreeViewNodeDragAndDrop } from '../composables/dragDrop/treeViewNodeDragAndDrop.js';
+import { useFocus } from '../composables/focus/focus.js';
+import { useTreeViewNodeFocus } from '../composables/focus/treeViewNodeFocus.js';
+import { useTreeViewNodeSelection } from '../composables/selection/treeViewNodeSelection.js';
+import { useTreeViewNodeExpansion } from '../composables/expansion/treeViewNodeExpansion.js';
+import SelectionMode from '../enums/selectionMode.js';
+import TreeEvent from '../enums/event.js';
 
 // PROPS
 
@@ -307,61 +310,25 @@ const nodeElement = ref(null); // template ref
 
 const addChildId = computed(() => `${nodeId.value}-add-child`);
 
-const areChildrenLoaded = computed(() => typeof tns.value.loadChildrenAsync !== 'function' || tns.value._.state.areChildrenLoaded);
+const tabIndex = computed(() => isFocusedNode() ? 0 : -1);
 
-const ariaExpanded = computed(() => canExpand.value ? tns.value.state.expanded : null);
-
-const ariaSelected = computed(() => {
-  // If selection isn't allowed, don't add an aria-selected attribute.
-  // If the tree contains nodes that are not selectable, those nodes do not have the aria-selected state.
-  if (props.selectionMode === SelectionMode.None || !tns.value.selectable) {
-    return null;
-  }
-
-  // https://www.w3.org/TR/wai-aria-practices-1.1/#tree_roles_states_props
-  // If the tree does not support multiple selection, aria-selected is set to true
-  // for the selected node and it is not present on any other node in the tree.
-  if (props.selectionMode !== SelectionMode.Multiple) {
-    return tns.value.state.selected ? true : null;
-  }
-
-  // If the tree supports multiple selection:
-  //   All selected nodes have aria-selected set to true.
-  //   All nodes that are selectable but not selected have aria-selected set to false.
-  return tns.value.state.selected;
-});
-
-const canExpand = computed(() => {
-  // A node can be expanded if it is expandable and either has children or has not
-  // yet had the asynchronous loader for children called.
-  return mayHaveChildren.value && tns.value.expandable;
-});
-
-const children = computed(() => model.value[childrenPropName.value]);
-
-const childrenPropName = computed(() => tns.value.childrenProperty || 'children');
-
-const customClasses = computed(() => (tns.value.customizations || {}).classes || {});
+const customClasses = computed(() => tns.value.customizations?.classes ?? {});
 
 const deleteId = computed(() => `${nodeId.value}-delete`);
 
 const expanderId = computed(() => `${nodeId.value}-exp`);
 
-const hasChildren = computed(() => children.value && children.value.length > 0);
-
 const id = computed(() => model.value[idPropName.value]);
 
-const idPropName = computed(() => tns.value.idProperty || 'id');
+const idPropName = computed(() => tns.value.idProperty ?? 'id');
 
 const inputId = computed(() => `${nodeId.value}-input`);
 
-const isEffectivelySelected = computed(() => props.selectionMode !== SelectionMode.None && tns.value.selectable && tns.value.state.selected);
+const isEffectivelySelected = computed(() => props.selectionMode !== SelectionMode.None && isNodeSelectable() && isNodeSelected());
 
 const label = computed(() => model.value[labelPropName.value]);
 
-const labelPropName = computed(() => tns.value.labelProperty || 'label');
-
-const mayHaveChildren = computed(() => hasChildren.value || !areChildrenLoaded.value);
+const labelPropName = computed(() => tns.value.labelProperty ?? 'label');
 
 const nodeId = computed(() => `${props.treeId}-${id.value}`);
 
@@ -371,18 +338,47 @@ const treeId = computed(() => props.treeId);
 
 // COMPOSABLES
 
-const { normalizeNodeData } = useNodeDataNormalizer(model, props.modelDefaults, children, childrenPropName, label, radioGroupValues);
+const { normalizeNodeData } = useNodeDataNormalizer(model, props.modelDefaults, radioGroupValues);
 
 normalizeNodeData();
 
 const {
-  ariaTabIndex,
-  handleChildDeletion: handleChildDeletionAria,
-  onClick: onClickAria,
-  onKeyDown,
-  handlePreviousFocus,
-  handleNextFocus
-} = useTreeViewNodeAria(props.ariaKeyMap, model, children, mayHaveChildren, canExpand, nodeElement, onDelete, toggleSelected, onExpandedChange, onAddChild, emit);
+  addChild,
+  areChildrenLoaded,
+  areChildrenLoading,
+  children,
+  deleteChild,
+  hasChildren,
+  mayHaveChildren,
+} = useTreeViewNodeChildren(model, emit);
+
+const {
+  focus,
+  isFocused,
+} = useFocus();
+
+const {
+  focusNode,
+  focusNextNode,
+  focusPreviousNode,
+  isFocusedNode
+} = useTreeViewNodeFocus(model, nodeElement, emit, toRef(props, "isMounted"));
+
+const {
+  ariaSelected,
+  isNodeSelectable,
+  isNodeSelected,
+  toggleNodeSelected,
+} = useTreeViewNodeSelection(model, toRef(props, "selectionMode"), emit);
+
+const {
+  ariaExpanded,
+  canExpand,
+  collapseNode,
+  expandNode,
+  isNodeExpanded,
+  toggleNodeExpanded,
+} = useTreeViewNodeExpansion(model, emit);
 
 const {
   dragMoveChild,
@@ -393,11 +389,7 @@ const {
   onDragleave,
   onDrop,
   onDragend
-} = useTreeViewNodeDragAndDrop(model, children, treeId, emit)
-
-const {
-  focusNode
-} = useTreeViewFocus();
+} = useTreeViewNodeDragAndDrop(model, children, treeId, emit);
 
 // METHODS
 
@@ -420,47 +412,6 @@ function onRadioChange(event) {
 }
 
 /**
- * Expand the children of this node, starting an asynchronous load if needed.
- * Emits a treeNodeExpandedChange event. When children are loaded asynchronously,
- * Emits a treeNodeChildrenLoad event.
- * @param {Event} event The event that triggered the expansion toggle
- */
-async function onExpandedChange(event) {
-  let spec = tns.value;
-
-  // First expand the node (to show either children or a "loading" indicator)
-  spec.state.expanded = !spec.state.expanded;
-  emit(TreeEvent.ExpandedChange, model.value, event);
-
-  // If children need to be loaded asynchronously, load them.
-  if (spec.state.expanded && !spec._.state.areChildrenLoaded && !spec._.state.areChildrenLoading) {
-
-    spec._.state.areChildrenLoading = true;
-    var childrenResult = await spec.loadChildrenAsync(model.value);
-
-    if (childrenResult) {
-      spec._.state.areChildrenLoaded = true;
-      children.value.splice(0, children.value.length, ...childrenResult);
-      emit(TreeEvent.ChildrenLoad, model.value, event);
-    }
-
-    spec._.state.areChildrenLoading = false;
-  }
-}
-
-/**
- * Handle toggling the selected state for this node for Single and Multiple selection modes.
- * Note that for SelectionFollowsFocus mode the selection change is already handled by the
- * "model.treeNodeSpec.focusable" watcher method in TreeViewNodeAria.
- * @param {Event} event The event that triggered the selection toggle
- */
-function toggleSelected(event) {
-  if (tns.value.selectable && [SelectionMode.Single, SelectionMode.Multiple].includes(props.selectionMode)) {
-    tns.value.state.selected = !tns.value.state.selected;
-  }
-}
-
-/**
  * Handles clicks on the node. It only performs actions if the click happened on an element
  * that does not have node clicks explicitly ingored (e.g., the expander button).
  * Emits a treeNodeClick event.
@@ -470,10 +421,10 @@ function onClick(event) {
   // Don't fire this if the target is an element which has its own events
   if (!event.target.matches(elementsThatIgnoreClicks)) {
     emit(TreeEvent.Click, model.value, event);
-    toggleSelected(event);
+    toggleNodeSelected();
   }
 
-  onClickAria();
+  focusNode();
 }
 
 /**
@@ -489,26 +440,104 @@ function onDblclick(event) {
   }
 }
 
-/**
- * Add a child node to the end of the child nodes list. The child node data is
- * supplied by an async callback which is the addChildCallback parameter of this node's model.
- * Emits a treeNodeAdd if a node is added
- * @param {Event} event The event that triggered the add
- */
-async function onAddChild(event) {
-  if (tns.value.addChildCallback) {
-    var childModel = await tns.value.addChildCallback(model.value);
-
-    if (childModel) {
-      children.value.push(childModel);
-      emit(TreeEvent.Add, childModel, model.value, event);
-    }
+function onDelete(event) {
+  if (tns.value.deletable) {
+    emit(TreeEvent.Delete, model.value);
   }
 }
 
-function onDelete(event) {
-  if (tns.value.deletable) {
-    emit(TreeEvent.Delete, model.value, event);
+/**
+ * Handles key events to trigger interactions such as selection, expansion,
+ * or activation. Each interaction is detailed in the method body.
+ * @param {Event} event The keydown event
+ */
+function onKeyDown(event) {
+  let eventHandled = true;
+
+  // Do nothing when modifiers or shift are present.
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shift) {
+    return;
+  }
+
+  if (props.ariaKeyMap.activateItem.includes(event.keyCode)) {
+    // Performs the default action (e.g. onclick event) for the focused node.
+    // Note that splitting activation and selection so explicitly differs from
+    // https://www.w3.org/TR/wai-aria-practices-1.1/#keyboard-interaction-22 (Enter description, and Selection in multi-select trees)
+    if (tns.value.input && !tns.value.state.input.disabled) {
+      let tvns = nodeElement.value.querySelector('.grtvn-self');
+      let target = tvns.querySelector('.grtvn-self-input') || tvns.querySelector('input');
+
+      if (target) {
+        // Note: until there's a need, this just dumbly clicks the .t-v-n-s-i or first input if it exists.
+        let clickEvent = new MouseEvent('click', { view: window, bubbles: true, cancelable: true });
+        target.dispatchEvent(clickEvent);
+      }
+    }
+  }
+  else if (props.ariaKeyMap.selectItem.includes(event.keyCode)) {
+    // Toggles selection for the focused node.
+    // Note that splitting activation and selection so explicitly differs from
+    // https://www.w3.org/TR/wai-aria-practices-1.1/#keyboard-interaction-22 (Enter description, and Selection in multi-select trees)
+    toggleNodeSelected();
+  }
+  else if (props.ariaKeyMap.expandFocusedItem.includes(event.keyCode)) {
+    // When focus is on a closed node, opens the node; focus does not move.
+    // When focus is on a open node, moves focus to the first child node.
+    // When focus is on an end node, does nothing.
+    if (mayHaveChildren.value && !areChildrenLoading.value) {
+      if (!expandNode() && isNodeExpanded()) {
+        focus(children.value[0]);
+      }
+    }
+  }
+  else if (props.ariaKeyMap.collapseFocusedItem.includes(event.keyCode)) {
+    // When focus is on an open node, closes the node.
+    // When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
+    // When focus is on a root node that is also either an end node or a closed node, does nothing.
+    if (!collapseNode()) {
+      // Parent handles setting its own focusability.
+      emit(TreeEvent.RequestParentFocus);
+    }
+  }
+  else if (props.ariaKeyMap.focusFirstItem.includes(event.keyCode)) {
+    // Moves focus to first node without opening or closing a node.
+    // The actual change on the desired node model is handled at the TreeView level.
+    emit(TreeEvent.RequestFirstFocus);
+  }
+  else if (props.ariaKeyMap.focusLastItem.includes(event.keyCode)) {
+    // Moves focus to the last node that can be focused without expanding any nodes that are closed.
+    // The actual change on the desired node model is handled at the TreeView level.
+    emit(TreeEvent.RequestLastFocus);
+  }
+  else if (props.ariaKeyMap.focusPreviousItem.includes(event.keyCode)) {
+    // Moves focus to the previous node that is focusable without opening or closing a node.
+    // If focus is on the first node, does nothing
+    // Parent handles setting focusability on a sibling (or child thereof) of this node, or itself.
+    emit(TreeEvent.RequestPreviousFocus, model.value);
+  }
+  else if (props.ariaKeyMap.focusNextItem.includes(event.keyCode)) {
+    // Moves focus to the next node that is focusable without opening or closing a node.
+    // If focus is on the last node, does nothing.
+    // Parent handles setting focusability on a sibling of this node, or its first child.
+    emit(TreeEvent.RequestNextFocus, model.value, false);
+  }
+  else if (props.ariaKeyMap.insertItem.includes(event.keyCode)) {
+    // Trigger insertion of a new child item if allowed.
+    // Focus is not moved.
+    addChild();
+  }
+  else if (props.ariaKeyMap.deleteItem.includes(event.keyCode)) {
+    // Trigger deletion of the current node if allowed.
+    // Focus is moved to the previous node if available, or the next node.
+    onDelete(event);
+  }
+  else {
+    eventHandled = false;
+  }
+
+  if (eventHandled) {
+    event.stopPropagation();
+    event.preventDefault();
   }
 }
 
@@ -517,19 +546,26 @@ function onDelete(event) {
  * Note that only the node that was deleted fires these, not any subnode, so
  * this comes from a request from the child node for this node to delete it.
  * This emits the treeNodeDelete event.
- * @param node {TreeViewNode} The node to remove
- * @param event {Event} The initial event that triggered the deletion
+ * @param {TreeViewNode} node The node to remove
  */
-function handleChildDeletion(node, event) {
+function handleChildDeletion(node) {
   // Remove the node from the array of children if this is an immediate child.
   // Note that only the node that was deleted fires these, not any subnode.
   let targetIndex = children.value.indexOf(node);
   if (targetIndex > -1) {
-    handleChildDeletionAria(node);
-    children.value.splice(targetIndex, 1);
-  }
+    if (isFocused(node)) {
+      // When this is the first of several siblings, focus the next node.
+      // Otherwise, focus the previous node.
+      if (children.value.length > 1 && children.value.indexOf(node) === 0) {
+        focusNextNode(node);
+      }
+      else {
+        focusPreviousNode(node);
+      }
+    }
 
-  emit(TreeEvent.Delete, node, event);
+    deleteChild(node);
+  }
 }
 
 /**
@@ -558,28 +594,6 @@ if (!id.value || (typeof id.value !== 'number' && typeof id.value !== 'string'))
 if (!label.value || typeof label.value !== 'string') {
   console.error(`initialModel label is required and must be a string. Expected prop ${labelPropName.value} to exist on the model.`);
 }
-
-// WATCHERS
-
-watch(() => model.value.treeNodeSpec.state.selected, function () {
-  emit(TreeEvent.SelectedChange, model.value);
-});
-
-watch(() => tns.value.focusable, function (newValue) {
-  if (newValue === true) {
-    // If focusable is set to true and the tree is mounted in the DOM,
-    // also focus the node's element.
-    if (props.isMounted) {
-      nodeElement.value.focus();
-    }
-    emit(TreeEvent.FocusableChange, model.value);
-  }
-
-  // In selectionFollowsFocus selection mode, this focus watch is responsible for updating selection.
-  if (tns.value.selectable && props.selectionMode === SelectionMode.SelectionFollowsFocus) {
-    tns.value.state.selected = newValue;
-  }
-});
 
 </script>
 

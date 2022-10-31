@@ -1,11 +1,11 @@
 import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
-import TreeViewNode from '../../src/components/TreeViewNode.vue';
-import { generateNodes } from '../data/node-generator.js';
-import { dropEffect as DropEffect, effectAllowed as EffectAllowed } from '../../src/enums/dragDrop';
-import MimeType from '../../src/enums/mimeType';
+import TreeViewNode from '../../components/TreeViewNode.vue';
+import { generateNodes } from '../../../tests/data/node-generator.js';
+import { dropEffect as DropEffect, effectAllowed as EffectAllowed } from '../../enums/dragDrop';
+import MimeType from '../../enums/mimeType';
 
-const serializedNodeData = '{"id":"n0","label":"Node 0","children":[],"treeNodeSpec":{"childrenProperty":"children","idProperty":"id","labelProperty":"label","loadChildrenAsync":null,"expandable":false,"selectable":true,"deletable":false,"focusable":false,"input":{"type":"checkbox","name":"n0-cbx"},"state":{"expanded":false,"selected":false,"input":{"disabled":false,"value":false}},"addChildCallback":null,"draggable":false,"allowDrop":false,"dataTransferEffectAllowed":"copyMove","title":null,"expanderTitle":null,"addChildTitle":null,"deleteTitle":null,"customizations":{},"_":{"dragging":false,"state":{"areChildrenLoaded":true,"areChildrenLoading":false}}}}';
+const serializedNodeData = '{"id":"n0","label":"Node 0","children":[],"treeNodeSpec":{"_":{"dragging":false,"state":{"areChildrenLoaded":true,"areChildrenLoading":false}},"childrenProperty":"children","idProperty":"id","labelProperty":"label","loadChildrenAsync":null,"expandable":false,"selectable":true,"deletable":false,"focusable":false,"input":{"type":"checkbox","name":"n0-cbx"},"state":{"expanded":false,"selected":false,"input":{"disabled":false,"value":false}},"addChildCallback":null,"draggable":false,"allowDrop":false,"dataTransferEffectAllowed":"copyMove","title":null,"expanderTitle":null,"addChildTitle":null,"deleteTitle":null,"customizations":{}}}';
 
 const getDefaultPropsData = function () {
   return {
@@ -280,13 +280,13 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       describe('and the event occurs on the next node target', () => {
 
         beforeEach(async () => {
-          let node = wrapper.find('.grtvn-self-prev-target');
+          let node = wrapper.find('.grtvn-self-next-target');
           node.trigger('dragover', eventData);
           await wrapper.vm.$nextTick();
         });
 
         it('should mark the next drop target as an affected drop target', () => {
-          expect(wrapper.find('.grtvn-self-prev-target.grtvn-self-sibling-drop-target-hover').exists()).to.be.true;
+          expect(wrapper.find('.grtvn-self-next-target.grtvn-self-sibling-drop-target-hover').exists()).to.be.true;
         });
       });
     });

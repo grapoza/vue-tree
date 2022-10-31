@@ -19,9 +19,11 @@ import InputType from '../../src/enums/inputType';
  * A node that allows adds will use the addChildCallback function passed to generateNodes.
  * A node that loads children asynchronously will use the loadChildrenAsync function passed to generateNodes.
  *
- * @param {Array<String, Array>} nodeSpec The node specification array.
+ * @param {Array<String|Array>} nodeSpec The node specification array.
  * @param {String} baseId The base string used in the node IDs.
  * @param {Function} addChildCallback A method that returns a Promise that resolves to the node data to add as a subnode.
+ * @param {Function} loadChildrenAsync A method tha treturns a Promise that resolves to child nodes to set as the children.
+ * @returns {TreeViewNode[]} The requested nodes
  */
 export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, loadChildrenAsync = null) {
     let nodes = [];
@@ -44,6 +46,11 @@ export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, lo
                 label: 'Node ' + index,
                 children: [],
                 treeNodeSpec: {
+                    _: {
+                        state: {
+                            areChildrenLoaded: loadChildrenAsync === null
+                        }
+                    },
                     childrenProperty: 'children',
                     idProperty: 'id',
                     labelProperty: 'label',

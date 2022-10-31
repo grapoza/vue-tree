@@ -23,9 +23,9 @@ export function useIdGeneration() {
    */
   function resolveNodeIdConflicts(data, treeId) {
 
-    let idProp = data.treeNodeSpec.idProperty;
-    let nodeId = data[idProp];
-    let children = data[data.treeNodeSpec.childrenProperty];
+    const idProp = data.treeNodeSpec.idProperty;
+    const nodeId = data[idProp];
+    const children = data[data.treeNodeSpec.childrenProperty];
 
     // Copy and move need to set a new, unique Node ID.
     // This is a brute force test to find one that isn't in use.

@@ -1,9 +1,9 @@
 import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
-import TreeView from '../../src/components/TreeView.vue';
-import TreeViewNode from '../../src/components/TreeViewNode.vue';
-import { generateNodes } from '../data/node-generator.js';
-import { dropEffect as DropEffect } from '../../src/enums/dragDrop';
+import TreeView from '../../components/TreeView.vue';
+import TreeViewNode from '../../components/TreeViewNode.vue';
+import { generateNodes } from '../../../tests/data/node-generator.js';
+import { dropEffect as DropEffect } from '../../enums/dragDrop';
 
 const getDefaultPropsData = function () {
   return {

@@ -38,7 +38,7 @@ ClassCustomization.args = {
 let classChildCounter = 0;
 async function addChildCallback(parentModel) {
   classChildCounter++;
-  return Promise.resolve({ id: `customization-class-child-node${this.childCounter}`, label: `Added Child ${this.childCounter} of ${parentModel.id}`, treeNodeSpec: { deletable: true } });
+  return Promise.resolve({ id: `customization-class-child-node${classChildCounter}`, label: `Added Child ${classChildCounter} of ${parentModel.id}`, treeNodeSpec: { deletable: true } });
 }
 
 const docClassSourceCode = `
@@ -77,7 +77,7 @@ const modelDefaults = ref({
 let classChildCounter = 0;
 async function addChildCallback(parentModel) {
   classChildCounter++;
-  return Promise.resolve({ id: \`customization-class- child - node\${ this.childCounter } \`, label: \`Added Child \${ this.childCounter } of \${ parentModel.id }\`, treeNodeSpec: { deletable: true } });
+  return Promise.resolve({ id: \`customization-class- child - node\${ classChildCounter } \`, label: \`Added Child \${ classChildCounter } of \${ parentModel.id }\`, treeNodeSpec: { deletable: true } });
 }
 
 </script>`;
