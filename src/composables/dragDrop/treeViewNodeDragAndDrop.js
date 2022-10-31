@@ -1,14 +1,17 @@
-import MimeType from '../enums/mimeType.js';
+import MimeType from '../../enums/mimeType.js';
 import {
   dropEffect as DropEffect,
   targetZone as TargetZone
-} from '../enums/dragDrop.js';
-import TvEvent from '../enums/event.js';
-import { useDomMethods } from './domMethods.js'
+} from '../../enums/dragDrop.js';
+import TvEvent from '../../enums/event.js';
+import { useDomMethods } from '../domMethods.js'
+import { useFocus } from '../focus/focus.js';
 
 const { closest } = useDomMethods();
 
 export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
+
+  const { unfocus } = useFocus();
 
   const tns = model.value.treeNodeSpec;
 
@@ -64,7 +67,7 @@ export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
     // that should not be included when the data is dropped in a different tree
     // (same-tree drops use the original node data)
     let serialized = JSON.parse(JSON.stringify(model.value));
-    serialized.treeNodeSpec.focusable = false;
+    unfocus(serialized);
     serialized = JSON.stringify(serialized);
 
     tns._.dragging = true;

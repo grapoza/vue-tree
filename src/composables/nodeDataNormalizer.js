@@ -1,3 +1,4 @@
+import { unref } from 'vue';
 import { effectAllowed as EffectAllowed } from '../enums/dragDrop.js'
 import InputType from '../enums/inputType';
 import { useObjectMethods } from './objectMethods.js';
@@ -6,11 +7,10 @@ const { isProbablyObject } = useObjectMethods();
 
 const allowedEffectAllowedValues = [EffectAllowed.Copy, EffectAllowed.Move, EffectAllowed.CopyMove, EffectAllowed.None];
 
-export function useNodeDataNormalizer(model, modelDefaults, children, childrenPropName, label, radioGroupValues) {
+export function useNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
 
   /**
    * Normalizes the data model to the format consumable by TreeViewNode.
-   * TODO Make this just take a spec and update it/return it?
    */
   function normalizeNodeData() {
 
@@ -20,7 +20,7 @@ export function useNodeDataNormalizer(model, modelDefaults, children, childrenPr
 
     const tns = model.value.treeNodeSpec;
 
-    assignDefaultProps(modelDefaults, tns);
+    assignDefaultProps(unref(modelDefaults), tns);
 
     // Set expected properties if not provided
     if (typeof tns.childrenProperty !== 'string') {
@@ -33,8 +33,8 @@ export function useNodeDataNormalizer(model, modelDefaults, children, childrenPr
       tns.labelProperty = 'label';
     }
 
-    if (!Array.isArray(children.value)) {
-      model.value[childrenPropName.value] = [];
+    if (!Array.isArray(model.value[tns.childrenProperty])) {
+      model.value[tns.childrenProperty] = [];
     }
     if (typeof tns.expandable !== 'boolean') {
       tns.expandable = true;
@@ -153,7 +153,7 @@ export function useNodeDataNormalizer(model, modelDefaults, children, childrenPr
           input.name = 'unspecifiedRadioName';
         }
         if (typeof input.value !== 'string' || input.value.trim().length === 0) {
-          input.value = label.value.replace(/[\s&<>"'\/]/g, '');
+          input.value = model.value[tns.labelProperty].replace(/[\s&<>"'\/]/g, '');
         }
         if (!radioGroupValues.value.hasOwnProperty(input.name)) {
           radioGroupValues.value[input.name] = '';

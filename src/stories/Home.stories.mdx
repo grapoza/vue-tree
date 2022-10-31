@@ -292,16 +292,16 @@ If specified, the `modelDefaults` property of the TreeView will be merged with n
 
 | Event                       | Description                                                    | Handler Parameters                                                     |
 |:----------------------------|:---------------------------------------------------------------|:-----------------------------------------------------------------------|
-| treeNodeAdd                 | Emitted when a node is added                                   | `target` The model of the target (child) node <br/> `parent` The model of the parent node <br/> `event` The original event |
+| treeNodeAdd                 | Emitted when a node is added                                   | `target` The model of the target (child) node <br/> `parent` The model of the parent node |
 | treeNodeClick               | Emitted when a node is clicked                                 | `target` The model of the target node <br/> `event` The original event |
 | treeNodeDblclick            | Emitted when a node is double clicked                          | `target` The model of the target node <br/> `event` The original event |
-| treeNodeDelete              | Emitted when a node is deleted                                 | `target` The model of the target node <br/> `event` The original event |
+| treeNodeDelete              | Emitted when a node is deleted                                 | `target` The model of the target node                                  |
 | treeNodeCheckboxChange      | Emitted when a node's checkbox emits a change event            | `target` The model of the target node <br/> `event` The original event |
 | treeNodeChildCheckboxChange | Emitted when a child node's checkbox emits a change event      | `target` The model of the target node (the parent of the changed node) <br/> `child` The model of changed node <br/> `event` The original event |
 | treeNodeRadioChange         | Emitted when a node's radio button emits a change event        | `target` The model of the target node <br/> `event` The original event |
-| treeNodeExpandedChange      | Emitted when a node is expanded or collapsed                   | `target` The model of the target node <br/> `event` The original event |
-| treeNodeSelectedChange      | Emitted when a node is selected or deselected                  | `target` The model of the target node <br/> `event` The original event |
-| treeNodeChildrenLoad        | Emitted when a node's children are done loading asynchronously | `target` The model of the target node <br/> `event` The original event |
+| treeNodeExpandedChange      | Emitted when a node is expanded or collapsed                   | `target` The model of the target node                                  |
+| treeNodeSelectedChange      | Emitted when a node is selected or deselected                  | `target` The model of the target node                                  |
+| treeNodeChildrenLoad        | Emitted when a node's children are done loading asynchronously | `target` The model of the target node                                  |
 | treeRootNodesLoad           | Emitted when the root nodes are done loading asynchronously    |                                                                        |
 
 ## CSS Classes

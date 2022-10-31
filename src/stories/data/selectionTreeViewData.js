@@ -18,6 +18,10 @@ export default [
           value: false,
           disabled: false
         }
+      },
+      addChildCallback: function () {
+        var entry = prompt("Give it a string.", "");
+        return Promise.resolve(entry ? { id: entry, label: entry, deletable: true, selectable: true } : null);
       }
     }
   },

@@ -8,7 +8,7 @@
     </slot>
     <ul class="grtv" role="tree" :aria-multiselectable="ariaMultiselectable" v-if="areNodesLoaded">
       <TreeViewNode v-for="(nodeModel) in model"
-        :key="nodeModel[nodeModel.treeNodeSpec && nodeModel.treeNodeSpec.idProperty ? nodeModel.treeNodeSpec.idProperty : 'id']"
+        :key="nodeModel[nodeModel.treeNodeSpec?.idProperty ?? 'id']"
         :aria-key-map="ariaKeyMap"
         :depth="0"
         :model-defaults="modelDefaults"
@@ -22,16 +22,16 @@
         @treeNodeCheckboxChange="(t, e)=>$emit(TreeEvent.CheckboxChange, t, e)"
         @treeNodeChildCheckboxChange="(t, c, e)=>$emit(TreeEvent.ChildCheckboxChange, t, c, e)"
         @treeNodeRadioChange="(t, e)=>$emit(TreeEvent.RadioChange, t, e)"
-        @treeNodeExpandedChange="(t, e)=>$emit(TreeEvent.ExpandedChange, t, e)"
-        @treeNodeChildrenLoad="(t, e)=>$emit(TreeEvent.ChildrenLoad, t, e)"
+        @treeNodeExpandedChange="(t)=>$emit(TreeEvent.ExpandedChange, t)"
+        @treeNodeChildrenLoad="(t)=>$emit(TreeEvent.ChildrenLoad, t)"
         @treeNodeSelectedChange="handleNodeSelectedChange"
-        @treeNodeAdd="(t, p, e)=>$emit(TreeEvent.Add, t, p, e)"
+        @treeNodeAdd="(t, p)=>$emit(TreeEvent.Add, t, p)"
         @treeNodeDelete="handleChildDeletion"
         @treeNodeAriaFocusableChange="handleFocusableChange"
-        @treeNodeAriaRequestFirstFocus="focusFirstNode"
-        @treeNodeAriaRequestLastFocus="focusLastNode"
-        @treeNodeAriaRequestPreviousFocus="handlePreviousFocus"
-        @treeNodeAriaRequestNextFocus="handleNextFocus"
+        @treeNodeAriaRequestFirstFocus="focusFirst(model)"
+        @treeNodeAriaRequestLastFocus="focusLast(model)"
+        @treeNodeAriaRequestPreviousFocus="(t) => focusPrevious(model, t)"
+        @treeNodeAriaRequestNextFocus="(t, f) => focusNext(model, t, f)"
         @treeNodeDragMove="dragMoveNode"
         @treeNodeDrop="drop">
 
@@ -55,14 +55,18 @@
 </template>
 
 <script setup>
-import { computed, nextTick, ref, onMounted, watch } from 'vue'
-import InputType from '../enums/inputType.js';
+import { computed, nextTick, ref, readonly, onMounted, toRef } from 'vue'
 import SelectionMode from '../enums/selectionMode.js';
 import { useIdGeneration } from '../composables/idGeneration.js'
-import { useTreeViewAria } from '../composables/treeViewAria.js';
-import { useTreeViewDragAndDrop } from '../composables/treeViewDragAndDrop.js';
+import { useTreeViewTraversal } from '../composables/treeViewTraversal.js'
+import { useFocus } from '../composables/focus/focus.js';
+import { useTreeViewFocus } from '../composables/focus/treeViewFocus.js';
+import { useSelection } from '../composables/selection/selection.js';
+import { useTreeViewSelection } from '../composables/selection/treeViewSelection.js';
+import { useTreeViewDragAndDrop } from '../composables/dragDrop/treeViewDragAndDrop.js';
+import { useTreeViewConvenienceMethods } from '../composables/treeViewConvenienceMethods.js';
 import TreeViewNode from './TreeViewNode.vue';
-import TreeEvent from '../enums/event';
+import TreeEvent from '../enums/event.js';
 
 // PROPS
 
@@ -132,11 +136,25 @@ const emit = defineEmits([
   TreeEvent.SelectedChange
 ]);
 
+// CONSTANTS
+const defaultAriaKeyMap = readonly({
+  activateItem: [32], // Space
+  selectItem: [13], // Enter
+  focusLastItem: [35], // End
+  focusFirstItem: [36], // Home
+  collapseFocusedItem: [37], // Left
+  expandFocusedItem: [39], // Right
+  focusPreviousItem: [38], // Up
+  focusNextItem: [40], // Down
+  insertItem: [45], // Insert
+  deleteItem: [46] // Delete
+});
+
 // DATA
 
 const areNodesAsyncLoaded = ref(false);
 const isMounted = ref(false);
-const model = ref(props.initialModel);
+const model = ref(props.initialModel); // Using ref instead of toRef because this will get mutated (see end of https://vuejs.org/api/reactivity-utilities.html#toref)
 const radioGroupValues = ref({});
 const uniqueId = ref('');
 const treeElement = ref(null); // ref in template
@@ -145,21 +163,46 @@ const treeElement = ref(null); // ref in template
 
 const { generateUniqueId } = useIdGeneration();
 
+const { depthFirstTraverse } = useTreeViewTraversal(model);
+
 const {
-  ariaKeyMap,
-  enforceSelectionMode,
+  focusableNodeModel,
   handleFocusableChange,
-  focusFirstNode,
-  focusLastNode,
-  handleNodeDeletion,
-  handlePreviousFocus,
-  handleNextFocus } = useTreeViewAria(model, props.customAriaKeyMap, props.selectionMode, depthFirstTraverse, enforceSingleSelectionMode);
+} = useTreeViewFocus();
+
+const {
+  focus,
+  focusFirst,
+  focusLast,
+  focusNext,
+  focusPrevious,
+  isFocused,
+  unfocus,
+} = useFocus();
+
+const {
+  ariaMultiselectable,
+  enforceSelectionMode,
+  handleNodeSelectedChange,
+} = useTreeViewSelection(model, toRef(props, "selectionMode"), focusableNodeModel, emit);
+
+
+const {
+  isSelectable,
+  isSelected,
+  select,
+} = useSelection(toRef(props, "selectionMode"));
+
+const {
+  findById,
+  getCheckedCheckboxes,
+  getCheckedRadioButtons,
+  getMatching,
+  getSelected,
+  removeById,
+} = useTreeViewConvenienceMethods(model, radioGroupValues, toRef(props, "selectionMode"));
 
 const { dragMoveNode, drop } = useTreeViewDragAndDrop(model, uniqueId, findById, removeById);
-
-// WATCHER
-
-watch(() => props.selectionMode, enforceSelectionMode)
 
 // COMPUTED
 
@@ -167,11 +210,8 @@ const areNodesLoaded = computed(() => {
   return typeof props.loadNodesAsync !== 'function' || areNodesAsyncLoaded.value
 });
 
-const ariaMultiselectable = computed(() => {
-  // If there's no selectionMode, return null so aria-multiselectable isn't included.
-  // Otherwise, return either true or false as the attribute's value.
-  return props.selectionMode === SelectionMode.None ? null : props.selectionMode === SelectionMode.Multiple;
-});
+const ariaKeyMap = computed(() =>
+  Object.assign({}, defaultAriaKeyMap, props.customAriaKeyMap));
 
 // HOOKS
 
@@ -182,166 +222,54 @@ onMounted(async () => {
     uniqueId.value = treeElement.value.id;
   }
 
+  if (model.value.length > 0) {
+    // Walk the model looking for focusable attributes.
+    // If none are found, set to true for the first root, or the first selected node if one exists.
+    // If one is found, set any subsequent to false.
+    let firstSelectedNode = null;
+    depthFirstTraverse((node) => {
+      if (isFocused(node)) {
+        if (focusableNodeModel.value) {
+          unfocus(node);
+        }
+        else {
+          focusableNodeModel.value = node;
+        }
+      }
+      if (props.selectionMode !== SelectionMode.None && firstSelectedNode === null && isSelected(node)) {
+        firstSelectedNode = node;
+      }
+    });
+
+    if (!focusableNodeModel.value) {
+      focusableNodeModel.value = firstSelectedNode || model.value[0];
+      focus(focusableNodeModel);
+    }
+
+    // Also default the selection to the focused node if no selected node was found
+    // and the selection mode is selectionFollowsFocus.
+    if (firstSelectedNode === null && isSelectable(focusableNodeModel) && props.selectionMode === SelectionMode.SelectionFollowsFocus) {
+      select(focusableNodeModel);
+    }
+
+    enforceSelectionMode();
+  }
+
   // Set isMounted in a nextTick so the focusable watcher
-  // in TreeViewNodeAria fires before isMounted is set.
+  // in treeViewNodeSelection.js fires before isMounted is set.
   // Otherwise, it steals focus when the tree is mounted.
   // Also wait to enforce single selection mode in case root
   // nodes load asynchronously so their create hooks fire.
   nextTick(() => {
-    enforceSingleSelectionMode();
+    if (props.selectionMode === SelectionMode.Single) {
+      enforceSelectionMode();
+    }
+
     isMounted.value = true;
   });
 });
 
 // METHODS
-
-/**
- * Gets any nodes with checked checkboxes.
- * @returns {Array<TreeViewNode>} An array of any nodes with checked checkboxes
- */
-function getCheckedCheckboxes() {
-  return getMatching((current) =>
-    current.treeNodeSpec.input
-    && current.treeNodeSpec.input.type === InputType.Checkbox
-    && current.treeNodeSpec.state.input.value);
-}
-
-/**
- * Gets any nodes with checked checkboxes.
- * @returns {Array<TreeViewNode>} An array of any nodes with checked checkboxes
- */
-function getCheckedRadioButtons() {
-  return getMatching((current) =>
-    current.treeNodeSpec.input
-    && current.treeNodeSpec.input.type === InputType.RadioButton
-    && radioGroupValues.value[current.treeNodeSpec.input.name] === current.treeNodeSpec.input.value);
-}
-
-/**
- * Gets any nodes matched by the given function.
- * @param matcherFunction {function} A function which takes a node as an argument
- * and returns a boolean indicating a match for some condition
- * @param maxMatches {integer} The maximum number of matches to return
- * @returns {Array<TreeViewNode>} An array of any nodes matched by the given function
- */
-function getMatching(matcherFunction, maxMatches = 0) {
-  let matches = [];
-
-  if (typeof matcherFunction === 'function') {
-    depthFirstTraverse((current) => {
-      if (matcherFunction(current)) {
-        matches.push(current);
-        return maxMatches < 1 || matches.length < maxMatches;
-      }
-    });
-  }
-
-  return matches;
-}
-
-/**
- * Gets any selected nodes
- * @returns {TreeViewNode[]} An array of any selected nodes
- */
-function getSelected() {
-  return props.selectionMode === SelectionMode.None
-    ? []
-    : getMatching((current) => current.treeNodeSpec.selectable && current.treeNodeSpec.state.selected);
-}
-
-/**
- * Gets the node with the given ID
- * @param targetId {string} The ID of the node to find
- * @returns {TreeNode} The node with the given ID if found, or null
- */
-function findById(targetId) {
-  let node = null;
-
-  if (typeof targetId === 'string') {
-    // Do a quick check to see if it's at the root level
-    node = model.value.find(n => n[n.treeNodeSpec.idProperty] === targetId);
-
-    if (!node) {
-      depthFirstTraverse((current) => {
-        let children = current[current.treeNodeSpec.childrenProperty];
-        node = children.find(n => n[n.treeNodeSpec.idProperty] === targetId);
-        if (node) {
-          return false;
-        }
-      });
-    }
-  }
-
-  return node;
-}
-
-/**
- * Traverses the tree depth-first and performs a callback action against each node.
- * @param nodeActionCallback {function} The action to call against each node, taking that node as a parameter
- */
-function depthFirstTraverse(nodeActionCallback) {
-  if (model.value.length === 0) {
-    return;
-  }
-
-  let nodeQueue = model.value.slice();
-  let continueCallbacks = true;
-
-  while (nodeQueue.length > 0 && continueCallbacks !== false) {
-    let current = nodeQueue.shift();
-
-    // Push children to the front (depth first traversal)
-    let childrenPropName = current.treeNodeSpec.childrenProperty;
-    if (Array.isArray(current[childrenPropName])) {
-      nodeQueue = current[childrenPropName].concat(nodeQueue);
-    }
-
-    // Use a return value of false to halt calling the callback on further nodes.
-    continueCallbacks = nodeActionCallback(current);
-  }
-}
-
-/**
- * Enforce single selection mode by deselecting anything except
- * the first (by depth-first) selected node.
- */
-function enforceSingleSelectionMode() {
-  // For single selection mode, only allow one selected node.
-  if (props.selectionMode === SelectionMode.Single) {
-    let alreadyFoundSelected = false;
-    depthFirstTraverse((node) => {
-      if (node.treeNodeSpec.state && node.treeNodeSpec.state.selected === true) {
-        if (alreadyFoundSelected) {
-          node.treeNodeSpec.state.selected = false;
-        }
-        else {
-          alreadyFoundSelected = true;
-        }
-      }
-    });
-  }
-}
-
-/**
- * For single selection mode, unselect any other selected node.
- * For selectionFollowsFocus mode for TreeView, selection state is handled in TreeViewAria.handleFocusableChange.
- * In all cases this emits treeNodeSelectedChange for the node parameter.
- * @param node {TreeViewNode} The node for which selection changed
- * @param event {Event} The initial event that triggered the change
- */
-function handleNodeSelectedChange(node, event) {
-  if (props.selectionMode === SelectionMode.Single && node.treeNodeSpec.state.selected) {
-    depthFirstTraverse((current) => {
-      if (current.treeNodeSpec.state.selected && current.id !== node.id) {
-        current.treeNodeSpec.state.selected = false;
-        return false;
-      }
-      return true;
-    });
-  }
-
-  emit(TreeEvent.SelectedChange, node, event);
-}
 
 /**
  * Performs any async loading for the initial (top-level) nodes.
@@ -361,52 +289,38 @@ async function performInitialNodeLoad() {
 }
 
 /**
- * Removes and returns the node with the given ID
- * @param targetId {string} The ID of the node to remove
- * @returns {TreeViewNode} The node with the given ID if removed, or null
- */
-function removeById(targetId) {
-  let node = null;
-
-  if (typeof targetId === 'string') {
-    // Do a quick check to see if it's at the root level
-    let nodeIndex = model.value.findIndex(n => n[n.treeNodeSpec.idProperty] === targetId);
-
-    if (nodeIndex > -1) {
-      node = model.value.splice(nodeIndex, 1)[0];
-    }
-    else {
-      depthFirstTraverse((current) => {
-        // See if this node has a child that matches
-        let children = current[current.treeNodeSpec.childrenProperty];
-        nodeIndex = children.findIndex(n => n[n.treeNodeSpec.idProperty] === targetId);
-        if (nodeIndex > -1) {
-          node = children.splice(nodeIndex, 1)[0];
-          return false;
-        }
-      });
-    }
-  }
-
-  return node;
-}
-
-/**
  * Removes the given node from the array of children if found.
  * Note that only the node that was deleted fires these, not any subnode, so
  * this comes from a request from the child node for this node to delete it.
  * This emits the treeNodeDelete event.
- * @param node {TreeViewNode} The node to remove
- * @param event {Event} The initial event that triggered the deletion
+ * @param {TreeViewNode} node The node to remove
  */
-function handleChildDeletion(node, event) {
+function handleChildDeletion(node) {
   let targetIndex = model.value.indexOf(node);
   if (targetIndex > -1) {
     handleNodeDeletion(node);
     model.value.splice(targetIndex, 1);
   }
 
-  emit(TreeEvent.Delete, node, event);
+  emit(TreeEvent.Delete, node);
+}
+
+/**
+ * Handles setting the focusable node in the tree when the
+ * currently focuable node is deleted.
+ * @param {TreeViewNode} node The node that was deleted
+ */
+function handleNodeDeletion(node) {
+  if (isFocused(node)) {
+    if (model.value.indexOf(node) === 0) {
+      if (model.value.length > 0) {
+        focusNext(model.value, node);
+      }
+    }
+    else {
+      focusPrevious(model.value, node);
+    }
+  }
 }
 
 // CREATION LOGIC
@@ -421,7 +335,7 @@ defineExpose({
   getCheckedCheckboxes,
   getCheckedRadioButtons,
   getMatching,
-  getSelected
+  getSelected,
 });
 
 </script>
