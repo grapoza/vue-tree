@@ -26,10 +26,6 @@ describe('TreeView.vue (ARIA)', () => {
 
   let wrapper = null;
 
-  beforeEach(() => {
-    vi.spyOn(console, 'error').mockImplementation(() => { });
-  });
-
   afterEach(() => {
     wrapper = null;
   });
@@ -103,6 +99,11 @@ describe('TreeView.vue (ARIA)', () => {
       };
 
       beforeEach(async () => {
+
+        vi.spyOn(console, 'error').mockImplementation(() => { });
+        // Suppress the [Vue warn] message from hitting test output when the validator fails
+        console.warn = vi.fn();
+
         wrapper = await createWrapper({
           initialModel: [],
           customAriaKeyMap: customKeyMap
