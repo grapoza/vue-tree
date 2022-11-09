@@ -63,8 +63,9 @@ after_deploy:
         cd pagesbranch
         Copy-Item -Path "..\vue-tree\docsrc\output" -Destination ".\$env:package_version" -Recurse
         git add "$env:package_version"
-        New-Item -Path . -Name "index.html" -ItemType "file" -Value "<html><head><title>Redirect</title></head><body><script>window.location.replace(`"https://grapoza.github.io/vue-tree/$env:package_version/`");</script></body></html>" -Force
-        git add index.html
+        # 3.x line should no longer overwrite this!
+        # New-Item -Path . -Name "index.html" -ItemType "file" -Value "<html><head><title>Redirect</title></head><body><script>window.location.replace(`"https://grapoza.github.io/vue-tree/$env:package_version/`");</script></body></html>" -Force
+        # git add index.html
         git config credential.helper store
         Add-Content "$HOME\.git-credentials" "https://$($env:github_auth_token):x-oauth-basic@github.com`n"
         git config user.email "grapoza+appveyor@gmail.com"

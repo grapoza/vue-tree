@@ -225,6 +225,7 @@
   import SelectionMode from '../enums/selectionMode';
   import InputType from '../enums/inputType';
   import TvEvent from '../enums/event';
+  import ChildrenLoadPrecedence from '../enums/childrenLoadPrecedence.js';
   import { isProbablyObject } from '../objectMethods';
 
   export default {
@@ -396,6 +397,11 @@
           this.$set(this.tns, 'labelProperty', 'label');
         }
 
+        if(typeof this.tns.childrenLoadPrecedence !== 'string'
+          || !Object.values(ChildrenLoadPrecedence).includes(this.tns.childrenLoadPrecedence)) {
+          this.$set(this.tns, 'childrenLoadPrecedence', ChildrenLoadPrecedence.AsyncBeforeStatic);
+        }
+
         if (!Array.isArray(this.children)) {
           this.$set(this.model, this.childrenPropName, []);
         }
@@ -441,7 +447,9 @@
         }
 
         // Internal members
-        this.$set(this.tns, '_', {});
+        if (this.tns._ === null || typeof this.tns._ !== 'object') {
+          this.$set(this.tns, '_', {});
+        }
         this.$set(this.tns._, 'dragging', false);
 
         this.$_grtvn_normalizeNodeInputData();
@@ -496,8 +504,19 @@
         let privateState = this.tns._.state;
 
         // areChildrenLoaded and areChildrenLoading are internal state used with asynchronous child
-        // node loading. Any node with asynchronously loaded children starts as not expanded.
-        this.$set(privateState, 'areChildrenLoaded', typeof this.tns.loadChildrenAsync !== 'function');
+        // node loading. Any node with asynchronously loaded children starts as not expanded
+        // unless the childrenLoadPrecedence is StaticOverAsync and children exist. To facilitate
+        // determining if the children are not yet loaded or a properly loaded empty list, don't override
+        // internal state if provided by the user (e.g., if the user stores the state and rehydrates the
+        // tree, we want that info to persist)
+        let childrenLoaded = true;
+        if (typeof this.tns.loadChildrenAsync === 'function') {
+          if (this.tns.childrenLoadPrecedence === ChildrenLoadPrecedence.AsyncBeforeStatic || !privateState.areChildrenLoaded) {
+            childrenLoaded = false;
+          }
+        }
+
+        this.$set(privateState, 'areChildrenLoaded', childrenLoaded);
         this.$set(privateState, 'areChildrenLoading', false);
 
         if (typeof state.expanded !== 'boolean' || !privateState.areChildrenLoaded) {
@@ -594,7 +613,7 @@
         if (spec.state.expanded && !spec._.state.areChildrenLoaded && !spec._.state.areChildrenLoading) {
 
           spec._.state.areChildrenLoading = true;
-          var childrenResult = await spec.loadChildrenAsync(this.model);
+          const childrenResult = await spec.loadChildrenAsync(this.model);
 
           if (childrenResult) {
             spec._.state.areChildrenLoaded = true;
@@ -651,7 +670,7 @@
        */
       async $_grtvn_onAddChild(event) {
         if (this.tns.addChildCallback) {
-          var childModel = await this.tns.addChildCallback(this.model);
+          const childModel = await this.tns.addChildCallback(this.model);
 
           if (childModel) {
             this.children.push(childModel);

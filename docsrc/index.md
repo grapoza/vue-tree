@@ -161,6 +161,7 @@ The `treeNodeSpec` of the objects in the data model passed to the treeview's `in
     idProperty: "otherIdProp", // Customize what model props are checked for the id, label, and children
     labelProperty: "textProp",
     childrenProperty: "subThings",
+    childrenLoadPrecedence: "asyncBeforeStatic",
     expandable: true,
     selectable: false,
     input: {
@@ -220,6 +221,7 @@ The `treeNodeSpec` property contains any data about the node's capabilities and 
 | customizations       | Object   | A [customizations](#customizing-the-treeview) object                                      | `{}`                               |          |
 | addChildCallback     | Function | An async function that resolves to a new node model (called by the add button). The function can take one argument, the model of the parent node. It should return the model of the new child node. | `null` | |
 | loadChildrenAsync    | Function | An async function that resolves to a node's children (called when the parent is expanded). The function can take one argument, the model of the parent node. It should return the models of the children nodes. | `null` | |
+| childrenLoadPrecedence | String | Controls first-time expansion behavior when a node with `loadChildrenAsync` already has children loaded. Can be either `asyncBeforeStatic` (always load from async source) or `staticBeforeAsync` (don't async load if children already exist). | `asyncBeforeStatic` | |
 
 \* If `input.type` is not supplied, `input` is forced to `null`.
 
@@ -255,6 +257,7 @@ If specified, the `modelDefaults` property of the treeview will be merged with n
 | getCheckedRadioButtons | Gets models for checked radio nodes         |            | An `Array<Object>` of models for checked radio button nodes |
 | getSelected            | Gets models for selected nodes              |            | An `Array<Object>` of models for selected nodes             |
 | getMatching            | Gets models for nodes that match a function | `matcherFunction`: A function that takes a node model and returns a boolean indicating whether that node should be returned. | An `Array<Object>` of models for matched nodes |
+| reloadNodeChildren     | Reload children for a given node if `loadChildrenAsync` is set | `nodeId`: The ID of the target node | Nothing; note that this merely triggers re-expansion of the node, so you cannot await the result here. |
 
 ## Events
 

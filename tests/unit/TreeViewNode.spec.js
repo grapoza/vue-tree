@@ -3,6 +3,7 @@ import { createLocalVue, mount } from '@vue/test-utils';
 import TreeViewNode from '../../src/components/TreeViewNode.vue';
 import { generateNodes } from '../data/node-generator.js';
 import SelectionMode from '../../src/enums/selectionMode';
+import ChildrenLoadPrecedence from '../../src/enums/childrenLoadPrecedence.js';
 
 const localVue = createLocalVue();
 
@@ -66,6 +67,7 @@ describe('TreeViewNode.vue', () => {
       expect(wrapper.vm.model.treeNodeSpec.state.selected).to.be.false;
       expect(wrapper.vm.model.treeNodeSpec.input).to.be.null;
       expect(wrapper.vm.model.treeNodeSpec.state.input).to.not.exist;
+      expect(wrapper.vm.model.treeNodeSpec.childrenLoadPrecedence).to.equal("asyncBeforeStatic");
     });
   });
 
@@ -857,6 +859,111 @@ describe('TreeViewNode.vue', () => {
 
     it('should have a children list of the model[childrenPropName] property', () => {
       expect(wrapper.vm.model[wrapper.vm.childrenPropName].length).to.equal(2);
+    });
+  });
+
+  describe('when rehydrating the model from an already-loaded state', () => {
+
+    describe('when childrenLoadPrecedence is asyncBeforeStatic', () => {
+
+      describe('and loadChildrenAsync is not specified', () => {
+
+        beforeEach(async () => {
+          let defaultProps = getDefaultPropsData();
+          defaultProps.initialModel = generateNodes(['sf', ['s', 's']])[0];
+          defaultProps.initialModel.treeNodeSpec.childrenLoadPrecedence = ChildrenLoadPrecedence.AsyncBeforeStatic;
+          defaultProps.initialModel.treeNodeSpec._ = { state: { areChildrenLoaded: false } };
+          wrapper = createWrapper(Object.assign(defaultProps));
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should consider children as loaded', () => {
+          expect(wrapper.vm.model.treeNodeSpec._.state.areChildrenLoaded).to.be.true;
+        });
+      });
+
+      describe('and only loadChildrenAsync is specified', () => {
+
+        beforeEach(async () => {
+          let defaultProps = getDefaultPropsData();
+          defaultProps.initialModel = generateNodes(['sf'], null, null, async () => [])[0];
+          defaultProps.initialModel.treeNodeSpec.childrenLoadPrecedence = ChildrenLoadPrecedence.AsyncBeforeStatic;
+          defaultProps.initialModel.treeNodeSpec._ = { state: { areChildrenLoaded: false } };
+          wrapper = createWrapper(Object.assign(defaultProps));
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should not consider children as loaded', () => {
+          expect(wrapper.vm.model.treeNodeSpec._.state.areChildrenLoaded).to.be.false;
+        });
+      });
+
+      describe('and both areChildrenLoaded is true and loadChildrenAsync are specified', () => {
+
+        beforeEach(async () => {
+          let defaultProps = getDefaultPropsData();
+          defaultProps.initialModel = generateNodes(['sf', ['s', 's']], null, null, async () => [])[0];
+          defaultProps.initialModel.treeNodeSpec.childrenLoadPrecedence = ChildrenLoadPrecedence.AsyncBeforeStatic;
+          defaultProps.initialModel.treeNodeSpec._ = { state: { areChildrenLoaded: true } };
+          wrapper = createWrapper(Object.assign(defaultProps));
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should not consider children as loaded', () => {
+          expect(wrapper.vm.model.treeNodeSpec._.state.areChildrenLoaded).to.be.false;
+        });
+      });
+    });
+
+    describe('when childrenLoadPrecedence is staticBeforeAsync', () => {
+
+      describe('and loadChildrenAsync is not specified', () => {
+
+        beforeEach(async () => {
+          let defaultProps = getDefaultPropsData();
+          defaultProps.initialModel = generateNodes(['sf', ['s', 's']])[0];
+          defaultProps.initialModel.treeNodeSpec.childrenLoadPrecedence = ChildrenLoadPrecedence.StaticBeforeAsync;
+          defaultProps.initialModel.treeNodeSpec._ = { state: { areChildrenLoaded: false } };
+          wrapper = createWrapper(Object.assign(defaultProps));
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should consider children as loaded', () => {
+          expect(wrapper.vm.model.treeNodeSpec._.state.areChildrenLoaded).to.be.true;
+        });
+      });
+
+      describe('and only loadChildrenAsync is specified', () => {
+
+        beforeEach(async () => {
+          let defaultProps = getDefaultPropsData();
+          defaultProps.initialModel = generateNodes(['sf'], null, null, async () => [])[0];
+          defaultProps.initialModel.treeNodeSpec.childrenLoadPrecedence = ChildrenLoadPrecedence.StaticBeforeAsync;
+          defaultProps.initialModel.treeNodeSpec._ = { state: { areChildrenLoaded: false } };
+          wrapper = createWrapper(Object.assign(defaultProps));
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should not consider children as loaded', () => {
+          expect(wrapper.vm.model.treeNodeSpec._.state.areChildrenLoaded).to.be.false;
+        });
+      });
+
+      describe('and both areChildrenLoaded is true and loadChildrenAsync are specified', () => {
+
+        beforeEach(async () => {
+          let defaultProps = getDefaultPropsData();
+          defaultProps.initialModel = generateNodes(['sf', ['s', 's']], null, null, async () => [])[0];
+          defaultProps.initialModel.treeNodeSpec.childrenLoadPrecedence = ChildrenLoadPrecedence.StaticBeforeAsync;
+          defaultProps.initialModel.treeNodeSpec._ = { state: { areChildrenLoaded: true } };
+          wrapper = createWrapper(defaultProps);
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should consider children as loaded', () => {
+          expect(wrapper.vm.model.treeNodeSpec._.state.areChildrenLoaded).to.be.true;
+        });
+      });
     });
   });
 });

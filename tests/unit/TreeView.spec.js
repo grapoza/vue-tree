@@ -1,19 +1,29 @@
 import { expect } from 'chai';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import TreeView from '../../src/components/TreeView.vue';
 import { generateNodes } from '../data/node-generator.js';
 import SelectionMode from '../../src/enums/selectionMode';
 
 const localVue = createLocalVue();
 
-function createWrapper(customPropsData, customAttrs, slotsData) {
-  return shallowMount(TreeView, {
+let elem;
+
+function createWrapper(customPropsData, customAttrs, slotsData, shallow = true) {
+  // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
+  elem = document.createElement('div');
+  if (document.body) {
+    document.body.appendChild(elem);
+  }
+
+  const options = {
     sync: false,
     propsData: customPropsData || {},
     localVue,
     attrs: customAttrs,
-    scopedSlots: slotsData
-  });
+    scopedSlots: slotsData,
+    attachTo: elem
+  };
+  return shallow ? shallowMount(TreeView, options) : mount(TreeView, options);
 }
 
 describe('TreeView.vue', () => {
@@ -23,6 +33,8 @@ describe('TreeView.vue', () => {
   afterEach(() => {
     wrapper.vm.$destroy();
     wrapper = null;
+
+    elem.remove();
   });
 
   describe('when on an element with an ID', () => {
@@ -278,6 +290,33 @@ describe('TreeView.vue', () => {
       it('should emit the treeViewRootNodesLoad event', () => {
         expect(wrapper.emitted().treeViewRootNodesLoad).to.be.an('array').that.has.length(1);
       });
+    });
+  });
+
+  describe('when reloadNodeChildren() is called', () => {
+
+    it('should reload the children nodes', async () => {
+      let childNodes = generateNodes(['']);
+      childNodes[0].id = 'id1';
+      const getChildNodes = () => childNodes;
+      const initialModel = generateNodes(['es'], null, null, getChildNodes);
+      wrapper = createWrapper({ initialModel }, undefined, undefined, false);
+      await wrapper.vm.$nextTick();
+
+      // expand the node to do the initial child load
+      const expanderId = `${wrapper.vm.uniqueId}-${initialModel[0][initialModel[0].treeNodeSpec.idProperty]}-exp`;
+      let nodeExpander = wrapper.find(`#${expanderId}`);
+      nodeExpander.trigger('click');
+      await wrapper.vm.$nextTick();
+      expect(initialModel[0].children[0].id).to.equal('id1');
+
+      // Reload
+      childNodes = generateNodes(['']);
+      childNodes[0].id = 'id2';
+      wrapper.vm.reloadNodeChildren(initialModel[0].id);
+      await wrapper.vm.$nextTick();
+
+      expect(initialModel[0].children[0].id).to.equal('id2');
     });
   });
 });

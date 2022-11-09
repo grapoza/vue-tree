@@ -26,6 +26,7 @@ import InputType from '../../src/enums/inputType';
 export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, loadChildrenAsync = null) {
     let nodes = [];
     let prevNode = null;
+    baseId = baseId || "";
 
     nodeSpec.forEach(function (item, index) {
         if (Array.isArray(item)) {
@@ -61,7 +62,8 @@ export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, lo
                         expanded: item.includes('E'),
                         selected: item.includes('S')
                     },
-                    addChildCallback
+                    addChildCallback,
+                    childrenLoadPrecedence: "asyncBeforeStatic"
                 }
             };
 

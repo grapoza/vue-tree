@@ -211,6 +211,31 @@
           : this.getMatching((current) => current.treeNodeSpec.selectable && current.treeNodeSpec.state.selected);
       },
       /**
+       * Reloads the child nodes for the node with the given ID if that node exists
+       * and has an async child loader.
+       * THIS IS A TERRIBLE HACKY THING I'M ADDING FOR 3.X.
+       * @param {string} nodeId  The ID of the node for which to reload child nodes
+       */
+      reloadNodeChildren(nodeId) {
+        const nodeModel = this.$_grtv_findById(nodeId);
+
+        if (nodeModel && typeof nodeModel.treeNodeSpec.loadChildrenAsync === 'function') {
+          const nmtns = nodeModel.treeNodeSpec;
+          if (nmtns._.state.areChildrenLoaded) {
+            nmtns.state.expanded = false;
+            let children = nodeModel[nmtns.childrenProperty];
+            children.splice(0, children.length);
+            nmtns._.state.areChildrenLoaded = false;
+            const expanderId = `${this.uniqueId}-${nodeModel[nmtns.idProperty]}-exp`;
+            const expanderElem = document.getElementById(expanderId);
+
+            if (expanderElem) {
+              expanderElem.click();
+            }
+          }
+        }
+      },
+      /**
        * Gets the node with the given ID
        * @param targetId {string} The ID of the node to find
        * @returns {TreeViewNode} The node with the given ID if found, or null

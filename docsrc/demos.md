@@ -1063,6 +1063,8 @@ You can load root nodes asynchronously by providing a function to the `loadNodes
 
 You can load child nodes asynchronously by providing a function to the `loadChildrenAsync` property in a node's `treeNodeSpec` (or use `modelDefaults` to use the same method for all nodes). The function can take the parent node's model data as an argument, and should return a Promise that resolves to an array of model data to add as children.
 
+A node's children can be reloaded by providing the target nodes ID to the `reloadNodeChildren` method of the treeview.
+
 ```{=html5}
 <details>
 <summary>
@@ -1076,7 +1078,11 @@ You can load child nodes asynchronously by providing a function to the `loadChil
 <!--- The leading spaces are to render the html aligned correctly --->
 ```html
   <div id="app-async" class="demo-tree">
-  <tree id="customtree-async" :load-nodes-async="loadNodesAsync" :model-defaults="modelDefaults"></tree>
+  <tree id="customtree-async"
+        :load-nodes-async="loadNodesAsync"
+        :model-defaults="modelDefaults"
+        ref="treeAsync"></tree>
+  <button type="button" class="tree-reload-trigger" @click="reloadDemoChildNodes">Reload Root Children</button>
 </div>
 <script type='module'>
   import TreeView from "@grapoza/vue-tree"
@@ -1115,6 +1121,9 @@ You can load child nodes asynchronously by providing a function to the `loadChil
             label: "Root Node"
           }
         ]), 1000));
+      },
+      reloadDemoChildNodes() {
+        this.$refs.treeAsync.reloadNodeChildren('async-rootnode');
       }
     }
   }).$mount('#app-async');
@@ -1126,7 +1135,11 @@ You can load child nodes asynchronously by providing a function to the `loadChil
 
 ```{=html5}
 <div id="app-async" class="demo-tree">
-    <tree id="customtree-async" :load-nodes-async="loadNodesAsync" :model-defaults="modelDefaults"></tree>
+    <tree id="customtree-async"
+          :load-nodes-async="loadNodesAsync"
+          :model-defaults="modelDefaults"
+          ref="treeAsync"></tree>
+    <button type="button" class="tree-reload-trigger" @click="reloadDemoChildNodes">Reload Root Children</button>
 </div>
 <script type='module'>
     new Vue({
@@ -1164,6 +1177,9 @@ You can load child nodes asynchronously by providing a function to the `loadChil
               label: "Root Node"
             }
           ]), 1000));
+        },
+        reloadDemoChildNodes() {
+          this.$refs.treeAsync.reloadNodeChildren('async-rootnode');
         }
       }
     }).$mount('#app-async');
