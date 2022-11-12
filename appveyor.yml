@@ -4,7 +4,7 @@ image: Ubuntu
 
 init:
   - sh: git config --global core.autocrlf true
-  - sh: nvm use 10
+  - sh: nvm use 12
 
 install:
   # Get the app version from the package.json's version property, and set the build number
