@@ -386,6 +386,12 @@
         // it will be normalized into existence in $_grtvnAria_normalizeNodeData().
         this.$_grtvn_assignDefaultProps(this.modelDefaults, this.tns);
 
+        // Internal members
+        if (this.tns._ === null || typeof this.tns._ !== 'object') {
+          this.$set(this.tns, '_', {});
+        }
+        this.$set(this.tns._, 'dragging', false);
+
         // Set expected properties if not provided
         if (typeof this.tns.childrenProperty !== 'string') {
           this.$set(this.tns, 'childrenProperty', 'children');
@@ -403,6 +409,7 @@
         }
 
         if (!Array.isArray(this.children)) {
+          this.tns._.initializedWithoutChildren = true;
           this.$set(this.model, this.childrenPropName, []);
         }
         if (typeof this.tns.expandable !== 'boolean') {
@@ -445,12 +452,6 @@
         if(typeof this.tns.loadChildrenAsync !== 'function') {
           this.$set(this.tns, 'loadChildrenAsync', null);
         }
-
-        // Internal members
-        if (this.tns._ === null || typeof this.tns._ !== 'object') {
-          this.$set(this.tns, '_', {});
-        }
-        this.$set(this.tns._, 'dragging', false);
 
         this.$_grtvn_normalizeNodeInputData();
         this.$_grtvn_normalizeNodeStateData();
@@ -506,12 +507,11 @@
         // areChildrenLoaded and areChildrenLoading are internal state used with asynchronous child
         // node loading. Any node with asynchronously loaded children starts as not expanded
         // unless the childrenLoadPrecedence is StaticOverAsync and children exist. To facilitate
-        // determining if the children are not yet loaded or a properly loaded empty list, don't override
-        // internal state if provided by the user (e.g., if the user stores the state and rehydrates the
-        // tree, we want that info to persist)
+        // determining if the children are not yet loaded or a properly loaded empty list, use private
+        // state set during base node initialization.
         let childrenLoaded = true;
         if (typeof this.tns.loadChildrenAsync === 'function') {
-          if (this.tns.childrenLoadPrecedence === ChildrenLoadPrecedence.AsyncBeforeStatic || !privateState.areChildrenLoaded) {
+          if (this.tns.childrenLoadPrecedence === ChildrenLoadPrecedence.AsyncBeforeStatic || this.tns._.initializedWithoutChildren) {
             childrenLoaded = false;
           }
         }
@@ -522,6 +522,12 @@
         if (typeof state.expanded !== 'boolean' || !privateState.areChildrenLoaded) {
           this.$set(state, 'expanded', false);
         }
+
+        // Remove temp variable set by children initialization
+        if (this.tns._.initializedWithoutChildren) {
+          delete this.tns._.initializedWithoutChildren;
+        }
+
         if (typeof state.selected !== 'boolean') {
           this.$set(state, 'selected', false);
         }

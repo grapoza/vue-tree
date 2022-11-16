@@ -887,6 +887,7 @@ describe('TreeViewNode.vue', () => {
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
           defaultProps.initialModel = generateNodes(['sf'], null, null, async () => [])[0];
+          delete defaultProps.initialModel.children;
           defaultProps.initialModel.treeNodeSpec.childrenLoadPrecedence = ChildrenLoadPrecedence.AsyncBeforeStatic;
           defaultProps.initialModel.treeNodeSpec._ = { state: { areChildrenLoaded: false } };
           wrapper = createWrapper(Object.assign(defaultProps));
@@ -938,6 +939,7 @@ describe('TreeViewNode.vue', () => {
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
           defaultProps.initialModel = generateNodes(['sf'], null, null, async () => [])[0];
+          delete defaultProps.initialModel.children;
           defaultProps.initialModel.treeNodeSpec.childrenLoadPrecedence = ChildrenLoadPrecedence.StaticBeforeAsync;
           defaultProps.initialModel.treeNodeSpec._ = { state: { areChildrenLoaded: false } };
           wrapper = createWrapper(Object.assign(defaultProps));
@@ -949,13 +951,12 @@ describe('TreeViewNode.vue', () => {
         });
       });
 
-      describe('and both areChildrenLoaded is true and loadChildrenAsync are specified', () => {
+      describe('and both children are populated and loadChildrenAsync are specified', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
           defaultProps.initialModel = generateNodes(['sf', ['s', 's']], null, null, async () => [])[0];
           defaultProps.initialModel.treeNodeSpec.childrenLoadPrecedence = ChildrenLoadPrecedence.StaticBeforeAsync;
-          defaultProps.initialModel.treeNodeSpec._ = { state: { areChildrenLoaded: true } };
           wrapper = createWrapper(defaultProps);
           await wrapper.vm.$nextTick();
         });
