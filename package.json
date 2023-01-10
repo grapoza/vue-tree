@@ -13,7 +13,8 @@
     "vue",
     "vuejs",
     "tree",
-    "treeview"
+    "treeview",
+    "treegrid"
   ],
   "files": [
     "dist"
