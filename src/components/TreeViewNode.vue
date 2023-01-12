@@ -227,7 +227,7 @@
 <script setup>
 
 import { computed, ref, toRef } from 'vue'
-import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer.js';
+import { useTreeViewNodeDataNormalizer } from '../composables/treeViewNodeDataNormalizer.js';
 import { useTreeViewNodeChildren } from '../composables/children/treeViewNodeChildren.js';
 import { useTreeViewNodeDragAndDrop } from '../composables/dragDrop/treeViewNodeDragAndDrop.js';
 import { useFocus } from '../composables/focus/focus.js';
@@ -338,11 +338,9 @@ const nodeId = computed(() => `${props.treeId}-${id.value}`);
 
 const tns = computed(() => model.value.treeNodeSpec);
 
-const treeId = computed(() => props.treeId);
-
 // COMPOSABLES
 
-const { normalizeNodeData } = useNodeDataNormalizer(model, props.modelDefaults, radioGroupValues);
+const { normalizeNodeData } = useTreeViewNodeDataNormalizer(model, props.modelDefaults, radioGroupValues);
 
 normalizeNodeData();
 
@@ -398,7 +396,7 @@ const {
   onDragleave,
   onDrop,
   onDragend
-} = useTreeViewNodeDragAndDrop(model, children, treeId, emit);
+} = useTreeViewNodeDragAndDrop(model, children, toRef(props, "treeId"), emit);
 
 // METHODS
 

@@ -7,7 +7,7 @@ const { isProbablyObject } = useObjectMethods();
 
 const allowedEffectAllowedValues = [EffectAllowed.Copy, EffectAllowed.Move, EffectAllowed.CopyMove, EffectAllowed.None];
 
-export function useNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
+export function useTreeViewNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
 
   /**
    * Normalizes the data model to the format consumable by TreeViewNode.

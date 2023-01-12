@@ -1,6 +1,6 @@
 import { expect, describe, it, beforeEach } from 'vitest';
 import { ref } from 'vue';
-import { useNodeDataNormalizer } from './nodeDataNormalizer.js';
+import { useTreeViewNodeDataNormalizer } from './nodeDataNormalizer.js';
 import { generateNodes } from '../../tests/data/node-generator.js';
 
 describe('nodeDataNormalizer.js', () => {
@@ -11,7 +11,7 @@ describe('nodeDataNormalizer.js', () => {
 
     beforeEach(() => {
       model = { id: 'my-node', label: 'My Node' };
-      const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+      const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
       normalizeNodeData();
     });
 
@@ -43,7 +43,7 @@ describe('nodeDataNormalizer.js', () => {
           selected: true
         }
       };
-      const { normalizeNodeData } = useNodeDataNormalizer(ref(model), modelDefaults, ref({}));
+      const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), modelDefaults, ref({}));
       normalizeNodeData();
     });
 
@@ -68,7 +68,7 @@ describe('nodeDataNormalizer.js', () => {
         beforeEach(() => {
           model = generateNodes(['ces'])[0];
           model.treeNodeSpec.input.name = 42;
-          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+          const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
           normalizeNodeData();
         });
 
@@ -84,7 +84,7 @@ describe('nodeDataNormalizer.js', () => {
         beforeEach(() => {
           model = generateNodes(['ces'])[0];
           model.treeNodeSpec.input.name = ' ';
-          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+          const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
           normalizeNodeData();
         });
 
@@ -106,7 +106,7 @@ describe('nodeDataNormalizer.js', () => {
 
         beforeEach(() => {
           model.treeNodeSpec.input.name = 42;
-          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+          const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
           normalizeNodeData();
         });
 
@@ -119,7 +119,7 @@ describe('nodeDataNormalizer.js', () => {
 
         beforeEach(() => {
           model.treeNodeSpec.input.name = ' ';
-          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+          const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
           normalizeNodeData();
         });
 
@@ -145,7 +145,7 @@ describe('nodeDataNormalizer.js', () => {
 
         beforeEach(() => {
           model.treeNodeSpec.input.value = 42;
-          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+          const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
           normalizeNodeData();
         });
 
@@ -158,7 +158,7 @@ describe('nodeDataNormalizer.js', () => {
 
         beforeEach(() => {
           model.treeNodeSpec.input.value = ' ';
-          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+          const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
           normalizeNodeData();
         });
 
@@ -176,7 +176,7 @@ describe('nodeDataNormalizer.js', () => {
     beforeEach(() => {
       model = generateNodes(['c'])[0];
       model.treeNodeSpec.state.input = null;
-      const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+      const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
       normalizeNodeData();
     });
 
@@ -201,7 +201,7 @@ describe('nodeDataNormalizer.js', () => {
       model.treeNodeSpec.expanderTitle = '';
       model.treeNodeSpec.addChildTitle = '';
       model.treeNodeSpec.deleteTitle = '';
-      const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+      const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
       normalizeNodeData();
     });
 
