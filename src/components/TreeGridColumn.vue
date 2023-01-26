@@ -10,8 +10,7 @@
           <span class="grtgc-spacer" :class="customClasses.treeGridNodeSelfSpacer"></span>
         </template>
 
-        <button :id="expanderId"
-                type="button"
+        <button type="button"
                 v-if="canExpand"
                 aria-hidden="true"
                 tabindex="-1"
@@ -62,14 +61,6 @@ const treeId = inject('treeId');
 const canExpand = computed(() => props.expander && model.value.children?.length > 0);
 
 const customClasses = computed(() => tns.value.customizations?.classes ?? {});
-
-const expanderId = computed(() => `${nodeId.value}-exp`);
-
-const id = computed(() => model.value[idPropName.value]);
-
-const idPropName = computed(() => tns.value.idProperty ?? 'id');
-
-const nodeId = computed(() => `${treeId.value}-${id.value}`);
 
 const tns = computed(() => model.value.treeNodeSpec);
 

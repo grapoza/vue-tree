@@ -1,7 +1,7 @@
 export function useTreeGridNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
 
   /**
-   * Normalizes the data model to the format consumable by TreeViewNode.
+   * Normalizes the data model to the format consumable by TreeGridRow.
    */
   function normalizeNodeData() {
 
