@@ -1,25 +1,30 @@
 <template>
-  <table class="grtg-table" :class="skinClass">
-    <thead v-if="columnHeaders.length > 0">
-      <tr>
-        <th v-for="headerText in columnHeaders" scope="col">
-          {{ headerText }}
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tree-grid-row v-for="rowModel in initialModel" :key="rowModel.id" :depth="0" :initialModel="rowModel">
-        <slot>
-          <td>Add TreeGridColumn component slot content in the TreeGrid component tags.</td>
-        </slot>
-      </tree-grid-row>
-    </tbody>
-  </table>
+  <div class="grtg-wrapper" :class="skinClass">
+    <table class="grtg">
+      <thead v-if="columnHeaders.length > 0">
+        <tr>
+          <th v-for="headerText in columnHeaders" scope="col" class="grtgc">
+            {{ headerText }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tree-grid-row v-for="rowModel in initialModel" :key="rowModel.id" :depth="0" :initialModel="rowModel">
+          <slot>
+            <td>Add TreeGridColumn component slot content in the TreeGrid component tags.</td>
+          </slot>
+        </tree-grid-row>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script setup>
-import { computed, provide, useSlots } from 'vue';
+import { computed, provide, useAttrs, useSlots } from 'vue';
 import TreeGridRow from './TreeGridRow.vue';
+import { useIdGeneration } from '../composables/idGeneration.js';
+
+const attrs = useAttrs();
 
 // USE SLOTS FOR INSPECTING COLUMNS
 
@@ -28,7 +33,6 @@ const columnHeaders = computed(() => {
   let headers = [];
   if (slots.default) {
     slots.default().forEach((vNode) => {
-      console.debug("GR", vNode);
       if (vNode.type["__name"] === "TreeGridColumn") {
         headers.push(vNode.props["header-text"]);
       }
@@ -41,14 +45,15 @@ const columnHeaders = computed(() => {
 // PROPS
 
 const props = defineProps({
-  expanderColumnIndex: {
-    type: Number,
-    required: true,
-  },
   initialModel: {
     type: Array,
     required: false,
     default: function () { return []; }
+  },
+  modelDefaults: {
+    type: Object,
+    required: false,
+    default: function () { return {}; }
   },
   skinClass: {
     type: String,
@@ -60,11 +65,23 @@ const props = defineProps({
   },
 });
 
-provide('expanderColumnIndex', props.expanderColumnIndex);
+// COMPOSABLES
+
+const { generateUniqueId } = useIdGeneration();
+
+// COMPUTED
+
+const uniqueId = computed(() => attrs.id ?? generateUniqueId());
+
+// PROVIDE
+
+provide('treeId', uniqueId);
+
 </script>
 
 <style>
-.grtg-table {
+.grtg-wrapper.grtg-default-skin .grtg {
   border: 1px black solid;
+  border-collapse: collapse;
 }
 </style>

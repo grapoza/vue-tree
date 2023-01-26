@@ -1,6 +1,6 @@
 import { expect, describe, it, beforeEach } from 'vitest';
 import { ref } from 'vue';
-import { useTreeViewNodeDataNormalizer } from './nodeDataNormalizer.js';
+import { useTreeViewNodeDataNormalizer } from './treeViewNodeDataNormalizer.js';
 import { generateNodes } from '../../tests/data/node-generator.js';
 
 describe('nodeDataNormalizer.js', () => {

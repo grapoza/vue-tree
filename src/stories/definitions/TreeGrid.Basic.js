@@ -9,35 +9,37 @@ const Template = (args) => ({
   },
   template: `
   <tree-grid v-bind="args">
-    <tree-grid-column header-text="Item" value-property="description"></tree-grid-column>
-    <tree-grid-column header-text="Price" value-property="price"></tree-grid-column>
+    <tree-grid-column header-text="Item" value-property="description" :expander="true" style="width: 10rem"></tree-grid-column>
+    <tree-grid-column header-text="Price" value-property="price" style="width: 4rem; text-align: end;"></tree-grid-column>
   </tree-grid>`
 });
 
 export const Basic = Template.bind({});
 Basic.args = {
-  expanderColumnIndex: 1,
   initialModel: TreeGridData
 };
 
-// const docsSourceCode = `
-// <template>
-//   <tree-view :initial-model="tvModel"></tree-view>
-// </template>
-// <script setup>
-// import { ref } from "vue";
-// import { TreeGrid } from "@grapoza/vue-tree";
-// import TreeGridData from "../data/basicTreeGridData";
+const docsSourceCode = `
+<template>
+  <tree-grid :initial-model="tgModel">
+    <tree-grid-column header-text="Item" value-property="description" :expander="true"></tree-grid-column>
+    <tree-grid-column header-text="Price" value-property="price"></tree-grid-column>
+  </tree-grid>
+</template>
+<script setup>
+import { ref } from "vue";
+import { TreeGrid } from "@grapoza/vue-tree";
+import TreeGridData from "../data/basicTreeGridData";
 
-// const tvModel = ref(TreeGridData);
-// </script>`;
+const tgModel = ref(TreeGridData);
+</script>`;
 
-// Basic.parameters = {
-//   docs: {
-//     source: {
-//       code: docsSourceCode,
-//       language: "html",
-//       type: "auto",
-//     },
-//   },
-// };
+Basic.parameters = {
+  docs: {
+    source: {
+      code: docsSourceCode,
+      language: "html",
+      type: "auto",
+    },
+  },
+};

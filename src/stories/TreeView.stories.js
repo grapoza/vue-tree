@@ -1,5 +1,5 @@
 import TreeView from '../components/TreeView.vue';
-import ExamplesDocs from './Examples.docs.mdx';
+import ExamplesDocs from './TreeViewExamples.docs.mdx';
 
 // Default export to define the component =====================================
 

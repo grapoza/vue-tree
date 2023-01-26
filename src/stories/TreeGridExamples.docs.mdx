@@ -1,0 +1,28 @@
+import { Canvas, Story } from '@storybook/addon-docs';
+import TreeGrid from '../components/TreeGrid.vue';
+import './css/classbased.css';
+import './css/grayscale.css';
+import './css/fontawesome.min.css';
+import './css/solid.min.css';
+
+<style>{`
+/* Work around https://github.com/storybookjs/storybook/issues/16188 */
+.docs-story > div > div[scale='1'][height] {
+    height: auto;
+    min-height: 20px;
+}
+`}</style>
+
+# Examples
+
+## A Basic Tree Grid
+
+The most basic use of the tree grid consists of giving it some data and letting the tree populate the model with the default tree node properties, which it does by adding a `treeNodeSpec` property to each object in the hierarchy. This can be useful if you have a model and want it in a tree grid, and also don't care if the tree grid modifies that data. If you don't want the tree grid to modify your data at all, you'll need to make a copy first and provide that to the tree grid.
+
+If you want more control over the model, you can specify `treeNodeSpec` and its properties directly in the data.
+
+<a target="_blank" href="assets_data/basicTreeGridData.js">See the Model Data</a>
+
+<Canvas>
+<Story id="examples-treegrid--basic" />
+</Canvas>

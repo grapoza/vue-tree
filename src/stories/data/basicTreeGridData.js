@@ -8,7 +8,33 @@ export default [
   {
     id: 'basic-node2',
     description: 'Widgets',
-    price: '$13.37',
-    children: [],
+    price: '',
+    children: [
+      {
+        id: 'basic-node3',
+        description: 'Hyper Widgets',
+        price: '$130.99',
+        children: [],
+      },
+      {
+        id: 'basic-node4',
+        description: 'Passive Widgets',
+        price: '',
+        children: [
+          {
+            id: 'basic-node5',
+            description: 'Turtle Widgets',
+            price: '$0.99',
+            children: [],
+          },
+          {
+            id: 'basic-node6',
+            description: 'Sloth Widgets',
+            price: '$0.89',
+            children: [],
+          }
+        ],
+      }
+    ],
   },
 ];
