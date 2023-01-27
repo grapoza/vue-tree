@@ -9,7 +9,7 @@
         </tr>
       </thead>
       <tbody>
-        <tree-grid-row v-for="rowModel in initialModel" :key="rowModel.id" :depth="0" :initialModel="rowModel">
+        <tree-grid-row v-for="rowModel in initialModel" :key="rowModel.id" :depth="0" :initial-model="rowModel" :model-defaults="modelDefaults">
           <slot>
             <td>Add TreeGridColumn component slot content in the TreeGrid component tags.</td>
           </slot>

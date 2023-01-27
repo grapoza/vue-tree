@@ -11,6 +11,14 @@ const Template = (args) => ({
   <tree-grid v-bind="args">
     <tree-grid-column header-text="Item" value-property="description" :expander="true" style="width: 10rem"></tree-grid-column>
     <tree-grid-column header-text="Price" value-property="price" style="width: 4rem; text-align: end;"></tree-grid-column>
+    <tree-grid-column header-text="Actions" style="width: 2rem;">
+      <button>CLICKABLE</button>
+    </tree-grid-column>
+    <tree-grid-column header-text="Is Expanded">
+      <template v-slot:default="{ model }">
+       {{ model.treeNodeSpec.state.expanded ? 'Yup' : 'Nope' }}
+      </template>
+    </tree-grid-column>
   </tree-grid>`
 });
 

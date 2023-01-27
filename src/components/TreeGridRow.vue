@@ -3,7 +3,7 @@
     <slot />
   </tr>
   <template v-if="isExpanded">
-    <tree-grid-row v-for="childModel in model.children" :key="childModel.id" :depth="depth+1" :initial-model="childModel">
+    <tree-grid-row v-for="childModel in model.children" :key="childModel.id" :depth="depth+1" :initial-model="childModel" :model-defaults="modelDefaults">
       <slot />
     </tree-grid-row>
   </template>
@@ -24,6 +24,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  modelDefaults: {
+    type: Object,
+    required: true,
+  },
 });
 
 // DATA
@@ -32,7 +36,7 @@ const model = ref(props.initialModel);
 
 // COMPOSABLES
 
-const { normalizeNodeData } = useTreeGridNodeDataNormalizer(model, {}, {});
+const { normalizeNodeData } = useTreeGridNodeDataNormalizer(model, props.modelDefaults, {});
 
 normalizeNodeData();
 

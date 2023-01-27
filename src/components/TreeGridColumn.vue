@@ -1,6 +1,6 @@
 <template>
   <td class="grtgc">
-    <slot>
+    <slot :model="model">
 
       <!-- Expander -->
       <template v-if="props.expander">
@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { computed, inject, ref } from 'vue'
+import { computed, inject } from 'vue'
 
 // PROPS
 
@@ -45,7 +45,8 @@ const props = defineProps({
   },
   valueProperty: {
     type: String,
-    required: true,
+    required: false,
+    default: "",
   }
 });
 
