@@ -97,12 +97,15 @@ export function useTreeViewSelection(treeModel, selectionMode, focusableNodeMode
   }
 
   /**
-   *
+   * Given a node that should remain selected, deselect another selected node.
+   * This is used only when one node at a time can be selected (Single/SelectionFollowsFocus).
    * @param {TreeViewNode} node The node that should remain selected
    */
   function exclusivelySelectNode(node) {
+    const nodeId = node[node.treeNodeSpec.idProperty];
+
     depthFirstTraverse((current) => {
-      if (isSelected(current) && current.id !== node.id) {
+      if (isSelected(current) && current[current.treeNodeSpec.idProperty] !== nodeId) {
         deselect(current);
         return false;
       }
