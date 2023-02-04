@@ -117,6 +117,32 @@ describe('treeViewSelection.js', () => {
         expect(nodes[0].children[0].treeNodeSpec.state.selected).to.be.true;
         expect(nodes[1].treeNodeSpec.state.selected).to.be.false;
       });
+
+      describe('and the nodes use a custom ID property', () => {
+
+        it('should deselect any nodes after the first (depth-first)', () => {
+          nodes = generateNodes(['sf', ['S'], 'S']);
+
+          nodes[0].newid = nodes[0].id;
+          nodes[0].treeNodeSpec.idProperty = 'newid';
+          delete nodes[0].id;
+          nodes[0].children[0].newid = nodes[0].children[0].id;
+          nodes[0].children[0].treeNodeSpec.idProperty = 'newid';
+          delete nodes[0].children[0].id;
+          nodes[1].newid = nodes[1].id;
+          nodes[1].treeNodeSpec.idProperty = 'newid';
+          delete nodes[1].id;
+
+          const selectionMode = ref(SelectionMode.Single);
+          const focusableNodeModel = ref(nodes[0]);
+          const { enforceSelectionMode } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeModel, emit);
+          enforceSelectionMode();
+
+          expect(nodes[0].treeNodeSpec.state.selected).to.be.false;
+          expect(nodes[0].children[0].treeNodeSpec.state.selected).to.be.true;
+          expect(nodes[1].treeNodeSpec.state.selected).to.be.false;
+        });
+      });
     });
 
     describe('and the selection mode is Selection Follows Focus', () => {
