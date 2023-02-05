@@ -28,7 +28,7 @@
         @treeNodeAdd="(t, p)=>$emit(TreeEvent.Add, t, p)"
         @treeNodeDelete="handleChildDeletion"
         @treeNodeAriaFocusableChange="handleFocusableChange"
-        @treeNodeAriaRequestFirstFocus="focusFirst(model)"
+        @treeNodeAriaRequestFirstFocus="(keepCurrentDomFocus) => focusFirst(model, keepCurrentDomFocus)"
         @treeNodeAriaRequestLastFocus="focusLast(model)"
         @treeNodeAriaRequestPreviousFocus="(t) => focusPrevious(model, t)"
         @treeNodeAriaRequestNextFocus="(t, f) => focusNext(model, t, f)"
@@ -55,13 +55,14 @@
 </template>
 
 <script setup>
-import { computed, nextTick, ref, readonly, onMounted, toRef } from 'vue'
+import { computed, nextTick, ref, readonly, onMounted, provide, toRef } from 'vue'
 import SelectionMode from '../enums/selectionMode.js';
 import { useIdGeneration } from '../composables/idGeneration.js'
 import { useTreeViewTraversal } from '../composables/treeViewTraversal.js'
 import { useFocus } from '../composables/focus/focus.js';
 import { useTreeViewFocus } from '../composables/focus/treeViewFocus.js';
 import { useSelection } from '../composables/selection/selection.js';
+import { useTreeViewFilter } from '../composables/filter/treeViewFilter.js';
 import { useTreeViewSelection } from '../composables/selection/treeViewSelection.js';
 import { useTreeViewDragAndDrop } from '../composables/dragDrop/treeViewDragAndDrop.js';
 import { useTreeViewConvenienceMethods } from '../composables/treeViewConvenienceMethods.js';
@@ -86,6 +87,11 @@ const props = defineProps({
 
       return true;
     }
+  },
+  filterMethod: {
+    type: Function,
+    required: false,
+    default: null
   },
   initialModel: {
     type: Array,
@@ -186,7 +192,6 @@ const {
   handleNodeSelectedChange,
 } = useTreeViewSelection(model, toRef(props, "selectionMode"), focusableNodeModel, emit);
 
-
 const {
   isSelectable,
   isSelected,
@@ -203,6 +208,8 @@ const {
 } = useTreeViewConvenienceMethods(model, radioGroupValues, toRef(props, "selectionMode"));
 
 const { dragMoveNode, drop } = useTreeViewDragAndDrop(model, uniqueId, findById, removeById);
+
+useTreeViewFilter(model);
 
 // COMPUTED
 
@@ -322,6 +329,10 @@ function handleNodeDeletion(node) {
     }
   }
 }
+
+// PROVIDE/INJECT
+
+provide("filterMethod", toRef(props, 'filterMethod'));
 
 // CREATION LOGIC
 

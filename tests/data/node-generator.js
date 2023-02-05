@@ -22,7 +22,7 @@ import InputType from '../../src/enums/inputType';
  * @param {Array<String|Array>} nodeSpec The node specification array.
  * @param {String} baseId The base string used in the node IDs.
  * @param {Function} addChildCallback A method that returns a Promise that resolves to the node data to add as a subnode.
- * @param {Function} loadChildrenAsync A method tha treturns a Promise that resolves to child nodes to set as the children.
+ * @param {Function} loadChildrenAsync A method that returns a Promise that resolves to child nodes to set as the children.
  * @returns {TreeViewNode[]} The requested nodes
  */
 export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, loadChildrenAsync = null) {
@@ -48,7 +48,8 @@ export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, lo
                 treeNodeSpec: {
                     _: {
                         state: {
-                            areChildrenLoaded: loadChildrenAsync === null
+                            areChildrenLoaded: loadChildrenAsync === null,
+                            matchesFilter: true
                         }
                     },
                     childrenProperty: 'children',

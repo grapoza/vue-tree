@@ -1,6 +1,7 @@
 import { computed, watch } from 'vue';
 import { useExpansion } from './expansion.js';
 import { useTreeViewNodeChildren } from '../children/treeViewNodeChildren.js';
+import { useTreeViewNodeFilter } from '../filter/treeViewNodeFilter.js';
 import TreeEvent from '../../enums/event.js';
 
 /**
@@ -18,13 +19,16 @@ export function useTreeViewNodeExpansion(nodeModel, emit) {
 
   const {
     loadChildren,
-    mayHaveChildren,
   } = useTreeViewNodeChildren(nodeModel, emit);
+
+  const {
+    mayHaveFilteredChildren,
+  } = useTreeViewNodeFilter(nodeModel, emit);
 
   const ariaExpanded = computed(() => canExpand.value ? isNodeExpanded() : null);
 
   const canExpand = computed(() => {
-    return mayHaveChildren.value && isNodeExpandable();
+    return isNodeExpandable() && mayHaveFilteredChildren.value;
   });
 
   watch(() => nodeModel.value.treeNodeSpec.state.expanded, async function () {

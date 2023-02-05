@@ -9,6 +9,14 @@ import { useFocus } from '../focus/focus.js';
 
 const { closest } = useDomMethods();
 
+/**
+ * Composable dealing with drag-and-drop handling at the tree view node.
+ * @param {Ref<TreeViewNode>} model A Ref to the model of the node
+ * @param {Ref<TreeViewNode[]>} children A Ref to the children of the node
+ * @param {Ref<string>} treeId A Ref to the tree ID
+ * @param {Function} emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
+ * @returns {Object} Methods to deal with tree view node level drag-and-drop
+ */
 export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
 
   const { unfocus } = useFocus();

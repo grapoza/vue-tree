@@ -36,4 +36,5 @@ export { AddRemove } from './definitions/TreeView.AddRemove';
 export { Selection } from './definitions/TreeView.Selection';
 export { Async } from './definitions/TreeView.Async';
 export { DragDrop } from './definitions/TreeView.DragDrop';
+export { Filtering } from './definitions/TreeView.Filtering';
 export { ClassCustomization, SkinCustomization } from './definitions/TreeView.Customization';

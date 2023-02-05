@@ -5,7 +5,7 @@ import { generateNodes } from '../../../tests/data/node-generator.js';
 import { dropEffect as DropEffect, effectAllowed as EffectAllowed } from '../../enums/dragDrop';
 import MimeType from '../../enums/mimeType';
 
-const serializedNodeData = '{"id":"n0","label":"Node 0","children":[],"treeNodeSpec":{"_":{"dragging":false,"state":{"areChildrenLoaded":true,"areChildrenLoading":false}},"childrenProperty":"children","idProperty":"id","labelProperty":"label","loadChildrenAsync":null,"expandable":false,"selectable":true,"deletable":false,"focusable":false,"input":{"type":"checkbox","name":"n0-cbx"},"state":{"expanded":false,"selected":false,"input":{"disabled":false,"value":false}},"addChildCallback":null,"draggable":false,"allowDrop":false,"dataTransferEffectAllowed":"copyMove","title":null,"expanderTitle":null,"addChildTitle":null,"deleteTitle":null,"customizations":{}}}';
+const serializedNodeData = '{"id":"n0","label":"Node 0","children":[],"treeNodeSpec":{"_":{"dragging":false,"state":{"areChildrenLoaded":true,"areChildrenLoading":false,"matchesFilter":true,"subnodeMatchesFilter":false}},"childrenProperty":"children","idProperty":"id","labelProperty":"label","loadChildrenAsync":null,"expandable":false,"selectable":true,"deletable":false,"focusable":false,"input":{"type":"checkbox","name":"n0-cbx"},"state":{"expanded":false,"selected":false,"input":{"disabled":false,"value":false}},"addChildCallback":null,"draggable":false,"allowDrop":false,"dataTransferEffectAllowed":"copyMove","title":null,"expanderTitle":null,"addChildTitle":null,"deleteTitle":null,"customizations":{}}}';
 
 const getDefaultPropsData = function () {
   return {
@@ -43,7 +43,12 @@ function createWrapper(customPropsData, customAttrs) {
     sync: false,
     props: customPropsData || getDefaultPropsData(),
     attrs: customAttrs,
-    attachTo: elem
+    attachTo: elem,
+    global: {
+      provide: {
+        filterMethod: null
+      }
+    }
   });
 };
 

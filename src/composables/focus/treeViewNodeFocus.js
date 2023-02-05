@@ -1,5 +1,6 @@
 import { computed, unref, watch } from 'vue'
 import { useFocus } from './focus.js';
+import { useChildren } from '../children/children.js';
 import TreeEvent from '../../enums/event.js';
 
 /**
@@ -14,21 +15,30 @@ export function useTreeViewNodeFocus(nodeModel, nodeElement, emit, isMounted) {
 
   const { focus, focusFirst, focusLast, focusNext, focusPrevious, isFocused, unfocus } = useFocus();
 
-  const nodeModelChildren = computed(() => nodeModel.value[nodeModel.value.treeNodeSpec.childrenProperty]);
+  const { getChildren } = useChildren();
+
+  const nodeModelChildren = computed(() => getChildren(nodeModel));
 
   watch(() => nodeModel.value.treeNodeSpec.focusable, function (newValue) {
     if (newValue === true) {
       // If focusable is set to true and the tree is mounted in the DOM,
-      // also focus the node's element.
-      if (isMounted.value) {
+      // also focus the node's element unless explicitly told not to do so.
+      if (isMounted.value && !nodeModel.value.treeNodeSpec._.keepCurrentDomFocus) {
         nodeElement.value.focus();
       }
+
+      delete nodeModel.value.treeNodeSpec._.keepCurrentDomFocus;
+
       emit(TreeEvent.FocusableChange, nodeModel.value);
     }
   });
 
-  function focusNode() {
-    focus(nodeModel);
+  /**
+   * Marks the node as the focusable node in the tree
+   * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
+   */
+  function focusNode(keepCurrentDomFocus = false) {
+    focus(nodeModel, keepCurrentDomFocus);
   }
 
   function unfocusNode() {
@@ -41,16 +51,18 @@ export function useTreeViewNodeFocus(nodeModel, nodeElement, emit, isMounted) {
 
   /**
    * Sets the first node in the node's children as focusable.
+   * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
-  function focusFirstChild() {
-    focusFirst(nodeModelChildren.value);
+  function focusFirstChild(keepCurrentDomFocus = false) {
+    focusFirst(nodeModelChildren.value, keepCurrentDomFocus);
   }
 
   /**
    * Sets the last expanded node in this part of the hierarchy as focusable.
+   * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
-  function focusLastChild() {
-    focusLast(nodeModelChildren.value);
+  function focusLastChild(keepCurrentDomFocus = false) {
+    focusLast(nodeModelChildren.value, keepCurrentDomFocus);
   }
 
   /**
@@ -59,11 +71,12 @@ export function useTreeViewNodeFocus(nodeModel, nodeElement, emit, isMounted) {
    * @param {Boolean} ignoreChild True to not consider child nodes. This would be true if a user
    * requests to focus the next node while on the last child of this node; the next sibling of
    * this node should gain focus in that case, or the parent node if there is no next sibling.
+   * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
-  function focusNextNode(childNode, ignoreChild) {
+  function focusNextNode(childNode, ignoreChild, keepCurrentDomFocus = false) {
     // Call focusNext and see if it succeeds in focusing.
     // If not, punt this up to this node's parent.
-    if (!focusNext(nodeModelChildren.value, childNode, ignoreChild)) {
+    if (!focusNext(nodeModelChildren.value, childNode, ignoreChild, keepCurrentDomFocus)) {
       emit(TreeEvent.RequestNextFocus, unref(nodeModel), true);
     }
   }
@@ -71,11 +84,12 @@ export function useTreeViewNodeFocus(nodeModel, nodeElement, emit, isMounted) {
   /**
    * Focuses the previous node in the tree
    * @param {TreeViewNode} childNode The node from which focusable should be moved
+   * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
-  function focusPreviousNode(childNode) {
+  function focusPreviousNode(childNode, keepCurrentDomFocus = false) {
     // If focusing previous of the first child, focusPrevious returns false. Focus this node.
-    if (!focusPrevious(nodeModelChildren.value, childNode)) {
-      focusNode();
+    if (!focusPrevious(nodeModelChildren.value, childNode, keepCurrentDomFocus)) {
+      focusNode(keepCurrentDomFocus);
     }
   }
 

@@ -7,6 +7,14 @@ const { resolveNodeIdConflicts } = useIdGeneration();
 const { cheapCopyObject } = useObjectMethods();
 const { unfocus } = useFocus();
 
+/**
+ * Composable dealing with drag-and-drop handling at the top level of the tree view.
+ * @param {Ref<TreeViewNode[]>} treeModel A Ref to the top level model of the tree
+ * @param {Ref<string>} uniqueId A Ref to the unique ID for the tree.
+ * @param {Function} findById A function to find a node by ID
+ * @param {Function} removeById A function to remove a node by ID
+ * @returns {Object} Methods to deal with tree view level drag-and-drop
+ */
 export function useTreeViewDragAndDrop(treeModel, uniqueId, findById, removeById) {
   /**
    * Removes the given node from this node's children
