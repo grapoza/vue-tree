@@ -27,6 +27,7 @@ Features include:
 - Asynchronous loading of nodes
 - Follows ARIA guidelines for treeview accessibility
 - Drag and drop (single nodes, works between trees)
+- Filtering
 
 For future plans, see the project's [Issues](https://github.com/grapoza/vue-tree/issues) page.
 
@@ -134,6 +135,7 @@ To see it in action, try out the [demos](/docs/examples-treeview--basic#examples
 | modelDefaults     | Object   | An object containing defaults for all nodes that do not specify the given properties               | `{}`                              |          |
 | selectionMode     | String   | How selection should operate (see [Selection Mode](#selection-mode))                               | `null` (cannot select nodes)      |          |
 | skinClass         | String   | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins))               | `"grtv-default-skin"`             |          |
+| filterMethod      | Function | A boolean function against which nodes are evaluated to see if they should be included in the tree | `null` (no filtering)             |          |
 
 ## Selection Mode
 
@@ -489,3 +491,9 @@ The tree view uses a roaming tab index to maintain focusability in the tree. A n
 ### More about ARIA Tree Views
 
 [WAI-ARIA Authoring Best Practices, Tree View](https://www.w3.org/TR/wai-aria-practices-1.1/#TreeView)
+
+## Filtering
+
+If a `filterMethod` property is provided to the treeView then each node will get evaulated against that method, any node for which the function returns `true` or for which a subnode returns `true` will show in the tree view and get included in things like keyboard navigation or focusing. The method takes one parameter, which is the node. For example, to only show nodes with a description including "steve" you could use the method:
+
+`(node) => node.label.toLowerCase().includes('steve')`

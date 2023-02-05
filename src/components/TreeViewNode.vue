@@ -6,8 +6,11 @@
   <li :id="nodeId"
       ref="nodeElement"
       class="grtvn"
-      :class="[customClasses.treeViewNode,
-      tns._.dragging ? 'grtvn-dragging' : '']"
+      :class="[
+        customClasses.treeViewNode,
+        tns._.dragging ? 'grtvn-dragging' : '',
+        filterIncludesNode ? '' : 'grtvn-hidden'
+      ]"
       role="treeitem"
       :tabindex="tabIndex"
       :aria-expanded="ariaExpanded"
@@ -197,7 +200,7 @@
                       @treeNodeDelete="handleChildDeletion"
                       @treeNodeAriaFocusableChange="(t)=>$emit(TreeEvent.FocusableChange, t)"
                       @treeNodeAriaRequestParentFocus="()=>focusNode()"
-                      @treeNodeAriaRequestFirstFocus="()=>$emit(TreeEvent.RequestFirstFocus)"
+                      @treeNodeAriaRequestFirstFocus="(keepCurrentDomFocus)=>$emit(TreeEvent.RequestFirstFocus, keepCurrentDomFocus)"
                       @treeNodeAriaRequestLastFocus="()=>$emit(TreeEvent.RequestLastFocus)"
                       @treeNodeAriaRequestPreviousFocus="focusPreviousNode"
                       @treeNodeAriaRequestNextFocus="focusNextNode"
@@ -231,6 +234,7 @@ import { useFocus } from '../composables/focus/focus.js';
 import { useTreeViewNodeFocus } from '../composables/focus/treeViewNodeFocus.js';
 import { useTreeViewNodeSelection } from '../composables/selection/treeViewNodeSelection.js';
 import { useTreeViewNodeExpansion } from '../composables/expansion/treeViewNodeExpansion.js';
+import { useTreeViewNodeFilter } from '../composables/filter/treeViewNodeFilter.js';
 import SelectionMode from '../enums/selectionMode.js';
 import TreeEvent from '../enums/event.js';
 
@@ -349,8 +353,13 @@ const {
   children,
   deleteChild,
   hasChildren,
-  mayHaveChildren,
 } = useTreeViewNodeChildren(model, emit);
+
+const {
+  filteredChildren,
+  filterIncludesNode,
+  mayHaveFilteredChildren
+} = useTreeViewNodeFilter(model, emit);
 
 const {
   focus,
@@ -484,9 +493,9 @@ function onKeyDown(event) {
     // When focus is on a closed node, opens the node; focus does not move.
     // When focus is on a open node, moves focus to the first child node.
     // When focus is on an end node, does nothing.
-    if (mayHaveChildren.value && !areChildrenLoading.value) {
+    if (mayHaveFilteredChildren.value && !areChildrenLoading.value) {
       if (!expandNode() && isNodeExpanded()) {
-        focus(children.value[0]);
+        focus(filteredChildren.value[0]);
       }
     }
   }
@@ -551,12 +560,12 @@ function onKeyDown(event) {
 function handleChildDeletion(node) {
   // Remove the node from the array of children if this is an immediate child.
   // Note that only the node that was deleted fires these, not any subnode.
-  let targetIndex = children.value.indexOf(node);
+  let targetIndex = filteredChildren.value.indexOf(node);
   if (targetIndex > -1) {
     if (isFocused(node)) {
       // When this is the first of several siblings, focus the next node.
       // Otherwise, focus the previous node.
-      if (children.value.length > 1 && children.value.indexOf(node) === 0) {
+      if (filteredChildren.value.length > 1 && filteredChildren.value.indexOf(node) === 0) {
         focusNextNode(node);
       }
       else {
@@ -735,5 +744,9 @@ if (!label.value || typeof label.value !== 'string') {
   .grtv-wrapper.grtv-default-skin .grtvn-children {
     padding: 0;
     list-style: none;
+  }
+
+  .grtv-wrapper.grtv-default-skin .grtvn.grtvn-hidden {
+    display: none;
   }
 </style>

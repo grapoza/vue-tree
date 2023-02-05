@@ -1,5 +1,6 @@
 import { unref } from 'vue';
 import { useExpansion } from '../expansion/expansion.js';
+import { useFilter } from '../filter/filter.js';
 
 /**
  * Composable dealing with focus handling on an arbitrary node.
@@ -9,11 +10,18 @@ export function useFocus() {
 
   const { isExpanded } = useExpansion();
 
+  const {
+    getFilteredChildren,
+    getFilteredNodes
+  } = useFilter();
+
   /**
    * Marks the given node as the focusable node in the tree
    * @param {TreeViewNode} targetNodeModel The model to mark as focusable
+   * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
-  function focus(targetNodeModel) {
+  function focus(targetNodeModel, keepCurrentDomFocus = false) {
+    unref(targetNodeModel).treeNodeSpec._.keepCurrentDomFocus = keepCurrentDomFocus;
     unref(targetNodeModel).treeNodeSpec.focusable = true;
   }
 
@@ -36,26 +44,32 @@ export function useFocus() {
   /**
    * Sets the first node in the node collection as focusable.
    * @param {TreeViewNode[]} targetCollection The collection of nodes
+   * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
-  function focusFirst(targetCollection) {
-    if (targetCollection.length > 0) {
-      focus(targetCollection[0]);
+  function focusFirst(targetCollection, keepCurrentDomFocus = false) {
+    const filteredCollection = getFilteredNodes(targetCollection);
+
+    if (filteredCollection.length > 0) {
+      focus(filteredCollection[0], keepCurrentDomFocus);
     }
   }
 
   /**
    * Sets the last expanded node in the given part of the hierarchy as focusable.
    * @param {TreeViewNode[]} targetCollection The collection of nodes
+   * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
-  function focusLast(targetCollection) {
-    let lastModel = targetCollection[targetCollection.length - 1];
-    let lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
+  function focusLast(targetCollection, keepCurrentDomFocus = false) {
+    const filteredCollection = getFilteredNodes(targetCollection);
+
+    let lastModel = filteredCollection[filteredCollection.length - 1];
+    let lastModelChildren = getFilteredChildren(lastModel);
     while (lastModelChildren.length > 0 && isExpanded(lastModel)) {
       lastModel = lastModelChildren[lastModelChildren.length - 1];
-      lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
+      lastModelChildren = getFilteredChildren(lastModel);
     }
 
-    focus(lastModel);
+    focus(lastModel, keepCurrentDomFocus);
   }
 
   /**
@@ -65,20 +79,23 @@ export function useFocus() {
    * @param {Boolean} ignoreChild True to not consider child nodes. This would be true if a user
    * requests to focus the next node while on the last child of this node; the next sibling of
    * this node should gain focus in that case, or the parent node if there is no next sibling.
+   * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    * @return {Boolean} true if a node was focused, false otherwise
    */
-  function focusNext(targetCollection, childNode, ignoreChild) {
+  function focusNext(targetCollection, childNode, ignoreChild, keepCurrentDomFocus = false) {
+    const filteredCollection = getFilteredNodes(targetCollection);
+
     // If the node is expanded, focus first child unless we're ignoring it (this was punted from a grandchild)
     // If the node has a next sibling, focus that
     // Otherwise, return false to let the caller know. A Node will punt to its parent if it has one.
-    let childIndex = targetCollection.indexOf(childNode);
-    let childNodeChildren = childNode[childNode.treeNodeSpec.childrenProperty];
+    let childIndex = filteredCollection.findIndex(n => n[n.treeNodeSpec.idProperty] === childNode[childNode.treeNodeSpec.idProperty]);
+    let childNodeChildren = getFilteredChildren(childNode);
 
     if (!ignoreChild && childNodeChildren.length > 0 && isExpanded(childNode)) {
-      focus(childNodeChildren[0]);
+      focus(childNodeChildren[0], keepCurrentDomFocus);
     }
-    else if (childIndex < targetCollection.length - 1) {
-      focus(targetCollection[childIndex + 1]);
+    else if (childIndex < filteredCollection.length - 1) {
+      focus(filteredCollection[childIndex + 1], keepCurrentDomFocus);
     }
     else {
       return false;
@@ -91,21 +108,25 @@ export function useFocus() {
    * Focuses the previous node in the tree
    * @param {TreeViewNode[]} targetCollection The collection of nodes
    * @param {TreeViewNode} childNode The node from which focusable should be moved
+   * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    * @return {Boolean} true if a node was focused, false otherwise
    */
-  function focusPrevious(targetCollection, childNode) {
+  function focusPrevious(targetCollection, childNode, keepCurrentDomFocus = false) {
+    const filteredCollection = getFilteredNodes(targetCollection);
+
     // If focusing previous of the first child, defer to the caller to focus the parent.
     // If focusing previous of any other node, focus the last expanded node within the previous sibling.
-    let childIndex = targetCollection.indexOf(childNode);
+    let childIndex = filteredCollection.findIndex(n => n[n.treeNodeSpec.idProperty] === childNode[childNode.treeNodeSpec.idProperty]);
+
     if (childIndex !== 0) {
-      let lastModel = targetCollection[childIndex - 1];
-      let lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
+      let lastModel = filteredCollection[childIndex - 1];
+      let lastModelChildren = getFilteredChildren(lastModel);
       while (lastModelChildren.length > 0 && isExpanded(lastModel)) {
         lastModel = lastModelChildren[lastModelChildren.length - 1];
-        lastModelChildren = lastModel[lastModel.treeNodeSpec.childrenProperty];
+        lastModelChildren = getFilteredChildren(lastModel);
       }
 
-      focus(lastModel);
+      focus(lastModel, keepCurrentDomFocus);
       return true;
     }
 

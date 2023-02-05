@@ -1,9 +1,16 @@
+import { useFilter } from "./filter/filter.js";
+
 /**
  * Composable dealing with methods for traversing tree nodes
  * @param {Ref<TreeViewNode>} treeModel A Ref to the model from which traversals should start
  * @returns {Object} Methods for traversing tree nodes
  */
 export function useTreeViewTraversal(treeModel) {
+
+  const {
+    getFilteredChildren,
+    getFilteredNodes
+  } = useFilter();
 
   /**
    * Traverses the tree breadth-first and performs a callback action against each node.
@@ -28,23 +35,22 @@ export function useTreeViewTraversal(treeModel) {
    */
   function traverse(nodeActionCallback, depthFirst) {
 
-    if (treeModel.value.length === 0) {
+    const filteredNodes = getFilteredNodes(treeModel);
+    if (filteredNodes.length === 0) {
       return;
     }
 
-    let nodeQueue = treeModel.value.slice();
+    let nodeQueue = filteredNodes.slice();
     let continueCallbacks = true;
 
     while (nodeQueue.length > 0 && continueCallbacks !== false) {
-      let current = nodeQueue.shift();
+      const current = nodeQueue.shift();
 
       // Push children to the front (depth-first) or the back (breadth-first)
-      let childrenPropName = current.treeNodeSpec.childrenProperty;
-      if (Array.isArray(current[childrenPropName])) {
-        nodeQueue = depthFirst
-          ? current[childrenPropName].concat(nodeQueue)
-          : nodeQueue.concat(current[childrenPropName]);
-      }
+      const children = getFilteredChildren(current);
+      nodeQueue = depthFirst
+        ? children.concat(nodeQueue)
+        : nodeQueue.concat(children);
 
       // Use a return value of false to halt calling the callback on further nodes.
       continueCallbacks = nodeActionCallback(current);

@@ -1,4 +1,5 @@
 import { computed } from 'vue';
+import { useChildren } from './children.js';
 import TreeEvent from '../../enums/event.js';
 
 /**
@@ -9,11 +10,15 @@ import TreeEvent from '../../enums/event.js';
  */
 export function useTreeViewNodeChildren(nodeModel, emit) {
 
+  const {
+    getChildren
+  } = useChildren();
+
   const areChildrenLoaded = computed(() => typeof nodeModel.value.treeNodeSpec.loadChildrenAsync !== 'function' || nodeModel.value.treeNodeSpec._.state.areChildrenLoaded);
 
   const areChildrenLoading = computed(() => nodeModel.value.treeNodeSpec._.state.areChildrenLoading);
 
-  const children = computed(() => nodeModel.value[nodeModel.value.treeNodeSpec.childrenProperty ?? 'children']);
+  const children = computed(() => getChildren(nodeModel));
 
   const hasChildren = computed(() => children.value && children.value.length > 0);
 

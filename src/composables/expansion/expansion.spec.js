@@ -1,4 +1,4 @@
-import { beforeEach, expect, describe, it, vi } from 'vitest';
+import { expect, describe, it } from 'vitest';
 import { ref } from 'vue';
 import { useExpansion } from './expansion.js';
 import { generateNodes } from '../../../tests/data/node-generator.js';

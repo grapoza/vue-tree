@@ -34,7 +34,12 @@ async function createWrapper(customPropsData, slotsData) {
     sync: false,
     props: customPropsData || getDefaultPropsData(),
     slots: slotsData,
-    attachTo: '#root'
+    attachTo: '#root',
+    global: {
+      provide: {
+        filterMethod: null
+      }
+    }
   });
 
   await w.setProps({ isMounted: true });
