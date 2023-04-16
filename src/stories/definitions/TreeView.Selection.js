@@ -50,7 +50,7 @@ Selection.args = {
 
 const docSourceCode = `
 <template>
-  <tree-view :initial-model="tvModel" :selection-mode="single"></tree-view>
+  <tree-view :initial-model="tvModel" selection-mode="single"></tree-view>
 </template>
 <script setup>
 import { ref } from "vue";
