@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { mount, flushPromises } from '@vue/test-utils';
 import TreeViewNode from './TreeViewNode.vue';
 import { generateNodes } from '../../tests/data/node-generator.js';
 import SelectionMode from '../enums/selectionMode';
@@ -1306,29 +1306,103 @@ describe('TreeViewNode.vue', () => {
 
     let deleteButton = null;
 
-    beforeEach(async () => {
-      wrapper = await createWrapper({
-        ariaKeyMap: {},
-        initialModel: generateNodes(['es', ['ds']])[0],
-        modelDefaults: {},
-        depth: 0,
-        treeId: 'tree',
-        initialRadioGroupValues: {},
-        isMounted: false
+    describe('and a deleteNodeCallback is not provided', () => {
+
+      beforeEach(async () => {
+        wrapper = await createWrapper({
+          ariaKeyMap: {},
+          initialModel: generateNodes(['es', ['ds']])[0],
+          modelDefaults: {},
+          depth: 0,
+          treeId: 'tree',
+          initialRadioGroupValues: {},
+          isMounted: false
+        });
+
+        let childNode = wrapper.findAllComponents(TreeViewNode)[0];
+        deleteButton = wrapper.find('#' + childNode.vm.nodeId + '-delete');
       });
 
-      let childNode = wrapper.findAllComponents(TreeViewNode)[0];
-      deleteButton = wrapper.find('#' + childNode.vm.nodeId + '-delete');
+      it('should emit the treeNodeDelete event', async () => {
+        deleteButton.trigger('click');
+        await flushPromises();
+
+        expect(wrapper.emitted().treeNodeDelete.length).to.equal(1);
+      });
+
+      it('should remove the target node from the model', async () => {
+        deleteButton.trigger('click');
+        await flushPromises();
+
+        expect(wrapper.vm.model.children.length).to.equal(0);
+      });
     });
 
-    it('should emit the treeNodeDelete event', () => {
-      deleteButton.trigger('click');
-      expect(wrapper.emitted().treeNodeDelete.length).to.equal(1);
-    });
+    describe('and a deleteNodeCallback is provided', () => {
 
-    it('should remove the target node from the model', () => {
-      deleteButton.trigger('click');
-      expect(wrapper.vm.model.children.length).to.equal(0);
+      describe('and that callback returns true', () => {
+
+        beforeEach(async () => {
+          wrapper = await createWrapper({
+            ariaKeyMap: {},
+            initialModel: generateNodes(['es', ['ds']])[0],
+            modelDefaults: { deleteNodeCallback: () => Promise.resolve(true) },
+            depth: 0,
+            treeId: 'tree',
+            initialRadioGroupValues: {},
+            isMounted: false
+          });
+
+          let childNode = wrapper.findAllComponents(TreeViewNode)[0];
+          deleteButton = wrapper.find('#' + childNode.vm.nodeId + '-delete');
+        });
+
+        it('should emit the treeNodeDelete event', async () => {
+          deleteButton.trigger('click');
+          await flushPromises();
+
+          expect(wrapper.emitted().treeNodeDelete.length).to.equal(1);
+        });
+
+        it('should remove the target node from the model', async () => {
+          deleteButton.trigger('click');
+          await flushPromises();
+
+          expect(wrapper.vm.model.children.length).to.equal(0);
+        });
+      });
+
+      describe('and that callback returns false', () => {
+
+        beforeEach(async () => {
+          wrapper = await createWrapper({
+            ariaKeyMap: {},
+            initialModel: generateNodes(['es', ['ds']])[0],
+            modelDefaults: { deleteNodeCallback: () => Promise.resolve(false) },
+            depth: 0,
+            treeId: 'tree',
+            initialRadioGroupValues: {},
+            isMounted: false
+          });
+
+          let childNode = wrapper.findAllComponents(TreeViewNode)[0];
+          deleteButton = wrapper.find('#' + childNode.vm.nodeId + '-delete');
+        });
+
+        it('should not emit the treeNodeDelete event', async () => {
+          deleteButton.trigger('click');
+          await flushPromises();
+
+          expect(wrapper.emitted().treeNodeDelete).to.be.undefined;
+        });
+
+        it('should not remove the target node from the model', async () => {
+          deleteButton.trigger('click');
+          await flushPromises();
+
+          expect(wrapper.vm.model.children.length).to.equal(1);
+        });
+      });
     });
   });
 
@@ -1358,24 +1432,21 @@ describe('TreeViewNode.vue', () => {
 
       it('should emit the treeNodeAdd event', async () => {
         addChildButton.trigger('click');
-
-        await Promise.resolve(); // This just lets the callback resolve before the expect.
+        await flushPromises();
 
         expect(wrapper.emitted().treeNodeAdd.length).to.equal(1);
       });
 
       it('should pass the new node data to the treeNodeAdd event', async () => {
         addChildButton.trigger('click');
-
-        await Promise.resolve(); // This just lets the callback resolve before the expect.
+        await flushPromises();
 
         expect(wrapper.emitted().treeNodeAdd[0][0].id).to.equal('newId');
       });
 
       it('should add a subnode to the target node from the model', async () => {
         addChildButton.trigger('click');
-
-        await Promise.resolve(); // This just lets the callback resolve before the expect.
+        await flushPromises();
 
         expect(wrapper.vm.model.children.length).to.equal(1);
       });
@@ -1403,16 +1474,14 @@ describe('TreeViewNode.vue', () => {
 
       it('should not emit the treeNodeAdd event', async () => {
         addChildButton.trigger('click');
-
-        await Promise.resolve(); // This just lets the callback resolve before the expect.
+        await flushPromises();
 
         expect(wrapper.emitted().treeNodeAdd).to.be.undefined;
       });
 
       it('should add a subnode to the target node from the model', async () => {
         addChildButton.trigger('click');
-
-        await Promise.resolve(); // This just lets the callback resolve before the expect.
+        await flushPromises();
 
         expect(wrapper.vm.model.children.length).to.equal(0);
       });

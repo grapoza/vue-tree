@@ -61,6 +61,9 @@ export function useNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
     if (typeof tns.addChildCallback !== 'function') {
       tns.addChildCallback = null;
     }
+    if (typeof tns.deleteNodeCallback !== 'function') {
+      tns.deleteNodeCallback = null;
+    }
 
     if (typeof tns.title !== 'string' || tns.title.trim().length === 0) {
       tns.title = null;

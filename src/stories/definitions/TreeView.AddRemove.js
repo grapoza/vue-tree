@@ -13,12 +13,15 @@ export const AddRemove = Template.bind({});
 
 AddRemove.args = {
   initialModel: addRemoveTreeData,
-  modelDefaults: { addChildCallback: addChildCallback },
+  modelDefaults: { addChildCallback, deleteNodeCallback },
 };
 let addRemoveChildCounter = 0;
 function addChildCallback(parentModel) {
   addRemoveChildCounter++;
   return Promise.resolve({ id: `child-node${addRemoveChildCounter}`, label: `Added Child ${addRemoveChildCounter} from parent ${parentModel.id}`, treeNodeSpec: { deletable: true, state: { expanded: true } } });
+}
+function deleteNodeCallback(model) {
+  return Promise.resolve(window.confirm(`Delete node ${model.id}?`));
 }
 
 const docSourceCode = `
@@ -42,6 +45,9 @@ function addChildCallback(parentModel) {
     label: \`Added Child \${ addRemoveChildCounter } from parent \${ parentModel.id }\`,
     treeNodeSpec: { deletable: true, state: { expanded: true } }
   });
+}
+function deleteNodeCallback(model) {
+  return Promise.resolve(window.confirm(\`Delete node \${ model.id }?\`));
 }
 </script>`;
 

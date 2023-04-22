@@ -47,7 +47,7 @@ If there are common settings that should be used by all (or even most) nodes, th
 
 ## Adding and Removing Nodes
 
-Any node can be marked as deletable or provide a callback used to create a new child node. To make a node deletable, just set a `deletable` property to `true` in that node's `treeNodeSpec`. To allow a node to have children added, set an `addChildCallback` property on the node's `treeNodeSpec` (or use `modelDefaults` to use the same callback for all nodes). The `addChildCallback` can take the parent node's model data as an argument, and should return a Promise that resolves to the node data to add.
+Any node can be marked as deletable or provide a callback used to create a new child node. To allow a node to have children added, set an `addChildCallback` property on the node's `treeNodeSpec` (or use `modelDefaults` to use the same callback for all nodes). The `addChildCallback` can take the parent node's model data as an argument, and should return a Promise that resolves to the node data to add. To make a node deletable, just set a `deletable` property to `true` in that node's `treeNodeSpec`. You can optionally specify a `deleteNodeCallback` method that accepts the node model to delete as an argument and returns a Promise resoving to a boolean indicating whether to delete that node.
 
 <a target="_blank" href="assets_data/addRemoveTreeViewData.js">See the Model Data</a>
 
