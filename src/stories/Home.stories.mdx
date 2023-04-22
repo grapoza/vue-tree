@@ -254,6 +254,7 @@ The `treeNodeSpec` property contains any data about the node's capabilities and 
 | customizations       | Object   | A [customizations](#customizing-the-tree-view) object                                     | `{}`                               |          |
 | addChildCallback     | Function | An async function that resolves to a new node model (called by the add button). The function can take one argument, the model of the parent node. It should return the model of the new child node. | `null` | |
 | loadChildrenAsync    | Function | An async function that resolves to a node's children (called when the parent is expanded). The function can take one argument, the model of the parent node. It should return the models of the children nodes. | `null` | |
+| deleteNodeCallback   | Function | An async function that resolves to a boolean (called by the delete button). The function can take one argument, the model to delete. It should return a boolean indicating whether to delete the node. | `null` | |
 
 \* If `input.type` is not supplied, `input` is forced to `null`.
 

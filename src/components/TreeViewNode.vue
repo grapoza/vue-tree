@@ -449,8 +449,13 @@ function onDblclick(event) {
   }
 }
 
-function onDelete(event) {
-  if (tns.value.deletable) {
+/**
+ * Handles node deletion eventing. A callback can be supplied in the treeNodeSpec to perform
+ * and pre-processing of the node or to cancel the deletion entirely.
+ * @param {Event} event The event that triggered this method call
+ */
+async function onDelete(event) {
+  if (tns.value.deletable && (await tns.value.deleteNodeCallback?.(model.value) ?? true)) {
     emit(TreeEvent.Delete, model.value);
   }
 }
