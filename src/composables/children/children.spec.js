@@ -1,6 +1,6 @@
 import { expect, describe, it } from 'vitest';
 import { useChildren } from './children.js';
-import { generateNodes } from 'tests/data/node-generator.js';
+import { generateNodes } from '../../../tests/data/node-generator.js';
 
 const { getChildren } = useChildren();
 

@@ -1,7 +1,7 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 import { ref } from 'vue';
 import { useTreeViewTraversal } from './treeViewTraversal.js';
-import { generateNodes } from 'tests/data/node-generator.js';
+import { generateNodes } from '../../tests/data/node-generator.js';
 
 describe('treeViewTraversal.js', () => {
 
