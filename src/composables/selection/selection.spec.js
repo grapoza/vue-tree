@@ -1,6 +1,6 @@
 import { expect, describe, it } from 'vitest';
 import { useSelection } from './selection.js';
-import { generateNodes } from 'tests/data/node-generator.js';
+import { generateNodes } from '../../../tests/data/node-generator.js';
 
 const {
   select,
