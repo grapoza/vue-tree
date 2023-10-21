@@ -1,16 +1,16 @@
 import { computed, watch } from 'vue';
 import { useExpansion } from './expansion.js';
-import { useTreeViewNodeChildren } from '../children/treeViewNodeChildren.js';
-import { useTreeViewNodeFilter } from '../filter/treeViewNodeFilter.js';
+import { useTreeNodeChildren } from '../children/treeNodeChildren.js';
+import { useTreeNodeFilter } from '../filter/treeNodeFilter.js';
 import TreeEvent from '../../enums/event.js';
 
 /**
- * Composable dealing with expansion handling at the tree view node.
- * @param {Ref<TreeViewNode>} nodeModel A Ref to the model of the node
- * @param {Function} emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
- * @returns {Object} Methods to deal with tree view node level expansion
+ * Composable dealing with expansion handling at the tree node.
+ * @param {Ref<TreeNode>} nodeModel A Ref to the model of the node
+ * @param {Function} emit The node's emit function, used to emit selection events on the node's behalf
+ * @returns {Object} Methods to deal with tree node level expansion
  */
-export function useTreeViewNodeExpansion(nodeModel, emit) {
+export function useTreeNodeExpansion(nodeModel, emit) {
 
   const {
     isExpandable,
@@ -19,11 +19,11 @@ export function useTreeViewNodeExpansion(nodeModel, emit) {
 
   const {
     loadChildren,
-  } = useTreeViewNodeChildren(nodeModel, emit);
+  } = useTreeNodeChildren(nodeModel, emit);
 
   const {
     mayHaveFilteredChildren,
-  } = useTreeViewNodeFilter(nodeModel, emit);
+  } = useTreeNodeFilter(nodeModel);
 
   const ariaExpanded = computed(() => canExpand.value ? isNodeExpanded() : null);
 

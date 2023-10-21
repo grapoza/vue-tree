@@ -1,7 +1,7 @@
 import { beforeEach, expect, describe, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
-import { useTreeViewNodeFilter } from './treeViewNodeFilter.js';
+import { useTreeNodeFilter } from './treeNodeFilter.js';
 import { generateNodes } from '../../../tests/data/node-generator.js';
 import TreeEvent from '../../enums/event.js';
 
@@ -10,7 +10,7 @@ let emit;
 function createTestComponent(node, filterMethod) {
   const TestComponent = defineComponent({
     template: "<div></div>",
-    setup() { return useTreeViewNodeFilter(node, emit) }
+    setup() { return useTreeNodeFilter(node, emit) }
   });
 
   const wrapper = mount(TestComponent, {

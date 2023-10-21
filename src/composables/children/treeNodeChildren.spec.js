@@ -1,12 +1,12 @@
 import { beforeEach, expect, describe, it, vi } from 'vitest';
 import { ref } from 'vue';
-import { useTreeViewNodeChildren } from './treeViewNodeChildren.js';
+import { useTreeNodeChildren } from './treeNodeChildren.js';
 import { generateNodes } from '../../../tests/data/node-generator.js';
 import TreeEvent from '../../enums/event.js';
 
 let emit;
 
-describe('treeViewNodeChildren.js', () => {
+describe('TreeNodeChildren.js', () => {
 
   beforeEach(() => {
     emit = vi.fn();
@@ -18,7 +18,7 @@ describe('treeViewNodeChildren.js', () => {
 
       it('should return true', () => {
         const node = ref(generateNodes(['es'])[0]);
-        const { areChildrenLoaded } = useTreeViewNodeChildren(node, emit);
+        const { areChildrenLoaded } = useTreeNodeChildren(node, emit);
         expect(areChildrenLoaded.value).to.be.true;
       });
     });
@@ -32,7 +32,7 @@ describe('treeViewNodeChildren.js', () => {
         it('should return true', () => {
           const node = ref(generateNodes([''], '', null, asyncLoader)[0]);
           node.value.treeNodeSpec._.state.areChildrenLoaded = true;
-          const { areChildrenLoaded } = useTreeViewNodeChildren(node, emit);
+          const { areChildrenLoaded } = useTreeNodeChildren(node, emit);
           expect(areChildrenLoaded.value).to.be.true;
         });
       });
@@ -42,7 +42,7 @@ describe('treeViewNodeChildren.js', () => {
         it('should return false', () => {
           const node = ref(generateNodes([''], '', null, asyncLoader)[0]);
           node.value.treeNodeSpec._.state.areChildrenLoaded = false;
-          const { areChildrenLoaded } = useTreeViewNodeChildren(node, emit);
+          const { areChildrenLoaded } = useTreeNodeChildren(node, emit);
           expect(areChildrenLoaded.value).to.be.false;
         });
       });
@@ -56,7 +56,7 @@ describe('treeViewNodeChildren.js', () => {
       it('should return true', () => {
         const node = ref(generateNodes(['es'])[0]);
         node.value.treeNodeSpec._.state.areChildrenLoading = true;
-        const { areChildrenLoading } = useTreeViewNodeChildren(node, emit);
+        const { areChildrenLoading } = useTreeNodeChildren(node, emit);
         expect(areChildrenLoading.value).to.be.true;
       });
     });
@@ -66,7 +66,7 @@ describe('treeViewNodeChildren.js', () => {
       it('should return false', () => {
         const node = ref(generateNodes(['es'])[0]);
         node.value.treeNodeSpec._.state.areChildrenLoading = false;
-        const { areChildrenLoading } = useTreeViewNodeChildren(node, emit);
+        const { areChildrenLoading } = useTreeNodeChildren(node, emit);
         expect(areChildrenLoading.value).to.be.false;
       });
     });
@@ -81,7 +81,7 @@ describe('treeViewNodeChildren.js', () => {
         node.value.children2 = node.children;
         delete node.value.children;
         node.value.treeNodeSpec.childrenProperty = 'children2';
-        const { children } = useTreeViewNodeChildren(node, emit);
+        const { children } = useTreeNodeChildren(node, emit);
         expect(children.value).to.equal(node.children2);
       });
     });
@@ -91,7 +91,7 @@ describe('treeViewNodeChildren.js', () => {
       it('should return the value of the `children` property', () => {
         const node = ref(generateNodes(['es', ['es', 'es']])[0]);
         delete node.value.treeNodeSpec.childrenProperty;
-        const { children } = useTreeViewNodeChildren(node, emit);
+        const { children } = useTreeNodeChildren(node, emit);
         expect(children.value).to.equal(node.value.children);
       });
     });
@@ -103,7 +103,7 @@ describe('treeViewNodeChildren.js', () => {
 
       it('should return false', () => {
         const node = ref(generateNodes(['es'])[0]);
-        const { hasChildren } = useTreeViewNodeChildren(node, emit);
+        const { hasChildren } = useTreeNodeChildren(node, emit);
         expect(hasChildren.value).to.be.false;
       });
     });
@@ -112,7 +112,7 @@ describe('treeViewNodeChildren.js', () => {
 
       it('should return true', () => {
         const node = ref(generateNodes(['es', ['es', 'es']])[0]);
-        const { hasChildren } = useTreeViewNodeChildren(node, emit);
+        const { hasChildren } = useTreeNodeChildren(node, emit);
         expect(hasChildren.value).to.be.true;
       });
     });
@@ -124,7 +124,7 @@ describe('treeViewNodeChildren.js', () => {
 
       it('should return true', () => {
         const node = ref(generateNodes(['es', ['es', 'es']])[0]);
-        const { mayHaveChildren } = useTreeViewNodeChildren(node, emit);
+        const { mayHaveChildren } = useTreeNodeChildren(node, emit);
         expect(mayHaveChildren.value).to.be.true;
       });
     });
@@ -133,7 +133,7 @@ describe('treeViewNodeChildren.js', () => {
 
       it('should return false', () => {
         const node = ref(generateNodes(['es'])[0]);
-        const { mayHaveChildren } = useTreeViewNodeChildren(node, emit);
+        const { mayHaveChildren } = useTreeNodeChildren(node, emit);
         expect(mayHaveChildren.value).to.be.false;
       });
     });
@@ -143,7 +143,7 @@ describe('treeViewNodeChildren.js', () => {
       it('should return true', () => {
         const node = ref(generateNodes([''], '', null, () => Promise.resolve({}))[0]);
         node.value.treeNodeSpec._.state.areChildrenLoaded = false;
-        const { mayHaveChildren } = useTreeViewNodeChildren(node, emit);
+        const { mayHaveChildren } = useTreeNodeChildren(node, emit);
         expect(mayHaveChildren.value).to.be.true;
       });
     });
@@ -156,7 +156,7 @@ describe('treeViewNodeChildren.js', () => {
       it('should not modify the children list', async () => {
         const node = ref(generateNodes([''], '', null, async () => Promise.resolve(generateNodes(['es'])))[0]);
         node.value.treeNodeSpec._.state.areChildrenLoaded = true;
-        const { children, loadChildren } = useTreeViewNodeChildren(node, emit);
+        const { children, loadChildren } = useTreeNodeChildren(node, emit);
         await loadChildren();
         expect(children.value).toHaveLength(0);
       });
@@ -167,7 +167,7 @@ describe('treeViewNodeChildren.js', () => {
       it('should not modify the children list', async () => {
         const node = ref(generateNodes([''], '', null, async () => Promise.resolve(generateNodes(['es'])))[0]);
         node.value.treeNodeSpec._.state.areChildrenLoading = true;
-        const { children, loadChildren } = useTreeViewNodeChildren(node, emit);
+        const { children, loadChildren } = useTreeNodeChildren(node, emit);
         await loadChildren();
         expect(children.value).toHaveLength(0);
       });
@@ -177,14 +177,14 @@ describe('treeViewNodeChildren.js', () => {
 
       it('should set the node children to the async loader method result', async () => {
         const node = ref(generateNodes([''], '', null, async () => Promise.resolve(generateNodes(['es'])))[0]);
-        const { children, loadChildren } = useTreeViewNodeChildren(node, emit);
+        const { children, loadChildren } = useTreeNodeChildren(node, emit);
         await loadChildren();
         expect(children.value).toHaveLength(1);
       });
 
       it('should emit the children loaded event', async () => {
         const node = ref(generateNodes([''], '', null, async () => Promise.resolve(generateNodes(['es'])))[0]);
-        const { children, loadChildren } = useTreeViewNodeChildren(node, emit);
+        const { children, loadChildren } = useTreeNodeChildren(node, emit);
         await loadChildren();
         expect(emit).toHaveBeenCalledWith(TreeEvent.ChildrenLoad, node.value);
       });
@@ -194,7 +194,7 @@ describe('treeViewNodeChildren.js', () => {
 
       it('should not set the node children', async () => {
         const node = ref(generateNodes([''], '', null, async () => Promise.resolve([]))[0]);
-        const { children, loadChildren } = useTreeViewNodeChildren(node, emit);
+        const { children, loadChildren } = useTreeNodeChildren(node, emit);
         await loadChildren();
         expect(children.value).toHaveLength(0);
       });
@@ -207,14 +207,14 @@ describe('treeViewNodeChildren.js', () => {
 
       it('should modify the children list', async () => {
         const node = ref(generateNodes(['es'], null, async () => Promise.resolve(generateNodes(['es'])[0]))[0]);
-        const { children, addChild } = useTreeViewNodeChildren(node, emit);
+        const { children, addChild } = useTreeNodeChildren(node, emit);
         await addChild();
         expect(children.value).toHaveLength(1);
       });
 
       it('should emit the children added event', async () => {
         const node = ref(generateNodes(['es'], null, async () => Promise.resolve(generateNodes(['es'])[0]))[0]);
-        const { children, addChild } = useTreeViewNodeChildren(node, emit);
+        const { children, addChild } = useTreeNodeChildren(node, emit);
         await addChild();
         expect(emit).toHaveBeenCalledWith(TreeEvent.Add, children.value[0], node.value);
       });
@@ -224,7 +224,7 @@ describe('treeViewNodeChildren.js', () => {
 
       it('should not modify the children list', async () => {
         const node = ref(generateNodes(['es'], null, async () => Promise.resolve(null))[0]);
-        const { children, addChild } = useTreeViewNodeChildren(node, emit);
+        const { children, addChild } = useTreeNodeChildren(node, emit);
         await addChild();
         expect(children.value).toHaveLength(0);
       });
@@ -235,7 +235,7 @@ describe('treeViewNodeChildren.js', () => {
 
     it('should remove the child from the children list', () => {
       const node = ref(generateNodes(['es', ['es', 'es']])[0]);
-      const { children, deleteChild } = useTreeViewNodeChildren(node, emit);
+      const { children, deleteChild } = useTreeNodeChildren(node, emit);
       const deletedNode = children.value[0];
       deleteChild(deletedNode);
       expect(children.value).toHaveLength(1);
@@ -243,7 +243,7 @@ describe('treeViewNodeChildren.js', () => {
 
     it('should emit the removal event', () => {
       const node = ref(generateNodes(['es', ['es', 'es']])[0]);
-      const { children, deleteChild } = useTreeViewNodeChildren(node, emit);
+      const { children, deleteChild } = useTreeNodeChildren(node, emit);
       const deletedNode = children.value[0];
       deleteChild(deletedNode);
       expect(emit).toHaveBeenCalledWith(TreeEvent.Delete, deletedNode);

@@ -1,5 +1,5 @@
 <template>
-  <tr class="grtgr">
+  <tr class="grtgr" :aria-expanded="ariaExpanded">
     <slot />
   </tr>
   <template v-if="isExpanded">
@@ -12,6 +12,8 @@
 <script setup>
 import { computed, provide, ref, toRef } from 'vue';
 import { useTreeGridNodeDataNormalizer } from '../composables/treeGridNodeDataNormalizer.js';
+import { useTreeNodeExpansion } from '../composables/expansion/treeNodeExpansion.js';
+import TreeEvent from '../enums/event.js';
 
 // PROPS
 
@@ -30,6 +32,12 @@ const props = defineProps({
   },
 });
 
+// EMITS
+
+const emit = defineEmits([
+  TreeEvent.RequestFirstFocus,
+]);
+
 // DATA
 
 const model = ref(props.initialModel);
@@ -39,6 +47,10 @@ const model = ref(props.initialModel);
 const { normalizeNodeData } = useTreeGridNodeDataNormalizer(model, props.modelDefaults, {});
 
 normalizeNodeData();
+
+const {
+  ariaExpanded,
+} = useTreeNodeExpansion(model, emit);
 
 // METHODS
 
@@ -52,13 +64,13 @@ function toggleNodeExpanded() {
 provide('model', model);
 provide('depth', toRef(props, "depth"));
 
-// If mutating provided data, it is recommended to also provider mutator function controlled at the provder level.
+// If mutating provided data, it is recommended to also provider mutator function controlled at the provider level.
 // https://vuejs.org/guide/components/provide-inject.html#working-with-reactivity
 provide('mutators', { toggleNodeExpanded });
 
 // COMPUTED
 
-// TODO Replace with expander composable
+// TODO Replace with expansion composable
 const isExpanded = computed(() => model.value.treeNodeSpec.state.expanded);
 
 </script>

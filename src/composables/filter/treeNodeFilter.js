@@ -1,15 +1,16 @@
 import { computed, inject, unref, watchEffect } from "vue";
-import { useTreeViewNodeChildren } from '../children/treeViewNodeChildren.js';
+import { useTreeNodeChildren } from '../children/treeNodeChildren.js';
 import { useFilter } from "./filter.js";
 import { useFocus } from "../focus/focus.js";
 import TreeEvent from '../../enums/event.js';
 
 /**
- * Composable dealing with filtering at the tree view node.
+ * Composable dealing with filtering at the tree node.
  * @param {Ref<TreeViewNode>} nodeModel A Ref to the model of the node
- * @returns {Object} Methods to deal with filtering for a tree view node
+ * @param {Function} emit The node's emit function, used to emit focus events on the node's behalf
+ * @returns {Object} Methods to deal with filtering for a tree node
  */
-export function useTreeViewNodeFilter(nodeModel, emit) {
+export function useTreeNodeFilter(nodeModel, emit) {
 
   const filterMethod = inject("filterMethod");
 
@@ -20,7 +21,7 @@ export function useTreeViewNodeFilter(nodeModel, emit) {
 
   const {
     areChildrenLoaded,
-  } = useTreeViewNodeChildren(nodeModel);
+  } = useTreeNodeChildren(nodeModel);
 
   const {
     getFilteredChildren

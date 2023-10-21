@@ -4,11 +4,11 @@ import TreeEvent from '../../enums/event.js';
 
 /**
  * Composable dealing with children handling at the tree view node.
- * @param {TreeViewNode} nodeModel A Ref to the model of the node
+ * @param {TreeNode} nodeModel A Ref to the model of the node
  * @param {Function} emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
  * @returns {Object} Methods to deal with a tree view node's children
  */
-export function useTreeViewNodeChildren(nodeModel, emit) {
+export function useTreeNodeChildren(nodeModel, emit) {
 
   const {
     getChildren

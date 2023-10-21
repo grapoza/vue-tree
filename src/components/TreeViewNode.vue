@@ -228,13 +228,13 @@
 
 import { computed, ref, toRef } from 'vue'
 import { useTreeViewNodeDataNormalizer } from '../composables/treeViewNodeDataNormalizer.js';
-import { useTreeViewNodeChildren } from '../composables/children/treeViewNodeChildren.js';
+import { useTreeNodeChildren } from '../composables/children/treeNodeChildren.js';
 import { useTreeViewNodeDragAndDrop } from '../composables/dragDrop/treeViewNodeDragAndDrop.js';
 import { useFocus } from '../composables/focus/focus.js';
 import { useTreeViewNodeFocus } from '../composables/focus/treeViewNodeFocus.js';
 import { useTreeViewNodeSelection } from '../composables/selection/treeViewNodeSelection.js';
-import { useTreeViewNodeExpansion } from '../composables/expansion/treeViewNodeExpansion.js';
-import { useTreeViewNodeFilter } from '../composables/filter/treeViewNodeFilter.js';
+import { useTreeNodeExpansion } from '../composables/expansion/treeNodeExpansion.js';
+import { useTreeNodeFilter } from '../composables/filter/treeNodeFilter.js';
 import SelectionMode from '../enums/selectionMode.js';
 import TreeEvent from '../enums/event.js';
 
@@ -351,13 +351,13 @@ const {
   children,
   deleteChild,
   hasChildren,
-} = useTreeViewNodeChildren(model, emit);
+} = useTreeNodeChildren(model, emit);
 
 const {
   filteredChildren,
   filterIncludesNode,
   mayHaveFilteredChildren
-} = useTreeViewNodeFilter(model, emit);
+} = useTreeNodeFilter(model, emit);
 
 const {
   focus,
@@ -385,7 +385,7 @@ const {
   expandNode,
   isNodeExpanded,
   toggleNodeExpanded,
-} = useTreeViewNodeExpansion(model, emit);
+} = useTreeNodeExpansion(model, emit);
 
 const {
   dragMoveChild,

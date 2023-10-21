@@ -1,7 +1,7 @@
 import { beforeEach, expect, describe, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
-import { useTreeViewNodeExpansion } from './treeViewNodeExpansion.js';
+import { useTreeNodeExpansion } from './treeNodeExpansion.js';
 import { generateNodes } from '../../../tests/data/node-generator.js';
 import TreeEvent from '../../enums/event.js';
 
@@ -10,7 +10,7 @@ let emit;
 function createTestComponent(node) {
   const TestComponent = defineComponent({
     template: "<div></div>",
-    setup() { return useTreeViewNodeExpansion(node, emit) }
+    setup() { return useTreeNodeExpansion(node, emit) }
   });
 
   const wrapper = mount(TestComponent, {

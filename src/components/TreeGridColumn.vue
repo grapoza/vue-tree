@@ -1,5 +1,5 @@
 <template>
-  <td class="grtgc">
+  <td class="grtgc" role="gridcell">
     <slot :model="model">
 
       <!-- Expander -->

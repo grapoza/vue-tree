@@ -1,6 +1,6 @@
 <template>
   <div class="grtg-wrapper" :class="skinClass">
-    <table class="grtg">
+    <table class="grtg" role="treegrid">
       <thead v-if="columnHeaders.length > 0">
         <tr>
           <th v-for="headerText in columnHeaders" scope="col" class="grtgc">
@@ -11,7 +11,7 @@
       <tbody>
         <tree-grid-row v-for="rowModel in initialModel" :key="rowModel.id" :depth="0" :initial-model="rowModel" :model-defaults="modelDefaults">
           <slot>
-            <td>Add TreeGridColumn component slot content in the TreeGrid component tags.</td>
+            <td role="gridcell">Add TreeGridColumn components into the TreeGrid component's default slot.</td>
           </slot>
         </tree-grid-row>
       </tbody>

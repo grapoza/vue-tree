@@ -18,6 +18,9 @@ export function useTreeGridNodeDataNormalizer(model, modelDefaults, radioGroupVa
 
     assignDefaultProps(unref(modelDefaults), tns);
 
+    // Internal members
+    tns._ = {};
+
     normalizeNodeStateData(tns);
   }
 
@@ -66,6 +69,9 @@ export function useTreeGridNodeDataNormalizer(model, modelDefaults, radioGroupVa
   function normalizeNodeStateData(tns) {
     if (tns.state === null || typeof tns.state !== 'object') {
       tns.state = {};
+    }
+    if (tns._.state === null || typeof tns._.state !== 'object') {
+      tns._.state = {};
     }
 
     if (typeof tns.state.expanded !== 'boolean') {
