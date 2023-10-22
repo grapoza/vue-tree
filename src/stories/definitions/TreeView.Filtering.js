@@ -48,14 +48,31 @@ Filtering.args = {
 
 const docsSourceCode = `
 <template>
-  <tree-view :initial-model="tvModel"></tree-view>
+  <span>
+    <tree-view :initial-model="tvModel" :filter-method="filterMethod"></tree-view>
+    <section style="margin: 10px 0">
+      <input v-model="filterText" type='text' id="filter" placeholder="Filter by label text" style="margin-right: 4px" /><button @click="applyFilter">Apply Filter</button>
+    </section>
+  </span>
 </template>
 <script setup>
 import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
-import treeViewData from "../data/basicTreeViewData";
+import treeViewData from "../data/filteringTreeViewData";
 
 const tvModel = ref(treeViewData);
+const filterText = ref("");
+const filterMethod = ref(null);
+
+const applyFilter = () => {
+  if (filterText.value === "") {
+    filterMethod.value = null;
+  }
+  else {
+    const lowercaseFilter = filterText.value.toLowerCase();
+    filterMethod.value = (n) => n.label.toLowerCase().includes(lowercaseFilter);
+  }
+}
 </script>`;
 
 Filtering.parameters = {
