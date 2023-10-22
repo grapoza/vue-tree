@@ -1,16 +1,15 @@
 import { unref } from 'vue';
-import { effectAllowed as EffectAllowed } from '../enums/dragDrop.js'
-import InputType from '../enums/inputType';
-import { useObjectMethods } from './objectMethods.js';
+import { effectAllowed as EffectAllowed } from '../../enums/dragDrop.js'
+import { useObjectMethods } from '../objectMethods.js';
 
 const { isProbablyObject } = useObjectMethods();
 
 const allowedEffectAllowedValues = [EffectAllowed.Copy, EffectAllowed.Move, EffectAllowed.CopyMove, EffectAllowed.None];
 
-export function useTreeViewNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
+export function useTreeNodeDataNormalizer(model, modelDefaults) {
 
   /**
-   * Normalizes the data model to the format consumable by TreeViewNode.
+   * Normalizes the data model to the format consumable by a tree node.
    */
   function normalizeNodeData() {
 
@@ -28,9 +27,6 @@ export function useTreeViewNodeDataNormalizer(model, modelDefaults, radioGroupVa
     }
     if (typeof tns.idProperty !== 'string') {
       tns.idProperty = 'id';
-    }
-    if (typeof tns.labelProperty !== 'string') {
-      tns.labelProperty = 'label';
     }
 
     if (!Array.isArray(model.value[tns.childrenProperty])) {
@@ -54,32 +50,12 @@ export function useTreeViewNodeDataNormalizer(model, modelDefaults, radioGroupVa
     if (typeof tns.dataTransferEffectAllowed !== 'string' || !allowedEffectAllowedValues.includes(tns.dataTransferEffectAllowed)) {
       tns.dataTransferEffectAllowed = EffectAllowed.CopyMove;
     }
-    if (typeof tns.focusable !== 'boolean') {
-      tns.focusable = false;
-    }
 
     if (typeof tns.addChildCallback !== 'function') {
       tns.addChildCallback = null;
     }
     if (typeof tns.deleteNodeCallback !== 'function') {
       tns.deleteNodeCallback = null;
-    }
-
-    if (typeof tns.title !== 'string' || tns.title.trim().length === 0) {
-      tns.title = null;
-    }
-    if (typeof tns.expanderTitle !== 'string' || tns.expanderTitle.trim().length === 0) {
-      tns.expanderTitle = null;
-    }
-    if (typeof tns.addChildTitle !== 'string' || tns.addChildTitle.trim().length === 0) {
-      tns.addChildTitle = null;
-    }
-    if (typeof tns.deleteTitle !== 'string' || tns.deleteTitle.trim().length === 0) {
-      tns.deleteTitle = null;
-    }
-
-    if (tns.customizations == null || typeof tns.customizations !== 'object') {
-      tns.customizations = {};
     }
 
     if (typeof tns.loadChildrenAsync !== 'function') {
@@ -90,7 +66,6 @@ export function useTreeViewNodeDataNormalizer(model, modelDefaults, radioGroupVa
     tns._ = {};
     tns._.dragging = false;
 
-    normalizeNodeInputData(tns);
     normalizeNodeStateData(tns);
 
     model.value.treeNodeSpec = tns;
@@ -135,40 +110,6 @@ export function useTreeViewNodeDataNormalizer(model, modelDefaults, radioGroupVa
   }
 
   /**
-   * Normalizes the data model's data related to input element generation.
-   */
-  function normalizeNodeInputData(tns) {
-
-    let input = tns.input;
-
-    // For nodes that are inputs, they must specify at least a type.
-    // Only a subset of types are accepted.
-    if (input === null || typeof input !== 'object' || !Object.values(InputType).includes(input.type)) {
-      tns.input = null;
-    }
-    else {
-      if (typeof input.name !== 'string' || input.name.trim().length === 0) {
-        input.name = null;
-      }
-
-      if (input.type === InputType.RadioButton) {
-        if (typeof input.name !== 'string' || input.name.trim().length === 0) {
-          input.name = 'unspecifiedRadioName';
-        }
-        if (typeof input.value !== 'string' || input.value.trim().length === 0) {
-          input.value = model.value[tns.labelProperty].replace(/[\s&<>"'\/]/g, '');
-        }
-        if (!radioGroupValues.value.hasOwnProperty(input.name)) {
-          radioGroupValues.value[input.name] = '';
-        }
-        if (input.isInitialRadioGroupValue === true) {
-          radioGroupValues.value[input.name] = input.value;
-        }
-      }
-    }
-  }
-
-  /**
    * Normalizes the data model's data related to the node's state.
    */
   function normalizeNodeStateData(tns) {
@@ -192,23 +133,6 @@ export function useTreeViewNodeDataNormalizer(model, modelDefaults, radioGroupVa
     }
     if (typeof state.selected !== 'boolean') {
       state.selected = false;
-    }
-
-    if (tns.input) {
-      if (state.input === null || typeof state.input !== 'object') {
-        state.input = {};
-      }
-
-      if (state.input.disabled === null || typeof state.input.disabled !== 'boolean') {
-        state.input.disabled = false;
-      }
-
-      if (tns.input.type === InputType.Checkbox) {
-
-        if (typeof state.input.value !== 'boolean') {
-          state.input.value = false;
-        }
-      }
     }
   }
 

@@ -11,7 +11,7 @@
 
 <script setup>
 import { computed, provide, ref, toRef } from 'vue';
-import { useTreeGridNodeDataNormalizer } from '../composables/treeGridNodeDataNormalizer.js';
+import { useTreeGridNodeDataNormalizer } from '../composables/normalization/treeGridNodeDataNormalizer.js';
 import { useTreeNodeExpansion } from '../composables/expansion/treeNodeExpansion.js';
 import TreeEvent from '../enums/event.js';
 
@@ -44,9 +44,9 @@ const model = ref(props.initialModel);
 
 // COMPOSABLES
 
-const { normalizeNodeData } = useTreeGridNodeDataNormalizer(model, props.modelDefaults, {});
+const { normalizeTreeGridNodeData } = useTreeGridNodeDataNormalizer(model, props.modelDefaults);
 
-normalizeNodeData();
+normalizeTreeGridNodeData();
 
 const {
   ariaExpanded,

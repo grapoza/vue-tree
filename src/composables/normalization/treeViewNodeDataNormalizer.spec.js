@@ -1,7 +1,7 @@
 import { expect, describe, it, beforeEach } from 'vitest';
 import { ref } from 'vue';
 import { useTreeViewNodeDataNormalizer } from './treeViewNodeDataNormalizer.js';
-import { generateNodes } from '../../tests/data/node-generator.js';
+import { generateNodes } from '../../../tests/data/node-generator.js';
 
 describe('nodeDataNormalizer.js', () => {
 
@@ -11,8 +11,8 @@ describe('nodeDataNormalizer.js', () => {
 
     beforeEach(() => {
       model = { id: 'my-node', label: 'My Node' };
-      const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
-      normalizeNodeData();
+      const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
+      normalizeTreeViewNodeData();
     });
 
     it('should normalize model data', () => {
@@ -43,8 +43,8 @@ describe('nodeDataNormalizer.js', () => {
           selected: true
         }
       };
-      const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), modelDefaults, ref({}));
-      normalizeNodeData();
+      const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), modelDefaults, ref({}));
+      normalizeTreeViewNodeData();
     });
 
     it('should incorporate the default data into the model for unspecified properties', () => {
@@ -68,8 +68,8 @@ describe('nodeDataNormalizer.js', () => {
         beforeEach(() => {
           model = generateNodes(['ces'])[0];
           model.treeNodeSpec.input.name = 42;
-          const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
-          normalizeNodeData();
+          const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
+          normalizeTreeViewNodeData();
         });
 
         it('should set the name to null', () => {
@@ -84,8 +84,8 @@ describe('nodeDataNormalizer.js', () => {
         beforeEach(() => {
           model = generateNodes(['ces'])[0];
           model.treeNodeSpec.input.name = ' ';
-          const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
-          normalizeNodeData();
+          const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
+          normalizeTreeViewNodeData();
         });
 
         it('should set the name to null', () => {
@@ -106,8 +106,8 @@ describe('nodeDataNormalizer.js', () => {
 
         beforeEach(() => {
           model.treeNodeSpec.input.name = 42;
-          const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
-          normalizeNodeData();
+          const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
+          normalizeTreeViewNodeData();
         });
 
         it('should set the name to unspecifiedRadioName', () => {
@@ -119,8 +119,8 @@ describe('nodeDataNormalizer.js', () => {
 
         beforeEach(() => {
           model.treeNodeSpec.input.name = ' ';
-          const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
-          normalizeNodeData();
+          const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
+          normalizeTreeViewNodeData();
         });
 
         it('should set the name to null', () => {
@@ -145,8 +145,8 @@ describe('nodeDataNormalizer.js', () => {
 
         beforeEach(() => {
           model.treeNodeSpec.input.value = 42;
-          const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
-          normalizeNodeData();
+          const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
+          normalizeTreeViewNodeData();
         });
 
         it('should set the value to the label value, minus disallowed characters', () => {
@@ -158,8 +158,8 @@ describe('nodeDataNormalizer.js', () => {
 
         beforeEach(() => {
           model.treeNodeSpec.input.value = ' ';
-          const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
-          normalizeNodeData();
+          const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
+          normalizeTreeViewNodeData();
         });
 
         it('should set the value to the label value, minus disallowed characters', () => {
@@ -176,8 +176,8 @@ describe('nodeDataNormalizer.js', () => {
     beforeEach(() => {
       model = generateNodes(['c'])[0];
       model.treeNodeSpec.state.input = null;
-      const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
-      normalizeNodeData();
+      const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
+      normalizeTreeViewNodeData();
     });
 
     it('should default the disabled state to false', () => {
@@ -201,8 +201,8 @@ describe('nodeDataNormalizer.js', () => {
       model.treeNodeSpec.expanderTitle = '';
       model.treeNodeSpec.addChildTitle = '';
       model.treeNodeSpec.deleteTitle = '';
-      const { normalizeNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
-      normalizeNodeData();
+      const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
+      normalizeTreeViewNodeData();
     });
 
     it('should set the title properties to null', () => {

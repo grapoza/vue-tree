@@ -227,7 +227,7 @@
 <script setup>
 
 import { computed, ref, toRef } from 'vue'
-import { useTreeViewNodeDataNormalizer } from '../composables/treeViewNodeDataNormalizer.js';
+import { useTreeViewNodeDataNormalizer } from '../composables/normalization/treeViewNodeDataNormalizer.js';
 import { useTreeNodeChildren } from '../composables/children/treeNodeChildren.js';
 import { useTreeViewNodeDragAndDrop } from '../composables/dragDrop/treeViewNodeDragAndDrop.js';
 import { useFocus } from '../composables/focus/focus.js';
@@ -340,9 +340,9 @@ const tns = computed(() => model.value.treeNodeSpec);
 
 // COMPOSABLES
 
-const { normalizeNodeData } = useTreeViewNodeDataNormalizer(model, props.modelDefaults, radioGroupValues);
+const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(model, props.modelDefaults, radioGroupValues);
 
-normalizeNodeData();
+normalizeTreeViewNodeData();
 
 const {
   addChild,
