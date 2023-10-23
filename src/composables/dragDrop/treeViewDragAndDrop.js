@@ -42,7 +42,7 @@ export function useTreeViewDragAndDrop(treeModel, uniqueId, findById, removeById
         // Find and remove the actual dropped node from its current position.
         node = removeById(node[node.treeNodeSpec.idProperty]);
 
-        // Mark the node as moved within the tree so $_grtvnDnd_onDragend
+        // Mark the node as moved within the tree so onDragend
         // knows not to remove it.
         node.treeNodeSpec._.dragMoved = true;
       }

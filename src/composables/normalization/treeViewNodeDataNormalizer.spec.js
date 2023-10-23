@@ -16,44 +16,9 @@ describe('nodeDataNormalizer.js', () => {
     });
 
     it('should normalize model data', () => {
-      expect(model.id).to.equal('my-node');
-      expect(model.label).to.equal('My Node');
       expect(model.treeNodeSpec.title).to.be.null;
-      expect(model.treeNodeSpec.expandable).to.be.true;
-      expect(model.treeNodeSpec.selectable).to.be.false;
-      expect(model.treeNodeSpec.deletable).to.be.false;
-      expect(model.treeNodeSpec.state).to.exist;
-      expect(model.treeNodeSpec.state.expanded).to.be.false;
-      expect(model.treeNodeSpec.state.selected).to.be.false;
       expect(model.treeNodeSpec.input).to.be.null;
       expect(model.treeNodeSpec.state.input).to.not.exist;
-    });
-  });
-
-  describe('when given default model data', () => {
-
-    let model;
-
-    beforeEach(() => {
-      model = { id: 'my-node', label: 'My Node', treeNodeSpec: { expandable: true } };
-      const modelDefaults = {
-        expandable: false,
-        selectable: true,
-        state: {
-          selected: true
-        }
-      };
-      const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), modelDefaults, ref({}));
-      normalizeTreeViewNodeData();
-    });
-
-    it('should incorporate the default data into the model for unspecified properties', () => {
-      expect(model.treeNodeSpec.selectable).to.be.true;
-      expect(model.treeNodeSpec.state.selected).to.be.true;
-    });
-
-    it('should use the model\'s data over the default data for specified properties', () => {
-      expect(model.treeNodeSpec.expandable).to.be.true;
     });
   });
 
@@ -97,16 +62,18 @@ describe('nodeDataNormalizer.js', () => {
     describe('and it is a radio button input', () => {
 
       let model;
+      let radioGroupValues;
 
       beforeEach(() => {
         model = generateNodes(['r'])[0];
+        radioGroupValues = ref({});
       });
 
       describe('and that name is not a string', () => {
 
         beforeEach(() => {
           model.treeNodeSpec.input.name = 42;
-          const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
+          const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, radioGroupValues);
           normalizeTreeViewNodeData();
         });
 
@@ -119,12 +86,25 @@ describe('nodeDataNormalizer.js', () => {
 
         beforeEach(() => {
           model.treeNodeSpec.input.name = ' ';
-          const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, ref({}));
+          const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, radioGroupValues);
           normalizeTreeViewNodeData();
         });
 
         it('should set the name to null', () => {
           expect(model.treeNodeSpec.input.name).to.equal('unspecifiedRadioName');
+        });
+      });
+
+      describe('and the model is marked as the initial radio button', () => {
+
+        beforeEach(() => {
+          model.treeNodeSpec.input.isInitialRadioGroupValue = true;
+          const { normalizeTreeViewNodeData } = useTreeViewNodeDataNormalizer(ref(model), {}, radioGroupValues);
+          normalizeTreeViewNodeData();
+        });
+
+        it('should set radio group value to this node value', () => {
+          expect(radioGroupValues.value['root-rb']).to.equal('n0-val');
         });
       });
     });

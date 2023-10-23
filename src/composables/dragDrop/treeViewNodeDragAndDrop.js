@@ -29,7 +29,7 @@ export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
    * event that triggers this and that event is not propagated from here,
    * so the child should be found in the children prop array here. The event also only
    * fires when dragging between trees; otherwise node deletion happens as part of moving
-   * it within the tree in $_grtvDnd_drop.
+   * it within the tree in the drop method.
    * @param {TreeViewNode} node The node which was dragged/dropped
    */
   function dragMoveChild(node) {
@@ -163,7 +163,7 @@ export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
     if (event.dataTransfer.dropEffect === DropEffect.Move) {
       if (tns._.dragMoved) {
         // If the node was moved within the original tree then it will have
-        // been marked by $_grtvDnd_drop as such. Just clear the marker.
+        // been marked by the drop method as such. Just clear the marker.
         delete tns._.dragMoved;
       }
       else {
