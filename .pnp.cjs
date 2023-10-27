@@ -10134,10 +10134,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["browserify-sign", [\
-        ["npm:4.2.1", {\
-          "packageLocation": "./.yarn/cache/browserify-sign-npm-4.2.1-9a8530ca87-0221f190e3.zip/node_modules/browserify-sign/",\
+        ["npm:4.2.2", {\
+          "packageLocation": "./.yarn/cache/browserify-sign-npm-4.2.2-92f50c6d35-b622730c0f.zip/node_modules/browserify-sign/",\
           "packageDependencies": [\
-            ["browserify-sign", "npm:4.2.1"],\
+            ["browserify-sign", "npm:4.2.2"],\
             ["bn.js", "npm:5.2.1"],\
             ["browserify-rsa", "npm:4.1.0"],\
             ["create-hash", "npm:1.2.0"],\
@@ -11203,7 +11203,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["crypto-browserify", "npm:3.12.0"],\
             ["browserify-cipher", "npm:1.0.1"],\
-            ["browserify-sign", "npm:4.2.1"],\
+            ["browserify-sign", "npm:4.2.2"],\
             ["create-ecdh", "npm:4.0.4"],\
             ["create-hash", "npm:1.2.0"],\
             ["create-hmac", "npm:1.1.7"],\
