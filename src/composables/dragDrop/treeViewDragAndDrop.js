@@ -1,6 +1,6 @@
 import { dropEffect as DropEffect, targetZone as TargetZone } from '../../enums/dragDrop.js';
 import { useObjectMethods } from '../objectMethods.js';
-import { useIdGeneration } from '../idGeneration.js'
+import { useIdGeneration } from '../dom/idGeneration.js'
 import { useFocus } from '../focus/focus.js';
 
 const { resolveNodeIdConflicts } = useIdGeneration();

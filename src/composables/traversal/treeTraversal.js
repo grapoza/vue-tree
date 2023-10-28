@@ -1,4 +1,4 @@
-import { useFilter } from "./filter/filter.js";
+import { useFilter } from "../filter/filter.js";
 
 /**
  * Composable dealing with methods for traversing tree nodes

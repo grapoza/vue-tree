@@ -1,8 +1,8 @@
 import { expect, describe, it, beforeEach } from 'vitest';
 import { ref } from 'vue';
 import { useTreeViewConvenienceMethods } from './treeViewConvenienceMethods.js';
-import { generateNodes } from '../../tests/data/node-generator.js';
-import SelectionMode from '../enums/selectionMode';
+import { generateNodes } from '../../../tests/data/node-generator.js';
+import SelectionMode from '../../enums/selectionMode';
 
 describe('treeViewConvenienceMethods.js', () => {
 

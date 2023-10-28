@@ -1,7 +1,7 @@
-import { useSelection } from './selection/selection.js';
+import { useSelection } from '../selection/selection.js';
 import { useTreeConvenienceMethods } from './treeConvenienceMethods.js';
-import InputType from '../enums/inputType.js';
-import SelectionMode from '../enums/selectionMode.js';
+import InputType from '../../enums/inputType.js';
+import SelectionMode from '../../enums/selectionMode.js';
 
 /**
  * Composable dealing with convenience methods at the top level of the tree view.

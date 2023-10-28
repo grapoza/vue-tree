@@ -1,4 +1,4 @@
-import { useTreeTraversal } from './treeTraversal.js'
+import { useTreeTraversal } from '../traversal/treeTraversal.js'
 
 /**
  * Composable dealing with convenience methods at the top level of the tree.

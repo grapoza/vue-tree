@@ -22,7 +22,7 @@
 <script setup>
 import { computed, provide, useAttrs, useSlots } from 'vue';
 import TreeGridRow from './TreeGridRow.vue';
-import { useIdGeneration } from '../composables/idGeneration.js';
+import { useIdGeneration } from '../composables/dom/idGeneration.js';
 
 const attrs = useAttrs();
 

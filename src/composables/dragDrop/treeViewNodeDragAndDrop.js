@@ -4,7 +4,7 @@ import {
   targetZone as TargetZone
 } from '../../enums/dragDrop.js';
 import TvEvent from '../../enums/event.js';
-import { useDomMethods } from '../domMethods.js'
+import { useDomMethods } from '../dom/domMethods.js'
 import { useFocus } from '../focus/focus.js';
 
 const { closest } = useDomMethods();
