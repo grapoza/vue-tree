@@ -1,5 +1,5 @@
 import { computed, unref, watch } from 'vue'
-import { useTreeViewTraversal } from '../treeViewTraversal.js'
+import { useTreeTraversal } from '../treeTraversal.js'
 import { useSelection } from './selection.js';
 import SelectionMode from '../../enums/selectionMode.js';
 import TreeEvent from '../../enums/event';
@@ -14,7 +14,7 @@ import TreeEvent from '../../enums/event';
  */
 export function useTreeViewSelection(treeModel, selectionMode, focusableNodeModel, emit) {
 
-  const { depthFirstTraverse } = useTreeViewTraversal(treeModel);
+  const { depthFirstTraverse } = useTreeTraversal(treeModel);
   const { deselect, isSelectable, isSelected, select } = useSelection(selectionMode);
 
   watch(selectionMode, enforceSelectionMode);

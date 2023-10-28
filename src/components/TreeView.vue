@@ -58,13 +58,14 @@
 import { computed, nextTick, ref, readonly, onMounted, provide, toRef } from 'vue'
 import SelectionMode from '../enums/selectionMode.js';
 import { useIdGeneration } from '../composables/idGeneration.js'
-import { useTreeViewTraversal } from '../composables/treeViewTraversal.js'
+import { useTreeTraversal } from '../composables/treeTraversal.js'
 import { useFocus } from '../composables/focus/focus.js';
 import { useTreeViewFocus } from '../composables/focus/treeViewFocus.js';
 import { useSelection } from '../composables/selection/selection.js';
 import { useTreeViewFilter } from '../composables/filter/treeViewFilter.js';
 import { useTreeViewSelection } from '../composables/selection/treeViewSelection.js';
 import { useTreeViewDragAndDrop } from '../composables/dragDrop/treeViewDragAndDrop.js';
+import { useTreeConvenienceMethods } from '../composables/treeConvenienceMethods';
 import { useTreeViewConvenienceMethods } from '../composables/treeViewConvenienceMethods.js';
 import TreeViewNode from './TreeViewNode.vue';
 import TreeEvent from '../enums/event.js';
@@ -169,7 +170,7 @@ const treeElement = ref(null); // ref in template
 
 const { generateUniqueId } = useIdGeneration();
 
-const { depthFirstTraverse } = useTreeViewTraversal(model);
+const { depthFirstTraverse } = useTreeTraversal(model);
 
 const {
   focusableNodeModel,
@@ -200,11 +201,14 @@ const {
 
 const {
   findById,
+  getMatching,
+  removeById,
+} = useTreeConvenienceMethods(model);
+
+const {
   getCheckedCheckboxes,
   getCheckedRadioButtons,
-  getMatching,
   getSelected,
-  removeById,
 } = useTreeViewConvenienceMethods(model, radioGroupValues, toRef(props, "selectionMode"));
 
 const { dragMoveNode, drop } = useTreeViewDragAndDrop(model, uniqueId, findById, removeById);

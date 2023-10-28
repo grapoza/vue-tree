@@ -2,10 +2,10 @@ import { useFilter } from "./filter/filter.js";
 
 /**
  * Composable dealing with methods for traversing tree nodes
- * @param {Ref<TreeViewNode>} treeModel A Ref to the model from which traversals should start
+ * @param {Ref<TreeNode>} treeModel A Ref to the model from which traversals should start
  * @returns {Object} Methods for traversing tree nodes
  */
-export function useTreeViewTraversal(treeModel) {
+export function useTreeTraversal(treeModel) {
 
   const {
     getFilteredChildren,
