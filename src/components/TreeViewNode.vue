@@ -237,6 +237,7 @@ import { useTreeNodeExpansion } from '../composables/expansion/treeNodeExpansion
 import { useTreeNodeFilter } from '../composables/filter/treeNodeFilter.js';
 import SelectionMode from '../enums/selectionMode.js';
 import TreeEvent from '../enums/event.js';
+import { useTreeNodeComputeds } from '../composables/tree/treeNodeComputeds';
 
 // PROPS
 
@@ -312,6 +313,14 @@ const nodeElement = ref(null); // template ref
 
 // COMPUTED
 
+const {
+  expanderId,
+  id,
+  idPropName,
+  nodeId,
+  tns,
+} = useTreeNodeComputeds(model, toRef(props, "treeId"));
+
 const addChildId = computed(() => `${nodeId.value}-add-child`);
 
 const tabIndex = computed(() => isFocusedNode() ? 0 : -1);
@@ -320,12 +329,6 @@ const customClasses = computed(() => tns.value.customizations?.classes ?? {});
 
 const deleteId = computed(() => `${nodeId.value}-delete`);
 
-const expanderId = computed(() => `${nodeId.value}-exp`);
-
-const id = computed(() => model.value[idPropName.value]);
-
-const idPropName = computed(() => tns.value.idProperty ?? 'id');
-
 const inputId = computed(() => `${nodeId.value}-input`);
 
 const isEffectivelySelected = computed(() => props.selectionMode !== SelectionMode.None && isNodeSelectable() && isNodeSelected());
@@ -333,10 +336,6 @@ const isEffectivelySelected = computed(() => props.selectionMode !== SelectionMo
 const label = computed(() => model.value[labelPropName.value]);
 
 const labelPropName = computed(() => tns.value.labelProperty ?? 'label');
-
-const nodeId = computed(() => `${props.treeId}-${id.value}`);
-
-const tns = computed(() => model.value.treeNodeSpec);
 
 // COMPOSABLES
 

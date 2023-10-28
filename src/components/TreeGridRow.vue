@@ -50,14 +50,9 @@ normalizeTreeGridNodeData();
 
 const {
   ariaExpanded,
+  isNodeExpanded,
+  toggleNodeExpanded,
 } = useTreeNodeExpansion(model, emit);
-
-// METHODS
-
-// TODO This can possibly reuse treeViewNodeExpansion
-function toggleNodeExpanded() {
-  model.value.treeNodeSpec.state.expanded = !model.value.treeNodeSpec.state.expanded;
-}
 
 // PROVIDE
 
@@ -70,8 +65,7 @@ provide('mutators', { toggleNodeExpanded });
 
 // COMPUTED
 
-// TODO Replace with expansion composable
-const isExpanded = computed(() => model.value.treeNodeSpec.state.expanded);
+const isExpanded = computed(() => isNodeExpanded());
 
 </script>
 
