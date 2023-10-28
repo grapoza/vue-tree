@@ -24,7 +24,7 @@ function createTestComponent(node) {
   return wrapper;
 }
 
-describe('treeViewNodeExpansion.js', () => {
+describe('treeNodeExpansion.js', () => {
 
   beforeEach(() => {
     emit = vi.fn();

@@ -6,7 +6,7 @@ import TreeEvent from '../../enums/event.js';
 
 /**
  * Composable dealing with filtering at the tree node.
- * @param {Ref<TreeViewNode>} nodeModel A Ref to the model of the node
+ * @param {Ref<TreeNode>} nodeModel A Ref to the model of the node
  * @param {Function} emit The node's emit function, used to emit focus events on the node's behalf
  * @returns {Object} Methods to deal with filtering for a tree node
  */

@@ -3,10 +3,10 @@ import { useChildren } from './children.js';
 import TreeEvent from '../../enums/event.js';
 
 /**
- * Composable dealing with children handling at the tree view node.
+ * Composable dealing with children handling at the tree node.
  * @param {TreeNode} nodeModel A Ref to the model of the node
- * @param {Function} emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
- * @returns {Object} Methods to deal with a tree view node's children
+ * @param {Function} emit The TreeNode's emit function, used to emit selection events on the node's behalf
+ * @returns {Object} Methods to deal with a tree node's children
  */
 export function useTreeNodeChildren(nodeModel, emit) {
 
@@ -59,7 +59,7 @@ export function useTreeNodeChildren(nodeModel, emit) {
   /**
    * Removes the given node from the array of children if found.
    * This emits the treeNodeDelete event.
-   * @param {TreeViewNode} node The node to remove
+   * @param {TreeNode} node The node to remove
    */
   function deleteChild(node) {
     // Remove the node from the array of children if it is an immediate child.

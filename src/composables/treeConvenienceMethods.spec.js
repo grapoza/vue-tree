@@ -4,7 +4,7 @@ import { useTreeConvenienceMethods } from './treeConvenienceMethods.js';
 import { generateNodes } from '../../tests/data/node-generator.js';
 import SelectionMode from '../enums/selectionMode';
 
-describe('treeViewConvenienceMethods.js', () => {
+describe('treeConvenienceMethods.js', () => {
 
   describe('when getMatching() is called', () => {
 

@@ -31,7 +31,7 @@ function setChildFilteredState(child, forNode, forSubnodes) {
   child.treeNodeSpec._.state.subnodeMatchesFilter = forSubnodes;
 }
 
-describe('treeViewNodeFilter.js', () => {
+describe('treeNodeFilter.js', () => {
 
   let node;
   let wrapper;
