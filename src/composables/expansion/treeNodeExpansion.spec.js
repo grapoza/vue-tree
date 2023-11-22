@@ -2,8 +2,10 @@ import { beforeEach, expect, describe, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
 import { useTreeNodeExpansion } from './treeNodeExpansion.js';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { useNodeGenerator } from '../../../tests/data/node-generator.js';
 import TreeEvent from '../../enums/event.js';
+
+const { generateNodes } = useNodeGenerator();
 
 let emit;
 

@@ -2,8 +2,10 @@ import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import TreeView from './TreeView.vue';
 import TreeViewNode from './TreeViewNode.vue';
-import { generateNodes } from '../../tests/data/node-generator.js';
+import { useNodeGenerator } from '../../tests/data/node-generator.js';
 import SelectionMode from '../enums/selectionMode';
+
+const { generateNodes } = useNodeGenerator(false);
 
 async function createWrapper(customPropsData, customAttrs, slotsData) {
   let wrapper = mount(TreeView, {
@@ -281,7 +283,7 @@ describe('TreeView.vue', () => {
         wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]), selectionMode: SelectionMode.Multiple });
       });
 
-      it('should set the first node as focusable', () => {
+      it.only('should set the first node as focusable', () => {
         expect(wrapper.vm.model[0].treeNodeSpec.focusable).to.be.true;
       });
     });

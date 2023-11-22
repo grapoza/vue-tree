@@ -1,9 +1,11 @@
 import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import TreeViewNode from './TreeViewNode.vue';
-import { generateNodes } from '../../tests/data/node-generator.js';
+import { useNodeGenerator } from '../../tests/data/node-generator.js';
 import SelectionMode from '../enums/selectionMode';
 import TreeEvent from '../../src/enums/event.js';
+
+const { generateNodes } = useNodeGenerator(false);
 
 const getDefaultPropsData = function () {
   return {
@@ -188,7 +190,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = await createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['esa'], '', addChildCallback)[0],
+        initialModel: generateNodes(['esa'], '', { addChildCallback })[0],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -756,7 +758,7 @@ describe('TreeViewNode.vue', () => {
     };
 
     beforeEach(async () => {
-      let initialModel = generateNodes(['cEdS', ['res', 'esa']], "", () => Promise.resolve())[0];
+      let initialModel = generateNodes(['cEdS', ['res', 'esa']], "", { addChildCallback: () => Promise.resolve() })[0];
 
       wrapper = await createWrapper({
         ariaKeyMap: {},
@@ -1020,7 +1022,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
         let loadChildrenAsync = () => new Promise(resolve => setTimeout(resolve.bind(null, []), 1000));
-        let initialModel = generateNodes(['e'], "baseId", null, loadChildrenAsync)[0];
+        let initialModel = generateNodes(['e'], "baseId", { loadChildrenAsync })[0];
 
         wrapper = await createWrapper(
           {
@@ -1160,7 +1162,7 @@ describe('TreeViewNode.vue', () => {
       beforeEach(async () => {
 
         let loadChildrenAsync = () => new Promise(resolve => setTimeout(resolve.bind(null, generateNodes(['', ''])), 1000));
-        let initialModel = generateNodes(['ces'], '', null, loadChildrenAsync)[0];
+        let initialModel = generateNodes(['ces'], '', { loadChildrenAsync })[0];
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
@@ -1419,7 +1421,7 @@ describe('TreeViewNode.vue', () => {
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel: generateNodes(['esa'], "", addChildCallback)[0],
+          initialModel: generateNodes(['esa'], "", { addChildCallback })[0],
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -1461,7 +1463,7 @@ describe('TreeViewNode.vue', () => {
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel: generateNodes(['esa'], "", addChildCallback)[0],
+          initialModel: generateNodes(['esa'], "", { addChildCallback })[0],
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -1932,8 +1934,8 @@ describe('TreeViewNode.vue', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
-          let nodeAddCallback = function () { return Promise.resolve({ id: 100, label: 'labelText' }) };
-          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['sf'], "", nodeAddCallback)[0] }));
+          let addChildCallback = function () { return Promise.resolve({ id: 100, label: 'labelText' }) };
+          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['sf'], "", { addChildCallback })[0] }));
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.insertItem[0]);
         });
 

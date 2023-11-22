@@ -3,7 +3,11 @@
     <slot />
   </tr>
   <template v-if="isExpanded">
-    <tree-grid-row v-for="childModel in model.children" :key="childModel.id" :depth="depth+1" :initial-model="childModel" :model-defaults="modelDefaults">
+    <tree-grid-row v-for="childModel in model.children"
+        :key="childModel.id"
+        :depth="depth+1"
+        :initial-model="childModel"
+        :model-defaults="modelDefaults">
       <slot />
     </tree-grid-row>
   </template>
@@ -35,6 +39,7 @@ const props = defineProps({
 // EMITS
 
 const emit = defineEmits([
+  TreeEvent.ExpandedChange,
   TreeEvent.RequestFirstFocus,
 ]);
 
@@ -50,18 +55,22 @@ normalizeTreeGridNodeData();
 
 const {
   ariaExpanded,
+  canExpand,
   isNodeExpanded,
   toggleNodeExpanded,
 } = useTreeNodeExpansion(model, emit);
 
 // PROVIDE
 
+console.debug("GR This is false because child nodes are not yet normalized! Add a normalizeRecusive method or something to call on first load; can this be suppressed when the tree is first built? Add normalized flag to _.state and skip normalized nodes?", canExpand.value)
+
 provide('model', model);
 provide('depth', toRef(props, "depth"));
 
 // If mutating provided data, it is recommended to also provider mutator function controlled at the provider level.
+// I'm also including canExpand because it emits.
 // https://vuejs.org/guide/components/provide-inject.html#working-with-reactivity
-provide('mutators', { toggleNodeExpanded });
+provide('mutators', { canExpand, toggleNodeExpanded });
 
 // COMPUTED
 

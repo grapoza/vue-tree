@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { computed, provide, useAttrs, useSlots } from 'vue';
+import { computed, provide, toRef, useAttrs, useSlots } from 'vue';
 import TreeGridRow from './TreeGridRow.vue';
 import { useIdGeneration } from '../composables/dom/idGeneration.js';
 
@@ -50,6 +50,11 @@ const props = defineProps({
     required: false,
     default: function () { return []; }
   },
+  filterMethod: {
+    type: Function,
+    required: false,
+    default: null
+  },
   modelDefaults: {
     type: Object,
     required: false,
@@ -76,6 +81,7 @@ const uniqueId = computed(() => attrs.id ?? generateUniqueId());
 // PROVIDE
 
 provide('treeId', uniqueId);
+provide("filterMethod", toRef(props, 'filterMethod'));
 
 </script>
 

@@ -1,8 +1,10 @@
 import { beforeEach, expect, describe, it, vi } from 'vitest';
 import { ref } from 'vue';
 import { useTreeNodeChildren } from './treeNodeChildren.js';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { useNodeGenerator } from '../../../tests/data/node-generator.js';
 import TreeEvent from '../../enums/event.js';
+
+const { generateNodes } = useNodeGenerator(true);
 
 let emit;
 
@@ -25,12 +27,12 @@ describe('TreeNodeChildren.js', () => {
 
     describe('and the child nodes are supplied via an async loader', () => {
 
-      const asyncLoader = async () => Promise.resolve(generateNodes(['es']));
+      const loadChildrenAsync = async () => Promise.resolve(generateNodes(['es']));
 
       describe('and the children have been loaded', () => {
 
         it('should return true', () => {
-          const node = ref(generateNodes([''], '', null, asyncLoader)[0]);
+          const node = ref(generateNodes([''], '', { loadChildrenAsync })[0]);
           node.value.treeNodeSpec._.state.areChildrenLoaded = true;
           const { areChildrenLoaded } = useTreeNodeChildren(node, emit);
           expect(areChildrenLoaded.value).to.be.true;
@@ -40,7 +42,7 @@ describe('TreeNodeChildren.js', () => {
       describe('and the children have not been loaded', () => {
 
         it('should return false', () => {
-          const node = ref(generateNodes([''], '', null, asyncLoader)[0]);
+          const node = ref(generateNodes([''], '', { loadChildrenAsync })[0]);
           node.value.treeNodeSpec._.state.areChildrenLoaded = false;
           const { areChildrenLoaded } = useTreeNodeChildren(node, emit);
           expect(areChildrenLoaded.value).to.be.false;
@@ -141,7 +143,7 @@ describe('TreeNodeChildren.js', () => {
     describe('and the nodes children are not loaded yet', () => {
 
       it('should return true', () => {
-        const node = ref(generateNodes([''], '', null, () => Promise.resolve({}))[0]);
+        const node = ref(generateNodes([''], '', { loadChildrenAsync: () => Promise.resolve({}) })[0]);
         node.value.treeNodeSpec._.state.areChildrenLoaded = false;
         const { mayHaveChildren } = useTreeNodeChildren(node, emit);
         expect(mayHaveChildren.value).to.be.true;
@@ -154,7 +156,7 @@ describe('TreeNodeChildren.js', () => {
     describe('and children are already loaded', () => {
 
       it('should not modify the children list', async () => {
-        const node = ref(generateNodes([''], '', null, async () => Promise.resolve(generateNodes(['es'])))[0]);
+        const node = ref(generateNodes([''], '', { loadChildrenAsync: async () => Promise.resolve(generateNodes(['es'])) })[0]);
         node.value.treeNodeSpec._.state.areChildrenLoaded = true;
         const { children, loadChildren } = useTreeNodeChildren(node, emit);
         await loadChildren();
@@ -165,7 +167,7 @@ describe('TreeNodeChildren.js', () => {
     describe('and children are currently loading', () => {
 
       it('should not modify the children list', async () => {
-        const node = ref(generateNodes([''], '', null, async () => Promise.resolve(generateNodes(['es'])))[0]);
+        const node = ref(generateNodes([''], '', { loadChildrenAsync: async () => Promise.resolve(generateNodes(['es'])) })[0]);
         node.value.treeNodeSpec._.state.areChildrenLoading = true;
         const { children, loadChildren } = useTreeNodeChildren(node, emit);
         await loadChildren();
@@ -176,14 +178,14 @@ describe('TreeNodeChildren.js', () => {
     describe('and the async loader returns children', () => {
 
       it('should set the node children to the async loader method result', async () => {
-        const node = ref(generateNodes([''], '', null, async () => Promise.resolve(generateNodes(['es'])))[0]);
+        const node = ref(generateNodes([''], '', { loadChildrenAsync: async () => Promise.resolve(generateNodes(['es'])) })[0]);
         const { children, loadChildren } = useTreeNodeChildren(node, emit);
         await loadChildren();
         expect(children.value).toHaveLength(1);
       });
 
       it('should emit the children loaded event', async () => {
-        const node = ref(generateNodes([''], '', null, async () => Promise.resolve(generateNodes(['es'])))[0]);
+        const node = ref(generateNodes([''], '', { loadChildrenAsync: async () => Promise.resolve(generateNodes(['es'])) })[0]);
         const { children, loadChildren } = useTreeNodeChildren(node, emit);
         await loadChildren();
         expect(emit).toHaveBeenCalledWith(TreeEvent.ChildrenLoad, node.value);
@@ -193,7 +195,7 @@ describe('TreeNodeChildren.js', () => {
     describe('and the async loader does not return children', () => {
 
       it('should not set the node children', async () => {
-        const node = ref(generateNodes([''], '', null, async () => Promise.resolve([]))[0]);
+        const node = ref(generateNodes([''], '', { loadChildrenAsync: async () => Promise.resolve([]) })[0]);
         const { children, loadChildren } = useTreeNodeChildren(node, emit);
         await loadChildren();
         expect(children.value).toHaveLength(0);
@@ -206,14 +208,14 @@ describe('TreeNodeChildren.js', () => {
     describe('and the callback returns a child node', () => {
 
       it('should modify the children list', async () => {
-        const node = ref(generateNodes(['es'], null, async () => Promise.resolve(generateNodes(['es'])[0]))[0]);
+        const node = ref(generateNodes(['es'], undefined, { addChildCallback: async () => Promise.resolve(generateNodes(['es'])[0]) })[0]);
         const { children, addChild } = useTreeNodeChildren(node, emit);
         await addChild();
         expect(children.value).toHaveLength(1);
       });
 
       it('should emit the children added event', async () => {
-        const node = ref(generateNodes(['es'], null, async () => Promise.resolve(generateNodes(['es'])[0]))[0]);
+        const node = ref(generateNodes(['es'], undefined, { addChildCallback: async () => Promise.resolve(generateNodes(['es'])[0]) })[0]);
         const { children, addChild } = useTreeNodeChildren(node, emit);
         await addChild();
         expect(emit).toHaveBeenCalledWith(TreeEvent.Add, children.value[0], node.value);
@@ -223,7 +225,7 @@ describe('TreeNodeChildren.js', () => {
     describe('and the callback does not return a node', () => {
 
       it('should not modify the children list', async () => {
-        const node = ref(generateNodes(['es'], null, async () => Promise.resolve(null))[0]);
+        const node = ref(generateNodes(['es'], undefined, { addChildCallback: async () => Promise.resolve(null) })[0]);
         const { children, addChild } = useTreeNodeChildren(node, emit);
         await addChild();
         expect(children.value).toHaveLength(0);

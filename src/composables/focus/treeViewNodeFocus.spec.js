@@ -1,8 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
 import { useTreeViewNodeFocus } from './treeViewNodeFocus.js';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { useNodeGenerator } from '../../../tests/data/node-generator.js';
 import TreeEvent from '../../enums/event.js';
+
+const { generateNodes } = useNodeGenerator();
 
 const isMountedRef = ref(true);
 

@@ -1,9 +1,11 @@
 import { expect, describe, it, beforeEach, vi } from 'vitest';
 import { ref } from 'vue';
 import { useTreeViewNodeSelection } from './treeViewNodeSelection.js';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { useNodeGenerator } from '../../../tests/data/node-generator.js';
 import SelectionMode from '../../enums/selectionMode.js';
 import TreeEvent from '../../enums/event.js';
+
+const { generateNodes } = useNodeGenerator();
 
 describe('useTreeViewNodeSelection.js', () => {
 

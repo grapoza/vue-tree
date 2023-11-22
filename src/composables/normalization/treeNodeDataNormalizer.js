@@ -12,12 +12,22 @@ export function useTreeNodeDataNormalizer(model, modelDefaults) {
    * Normalizes the data model to the format consumable by a tree node.
    */
   function normalizeNodeData() {
+    const unrefModel = unref(model);
 
-    if (!model.value.treeNodeSpec) {
-      model.value.treeNodeSpec = {};
+    if (!unrefModel.treeNodeSpec) {
+      unrefModel.treeNodeSpec = {};
     }
 
-    const tns = model.value.treeNodeSpec;
+    const tns = unrefModel.treeNodeSpec;
+
+    // If internal state has already been created then this node has been normalized. Short circuit.
+    if (isProbablyObject(tns._)) {
+      return;
+    }
+
+    // Internal members
+    tns._ = {};
+    tns._.dragging = false;
 
     assignDefaultProps(unref(modelDefaults), tns);
 
@@ -29,8 +39,8 @@ export function useTreeNodeDataNormalizer(model, modelDefaults) {
       tns.idProperty = 'id';
     }
 
-    if (!Array.isArray(model.value[tns.childrenProperty])) {
-      model.value[tns.childrenProperty] = [];
+    if (!Array.isArray(unrefModel[tns.childrenProperty])) {
+      unrefModel[tns.childrenProperty] = [];
     }
     if (typeof tns.expandable !== 'boolean') {
       tns.expandable = true;
@@ -62,13 +72,9 @@ export function useTreeNodeDataNormalizer(model, modelDefaults) {
       tns.loadChildrenAsync = null;
     }
 
-    // Internal members
-    tns._ = {};
-    tns._.dragging = false;
-
     normalizeNodeStateData(tns);
 
-    model.value.treeNodeSpec = tns;
+    unrefModel.treeNodeSpec = tns;
   }
 
   /**
@@ -127,6 +133,11 @@ export function useTreeNodeDataNormalizer(model, modelDefaults) {
     // node loading. Any node with asynchronously loaded children starts as not expanded.
     privateState.areChildrenLoaded = typeof tns.loadChildrenAsync !== 'function';
     privateState.areChildrenLoading = false;
+
+    // matchesFilter and subnodeMatchesFilter are internal state used for filtering. These will
+    // end up getting set by a watchEffect in the treeNodeFilter composable.
+    privateState.matchesFilter = true;
+    privateState.subnodeMatchesFilter = true;
 
     if (typeof state.expanded !== 'boolean' || !privateState.areChildrenLoaded) {
       state.expanded = false;

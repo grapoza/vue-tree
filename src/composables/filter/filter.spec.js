@@ -1,6 +1,8 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 import { useFilter } from './filter.js';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { useNodeGenerator } from '../../../tests/data/node-generator.js';
+
+const { generateNodes } = useNodeGenerator();
 
 describe('filter.js', () => {
 

@@ -1,7 +1,9 @@
 import { expect, describe, it } from 'vitest';
 import { ref } from 'vue';
 import { useExpansion } from './expansion.js';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { useNodeGenerator } from '../../../tests/data/node-generator.js';
+
+const { generateNodes } = useNodeGenerator();
 
 describe('expansion.js', () => {
 

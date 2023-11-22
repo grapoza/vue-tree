@@ -2,8 +2,10 @@ import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import TreeView from '../../components/TreeView.vue';
 import TreeViewNode from '../../components/TreeViewNode.vue';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { useNodeGenerator } from '../../../tests/data/node-generator.js';
 import { dropEffect as DropEffect } from '../../enums/dragDrop';
+
+const { generateNodes } = useNodeGenerator();
 
 const getDefaultPropsData = function () {
   return {

@@ -83,6 +83,7 @@ export function useFocus() {
    * @return {Boolean} true if a node was focused, false otherwise
    */
   function focusNext(targetCollection, childNode, ignoreChild, keepCurrentDomFocus = false) {
+
     const filteredCollection = getFilteredNodes(targetCollection);
 
     // If the node is expanded, focus first child unless we're ignoring it (this was punted from a grandchild)

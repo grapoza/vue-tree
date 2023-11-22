@@ -1,6 +1,8 @@
 import { expect, describe, it, beforeEach } from 'vitest';
 import { useFocus } from './focus.js';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { useNodeGenerator } from '../../../tests/data/node-generator.js';
+
+const { generateNodes } = useNodeGenerator();
 
 const {
   focus,

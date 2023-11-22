@@ -3,7 +3,7 @@
     <slot :model="model">
 
       <!-- Expander -->
-      <template v-if="props.expander">
+      <template v-if="expander && canExpand">
 
         <!-- First add spacers for depth -->
         <template v-for="level in depth">
@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { computed, inject } from 'vue'
+import { computed, inject } from 'vue';
 
 // PROPS
 
@@ -54,12 +54,10 @@ const props = defineProps({
 
 const model = inject('model');
 const depth = inject('depth');
-const { toggleNodeExpanded } = inject('mutators');
+const { canExpand, toggleNodeExpanded } = inject('mutators');
 const treeId = inject('treeId');
 
 // COMPUTED
-
-const canExpand = computed(() => props.expander && model.value.children?.length > 0);
 
 const customClasses = computed(() => tns.value.customizations?.classes ?? {});
 

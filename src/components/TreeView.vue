@@ -227,6 +227,7 @@ const ariaKeyMap = computed(() =>
 // HOOKS
 
 onMounted(async () => {
+
   await performInitialNodeLoad();
 
   if (treeElement.value.id) {
@@ -234,13 +235,14 @@ onMounted(async () => {
   }
 
   if (model.value.length > 0) {
+
     // Walk the model looking for focusable attributes.
     // If none are found, set to true for the first root, or the first selected node if one exists.
     // If one is found, set any subsequent to false.
     let firstSelectedNode = null;
     depthFirstTraverse((node) => {
       if (isFocused(node)) {
-        if (focusableNodeModel.value) {
+        if (focusableNodeModel.value && focusableNodeModel.value !== node) {
           unfocus(node);
         }
         else {

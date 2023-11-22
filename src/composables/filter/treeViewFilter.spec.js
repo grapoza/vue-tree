@@ -2,7 +2,9 @@ import { beforeEach, expect, describe, it } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
 import { useTreeViewFilter } from './treeViewFilter.js';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { useNodeGenerator } from '../../../tests/data/node-generator.js';
+
+const { generateNodes } = useNodeGenerator();
 
 function createTestComponent(nodes) {
   const TestComponent = defineComponent({
