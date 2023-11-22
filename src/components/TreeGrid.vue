@@ -9,9 +9,9 @@
         </tr>
       </thead>
       <tbody>
-        <tree-grid-row v-for="rowModel in initialModel" :key="rowModel.id" :depth="0" :initial-model="rowModel" :model-defaults="modelDefaults">
+        <tree-grid-row v-for="rowModel in initialModel" :key="rowModel.id" :depth="0" :initial-model="rowModel" :model-defaults="modelDefaults" :is-parent-expanded="true">
           <slot>
-            <td role="gridcell">Add TreeGridColumn components into the TreeGrid component's default slot.</td>
+            <td role="gridcell">You must define columns. Add TreeGridColumn components into the TreeGrid component's default slot.</td>
           </slot>
         </tree-grid-row>
       </tbody>

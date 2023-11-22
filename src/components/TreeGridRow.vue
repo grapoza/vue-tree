@@ -1,23 +1,29 @@
 <template>
-  <tr class="grtgr" :aria-expanded="ariaExpanded">
+  <tr class="grtgr" :aria-expanded="ariaExpanded" v-bind="$attrs" v-show="isParentExpanded">
     <slot />
   </tr>
-  <template v-if="isExpanded">
-    <tree-grid-row v-for="childModel in model.children"
-        :key="childModel.id"
-        :depth="depth+1"
-        :initial-model="childModel"
-        :model-defaults="modelDefaults">
-      <slot />
-    </tree-grid-row>
-  </template>
+  <tree-grid-row v-for="childModel in model.children"
+      :key="childModel.id"
+      :depth="depth+1"
+      :initial-model="childModel"
+      :model-defaults="modelDefaults"
+      :aria-hidden="!isExpanded"
+      :is-parent-expanded="isExpanded">
+    <slot />
+  </tree-grid-row>
 </template>
 
 <script setup>
 import { computed, provide, ref, toRef } from 'vue';
 import { useTreeGridNodeDataNormalizer } from '../composables/normalization/treeGridNodeDataNormalizer.js';
 import { useTreeNodeExpansion } from '../composables/expansion/treeNodeExpansion.js';
+import { useTreeNodeChildren } from '../composables/children/treeNodeChildren.js';
+import { useTreeNodeFilter } from '../composables/filter/treeNodeFilter.js';
 import TreeEvent from '../enums/event.js';
+
+defineOptions({
+  inheritAttrs: false
+})
 
 // PROPS
 
@@ -34,6 +40,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  isParentExpanded: {
+    type: Boolean,
+    required: true,
+  }
 });
 
 // EMITS
@@ -61,8 +71,6 @@ const {
 } = useTreeNodeExpansion(model, emit);
 
 // PROVIDE
-
-console.debug("GR This is false because child nodes are not yet normalized! Add a normalizeRecusive method or something to call on first load; can this be suppressed when the tree is first built? Add normalized flag to _.state and skip normalized nodes?", canExpand.value)
 
 provide('model', model);
 provide('depth', toRef(props, "depth"));

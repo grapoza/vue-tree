@@ -7,10 +7,13 @@ export function useTreeViewNodeDataNormalizer(model, modelDefaults, radioGroupVa
 
   /**
    * Normalizes the data model to the format consumable by TreeViewNode.
+   * @returns {boolean} true if the data was normalized, false otherwise.
    */
   function normalizeTreeViewNodeData() {
 
-    normalizeNodeData();
+    if (!normalizeNodeData()) {
+      return false;
+    }
 
     const tns = model.value.treeNodeSpec;
 
@@ -44,6 +47,8 @@ export function useTreeViewNodeDataNormalizer(model, modelDefaults, radioGroupVa
     normalizeNodeStateData(tns);
 
     model.value.treeNodeSpec = tns;
+
+    return true;
   }
 
   /**

@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useTreeViewNodeDataNormalizer } from './treeViewNodeDataNormalizer.js';
 import { useNodeGenerator } from '../../../tests/data/node-generator.js';
 
-const { generateNodes } = useNodeGenerator();
+const { generateNodes } = useNodeGenerator(false);
 
 describe('nodeDataNormalizer.js', () => {
 

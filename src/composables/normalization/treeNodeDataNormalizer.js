@@ -10,6 +10,7 @@ export function useTreeNodeDataNormalizer(model, modelDefaults) {
 
   /**
    * Normalizes the data model to the format consumable by a tree node.
+   * @returns {boolean} true if the data was normalized, false otherwise.
    */
   function normalizeNodeData() {
     const unrefModel = unref(model);
@@ -22,7 +23,7 @@ export function useTreeNodeDataNormalizer(model, modelDefaults) {
 
     // If internal state has already been created then this node has been normalized. Short circuit.
     if (isProbablyObject(tns._)) {
-      return;
+      return false;
     }
 
     // Internal members
@@ -75,6 +76,8 @@ export function useTreeNodeDataNormalizer(model, modelDefaults) {
     normalizeNodeStateData(tns);
 
     unrefModel.treeNodeSpec = tns;
+
+    return true;
   }
 
   /**

@@ -3,7 +3,7 @@
     <slot :model="model">
 
       <!-- Expander -->
-      <template v-if="expander && canExpand">
+      <template v-if="expander">
 
         <!-- First add spacers for depth -->
         <template v-for="level in depth">

@@ -7,9 +7,10 @@ export function useTreeGridNodeDataNormalizer(model, modelDefaults) {
 
   /**
    * Normalizes the data model to the format consumable by TreeGridRow.
+   * @returns {boolean} true if the data was normalized, false otherwise.
    */
   function normalizeTreeGridNodeData() {
-    normalizeNodeData();
+    return normalizeNodeData();
   }
 
   return {
