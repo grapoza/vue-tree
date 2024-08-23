@@ -17937,11 +17937,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["pug", [\
-        ["npm:3.0.2", {\
-          "packageLocation": "./.yarn/cache/pug-npm-3.0.2-a900d45f03-3e1a3d4889.zip/node_modules/pug/",\
+        ["npm:3.0.3", {\
+          "packageLocation": "./.yarn/cache/pug-npm-3.0.3-9b210cb01a-b825497b44.zip/node_modules/pug/",\
           "packageDependencies": [\
-            ["pug", "npm:3.0.2"],\
-            ["pug-code-gen", "npm:3.0.2"],\
+            ["pug", "npm:3.0.3"],\
+            ["pug-code-gen", "npm:3.0.3"],\
             ["pug-filters", "npm:4.0.0"],\
             ["pug-lexer", "npm:5.0.1"],\
             ["pug-linker", "npm:4.0.0"],\
@@ -17966,15 +17966,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["pug-code-gen", [\
-        ["npm:3.0.2", {\
-          "packageLocation": "./.yarn/cache/pug-code-gen-npm-3.0.2-1cc7d40723-1644d3a4d6.zip/node_modules/pug-code-gen/",\
+        ["npm:3.0.3", {\
+          "packageLocation": "./.yarn/cache/pug-code-gen-npm-3.0.3-0785c45aa8-7a494887eb.zip/node_modules/pug-code-gen/",\
           "packageDependencies": [\
-            ["pug-code-gen", "npm:3.0.2"],\
+            ["pug-code-gen", "npm:3.0.3"],\
             ["constantinople", "npm:4.0.1"],\
             ["doctypes", "npm:1.1.0"],\
             ["js-stringify", "npm:1.0.2"],\
             ["pug-attrs", "npm:3.0.0"],\
-            ["pug-error", "npm:2.0.0"],\
+            ["pug-error", "npm:2.1.0"],\
             ["pug-runtime", "npm:3.0.1"],\
             ["void-elements", "npm:3.1.0"],\
             ["with", "npm:7.0.2"]\
@@ -17987,6 +17987,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/pug-error-npm-2.0.0-13b776f97b-c5372d018c.zip/node_modules/pug-error/",\
           "packageDependencies": [\
             ["pug-error", "npm:2.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:2.1.0", {\
+          "packageLocation": "./.yarn/cache/pug-error-npm-2.1.0-16119005be-e084890365.zip/node_modules/pug-error/",\
+          "packageDependencies": [\
+            ["pug-error", "npm:2.1.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -21552,7 +21559,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["ast-types", "npm:0.16.1"],\
             ["hash-sum", "npm:2.0.0"],\
             ["lru-cache", "npm:8.0.5"],\
-            ["pug", "npm:3.0.2"],\
+            ["pug", "npm:3.0.3"],\
             ["recast", "npm:0.23.4"],\
             ["ts-map", "npm:1.0.3"],\
             ["vue", "npm:3.3.4"],\
