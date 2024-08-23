@@ -10142,7 +10142,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["browserify-rsa", "npm:4.1.0"],\
             ["create-hash", "npm:1.2.0"],\
             ["create-hmac", "npm:1.1.7"],\
-            ["elliptic", "npm:6.5.4"],\
+            ["elliptic", "npm:6.5.7"],\
             ["inherits", "npm:2.0.4"],\
             ["parse-asn1", "npm:5.1.6"],\
             ["readable-stream", "npm:3.6.2"],\
@@ -11111,7 +11111,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["create-ecdh", "npm:4.0.4"],\
             ["bn.js", "npm:4.12.0"],\
-            ["elliptic", "npm:6.5.4"]\
+            ["elliptic", "npm:6.5.7"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -11879,10 +11879,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["elliptic", [\
-        ["npm:6.5.4", {\
-          "packageLocation": "./.yarn/cache/elliptic-npm-6.5.4-0ca8204a86-d56d21fd04.zip/node_modules/elliptic/",\
+        ["npm:6.5.7", {\
+          "packageLocation": "./.yarn/cache/elliptic-npm-6.5.7-df8e79dc1f-af0ffddffd.zip/node_modules/elliptic/",\
           "packageDependencies": [\
-            ["elliptic", "npm:6.5.4"],\
+            ["elliptic", "npm:6.5.7"],\
             ["bn.js", "npm:4.12.0"],\
             ["brorand", "npm:1.1.0"],\
             ["hash.js", "npm:1.1.7"],\
