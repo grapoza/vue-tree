@@ -5,7 +5,10 @@ const Template = (args) => ({
   setup() {
     return { args };
   },
-  template: '<tree-view v-bind="args" />'
+  data() {
+    return { modelValue: [] }
+  },
+  template: '<tree-view v-bind="args" v-model="modelValue" />'
 });
 
 export const Async = Template.bind({});

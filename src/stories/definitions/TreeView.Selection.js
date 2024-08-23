@@ -9,7 +9,7 @@ const selectionTemplateHtml = `<span>
   <option value="multiple">Multiple</option>
   <option value="">No Selection</option>
 </select>
-<tree-view v-bind="args" :selection-mode="normalizedSelectionMode" ref="treeViewRef"></tree-view>
+<tree-view v-bind="argsWithoutValue" v-model="modelValue" :selection-mode="normalizedSelectionMode" ref="treeViewRef"></tree-view>
 <section class="selected-nodes">
   <button type="button" style="margin-top: 1rem" @click="refreshSelectedList">What's selected?</button>
   <ul id="selectedList">
@@ -25,32 +25,35 @@ const Template = (args) => ({
   },
   template: selectionTemplateHtml,
   data() {
+    let { modelValue, ...rest } = args;
     return {
-      selectionMode: 'single',
-      selectedNodes: []
-    }
+      argsWithoutValue: rest,
+      modelValue,
+      selectionMode: "single",
+      selectedNodes: [],
+    };
   },
   computed: {
     normalizedSelectionMode() {
-      return this.selectionMode === '' ? null : this.selectionMode;
-    }
+      return this.selectionMode === "" ? null : this.selectionMode;
+    },
   },
   methods: {
     refreshSelectedList() {
       this.selectedNodes = this.$refs.treeViewRef.getSelected();
-    }
-  }
+    },
+  },
 });
 
 export const Selection = Template.bind({});
 Selection.args = {
-  initialModel: selectionTreeData,
+  modelValue: selectionTreeData,
   selectionMode: "single",
 };
 
 const docSourceCode = `
 <template>
-  <tree-view :initial-model="tvModel" selection-mode="single"></tree-view>
+  <tree-view v-model="tvModel" selection-mode="single"></tree-view>
 </template>
 <script setup>
 import { ref } from "vue";

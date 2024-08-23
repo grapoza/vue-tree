@@ -19,7 +19,7 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
-    initialModel: generateNodes(['ces'])[0],
+    modelValue: generateNodes(['ces'])[0],
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
@@ -32,7 +32,7 @@ const getDefaultPropsData = function () {
 async function createWrapper(customPropsData, slotsData) {
   var w = mount(TreeViewNode, {
     sync: false,
-    props: customPropsData || getDefaultPropsData(),
+    props: Object.assign({ 'onUpdate:modelValue': (e) => wrapper.setProps({ modelValue: e }) }, customPropsData ?? getDefaultPropsData()),
     slots: slotsData,
     attachTo: '#root',
     global: {
@@ -103,7 +103,7 @@ describe('TreeViewNode.vue', () => {
       wrapper = await createWrapper({
         ariaKeyMap: {},
         depth: 0,
-        initialModel: { id: 'my-node', label: 'My Node', treeNodeSpec: { title: 'My Title' } },
+        modelValue: { id: 'my-node', label: 'My Node', treeNodeSpec: { title: 'My Title' } },
         modelDefaults: {},
         treeId: 'tree-id',
         initialRadioGroupValues: {},
@@ -121,7 +121,7 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       let data = getDefaultPropsData();
-      data.initialModel.treeNodeSpec.title = 'My Title';
+      data.modelValue.treeNodeSpec.title = 'My Title';
 
       wrapper = await createWrapper(data);
     });
@@ -161,7 +161,7 @@ describe('TreeViewNode.vue', () => {
     beforeEach(async () => {
       wrapper = await createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['es'])[0],
+        modelValue: generateNodes(['es'])[0],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -188,7 +188,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = await createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['esa'], '', addChildCallback)[0],
+        modelValue: generateNodes(['esa'], '', addChildCallback)[0],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -215,7 +215,7 @@ describe('TreeViewNode.vue', () => {
 
       wrapper = await createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['esa'])[0],
+        modelValue: generateNodes(['esa'])[0],
         modelDefaults: { addChildCallback },
         depth: 0,
         treeId: 'tree',
@@ -234,11 +234,11 @@ describe('TreeViewNode.vue', () => {
   describe('when a node\'s model is disabled', () => {
 
     beforeEach(async () => {
-      let initialModel = generateNodes(['ces!'])[0];
+      let modelValue = generateNodes(['ces!'])[0];
 
       wrapper = await createWrapper({
         ariaKeyMap: {},
-        initialModel,
+        modelValue,
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -271,11 +271,11 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
 
-        let initialModel = generateNodes(['es', ['es']])[0];
+        let modelValue = generateNodes(['es', ['es']])[0];
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel,
+          modelValue,
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -310,11 +310,11 @@ describe('TreeViewNode.vue', () => {
 
         beforeEach(async () => {
 
-          let initialModel = generateNodes(['Es', ['es']])[0];
+          let modelValue = generateNodes(['Es', ['es']])[0];
 
           wrapper = await createWrapper({
             ariaKeyMap: {},
-            initialModel,
+            modelValue,
             modelDefaults: {},
             depth: 0,
             treeId: 'tree',
@@ -343,11 +343,11 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
 
-        let initialModel = generateNodes(['es'])[0];
+        let modelValue = generateNodes(['es'])[0];
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel,
+          modelValue,
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -367,11 +367,11 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
 
-      let initialModel = generateNodes(['s', ['es']])[0];
+      let modelValue = generateNodes(['s', ['es']])[0];
 
       wrapper = await createWrapper({
         ariaKeyMap: {},
-        initialModel,
+        modelValue,
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -394,11 +394,11 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
 
-      let initialModel = generateNodes(['S'])[0];
+      let modelValue = generateNodes(['S'])[0];
 
       wrapper = await createWrapper({
         ariaKeyMap: {},
-        initialModel,
+        modelValue,
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -417,11 +417,11 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
 
-      let initialModel = generateNodes([''])[0];
+      let modelValue = generateNodes([''])[0];
 
       wrapper = await createWrapper({
         ariaKeyMap: {},
-        initialModel,
+        modelValue,
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -442,11 +442,11 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
 
-        let initialModel = generateNodes(['S'])[0];
+        let modelValue = generateNodes(['S'])[0];
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel,
+          modelValue,
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -465,11 +465,11 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
 
-        let initialModel = generateNodes(['s'])[0];
+        let modelValue = generateNodes(['s'])[0];
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel,
+          modelValue,
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -491,11 +491,11 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
 
-        let initialModel = generateNodes(['S'])[0];
+        let modelValue = generateNodes(['S'])[0];
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel,
+          modelValue,
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -514,11 +514,11 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
 
-        let initialModel = generateNodes(['s'])[0];
+        let modelValue = generateNodes(['s'])[0];
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel,
+          modelValue,
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -542,11 +542,11 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
 
-        let initialModel = generateNodes(['S'])[0];
+        let modelValue = generateNodes(['S'])[0];
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel,
+          modelValue,
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -565,11 +565,11 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
 
-        let initialModel = generateNodes(['s'])[0];
+        let modelValue = generateNodes(['s'])[0];
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel,
+          modelValue,
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -642,7 +642,7 @@ describe('TreeViewNode.vue', () => {
         ariaKeyMap: {},
         depth: 0,
         treeId: 'tree',
-        initialModel: { badid: 'asf', label: 'asdf' },
+        modelValue: { badid: 'asf', label: 'asdf' },
         modelDefaults: {},
         initialRadioGroupValues: {},
         isMounted: false
@@ -651,7 +651,7 @@ describe('TreeViewNode.vue', () => {
 
     it('should log an error', () => {
       expect(console.error.mock.calls[0][0])
-        .to.equal('initialModel id is required and must be a number or string. Expected prop id to exist on the model.');
+        .to.equal('modelValue id is required and must be a number or string. Expected prop id to exist on the model.');
     });
   });
 
@@ -699,7 +699,7 @@ describe('TreeViewNode.vue', () => {
         ariaKeyMap: {},
         depth: 0,
         treeId: 'tree',
-        initialModel: { id: 'asf', badlabel: 'asdf' },
+        modelValue: { id: 'asf', badlabel: 'asdf' },
         modelDefaults: {},
         initialRadioGroupValues: {},
         isMounted: false
@@ -708,7 +708,7 @@ describe('TreeViewNode.vue', () => {
 
     it('should log an error', () => {
       expect(console.error.mock.calls[0][0])
-        .to.equal('initialModel label is required and must be a string. Expected prop label to exist on the model.');
+        .to.equal('modelValue label is required and must be a string. Expected prop label to exist on the model.');
     });
   });
 
@@ -717,7 +717,7 @@ describe('TreeViewNode.vue', () => {
     beforeEach(async () => {
       let defaultProps = getDefaultPropsData();
       wrapper = await createWrapper(Object.assign(defaultProps, {
-        initialModel: generateNodes(['sf', ['s', 's']])[0]
+        modelValue: generateNodes(['sf', ['s', 's']])[0]
       }));
       wrapper.vm.model.treeNodeSpec.childrenProperty = 'children';
       await wrapper.vm.$nextTick();
@@ -756,11 +756,11 @@ describe('TreeViewNode.vue', () => {
     };
 
     beforeEach(async () => {
-      let initialModel = generateNodes(['cEdS', ['res', 'esa']], "", () => Promise.resolve())[0];
+      let modelValue = generateNodes(['cEdS', ['res', 'esa']], "", () => Promise.resolve())[0];
 
       wrapper = await createWrapper({
         ariaKeyMap: {},
-        initialModel,
+        modelValue,
         modelDefaults: { customizations },
         depth: 0,
         treeId: 'tree',
@@ -878,12 +878,12 @@ describe('TreeViewNode.vue', () => {
       const customClasses = { treeViewNode: 'customnodeclass' };
 
       beforeEach(async () => {
-        let initialModel = generateNodes([''], "baseId")[0];
+        let modelValue = generateNodes([''], "baseId")[0];
 
         wrapper = await createWrapper(
           {
             ariaKeyMap: {},
-            initialModel,
+            modelValue,
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',
@@ -914,12 +914,12 @@ describe('TreeViewNode.vue', () => {
       const customClasses = { treeViewNode: 'customnodeclass' };
 
       beforeEach(async () => {
-        let initialModel = generateNodes(['c'], "baseId")[0];
+        let modelValue = generateNodes(['c'], "baseId")[0];
 
         wrapper = await createWrapper(
           {
             ariaKeyMap: {},
-            initialModel,
+            modelValue,
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',
@@ -964,12 +964,12 @@ describe('TreeViewNode.vue', () => {
       const customClasses = { treeViewNode: 'customnodeclass' };
 
       beforeEach(async () => {
-        let initialModel = generateNodes(['R'], "baseId")[0];
+        let modelValue = generateNodes(['R'], "baseId")[0];
 
         wrapper = await createWrapper(
           {
             ariaKeyMap: {},
-            initialModel,
+            modelValue,
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',
@@ -1020,12 +1020,12 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
         let loadChildrenAsync = () => new Promise(resolve => setTimeout(resolve.bind(null, []), 1000));
-        let initialModel = generateNodes(['e'], "baseId", null, loadChildrenAsync)[0];
+        let modelValue = generateNodes(['e'], "baseId", null, loadChildrenAsync)[0];
 
         wrapper = await createWrapper(
           {
             ariaKeyMap: {},
-            initialModel,
+            modelValue,
             modelDefaults: { customizations: { classes: customClasses } },
             depth: 0,
             treeId: 'tree',
@@ -1122,7 +1122,7 @@ describe('TreeViewNode.vue', () => {
       beforeEach(async () => {
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel: generateNodes(['ces', ['ces']])[0],
+          modelValue: generateNodes(['ces', ['ces']])[0],
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -1160,11 +1160,11 @@ describe('TreeViewNode.vue', () => {
       beforeEach(async () => {
 
         let loadChildrenAsync = () => new Promise(resolve => setTimeout(resolve.bind(null, generateNodes(['', ''])), 1000));
-        let initialModel = generateNodes(['ces'], '', null, loadChildrenAsync)[0];
+        let modelValue = generateNodes(['ces'], '', null, loadChildrenAsync)[0];
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel,
+          modelValue,
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -1244,7 +1244,7 @@ describe('TreeViewNode.vue', () => {
     beforeEach(async () => {
       wrapper = await createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['es', ['ces']])[0],
+        modelValue: generateNodes(['es', ['ces']])[0],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -1269,7 +1269,7 @@ describe('TreeViewNode.vue', () => {
     beforeEach(async () => {
       wrapper = await createWrapper({
         ariaKeyMap: {},
-        initialModel: generateNodes(['res'])[0],
+        modelValue: generateNodes(['res'])[0],
         modelDefaults: {},
         depth: 0,
         treeId: 'tree',
@@ -1311,7 +1311,7 @@ describe('TreeViewNode.vue', () => {
       beforeEach(async () => {
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel: generateNodes(['es', ['ds']])[0],
+          modelValue: generateNodes(['es', ['ds']])[0],
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -1345,7 +1345,7 @@ describe('TreeViewNode.vue', () => {
         beforeEach(async () => {
           wrapper = await createWrapper({
             ariaKeyMap: {},
-            initialModel: generateNodes(['es', ['ds']])[0],
+            modelValue: generateNodes(['es', ['ds']])[0],
             modelDefaults: { deleteNodeCallback: () => Promise.resolve(true) },
             depth: 0,
             treeId: 'tree',
@@ -1377,7 +1377,7 @@ describe('TreeViewNode.vue', () => {
         beforeEach(async () => {
           wrapper = await createWrapper({
             ariaKeyMap: {},
-            initialModel: generateNodes(['es', ['ds']])[0],
+            modelValue: generateNodes(['es', ['ds']])[0],
             modelDefaults: { deleteNodeCallback: () => Promise.resolve(false) },
             depth: 0,
             treeId: 'tree',
@@ -1419,7 +1419,7 @@ describe('TreeViewNode.vue', () => {
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel: generateNodes(['esa'], "", addChildCallback)[0],
+          modelValue: generateNodes(['esa'], "", addChildCallback)[0],
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -1461,7 +1461,7 @@ describe('TreeViewNode.vue', () => {
 
         wrapper = await createWrapper({
           ariaKeyMap: {},
-          initialModel: generateNodes(['esa'], "", addChildCallback)[0],
+          modelValue: generateNodes(['esa'], "", addChildCallback)[0],
           modelDefaults: {},
           depth: 0,
           treeId: 'tree',
@@ -1492,7 +1492,7 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       let defaultProps = getDefaultPropsData();
-      wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es', ['es']])[0] }));
+      wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateNodes(['es', ['es']])[0] }));
     });
 
     it('should have an ARIA role of group on the child list', () => {
@@ -1503,12 +1503,12 @@ describe('TreeViewNode.vue', () => {
   describe('when not provided with a focusable property on the initial model data', () => {
 
     beforeEach(async () => {
-      let initialModel = { id: 'my-node', label: 'My Node', expandable: true };
+      let modelValue = { id: 'my-node', label: 'My Node', expandable: true };
 
       wrapper = await createWrapper({
         ariaKeyMap: {},
         depth: 0,
-        initialModel,
+        modelValue,
         modelDefaults: {},
         treeId: 'tree-id',
         initialRadioGroupValues: {},
@@ -1524,7 +1524,7 @@ describe('TreeViewNode.vue', () => {
   describe('when focusing via callback', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper(Object.assign(getDefaultPropsData(), { initialModel: generateNodes(['Es', ['sf']])[0] }));
+      wrapper = await createWrapper(Object.assign(getDefaultPropsData(), { modelValue: generateNodes(['Es', ['sf']])[0] }));
 
       expect(wrapper.vm.model.treeNodeSpec.focusable).to.be.false;
       const innerNode = wrapper.findAllComponents(TreeViewNode)[0];
@@ -1690,14 +1690,14 @@ describe('TreeViewNode.vue', () => {
         describe('and the node is in a custom slot without the standard class applied', () => {
 
           beforeEach(async () => {
-            let initialModel = generateNodes(['c'], "baseId")[0];
+            let modelValue = generateNodes(['c'], "baseId")[0];
 
             wrapper = await createWrapper(
               {
                 ariaKeyMap: {
                   activateItem: [32], // Space
                 },
-                initialModel,
+                modelValue,
                 modelDefaults: { },
                 depth: 0,
                 treeId: 'tree',
@@ -1727,7 +1727,7 @@ describe('TreeViewNode.vue', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
-          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['es'])[0] }));
+          wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateNodes(['es'])[0] }));
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
         });
 
@@ -1778,7 +1778,7 @@ describe('TreeViewNode.vue', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['esf', ['s', 's']])[0] }));
+            wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateNodes(['esf', ['s', 's']])[0] }));
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
           });
 
@@ -1792,7 +1792,7 @@ describe('TreeViewNode.vue', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Esf', ['s', 's']])[0] }));
+            wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateNodes(['Esf', ['s', 's']])[0] }));
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
           });
 
@@ -1807,7 +1807,7 @@ describe('TreeViewNode.vue', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
-          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['sf', ['s', 's']])[0] }));
+          wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateNodes(['sf', ['s', 's']])[0] }));
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
         });
 
@@ -1825,7 +1825,7 @@ describe('TreeViewNode.vue', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esf', ['s']]])[0] }));
+            wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateNodes(['Es', ['esf', ['s']]])[0] }));
             await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[0], wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
             await wrapper.vm.$nextTick();
           });
@@ -1840,7 +1840,7 @@ describe('TreeViewNode.vue', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Esf', ['es']])[0] }));
+            wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateNodes(['Esf', ['es']])[0] }));
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
           });
 
@@ -1855,7 +1855,7 @@ describe('TreeViewNode.vue', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
-          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['sf']])[0] }));
+          wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateNodes(['Es', ['sf']])[0] }));
           await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[0], wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
         });
 
@@ -1933,7 +1933,7 @@ describe('TreeViewNode.vue', () => {
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
           let nodeAddCallback = function () { return Promise.resolve({ id: 100, label: 'labelText' }) };
-          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['sf'], "", nodeAddCallback)[0] }));
+          wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateNodes(['sf'], "", nodeAddCallback)[0] }));
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.insertItem[0]);
         });
 
@@ -1964,7 +1964,7 @@ describe('TreeViewNode.vue', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esdf']])[0] }));
+            wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateNodes(['Es', ['esdf']])[0] }));
             await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[0], wrapper.vm.ariaKeyMap.deleteItem[0]);
           });
 
@@ -1980,7 +1980,7 @@ describe('TreeViewNode.vue', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['esdf', 'es']])[0] }));
+            wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateNodes(['Es', ['esdf', 'es']])[0] }));
             await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[0], wrapper.vm.ariaKeyMap.deleteItem[0]);
           });
 
@@ -1993,7 +1993,7 @@ describe('TreeViewNode.vue', () => {
 
           beforeEach(async () => {
             let defaultProps = getDefaultPropsData();
-            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel: generateNodes(['Es', ['es', 'es', 'esdf']])[0] }));
+            wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateNodes(['Es', ['es', 'es', 'esdf']])[0] }));
             await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[2], wrapper.vm.ariaKeyMap.deleteItem[0]);
           });
 
@@ -2024,15 +2024,15 @@ describe('TreeViewNode.vue', () => {
 
   describe('when setting focusable to the previous node from a child node', () => {
 
-    let initialModel = null;
+    let modelValue = null;
     let defaultProps = getDefaultPropsData();
 
     describe('and the currently focusable node is the first sibling', () => {
 
       beforeEach(async () => {
-        initialModel = generateNodes(['Es', ['esf']])[0];
-        wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
-        wrapper.vm.focusPreviousNode(initialModel.children[0]);
+        modelValue = generateNodes(['Es', ['esf']])[0];
+        wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
+        wrapper.vm.focusPreviousNode(modelValue.children[0]);
         await wrapper.vm.$nextTick();
       });
 
@@ -2044,9 +2044,9 @@ describe('TreeViewNode.vue', () => {
     describe('and the previous sibling node is expanded', () => {
 
       beforeEach(async () => {
-        initialModel = generateNodes(['Es', ['Es', ['s', 's'], 'sf']])[0];
-        wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
-        wrapper.vm.focusPreviousNode(initialModel.children[1]);
+        modelValue = generateNodes(['Es', ['Es', ['s', 's'], 'sf']])[0];
+        wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
+        wrapper.vm.focusPreviousNode(modelValue.children[1]);
         await wrapper.vm.$nextTick();
       });
 
@@ -2058,9 +2058,9 @@ describe('TreeViewNode.vue', () => {
     describe('and the previous sibling node is not expanded', () => {
 
       beforeEach(async () => {
-        initialModel = generateNodes(['Es', ['es', ['s', 's'], 'sf']])[0];
-        wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
-        wrapper.vm.focusPreviousNode(initialModel.children[1]);
+        modelValue = generateNodes(['Es', ['es', ['s', 's'], 'sf']])[0];
+        wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
+        wrapper.vm.focusPreviousNode(modelValue.children[1]);
         await wrapper.vm.$nextTick();
       });
 
@@ -2072,7 +2072,7 @@ describe('TreeViewNode.vue', () => {
 
   describe('when setting focusable to the next node from a child node', () => {
 
-    let initialModel = null;
+    let modelValue = null;
     let defaultProps = getDefaultPropsData();
 
     describe('and the child is expanded', () => {
@@ -2080,9 +2080,9 @@ describe('TreeViewNode.vue', () => {
       describe('and its children are not ignored', () => {
 
         beforeEach(async () => {
-          initialModel = generateNodes(['Es', ['Esf', ['s', 's'], 's']])[0];
-          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
-          wrapper.vm.focusNextNode(initialModel.children[0], false);
+          modelValue = generateNodes(['Es', ['Esf', ['s', 's'], 's']])[0];
+          wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
+          wrapper.vm.focusNextNode(modelValue.children[0], false);
           await wrapper.vm.$nextTick();
         });
 
@@ -2096,9 +2096,9 @@ describe('TreeViewNode.vue', () => {
         describe('and it has a next sibling', () => {
 
           beforeEach(async () => {
-            initialModel = generateNodes(['Es', ['Esf', ['s', 's'], 's']])[0];
-            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
-            wrapper.vm.focusNextNode(initialModel.children[0], true);
+            modelValue = generateNodes(['Es', ['Esf', ['s', 's'], 's']])[0];
+            wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
+            wrapper.vm.focusNextNode(modelValue.children[0], true);
             await wrapper.vm.$nextTick();
           });
 
@@ -2110,9 +2110,9 @@ describe('TreeViewNode.vue', () => {
         describe('and it does not have a next sibling', () => {
 
           beforeEach(async () => {
-            initialModel = generateNodes(['Es', ['Esf', ['s', 's']]])[0];
-            wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
-            wrapper.vm.focusNextNode(initialModel.children[0], true);
+            modelValue = generateNodes(['Es', ['Esf', ['s', 's']]])[0];
+            wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
+            wrapper.vm.focusNextNode(modelValue.children[0], true);
             await wrapper.vm.$nextTick();
           });
 
@@ -2129,9 +2129,9 @@ describe('TreeViewNode.vue', () => {
       describe('and it has a next sibling', () => {
 
         beforeEach(async () => {
-          initialModel = generateNodes(['Es', ['esf', ['s', 's'], 's']])[0];
-          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
-          wrapper.vm.focusNextNode(initialModel.children[0], false);
+          modelValue = generateNodes(['Es', ['esf', ['s', 's'], 's']])[0];
+          wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
+          wrapper.vm.focusNextNode(modelValue.children[0], false);
           await wrapper.vm.$nextTick();
         });
 
@@ -2143,9 +2143,9 @@ describe('TreeViewNode.vue', () => {
       describe('and it does not have a next sibling', () => {
 
         beforeEach(async () => {
-          initialModel = generateNodes(['Es', ['esf', ['s', 's']]])[0];
-          wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
-          wrapper.vm.focusNextNode(initialModel.children[0], false);
+          modelValue = generateNodes(['Es', ['esf', ['s', 's']]])[0];
+          wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
+          wrapper.vm.focusNextNode(modelValue.children[0], false);
           await wrapper.vm.$nextTick();
         });
 
@@ -2161,8 +2161,8 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       const defaultProps = getDefaultPropsData();
-      const initialModel = generateNodes(['es', ['es']])[0];
-      wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
+      const modelValue = generateNodes(['es', ['es']])[0];
+      wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
       wrapper.find('.grtvn-children').findComponent(TreeViewNode).vm.$emit('treeNodeClick');
     });
 
@@ -2175,8 +2175,8 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       const defaultProps = getDefaultPropsData();
-      const initialModel = generateNodes(['es', ['es']])[0];
-      wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
+      const modelValue = generateNodes(['es', ['es']])[0];
+      wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
       wrapper.find('.grtvn-children').findComponent(TreeViewNode).vm.$emit('treeNodeDblclick');
     });
 
@@ -2189,9 +2189,9 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       const defaultProps = getDefaultPropsData();
-      const initialModel = generateNodes(['es', ['es', ['esc']]])[0];
-      wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
-      wrapper.find('.grtvn-children').findComponent(TreeViewNode).vm.$emit('treeNodeChildCheckboxChange', initialModel.children[0], initialModel.children[0].children[0], null);
+      const modelValue = generateNodes(['es', ['es', ['esc']]])[0];
+      wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
+      wrapper.find('.grtvn-children').findComponent(TreeViewNode).vm.$emit('treeNodeChildCheckboxChange', modelValue.children[0], modelValue.children[0].children[0], null);
     });
 
     it('should emit a treeNodeChildCheckboxChange event', () => {
@@ -2203,8 +2203,8 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       const defaultProps = getDefaultPropsData();
-      const initialModel = generateNodes(['es', ['es']])[0];
-      wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
+      const modelValue = generateNodes(['es', ['es']])[0];
+      wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
       wrapper.find('.grtvn-children').findComponent(TreeViewNode).vm.$emit('treeNodeRadioChange');
     });
 
@@ -2217,8 +2217,8 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       const defaultProps = getDefaultPropsData();
-      const initialModel = generateNodes(['es', ['es']])[0];
-      wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
+      const modelValue = generateNodes(['es', ['es']])[0];
+      wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
       wrapper.find('.grtvn-children').findComponent(TreeViewNode).vm.$emit('treeNodeExpandedChange');
     });
 
@@ -2231,8 +2231,8 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       const defaultProps = getDefaultPropsData();
-      const initialModel = generateNodes(['es', ['es']])[0];
-      wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
+      const modelValue = generateNodes(['es', ['es']])[0];
+      wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
       wrapper.find('.grtvn-children').findComponent(TreeViewNode).vm.$emit('treeNodeChildrenLoad');
     });
 
@@ -2245,8 +2245,8 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       const defaultProps = getDefaultPropsData();
-      const initialModel = generateNodes(['es', ['es']])[0];
-      wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
+      const modelValue = generateNodes(['es', ['es']])[0];
+      wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
       wrapper.find('.grtvn-children').findComponent(TreeViewNode).vm.$emit('treeNodeAdd');
     });
 
@@ -2259,8 +2259,8 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       const defaultProps = getDefaultPropsData();
-      const initialModel = generateNodes(['es', ['es']])[0];
-      wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
+      const modelValue = generateNodes(['es', ['es']])[0];
+      wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
       wrapper.find('.grtvn-children').findComponent(TreeViewNode).vm.$emit('treeNodeAriaRequestFirstFocus');
     });
 
@@ -2273,8 +2273,8 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       const defaultProps = getDefaultPropsData();
-      const initialModel = generateNodes(['es', ['es']])[0];
-      wrapper = await createWrapper(Object.assign(defaultProps, { initialModel }));
+      const modelValue = generateNodes(['es', ['es']])[0];
+      wrapper = await createWrapper(Object.assign(defaultProps, { modelValue }));
       wrapper.find('.grtvn-children').findComponent(TreeViewNode).vm.$emit('treeNodeAriaRequestLastFocus');
     });
 

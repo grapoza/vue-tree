@@ -177,10 +177,10 @@
           :class="customClasses.treeViewNodeChildren"
           role="group"
           :aria-hidden="!tns.state.expanded">
-        <TreeViewNode v-for="nodeModel in children"
+        <TreeViewNode v-for="(nodeModel, index) in children"
                       :key="nodeModel[nodeModel.treeNodeSpec?.idProperty ?? 'id']"
                       :depth="depth + 1"
-                      :initial-model="nodeModel"
+                      v-model="children[index]"
                       :model-defaults="modelDefaults"
                       :parent-id="id"
                       :selection-mode="selectionMode"
@@ -249,10 +249,6 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  initialModel: {
-    type: Object,
-    required: true
-  },
   initialRadioGroupValues: {
     type: Object,
     required: true
@@ -305,7 +301,7 @@ const emit = defineEmits([
 // DATA
 
 const elementsThatIgnoreClicks = 'input, .grtvn-self-expander, .grtvn-self-expander *, .grtvn-self-action, .grtvn-self-action *';
-const model = ref(props.initialModel);
+const model = defineModel({ required: true });
 
 const radioGroupValues = ref(props.initialRadioGroupValues);
 const nodeElement = ref(null); // template ref
@@ -602,11 +598,11 @@ function handleCheckboxChange(node, event) {
 // of at the prop level due to dependency on multiple props at once and defaulting
 // that takes place in the normalization process
 if (!id.value || (typeof id.value !== 'number' && typeof id.value !== 'string')) {
-  console.error(`initialModel id is required and must be a number or string. Expected prop ${idPropName.value} to exist on the model.`);
+  console.error(`modelValue id is required and must be a number or string. Expected prop ${idPropName.value} to exist on the model.`);
 }
 
 if (!label.value || typeof label.value !== 'string') {
-  console.error(`initialModel label is required and must be a string. Expected prop ${labelPropName.value} to exist on the model.`);
+  console.error(`modelValue label is required and must be a string. Expected prop ${labelPropName.value} to exist on the model.`);
 }
 
 </script>

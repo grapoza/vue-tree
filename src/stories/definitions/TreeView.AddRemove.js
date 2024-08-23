@@ -6,13 +6,20 @@ const Template = (args) => ({
   setup() {
     return { args };
   },
-  template: '<tree-view v-bind="args" />'
+  data() {
+    let { modelValue, ...rest } = args;
+    return {
+      argsWithoutValue: rest,
+      modelValue,
+    };
+  },
+  template: '<tree-view v-bind="argsWithoutValue" v-model="modelValue" />',
 });
 
 export const AddRemove = Template.bind({});
 
 AddRemove.args = {
-  initialModel: addRemoveTreeData,
+  modelValue: addRemoveTreeData,
   modelDefaults: { addChildCallback, deleteNodeCallback },
 };
 let addRemoveChildCounter = 0;
@@ -26,7 +33,7 @@ function deleteNodeCallback(model) {
 
 const docSourceCode = `
 <template>
-  <tree-view :initial-model="tvModel" :model-defaults="modelDefaults"></tree-view>
+  <tree-view v-model="tvModel" :model-defaults="modelDefaults"></tree-view>
 </template>
 <script setup>
 import { ref } from "vue";
