@@ -10291,7 +10291,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["promise-inflight", "virtual:a7e5239c6ae68bf6359adfd3598326db000e94dbb349bc00a3852ed53a31712a0e2e787228c6e859d3e5cf2fbb872aba1ea4abe4995cef8086a77ef619ae1be6#npm:1.0.1"],\
             ["rimraf", "npm:3.0.2"],\
             ["ssri", "npm:8.0.1"],\
-            ["tar", "npm:6.2.0"],\
+            ["tar", "npm:6.2.1"],\
             ["unique-filename", "npm:1.1.1"]\
           ],\
           "linkType": "HARD"\
@@ -10310,7 +10310,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["minipass-pipeline", "npm:1.2.4"],\
             ["p-map", "npm:4.0.0"],\
             ["ssri", "npm:10.0.5"],\
-            ["tar", "npm:6.2.0"],\
+            ["tar", "npm:6.2.1"],\
             ["unique-filename", "npm:3.0.0"]\
           ],\
           "linkType": "HARD"\
@@ -16512,7 +16512,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["npmlog", "npm:6.0.2"],\
             ["rimraf", "npm:3.0.2"],\
             ["semver", "npm:7.5.4"],\
-            ["tar", "npm:6.2.0"],\
+            ["tar", "npm:6.2.1"],\
             ["which", "npm:2.0.2"]\
           ],\
           "linkType": "HARD"\
@@ -20052,10 +20052,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["tar", [\
-        ["npm:6.2.0", {\
-          "packageLocation": "./.yarn/cache/tar-npm-6.2.0-3eb25205a7-db4d9fe74a.zip/node_modules/tar/",\
+        ["npm:6.2.1", {\
+          "packageLocation": "./.yarn/cache/tar-npm-6.2.1-237800bb20-f1322768c9.zip/node_modules/tar/",\
           "packageDependencies": [\
-            ["tar", "npm:6.2.0"],\
+            ["tar", "npm:6.2.1"],\
             ["chownr", "npm:2.0.0"],\
             ["fs-minipass", "npm:2.1.0"],\
             ["minipass", "npm:5.0.0"],\
