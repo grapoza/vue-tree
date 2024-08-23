@@ -1,10 +1,10 @@
 ---
 version: '1.0.{build}'
-image: Ubuntu
+image: Ubuntu2204
 
 init:
   - sh: git config --global core.autocrlf true
-  - sh: nvm use 16
+  - sh: nvm install 20
 
 shallow_clone: true
 
