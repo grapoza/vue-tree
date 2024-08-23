@@ -1,6 +1,6 @@
 {
   "name": "@grapoza/vue-tree",
-  "version": "5.2.2",
+  "version": "6.0.0",
   "description": "Tree components for Vue 3",
   "author": "Gregg Rapoza <grapoza@gmail.com>",
   "license": "MIT",
@@ -49,17 +49,17 @@
     "@storybook/manager-webpack5": "^6.5.10",
     "@storybook/vue3": "^6.5.10",
     "@vitejs/plugin-vue": "^3.1.0",
-    "@vitest/coverage-v8": "^0.34.6",
+    "@vitest/coverage-v8": "^2.0.5",
     "@vue/compiler-dom": "^3.2.38",
     "@vue/compiler-sfc": "^3.2.38",
     "@vue/server-renderer": "^3.3.4",
-    "@vue/test-utils": "^2.4.1",
+    "@vue/test-utils": "^2.4.6",
     "babel-loader": "^8.2.5",
-    "jsdom": "^20.0.0",
+    "jsdom": "^24.1.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "vite": "^3.1.0",
-    "vitest": "^0.34.6",
+    "vitest": "^2.0.5",
     "vue-router": "^4.1.5",
     "webpack": "^5.74.0"
   },
@@ -67,5 +67,5 @@
     "defaults",
     "not IE 11"
   ],
-  "packageManager": "yarn@3.2.3"
+  "packageManager": "yarn@4.4.0"
 }
