@@ -8,7 +8,7 @@ import SelectionMode from '../enums/selectionMode';
 async function createWrapper(customPropsData, customAttrs, slotsData) {
   let wrapper = mount(TreeView, {
     sync: false,
-    props: customPropsData || { initialModel: [] },
+    props: Object.assign({ 'onUpdate:modelValue': (e) => wrapper.setProps({ modelValue: e }) }, customPropsData ?? {}),
     attrs: customAttrs,
     slots: slotsData
   });
@@ -93,7 +93,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is None', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.None });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.None });
     });
 
     it('should not have an aria-multiselectable attribute', () => {
@@ -104,7 +104,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is `single`', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Single });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Single });
     });
 
     it('should have an aria-multiselectable attribute of false', () => {
@@ -121,7 +121,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is `selectionFollowsFocus`', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.SelectionFollowsFocus });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.SelectionFollowsFocus });
     });
 
     it('should have an aria-multiselectable attribute of false', () => {
@@ -132,7 +132,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is `multiple`', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es', 'eS', ['es', 'eS']]), selectionMode: SelectionMode.Multiple });
     });
 
     it('should have an aria-multiselectable attribute of true', () => {
@@ -238,7 +238,7 @@ describe('TreeView.vue', () => {
 
       beforeEach(async () => {
         wrapper = await createWrapper({
-          initialModel: [],
+          modelValue: [],
           customAriaKeyMap: customKeyMap
         });
       });
@@ -262,7 +262,7 @@ describe('TreeView.vue', () => {
         console.warn = vi.fn();
 
         wrapper = await createWrapper({
-          initialModel: [],
+          modelValue: [],
           customAriaKeyMap: customKeyMap
         });
       });
@@ -279,7 +279,7 @@ describe('TreeView.vue', () => {
     describe('and no selected nodes', () => {
 
       beforeEach(async () => {
-        wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]), selectionMode: SelectionMode.Multiple });
+        wrapper = await createWrapper({ modelValue: generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]), selectionMode: SelectionMode.Multiple });
       });
 
       it('should set the first node as focusable', () => {
@@ -290,7 +290,7 @@ describe('TreeView.vue', () => {
     describe('and selected nodes', () => {
 
       beforeEach(async () => {
-        wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCs', ['eCS', 'ecs']]), selectionMode: SelectionMode.Multiple });
+        wrapper = await createWrapper({ modelValue: generateNodes(['ecs', 'eCs', ['eCS', 'ecs']]), selectionMode: SelectionMode.Multiple });
       });
 
       it('should set the first selected node as focusable', () => {
@@ -304,7 +304,7 @@ describe('TreeView.vue', () => {
     describe('always', () => {
 
       beforeEach(async () => {
-        wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCsf', ['eCsf', 'ecs']]), selectionMode: SelectionMode.Multiple });
+        wrapper = await createWrapper({ modelValue: generateNodes(['ecs', 'eCsf', ['eCsf', 'ecs']]), selectionMode: SelectionMode.Multiple });
       });
 
       it('should keep that node as focusable', () => {
@@ -321,7 +321,7 @@ describe('TreeView.vue', () => {
       describe('and a selectable focusable node', () => {
 
         beforeEach(async () => {
-          wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCsf']), selectionMode: SelectionMode.SelectionFollowsFocus });
+          wrapper = await createWrapper({ modelValue: generateNodes(['ecs', 'eCsf']), selectionMode: SelectionMode.SelectionFollowsFocus });
         });
 
         it('should select the focused node', () => {
@@ -336,7 +336,7 @@ describe('TreeView.vue', () => {
     describe('and the node is not the currently focusable node', () => {
 
       beforeEach(async () => {
-        wrapper = await createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs']) });
+        wrapper = await createWrapper({ modelValue: generateNodes(['ecsf', 'eCs', 'ecs']) });
         wrapper.vm.handleNodeDeletion(wrapper.vm.model[1]);
       });
 
@@ -348,7 +348,7 @@ describe('TreeView.vue', () => {
     describe('and the node is not the last node', () => {
 
       beforeEach(async () => {
-        wrapper = await createWrapper({ initialModel: generateNodes(['ecsf', 'eCs', 'ecs']) });
+        wrapper = await createWrapper({ modelValue: generateNodes(['ecsf', 'eCs', 'ecs']) });
         wrapper.vm.handleNodeDeletion(wrapper.vm.model[0]);
       });
 
@@ -360,7 +360,7 @@ describe('TreeView.vue', () => {
     describe('and the node is the last node', () => {
 
       beforeEach(async () => {
-        wrapper = await createWrapper({ initialModel: generateNodes(['ecs', 'eCs', 'ecsf']) });
+        wrapper = await createWrapper({ modelValue: generateNodes(['ecs', 'eCs', 'ecsf']) });
         wrapper.vm.handleNodeDeletion(wrapper.vm.model[2]);
       });
 
@@ -373,7 +373,7 @@ describe('TreeView.vue', () => {
   describe('when selectionMode is Single', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['ecS', 'ecs']), selectionMode: SelectionMode.Single });
+      wrapper = await createWrapper({ modelValue: generateNodes(['ecS', 'ecs']), selectionMode: SelectionMode.Single });
     });
 
     describe('and a node is already selected', () => {
@@ -395,7 +395,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeClick event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeClick');
     });
 
@@ -407,7 +407,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeDblclick event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeDblclick');
     });
 
@@ -419,7 +419,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeCheckboxChange event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeCheckboxChange');
     });
 
@@ -431,7 +431,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeChildCheckboxChange event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeChildCheckboxChange');
     });
 
@@ -443,7 +443,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeRadioChange event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeRadioChange');
     });
 
@@ -455,7 +455,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeExpandedChange event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeExpandedChange');
     });
 
@@ -467,7 +467,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeChildrenLoad event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeChildrenLoad');
     });
 
@@ -481,7 +481,7 @@ describe('TreeView.vue', () => {
     describe('always', () => {
 
       beforeEach(async () => {
-        wrapper = await createWrapper({ initialModel: generateNodes(['eS', 'es']), selectionMode: SelectionMode.Multiple });
+        wrapper = await createWrapper({ modelValue: generateNodes(['eS', 'es']), selectionMode: SelectionMode.Multiple });
         wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeSelectedChange', wrapper.vm.model[0]);
       });
 
@@ -495,7 +495,7 @@ describe('TreeView.vue', () => {
       describe('and the target node is selected', () => {
 
         beforeEach(async () => {
-          wrapper = await createWrapper({ initialModel: generateNodes(['eS', 'eS', 'es']), selectionMode: SelectionMode.Single });
+          wrapper = await createWrapper({ modelValue: generateNodes(['eS', 'eS', 'es']), selectionMode: SelectionMode.Single });
           wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeSelectedChange', wrapper.vm.model[0]);
         });
 
@@ -507,7 +507,7 @@ describe('TreeView.vue', () => {
       describe('and the target node is not selected', () => {
 
         beforeEach(async () => {
-          wrapper = await createWrapper({ initialModel: generateNodes(['es', 'eS', 'es']), selectionMode: SelectionMode.Single });
+          wrapper = await createWrapper({ modelValue: generateNodes(['es', 'eS', 'es']), selectionMode: SelectionMode.Single });
           wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeSelectedChange', wrapper.vm.model[0]);
         });
 
@@ -521,7 +521,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeAdd event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeAdd');
     });
 
@@ -533,7 +533,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeDelete event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeDelete', wrapper.vm.model[0]);
     });
 
@@ -549,7 +549,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeAriaFocusableChange event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeAriaFocusableChange', wrapper.vm.model[0]);
     });
 
@@ -561,7 +561,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeAriaRequestFirstFocus event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeAriaRequestFirstFocus');
     });
 
@@ -573,7 +573,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeAriaRequestLastFocus event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es', 'es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es', 'es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeAriaRequestLastFocus');
     });
 
@@ -585,7 +585,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeAriaRequestPreviousFocus event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['es', 'efs']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['es', 'efs']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeAriaRequestPreviousFocus', wrapper.vm.model[1]);
     });
 
@@ -597,7 +597,7 @@ describe('TreeView.vue', () => {
   describe('when a node fires a treeNodeAriaRequestNextFocus event', () => {
 
     beforeEach(async () => {
-      wrapper = await createWrapper({ initialModel: generateNodes(['efs', 'es']), selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: generateNodes(['efs', 'es']), selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeAriaRequestNextFocus', wrapper.vm.model[0], true);
     });
 
@@ -611,7 +611,7 @@ describe('TreeView.vue', () => {
     it('should fall back to the id property (note: this test is testing implementation [v-for iteration key for nodes] and not functionality)', async () => {
       const nodes = generateNodes(['es']);
       nodes[0].treeNodeSpec.idProperty = null;
-      wrapper = await createWrapper({ initialModel: nodes, selectionMode: SelectionMode.Multiple });
+      wrapper = await createWrapper({ modelValue: nodes, selectionMode: SelectionMode.Multiple });
       expect(wrapper.findComponent(TreeViewNode).exists()).to.be.true;
     });
   });

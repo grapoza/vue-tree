@@ -48,7 +48,7 @@ If you're using it in a .vue file:
 
 ```html
 <template>
-  <tree-view  id="my-tree" :initial-model="dataModel"></tree-view>
+  <tree-view  id="my-tree" v-model="dataModel"></tree-view>
 </template>
 
 // Options API
@@ -100,7 +100,7 @@ Vue.use(TreeView)
 ```
 Then add the component:
 ```html
-<tree-view id="my-tree" :initial-model="dataModel"></tree-view>
+<tree-view id="my-tree" v-model="dataModel"></tree-view>
 ```
 ```javascript
 export default {
@@ -129,7 +129,7 @@ To see it in action, try out the [demos](/docs/examples-treeview--basic#examples
 
 | Prop              | Type     | Description                                                                                        | Default value                     | Required |
 |:------------------|:---------|:---------------------------------------------------------------------------------------------------|:----------------------------------|:---------|
-| initialModel      | Array    | The data model containing [model data](#model-data)                                                | `[]`                              |          |
+| modelValue        | Array    | The data model containing [model data](#model-data); used with `v-model`                           | `[]`                              |          |
 | customAriaKeyMap  | Object   | An object, the properties of which are arrays to keyCodes for various actions                      | See [Aria](#setting-key-bindings) |          |
 | loadNodesAsync    | Function | A function that is called on mount to asynchronously load [model data](#model-data)                | `null`                            |          |
 | modelDefaults     | Object   | An object containing defaults for all nodes that do not specify the given properties               | `{}`                              |          |
@@ -150,9 +150,9 @@ When clicking on a node, it is only selected if the click target was not interac
 
 ## Model Data
 
-Model data can be loaded either synchronously through the `initialModel` property or asynchronously through the `loadNodesAsync` property. If both are specified then the data from `initialModel` is overwritten when the `loadNodesAsync` function returns data.
+Model data can be loaded either synchronously through the `modelValue` property or asynchronously through the `loadNodesAsync` property. If both are specified then the data from `modelValue` is overwritten when the `loadNodesAsync` function returns data.
 
-The data passed to the tree view's `initialModel` prop or returned from `loadNodesAsync` should be an array of nodes, where each node should have:
+The data passed to the tree view's `modelValue` prop or returned from `loadNodesAsync` should be an array of nodes, where each node should have:
 
 * Required: A property with a value that will be used as the node's ID (by default the node looks for a property named `id`)
 * Required: A property with a value that will be used as the node's label (by default the node looks for a property named `label`)
@@ -160,7 +160,7 @@ The data passed to the tree view's `initialModel` prop or returned from `loadNod
 * Optional: A `treeNodeSpec` property that contains any data about the node's capabilities and its initial state
 * Optional: Any other data you want on your node
 
-The `treeNodeSpec` of the objects in the data model passed to the tree view's `initialModel` property will be updated by the tree view nodes themselves on creation to include missing properties.
+The `treeNodeSpec` of the objects in the data model passed to the tree view's `modelValue` property will be updated by the tree view nodes themselves on creation to include missing properties.
 
 ```javascript
 {
@@ -401,7 +401,7 @@ Sometimes the entire content of a node (_e.g._, the checkbox or text) needs cust
 Example usage:
 
 ```html
-<tree-view id="customtree" :initial-model="model">
+<tree-view id="customtree" v-model="model">
   <template #text="{ model, customClasses }">
     <!-- The TreeViewNode's model is available, and built-in classes and overrides are available -->
     <em :title="model.treeNodeSpec.title"

@@ -7,9 +7,9 @@ export default {
   title: 'Examples/TreeView',
   component: TreeView,
   argTypes: {
-    initialModel: {
+    modelValue: {
       description:
-        "The actual tree data",
+        "The actual tree data (used via v-model)",
     },
     skinClass: {
       description:

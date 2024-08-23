@@ -5,12 +5,19 @@ const Template = (args) => ({
   setup() {
     return { args };
   },
-  template: '<tree-view v-bind="args" />'
+  data() {
+    let { modelValue, ...rest } = args;
+    return {
+      argsWithoutValue: rest,
+      modelValue,
+    };
+  },
+  template: '<tree-view v-bind="argsWithoutValue" v-model="modelValue" />',
 });
 
 export const SettingDefaults = Template.bind({});
 SettingDefaults.args = {
-  initialModel: [
+  modelValue: [
     {
       identifier: "node1",
       description: "Node with no children"
@@ -37,7 +44,7 @@ SettingDefaults.args = {
 
 const docSourceCode = `
 <template>
-  <tree-view :initial-model="tvModel" :model-defaults="modelDefaults"></tree-view>
+  <tree-view v-model="tvModel" :model-defaults="modelDefaults"></tree-view>
 </template>
 <script setup>
 import { ref } from "vue";

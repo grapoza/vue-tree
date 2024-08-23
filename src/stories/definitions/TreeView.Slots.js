@@ -6,8 +6,15 @@ const Template = (args) => ({
   setup() {
     return { args };
   },
+  data() {
+    let { modelValue, ...rest } = args;
+    return {
+      argsWithoutValue: rest,
+      modelValue,
+    };
+  },
   template: `<span>
-  <tree-view v-bind="args">
+  <tree-view v-bind="argsWithoutValue" v-model="modelValue">
   <template v-slot:loading-root>Root loading custom slot (Not used in this demo)</template>
   <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
     <label :for="inputId" :title="model.treeNodeSpec.title">
@@ -39,17 +46,17 @@ const Template = (args) => ({
     </span>
   </template>
 </tree-view>
-</span>`
+</span>`,
 });
 
 export const Slots = Template.bind({});
 Slots.args = {
-  initialModel: slotsTreeData,
+  modelValue: slotsTreeData,
 };
 
 const docsSourceCode = `
 <template>
-  <tree-view :initial-model="tvModel">
+  <tree-view v-model="tvModel">
     <template v-slot:loading-root>Root loading custom slot (Not used in this demo)</template>
     <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
       <label :for="inputId" :title="model.treeNodeSpec.title">

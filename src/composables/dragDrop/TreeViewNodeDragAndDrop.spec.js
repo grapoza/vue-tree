@@ -21,7 +21,7 @@ const getDefaultPropsData = function () {
       insertItem: [45], // Insert
       deleteItem: [46] // Delete
     },
-    initialModel: generateNodes(['csf'])[0],
+    modelValue: generateNodes(['csf'])[0],
     modelDefaults: {},
     depth: 0,
     treeId: 'tree-id',
@@ -41,7 +41,7 @@ function createWrapper(customPropsData, customAttrs) {
 
   return mount(TreeViewNode, {
     sync: false,
-    props: customPropsData || getDefaultPropsData(),
+    props: Object.assign({ 'onUpdate:modelValue': (e) => wrapper.setProps({ modelValue: e }) }, customPropsData ?? getDefaultPropsData()),
     attrs: customAttrs,
     attachTo: elem,
     global: {
@@ -116,7 +116,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         const nodeModel = generateNodes(['ecs', ['ecs']])[0];
         nodeModel.treeNodeSpec.dataTransferEffectAllowed = EffectAllowed.Move;
         wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
-          initialModel: nodeModel
+          modelValue: nodeModel
         }));
         let node = wrapper.find('.grtvn-self');
         node.trigger('dragstart', eventData);
@@ -133,7 +133,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         const nodeModel = generateNodes(['ecs', ['ecs']])[0];
         nodeModel.treeNodeSpec.dataTransferEffectAllowed = EffectAllowed.Link;
         wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
-          initialModel: nodeModel
+          modelValue: nodeModel
         }));
         let node = wrapper.find('.grtvn-self');
         node.trigger('dragstart', eventData);
@@ -150,7 +150,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         const nodeModel = generateNodes(['ecs', ['ecs']])[0];
         nodeModel.treeNodeSpec.dataTransferEffectAllowed = 'cow';
         wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
-          initialModel: nodeModel
+          modelValue: nodeModel
         }));
         let node = wrapper.find('.grtvn-self');
         node.trigger('dragstart', eventData);
@@ -541,7 +541,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
 
     beforeEach(() => {
       wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
-        initialModel: generateNodes(['ecs', ['ecs']])[0]
+        modelValue: generateNodes(['ecs', ['ecs']])[0]
       }));
 
       let node = wrapper.findAllComponents(TreeViewNode)[0];
@@ -559,7 +559,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
-          initialModel: generateNodes(['ecs', ['ecs']])[0]
+          modelValue: generateNodes(['ecs', ['ecs']])[0]
         }));
         wrapper.vm.model.treeNodeSpec.allowDrop = true;
         eventData.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"tree-id","data":${serializedNodeData}}`);
@@ -577,7 +577,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
 
       beforeEach(() => {
         wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
-          initialModel: generateNodes(['ecs', ['ecs']])[0]
+          modelValue: generateNodes(['ecs', ['ecs']])[0]
         }));
         wrapper.vm.model.treeNodeSpec.allowDrop = true;
         eventData.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"tree-id","data":${serializedNodeData}}`);

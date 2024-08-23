@@ -6,8 +6,18 @@ const Template = (args) => ({
   setup() {
     return { args };
   },
+  data() {
+    let { modelValue, ...rest } = args;
+    return {
+      argsWithoutValue: rest,
+      modelValue,
+      checkedTvNodes: [],
+      filterText: "",
+      filterMethod: null,
+    };
+  },
   template: `<span>
-<tree-view v-bind="args" :filter-method="filterMethod" ref="treeViewRef"></tree-view>
+<tree-view v-bind="argsWithoutValue" v-model="modelValue" :filter-method="filterMethod" ref="treeViewRef"></tree-view>
 <section style="margin: 10px 0">
   <input v-model="filterText" type='text' id="filter" placeholder="Filter by label text" style="margin-right: 4px" /><button @click="applyFilter">Apply Filter</button>
 </section>
@@ -18,38 +28,33 @@ const Template = (args) => ({
   </ul>
 </section>
 </span>`,
-  data() {
-    return {
-      checkedTvNodes: [],
-      filterText: "",
-      filterMethod: null
-    }
-  },
   methods: {
     applyFilter() {
       if (this.filterText === "") {
         this.filterMethod = null;
-      }
-      else {
+      } else {
         const lowercaseFilter = this.filterText.toLowerCase();
         this.filterMethod = (n) => n.label.toLowerCase().includes(lowercaseFilter);
       }
     },
     refreshCheckedTvList() {
-      this.checkedTvNodes = [...this.$refs.treeViewRef.getCheckedCheckboxes(), ...this.$refs.treeViewRef.getCheckedRadioButtons()];
-    }
-  }
+      this.checkedTvNodes = [
+        ...this.$refs.treeViewRef.getCheckedCheckboxes(),
+        ...this.$refs.treeViewRef.getCheckedRadioButtons(),
+      ];
+    },
+  },
 });
 
 export const Filtering = Template.bind({});
 Filtering.args = {
-  initialModel: treeViewData,
+  modelValue: treeViewData,
 };
 
 const docsSourceCode = `
 <template>
   <span>
-    <tree-view :initial-model="tvModel" :filter-method="filterMethod"></tree-view>
+    <tree-view v-model="tvModel" :filter-method="filterMethod"></tree-view>
     <section style="margin: 10px 0">
       <input v-model="filterText" type='text' id="filter" placeholder="Filter by label text" style="margin-right: 4px" /><button @click="applyFilter">Apply Filter</button>
     </section>

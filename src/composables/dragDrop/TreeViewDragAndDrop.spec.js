@@ -7,7 +7,7 @@ import { dropEffect as DropEffect } from '../../enums/dragDrop';
 
 const getDefaultPropsData = function () {
   return {
-    initialModel: generateNodes(['ecs', 'ecs', 'ecs', ['ecs', 'ecs', 'ecs']])
+    modelValue: generateNodes(['ecs', 'ecs', 'ecs', ['ecs', 'ecs', 'ecs']])
   }
 };
 
@@ -23,7 +23,7 @@ async function createWrapper(customPropsData, customAttrs) {
 
   let wrapper = mount(TreeView, {
     sync: false,
-    props: customPropsData || getDefaultPropsData(),
+    props: Object.assign({ 'onUpdate:modelValue': (e) => wrapper.setProps({ modelValue: e }) }, customPropsData ?? getDefaultPropsData()),
     attrs: attrs,
     attachTo: elem
   });
@@ -148,7 +148,7 @@ describe('TreeView.vue (Drag and Drop)', () => {
             let model = generateNodes(['ecs', 'ecs', 'ecs', ['ecs', 'ecs', 'ecs']]);
             model[1].id = 'n0-1';
 
-            wrapper = await createWrapper({ initialModel: model });
+            wrapper = await createWrapper({ modelValue: model });
             wrapper.vm.model[0].treeNodeSpec.focusable = true;
 
             let startingNode = wrapper.find('#grtv-1-n0 .grtvn-self');
@@ -169,7 +169,7 @@ describe('TreeView.vue (Drag and Drop)', () => {
 
           beforeEach(async () => {
             let model = generateNodes(['ecs', 'ecs', 'ecs', ['ecs', 'ecs', 'ecs']]);
-            wrapper = await createWrapper({ initialModel: model });
+            wrapper = await createWrapper({ modelValue: model });
 
             let startingNode = wrapper.find('#grtv-1-n2n0 .grtvn-self');
             startingNode.trigger('dragstart', eventData);

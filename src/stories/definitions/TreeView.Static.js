@@ -6,12 +6,19 @@ const Template = (args) => ({
   setup() {
     return { args };
   },
-  template: '<tree-view v-bind="args" />'
+  data() {
+    let { modelValue, ...rest } = args;
+    return {
+      argsWithoutValue: rest,
+      modelValue,
+    };
+  },
+  template: '<tree-view v-bind="argsWithoutValue" v-model="modelValue" />',
 });
 
 export const Static = Template.bind({});
 Static.args = {
-  initialModel: treeViewData,
+  modelValue: treeViewData,
   modelDefaults: {
     expandable: false,
     state: {
@@ -22,7 +29,7 @@ Static.args = {
 
 const docsSourceCode = `
 <template>
-  <tree-view :initial-model="tvModel" :model-defaults="modelDefaults"></tree-view>
+  <tree-view v-model="tvModel" :model-defaults="modelDefaults"></tree-view>
 </template>
 <script setup>
 import { ref } from "vue";

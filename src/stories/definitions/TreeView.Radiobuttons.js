@@ -6,6 +6,14 @@ const Template = (args) => ({
   setup() {
     return { args };
   },
+  data() {
+    let { modelValue, ...rest } = args;
+    return {
+      argsWithoutValue: rest,
+      modelValue,
+      checkedTvNodes: [],
+    };
+  },
   template: `<span>
 <tree-view v-bind="args" ref="treeViewRef"></tree-view>
 <section class="checked-nodes">
@@ -15,21 +23,16 @@ const Template = (args) => ({
   </ul>
 </section>
 </span>`,
-  data() {
-    return {
-      checkedTvNodes: []
-    }
-  },
   methods: {
     refreshCheckedTvList() {
       this.checkedTvNodes = this.$refs.treeViewRef.getCheckedRadioButtons();
-    }
-  }
+    },
+  },
 });
 
 export const Radiobuttons = Template.bind({});
 Radiobuttons.args = {
-  initialModel: radiobuttonsTreeData,
+  modelValue: radiobuttonsTreeData,
   modelDefaults: {
     addChildTitle: 'Add a new child node',
     deleteTitle: 'Delete this node',
@@ -39,7 +42,7 @@ Radiobuttons.args = {
 
 const docSourceCode = `
 <template>
-  <tree-view :initial-model="tvModel" :model-defaults="modelDefaults"></tree-view>
+  <tree-view v-model="tvModel" :model-defaults="modelDefaults"></tree-view>
 </template>
 <script setup>
 import { ref } from "vue";

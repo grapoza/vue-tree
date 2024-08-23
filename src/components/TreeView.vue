@@ -7,12 +7,12 @@
       </span>
     </slot>
     <ul class="grtv" role="tree" :aria-multiselectable="ariaMultiselectable" v-if="areNodesLoaded">
-      <TreeViewNode v-for="(nodeModel) in model"
+      <TreeViewNode v-for="(nodeModel, index) in model"
         :key="nodeModel[nodeModel.treeNodeSpec?.idProperty ?? 'id']"
         :aria-key-map="ariaKeyMap"
         :depth="0"
         :model-defaults="modelDefaults"
-        :initial-model="nodeModel"
+        v-model="model[index]"
         :selection-mode="selectionMode"
         :tree-id="uniqueId"
         :is-mounted="isMounted"
@@ -93,11 +93,6 @@ const props = defineProps({
     required: false,
     default: null
   },
-  initialModel: {
-    type: Array,
-    required: false,
-    default: function () { return []; }
-  },
   loadNodesAsync: {
     type: Function,
     required: false,
@@ -125,6 +120,8 @@ const props = defineProps({
     }
   }
 });
+
+const model = defineModel({ default: [] });
 
 // EMITS
 
@@ -160,7 +157,6 @@ const defaultAriaKeyMap = readonly({
 
 const areNodesAsyncLoaded = ref(false);
 const isMounted = ref(false);
-const model = ref(props.initialModel); // Using ref instead of toRef because this will get mutated (see end of https://vuejs.org/api/reactivity-utilities.html#toref)
 const radioGroupValues = ref({});
 const uniqueId = ref('');
 const treeElement = ref(null); // ref in template

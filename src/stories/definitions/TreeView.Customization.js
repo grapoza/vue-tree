@@ -5,14 +5,21 @@ const Template = (args) => ({
   setup() {
     return { args };
   },
-  template: '<tree-view v-bind="args" />'
+  data() {
+    let { modelValue, ...rest } = args;
+    return {
+      argsWithoutValue: rest,
+      modelValue,
+    };
+  },
+  template: '<tree-view v-bind="argsWithoutValue" v-model="modelValue" />',
 });
 
 // CLASS BASED CUSTOMIZATIONS -----------------------------------------------------
 
 export const ClassCustomization = Template.bind({});
 ClassCustomization.args = {
-  initialModel: [
+  modelValue: [
     {
       id: 'customization-class-rootNode',
       label: 'Root Node',
@@ -43,7 +50,7 @@ async function addChildCallback(parentModel) {
 
 const docClassSourceCode = `
 <template>
-  <tree-view :initial-model="tvModel" :model-defaults="modelDefaults"></tree-view>
+  <tree-view v-model="tvModel" :model-defaults="modelDefaults"></tree-view>
 </template>
 <script setup>
 import { ref } from "vue";
@@ -96,7 +103,7 @@ ClassCustomization.parameters = {
 
 export const SkinCustomization = Template.bind({});
 SkinCustomization.args = {
-  initialModel: [
+  modelValue: [
     {
       id: 'customization-skin-rootNode',
       label: 'Root Node',
@@ -131,7 +138,7 @@ async function addSkinChildCallback(parentModel) {
 
 const docSkinSourceCode = `
 <template>
-  <tree-view :initial-model="tvModel" :model-defaults="modelDefaults" :skin-class="skinClass"></tree-view>
+  <tree-view v-model="tvModel" :model-defaults="modelDefaults" :skin-class="skinClass"></tree-view>
 </template>
 <script setup>
 import { ref } from "vue";
