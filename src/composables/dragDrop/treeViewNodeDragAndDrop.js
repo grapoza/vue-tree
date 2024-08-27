@@ -6,22 +6,24 @@ import {
 import TvEvent from '../../enums/event.js';
 import { useDomMethods } from '../domMethods.js'
 import { useFocus } from '../focus/focus.js';
+import { useChildren } from "../children/children.js";
+import { useTreeViewNodeDataUpdates } from '../treeViewNodeDataUpdates.js';
 
 const { closest } = useDomMethods();
 
+const { getChildren, getMetaChildren } = useChildren();
+
 /**
  * Composable dealing with drag-and-drop handling at the tree view node.
- * @param {Ref<TreeViewNode>} model A Ref to the model of the node
- * @param {Ref<TreeViewNode[]>} children A Ref to the children of the node
+ * @param {Ref<Object>} metaModel A Ref to the metaModel of the node
  * @param {Ref<string>} treeId A Ref to the tree ID
  * @param {Function} emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
  * @returns {Object} Methods to deal with tree view node level drag-and-drop
  */
-export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
+export function useTreeViewNodeDragAndDrop(metaModel, treeId, emit) {
 
   const { unfocus } = useFocus();
-
-  const tns = model.value.treeNodeSpec;
+  const { spliceChildNodeList } = useTreeViewNodeDataUpdates(metaModel);
 
   /**
    * Remove the given child node from the array of children.
@@ -30,12 +32,12 @@ export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
    * so the child should be found in the children prop array here. The event also only
    * fires when dragging between trees; otherwise node deletion happens as part of moving
    * it within the tree in $_grtvDnd_drop.
-   * @param {TreeViewNode} node The node which was dragged/dropped
+   * @param {Object} metaNode The node which was dragged/dropped
    */
-  function dragMoveChild(node) {
-    const targetIndex = children.value.indexOf(node);
+  function dragMoveChild(metaNode) {
+    const targetIndex = getMetaChildren(metaModel).indexOf(metaNode);
     if (targetIndex > -1) {
-      children.value.splice(targetIndex, 1);
+      spliceChildNodeList(targetIndex, 1);
     }
   }
 
@@ -44,16 +46,19 @@ export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
    * to the TreeView component for final handling. The initial event
    * was fired from the node on which the drop happened.
    *
-   * This handler sets the data's siblingNodeSet property to this node's
-   * children if a sibling node set hasn't been set. The siblingNodeSet
-   * is the set of nodes that contains the drop target, so if no lower
+   * This handler sets the data's siblingNodeSets property to this node's
+   * children if a sibling node set hasn't been set. The siblingNodeSets
+   * are the sets of nodes and metas that contains the drop target, so if no lower
    * node has set it through this handler then the target must be this
    * node's child.
    * @param {Object} data The custom treeNodeDrop event data
    * @param {DragEvent} event The original DOM drop event
    */
   function drop(data, event) {
-    data.siblingNodeSet = data.siblingNodeSet || children.value;
+    data.siblingNodeSets = data.siblingNodeSets || {
+      nodes: getChildren(metaModel),
+      metaNodes: getMetaChildren(metaModel),
+    };
     emit(TvEvent.Drop, data, event);
   }
 
@@ -74,13 +79,13 @@ export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
     // Create the JSON copy used for the drag operation, and reset anything
     // that should not be included when the data is dropped in a different tree
     // (same-tree drops use the original node data)
-    let serialized = JSON.parse(JSON.stringify(model.value));
+    let serialized = JSON.parse(JSON.stringify(metaModel.value));
     unfocus(serialized);
     serialized = JSON.stringify(serialized);
 
-    tns._.dragging = true;
+    metaModel.value._.dragging = true;
 
-    event.dataTransfer.effectAllowed = tns.dataTransferEffectAllowed;
+    event.dataTransfer.effectAllowed = metaModel.value.dataTransferEffectAllowed;
     event.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"${treeId.value}","data":${serialized}}`);
     event.dataTransfer.setData(MimeType.Json, serialized);
     event.dataTransfer.setData(MimeType.PlainText, serialized);
@@ -134,15 +139,21 @@ export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
         : event.target.classList.contains('grtvn-self-next-target') ? TargetZone.After
           : TargetZone.Child;
 
-    // The siblingNodeSet prop will be filled in by the next node up the chain for Before/After inserts
+    // The siblingNodeSets prop will be filled in by the next node up the chain for Before/After inserts
     // and is used in the final handler to add previous/next nodes.
     const eventData = {
       isSameTree: payload.treeId === treeId.value,
       droppedModel: payload.data,
-      targetModel: model.value,
-      siblingNodeSet: tzone === TargetZone.Child ? children.value : null,
+      targetModel: metaModel.value,
+      siblingNodeSets:
+        tzone === TargetZone.Child
+          ? {
+              nodes: getChildren(metaModel),
+              metaNodes: getMetaChildren(metaModel),
+            }
+          : null,
       dropEffect: event.dataTransfer.dropEffect,
-      targetZone: tzone
+      targetZone: tzone,
     };
 
     emit(TvEvent.Drop, eventData, event);
@@ -161,21 +172,21 @@ export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
   function onDragend(event) {
 
     if (event.dataTransfer.dropEffect === DropEffect.Move) {
-      if (tns._.dragMoved) {
+      if (metaModel.value._.dragMoved) {
         // If the node was moved within the original tree then it will have
         // been marked by $_grtvDnd_drop as such. Just clear the marker.
-        delete tns._.dragMoved;
+        delete metaModel.value._.dragMoved;
       }
       else {
         // If the node was moved to a different tree, delete it from this one
         // by passing this event to the parent node, or the TreeView if this
         // is a root node.
-        emit(TvEvent.DragMove, model.value, event);
+        emit(TvEvent.DragMove, metaModel.value, event);
       }
     }
     else {
       setDropTargetProps(event, false);
-      tns._.dragging = false;
+      metaModel.value._.dragging = false;
     }
   }
 
@@ -185,9 +196,11 @@ export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
    * @param {DragEvent} event The event to check for droppable data
    */
   function isValidDropTargetForEvent(event) {
-    return tns.allowDrop
-      && event.dataTransfer.types.includes(MimeType.TreeViewNode)
-      && !closest(event.target, '.grtvn-dragging');
+    return (
+      metaModel.value.allowDrop &&
+      event.dataTransfer.types.includes(MimeType.TreeViewNode) &&
+      !closest(event.target, ".grtvn-dragging")
+    );
   }
 
   /**
@@ -201,18 +214,18 @@ export function useTreeViewNodeDragAndDrop(model, children, treeId, emit) {
     const isPrevSiblingTarget = event.target.classList && event.target.classList.contains('grtvn-self-prev-target');
     const isNextSiblingTarget = event.target.classList && event.target.classList.contains('grtvn-self-next-target');
 
-    tns._.isDropTarget = isTarget;
+    metaModel.value._.isDropTarget = isTarget;
 
     if (isPrevSiblingTarget) {
-      tns._.isPrevDropTarget = isTarget;
-      tns._.isChildDropTarget = false;
+      metaModel.value._.isPrevDropTarget = isTarget;
+      metaModel.value._.isChildDropTarget = false;
     }
     else if (isNextSiblingTarget) {
-      tns._.isNextDropTarget = isTarget;
-      tns._.isChildDropTarget = false;
+      metaModel.value._.isNextDropTarget = isTarget;
+      metaModel.value._.isChildDropTarget = false;
     }
     else {
-      tns._.isChildDropTarget = isTarget;
+      metaModel.value._.isChildDropTarget = isTarget;
     }
   }
 

@@ -1,3 +1,7 @@
+import { useChildren } from "./children/children";
+
+const { getChildren, getMetaChildren } = useChildren();
+
 export function useIdGeneration() {
 
   /**
@@ -18,14 +22,15 @@ export function useIdGeneration() {
 
   /**
    * Checks for and resolves any ID conflicts for the given node.
-   * @param {Object} data The tree node data to check for conflicts
+   * @param {Object} metaModel The tree meta node data to check for conflicts
    * @param {String} treeId The ID of the node's tree
    */
-  function resolveNodeIdConflicts(data, treeId) {
+  function resolveNodeIdConflicts(metaModel, treeId) {
 
-    const idProp = data.treeNodeSpec.idProperty;
-    const nodeId = data[idProp];
-    const children = data[data.treeNodeSpec.childrenProperty];
+    const idProp = metaModel.idProperty;
+    const nodeId = metaModel.data[idProp];
+    const metaChildren = getMetaChildren(metaModel);
+    const children = getChildren(metaModel);
 
     // Copy and move need to set a new, unique Node ID.
     // This is a brute force test to find one that isn't in use.
@@ -35,10 +40,16 @@ export function useIdGeneration() {
         counter++;
       }
 
-      data[idProp] = `${nodeId}-${counter}`;
+      metaModel.data[idProp] = `${nodeId}-${counter}`;
     }
 
-    children.forEach(child => resolveNodeIdConflicts(child, treeId));
+    metaChildren.forEach((child, index) => {
+      resolveNodeIdConflicts(child, treeId);
+      if (children[index][idProp] !== child.data[idProp]) {
+        children[index][idProp] = child.data[idProp];
+        metaChildren[index].data[idProp] = child.data[idProp];
+      }
+    });
   };
 
   return { generateUniqueId, resolveNodeIdConflicts };

@@ -24,15 +24,26 @@ describe('idGeneration.js', () => {
       document.body.appendChild(root);
 
       data = {
-        treeNodeSpec: { idProperty: 'id', childrenProperty: 'children' },
-        id: 'node2',
-        children: [
-          {
-            treeNodeSpec: { idProperty: 'id', childrenProperty: 'children' },
-            id: 'node3',
-            children: []
-          }
-        ]
+        idProperty: "id",
+        childrenProperty: "children",
+        data: {
+          id: "node2",
+          children: [
+            {
+              id: "node3",
+              children: [],
+            },
+          ],
+        },
+        childMetaModels: [{
+          idProperty: "id",
+          childrenProperty: "children",
+          data: {
+            id: "node3",
+            children: [],
+          },
+          childMetaModels: [],
+        }],
       };
     });
 
@@ -45,19 +56,20 @@ describe('idGeneration.js', () => {
       it('should do nothing', () => {
         const { resolveNodeIdConflicts } = useIdGeneration();
         resolveNodeIdConflicts(data, 'tree');
-        expect(data.id).to.equal('node2');
-        expect(data.children[0].id).to.equal('node3');
+        expect(data.data.id).to.equal('node2');
+        expect(data.data.children[0].id).to.equal('node3');
       });
     });
 
     describe('and conflicts are found', () => {
 
       it('should update the conflicting id to a unique id', () => {
-        data.children[0].id = 'node1';
+        data.data.children[0].id = 'node1';
+        data.childMetaModels[0].data.id = 'node1';
         const { resolveNodeIdConflicts } = useIdGeneration();
         resolveNodeIdConflicts(data, 'tree');
-        expect(data.id).to.equal('node2');
-        expect(data.children[0].id).to.equal('node1-1');
+        expect(data.data.id).to.equal('node2');
+        expect(data.data.children[0].id).to.equal('node1-1');
       });
     });
   });

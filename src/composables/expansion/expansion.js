@@ -6,12 +6,12 @@ import { unref } from 'vue'
  */
 export function useExpansion() {
 
-  function isExpandable(targetNodeModel) {
-    return unref(targetNodeModel).treeNodeSpec.expandable === true;
+  function isExpandable(metaModel) {
+    return unref(metaModel).expandable === true;
   }
 
-  function isExpanded(targetNodeModel) {
-    return unref(targetNodeModel).treeNodeSpec.state.expanded === true;
+  function isExpanded(metaModel) {
+    return unref(metaModel).state.expanded === true;
   }
 
   return {

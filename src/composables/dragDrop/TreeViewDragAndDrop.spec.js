@@ -3,12 +3,15 @@ import { mount, flushPromises } from '@vue/test-utils';
 import TreeView from '../../components/TreeView.vue';
 import TreeViewNode from '../../components/TreeViewNode.vue';
 import { generateNodes } from '../../../tests/data/node-generator.js';
-import { dropEffect as DropEffect } from '../../enums/dragDrop';
+import { dropEffect as DropEffect } from '../../enums/dragDrop.js';
 
 const getDefaultPropsData = function () {
+  const { nodes, modelDefaults } = generateNodes(["ecs", "ecs", "ecs", ["ecs", "ecs", "ecs"]]);
   return {
-    modelValue: generateNodes(['ecs', 'ecs', 'ecs', ['ecs', 'ecs', 'ecs']])
-  }
+    modelValue: nodes,
+    "update:modelValue": (e) => wrapper.setProps({ modelValue: e }),
+    modelDefaults,
+  };
 };
 
 let elem;
@@ -23,7 +26,7 @@ async function createWrapper(customPropsData, customAttrs) {
 
   let wrapper = mount(TreeView, {
     sync: false,
-    props: Object.assign({ 'onUpdate:modelValue': (e) => wrapper.setProps({ modelValue: e }) }, customPropsData ?? getDefaultPropsData()),
+    props: Object.assign(getDefaultPropsData(), customPropsData ?? {}),
     attrs: attrs,
     attachTo: elem
   });
@@ -145,11 +148,11 @@ describe('TreeView.vue (Drag and Drop)', () => {
 
             // Set a node ID that collides with the first
             // available name for the node ID collision resolution
-            let model = generateNodes(['ecs', 'ecs', 'ecs', ['ecs', 'ecs', 'ecs']]);
-            model[1].id = 'n0-1';
+            const { nodes, modelDefaults } = generateNodes(['ecs', 'ecs', 'ecs', ['ecs', 'ecs', 'ecs']]);
+            nodes[1].id = 'n0-1';
 
-            wrapper = await createWrapper({ modelValue: model });
-            wrapper.vm.model[0].treeNodeSpec.focusable = true;
+            wrapper = await createWrapper({ modelValue: nodes, modelDefaults });
+            wrapper.vm.metaModel[0].focusable = true;
 
             let startingNode = wrapper.find('#grtv-1-n0 .grtvn-self');
             startingNode.trigger('dragstart', eventData);
@@ -161,15 +164,15 @@ describe('TreeView.vue (Drag and Drop)', () => {
           it('should make a non-focusable uniquely identified copy of the source node', () => {
             expect(wrapper.vm.model.length).to.equal(4);
             expect(wrapper.vm.model[2].id).to.equal('n0-2');
-            expect(wrapper.vm.model[2].treeNodeSpec.focusable).to.be.false;
+            expect(wrapper.vm.metaModel[2].focusable).to.be.false;
           });
         });
 
         describe('and the target node is in a different node level than the source node', () => {
 
           beforeEach(async () => {
-            let model = generateNodes(['ecs', 'ecs', 'ecs', ['ecs', 'ecs', 'ecs']]);
-            wrapper = await createWrapper({ modelValue: model });
+            const { nodes, modelDefaults } = generateNodes(['ecs', 'ecs', 'ecs', ['ecs', 'ecs', 'ecs']]);
+            wrapper = await createWrapper({ modelValue: nodes, modelDefaults });
 
             let startingNode = wrapper.find('#grtv-1-n2n0 .grtvn-self');
             startingNode.trigger('dragstart', eventData);
@@ -255,7 +258,7 @@ describe('TreeView.vue (Drag and Drop)', () => {
     beforeEach(async () => {
       wrapper = await createWrapper();
       let node = wrapper.findComponent(TreeViewNode);
-      node.vm.$emit('treeNodeDragMove', node.vm.model);
+      node.vm.$emit("treeNodeDragMove", node.vm.metaModel);
     });
 
     it('should remove that node from the list of children', () => {

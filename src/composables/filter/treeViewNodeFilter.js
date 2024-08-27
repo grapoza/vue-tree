@@ -6,10 +6,10 @@ import TreeEvent from '../../enums/event.js';
 
 /**
  * Composable dealing with filtering at the tree view node.
- * @param {Ref<TreeViewNode>} nodeModel A Ref to the model of the node
+ * @param {Ref<Object>} metaModel A Ref to the metadata model of the node
  * @returns {Object} Methods to deal with filtering for a tree view node
  */
-export function useTreeViewNodeFilter(nodeModel, emit) {
+export function useTreeViewNodeFilter(metaModel, emit) {
 
   const filterMethod = inject("filterMethod");
 
@@ -20,29 +20,28 @@ export function useTreeViewNodeFilter(nodeModel, emit) {
 
   const {
     areChildrenLoaded,
-  } = useTreeViewNodeChildren(nodeModel);
+  } = useTreeViewNodeChildren(metaModel, emit);
 
   const {
     getFilteredChildren
   } = useFilter();
 
-  const filteredChildren = computed(() => getFilteredChildren(nodeModel));
+  const filteredChildren = computed(() => getFilteredChildren(metaModel));
 
   const isFilteringEnabled = computed(() => typeof unref(filterMethod) === 'function');
 
-  const filterIncludesNode = computed(() => nodeModel.value.treeNodeSpec._.state.matchesFilter || nodeModel.value.treeNodeSpec._.state.subnodeMatchesFilter || false);
+  const filterIncludesNode = computed(() => metaModel.value._.state.matchesFilter || metaModel.value._.state.subnodeMatchesFilter || false);
 
   const hasFilteredChildren = computed(() => filteredChildren.value && filteredChildren.value.length > 0);
 
   const mayHaveFilteredChildren = computed(() => hasFilteredChildren.value || !areChildrenLoaded.value);
 
   watchEffect(() => {
-    const tns = nodeModel.value.treeNodeSpec;
-    tns._.state.matchesFilter = !isFilteringEnabled.value || unref(filterMethod)(nodeModel.value);
-    tns._.state.subnodeMatchesFilter = filteredChildren.value.length > 0;
+    metaModel.value._.state.matchesFilter = !isFilteringEnabled.value || unref(filterMethod)(metaModel.value);
+    metaModel.value._.state.subnodeMatchesFilter = filteredChildren.value.length > 0;
 
-    if (!filterIncludesNode.value && isFocused(nodeModel)) {
-      unfocus(nodeModel);
+    if (!filterIncludesNode.value && isFocused(metaModel)) {
+      unfocus(metaModel);
       emit(TreeEvent.RequestFirstFocus, true);
     }
   });

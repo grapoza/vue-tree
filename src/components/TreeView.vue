@@ -7,12 +7,12 @@
       </span>
     </slot>
     <ul class="grtv" role="tree" :aria-multiselectable="ariaMultiselectable" v-if="areNodesLoaded">
-      <TreeViewNode v-for="(nodeModel, index) in model"
-        :key="nodeModel[nodeModel.treeNodeSpec?.idProperty ?? 'id']"
+      <TreeViewNode v-for="(nodeMetaModel, index) in metaModel"
+        :key="nodeMetaModel.data[nodeMetaModel?.idProperty ?? 'id']"
         :aria-key-map="ariaKeyMap"
         :depth="0"
         :model-defaults="modelDefaults"
-        v-model="model[index]"
+        v-model="metaModel[index]"
         :selection-mode="selectionMode"
         :tree-id="uniqueId"
         :is-mounted="isMounted"
@@ -28,26 +28,26 @@
         @treeNodeAdd="(t, p)=>$emit(TreeEvent.Add, t, p)"
         @treeNodeDelete="handleChildDeletion"
         @treeNodeAriaFocusableChange="handleFocusableChange"
-        @treeNodeAriaRequestFirstFocus="(keepCurrentDomFocus) => focusFirst(model, keepCurrentDomFocus)"
-        @treeNodeAriaRequestLastFocus="focusLast(model)"
-        @treeNodeAriaRequestPreviousFocus="(t) => focusPrevious(model, t)"
-        @treeNodeAriaRequestNextFocus="(t, f) => focusNext(model, t, f)"
+        @treeNodeAriaRequestFirstFocus="(keepCurrentDomFocus) => focusFirst(metaModel, keepCurrentDomFocus)"
+        @treeNodeAriaRequestLastFocus="focusLast(metaModel)"
+        @treeNodeAriaRequestPreviousFocus="(t) => focusPrevious(metaModel, t)"
+        @treeNodeAriaRequestNextFocus="(t, f) => focusNext(metaModel, t, f)"
         @treeNodeDragMove="dragMoveNode"
         @treeNodeDrop="drop">
 
-        <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
-          <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId"
+        <template #checkbox="{ metaModel, customClasses, inputId, checkboxChangeHandler }">
+          <slot name="checkbox" :metaModel="metaModel" :customClasses="customClasses" :inputId="inputId"
             :checkboxChangeHandler="checkboxChangeHandler"></slot>
         </template>
-        <template #radio="{ model, customClasses, inputId, radioGroupValues, radioChangeHandler }">
-          <slot name="radio" :model="model" :customClasses="customClasses" :inputId="inputId"
+        <template #radio="{ metaModel, customClasses, inputId, radioGroupValues, radioChangeHandler }">
+          <slot name="radio" :metaModel="metaModel" :customClasses="customClasses" :inputId="inputId"
             :radioGroupValues="radioGroupValues" :radioChangeHandler="radioChangeHandler"></slot>
         </template>
-        <template #text="{ model, customClasses }">
-          <slot name="text" :model="model" :customClasses="customClasses"></slot>
+        <template #text="{ metaModel, customClasses }">
+          <slot name="text" :metaModel="metaModel" :customClasses="customClasses"></slot>
         </template>
-        <template #loading="{ model, customClasses }">
-          <slot name="loading" :model="model" :customClasses="customClasses"></slot>
+        <template #loading="{ metaModel, customClasses }">
+          <slot name="loading" :metaModel="metaModel" :customClasses="customClasses"></slot>
         </template>
       </TreeViewNode>
     </ul>
@@ -55,7 +55,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, ref, readonly, onMounted, provide, toRef } from 'vue'
+import { computed, nextTick, ref, readonly, onMounted, provide, toRef, watch } from 'vue'
 import SelectionMode from '../enums/selectionMode.js';
 import { useIdGeneration } from '../composables/idGeneration.js'
 import { useTreeViewTraversal } from '../composables/treeViewTraversal.js'
@@ -66,6 +66,8 @@ import { useTreeViewFilter } from '../composables/filter/treeViewFilter.js';
 import { useTreeViewSelection } from '../composables/selection/treeViewSelection.js';
 import { useTreeViewDragAndDrop } from '../composables/dragDrop/treeViewDragAndDrop.js';
 import { useTreeViewConvenienceMethods } from '../composables/treeViewConvenienceMethods.js';
+import { useTreeViewDataUpdates } from '../composables/treeViewDataUpdates.js';
+import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer.js';
 import TreeViewNode from './TreeViewNode.vue';
 import TreeEvent from '../enums/event.js';
 
@@ -99,9 +101,9 @@ const props = defineProps({
     default: null
   },
   modelDefaults: {
-    type: Object,
+    type: Function,
     required: false,
-    default: function () { return {}; }
+    default() { return {}; }
   },
   selectionMode: {
     type: String,
@@ -121,7 +123,7 @@ const props = defineProps({
   }
 });
 
-const model = defineModel({ default: [] });
+const model = defineModel({ default: function () { return []; } });
 
 // EMITS
 
@@ -155,17 +157,26 @@ const defaultAriaKeyMap = readonly({
 
 // DATA
 
+const metaModel = ref([]);
 const areNodesAsyncLoaded = ref(false);
 const isMounted = ref(false);
 const radioGroupValues = ref({});
 const uniqueId = ref('');
 const treeElement = ref(null); // ref in template
 
+const { createMetaModel } = useNodeDataNormalizer();
+
+// Initialize the tree state model with an object for each root node. The nodes
+// will do the same for their subnodes during normalization.
+model.value.forEach((node) => {
+  metaModel.value.push(createMetaModel(node));
+});
+
 // COMPOSABLES
 
 const { generateUniqueId } = useIdGeneration();
 
-const { depthFirstTraverse } = useTreeViewTraversal(model);
+const { depthFirstTraverse } = useTreeViewTraversal(metaModel);
 
 const {
   focusableNodeModel,
@@ -186,7 +197,7 @@ const {
   ariaMultiselectable,
   enforceSelectionMode,
   handleNodeSelectedChange,
-} = useTreeViewSelection(model, toRef(props, "selectionMode"), focusableNodeModel, emit);
+} = useTreeViewSelection(metaModel, toRef(props, "selectionMode"), focusableNodeModel, emit);
 
 const {
   isSelectable,
@@ -201,11 +212,38 @@ const {
   getMatching,
   getSelected,
   removeById,
-} = useTreeViewConvenienceMethods(model, radioGroupValues, toRef(props, "selectionMode"));
+} = useTreeViewConvenienceMethods(model, metaModel, radioGroupValues, toRef(props, "selectionMode"));
 
-const { dragMoveNode, drop } = useTreeViewDragAndDrop(model, uniqueId, findById, removeById);
+const { dragMoveNode, drop } = useTreeViewDragAndDrop(model, metaModel, uniqueId, findById, removeById);
 
-useTreeViewFilter(model);
+const { spliceNodeList } = useTreeViewDataUpdates(model, metaModel);
+
+useTreeViewFilter(metaModel);
+
+// Watch the model to make sure the metamodel is kept in sync
+watch([model.value, () => model.value], () => {
+
+  model.value.forEach((node, index) => {
+    const metaIndex = metaModel.value.findIndex((m) => m.data[m.idProperty] === node[m.idProperty]);
+
+    // If the indexes match, then the meta node is already in place and we can skip it.
+    if (index !== metaIndex) {
+      // Otherwise, if the node is not in the meta children, add it.
+      if (metaIndex === -1) {
+        metaModel.value.splice(index, 0, createMetaModel(node));
+      }
+      else {
+        // If the node is in the meta children, but not in the right place, move it.
+        metaModel.value.splice(index, 0, metaModel.value.splice(metaIndex, 1)[0]);
+      }
+    }
+  });
+
+  // If there are more meta children than data children, remove the extra meta children.
+  if (metaModel.value.length > model.value.length) {
+    metaModel.value.splice(model.value.length);
+  }
+});
 
 // COMPUTED
 
@@ -221,11 +259,16 @@ const ariaKeyMap = computed(() =>
 onMounted(async () => {
   await performInitialNodeLoad();
 
+  // If tree was unmounted before nodes were loaded, escape out.
+  if (!treeElement.value) {
+    return;
+  }
+
   if (treeElement.value.id) {
     uniqueId.value = treeElement.value.id;
   }
 
-  if (model.value.length > 0) {
+  if (metaModel.value.length > 0) {
     // Walk the model looking for focusable attributes.
     // If none are found, set to true for the first root, or the first selected node if one exists.
     // If one is found, set any subsequent to false.
@@ -243,9 +286,8 @@ onMounted(async () => {
         firstSelectedNode = node;
       }
     });
-
     if (!focusableNodeModel.value) {
-      focusableNodeModel.value = firstSelectedNode || model.value[0];
+      focusableNodeModel.value = firstSelectedNode || metaModel.value[0];
       focus(focusableNodeModel);
     }
 
@@ -280,12 +322,11 @@ onMounted(async () => {
 async function performInitialNodeLoad() {
   // If nodes need to be loaded asynchronously, load them.
   if (!areNodesLoaded.value) {
-
     var nodesResult = await props.loadNodesAsync();
 
     if (nodesResult) {
       areNodesAsyncLoaded.value = true;
-      model.value.splice(0, model.value.length, ...nodesResult);
+      spliceNodeList(0, model.value.length, ...nodesResult);
       emit(TreeEvent.RootNodesLoad, model.value);
     }
   }
@@ -296,32 +337,32 @@ async function performInitialNodeLoad() {
  * Note that only the node that was deleted fires these, not any subnode, so
  * this comes from a request from the child node for this node to delete it.
  * This emits the treeNodeDelete event.
- * @param {TreeViewNode} node The node to remove
+ * @param {TreeViewNode} metaNode The meta node to remove
  */
-function handleChildDeletion(node) {
-  let targetIndex = model.value.indexOf(node);
+function handleChildDeletion(metaNode) {
+  let targetIndex = metaModel.value.indexOf(metaNode);
   if (targetIndex > -1) {
-    handleNodeDeletion(node);
-    model.value.splice(targetIndex, 1);
+    handleNodeDeletion(metaNode);
+    spliceNodeList(targetIndex, 1);
   }
 
-  emit(TreeEvent.Delete, node);
+  emit(TreeEvent.Delete, metaNode);
 }
 
 /**
  * Handles setting the focusable node in the tree when the
  * currently focuable node is deleted.
- * @param {TreeViewNode} node The node that was deleted
+ * @param {TreeViewNode} metaNode The meta node that was deleted
  */
-function handleNodeDeletion(node) {
-  if (isFocused(node)) {
-    if (model.value.indexOf(node) === 0) {
-      if (model.value.length > 0) {
-        focusNext(model.value, node);
+function handleNodeDeletion(metaNode) {
+  if (isFocused(metaNode)) {
+    if (metaModel.value.indexOf(metaNode) === 0) {
+      if (metaModel.value.length > 0) {
+        focusNext(metaModel.value, metaNode);
       }
     }
     else {
-      focusPrevious(model.value, node);
+      focusPrevious(metaModel.value, metaNode);
     }
   }
 }
@@ -343,6 +384,7 @@ defineExpose({
   getCheckedRadioButtons,
   getMatching,
   getSelected,
+  metaModel,
 });
 
 </script>

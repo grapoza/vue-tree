@@ -12,7 +12,7 @@ const Template = (args) => ({
       modelValue,
     };
   },
-  template: '<tree-view v-bind="argsWithoutValue" v-model="modelValue" />',
+  template: '<TreeView v-bind="argsWithoutValue" v-model="modelValue" />',
 });
 
 export const SettingDefaults = Template.bind({});
@@ -33,24 +33,24 @@ SettingDefaults.args = {
       ]
     }
   ],
-  modelDefaults: {
+  modelDefaults: () => ({
     idProperty: 'identifier',
     labelProperty: 'description',
     state: {
       expanded: true
     }
-  }
+  }),
 };
 
 const docSourceCode = `
 <template>
-  <tree-view v-model="tvModel" :model-defaults="modelDefaults"></tree-view>
+  <TreeView v-model="tvModel" :model-defaults="modelDefaults" />
 </template>
 <script setup>
 import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
 
-const modelDefaults = ref({
+const modelDefaults = () => ({
   idProperty: 'identifier',
   labelProperty: 'description',
   state: {

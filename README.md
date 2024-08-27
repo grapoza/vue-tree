@@ -28,7 +28,7 @@ If you're using it in a .vue file:
 
 ```html
 <template>
-  <tree-view  id="my-tree" v-model="dataModel"></tree-view>
+  <TreeView  id="my-tree" v-model="dataModel" />
 </template>
 
 // Options API
@@ -80,7 +80,7 @@ Vue.use(TreeView)
 ```
 Then add the component:
 ```html
-<tree-view id="my-tree" v-model="dataModel"></tree-view>
+<TreeView id="my-tree" v-model="dataModel" />
 ```
 ```javascript
 export default {

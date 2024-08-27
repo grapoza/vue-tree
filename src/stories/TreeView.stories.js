@@ -37,4 +37,6 @@ export { Selection } from './definitions/TreeView.Selection';
 export { Async } from './definitions/TreeView.Async';
 export { DragDrop } from './definitions/TreeView.DragDrop';
 export { Filtering } from './definitions/TreeView.Filtering';
-export { ClassCustomization, SkinCustomization } from './definitions/TreeView.Customization';
+export { ExternalDataChanges } from './definitions/TreeView.ExternalDataChanges';
+export { CustomizationViaClasses } from "./definitions/TreeView.CustomizationViaClasses";
+export { CustomizationViaSkin } from "./definitions/TreeView.CustomizationViaSkin";

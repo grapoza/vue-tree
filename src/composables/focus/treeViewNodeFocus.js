@@ -5,31 +5,32 @@ import TreeEvent from '../../enums/event.js';
 
 /**
  * Composable dealing with focus handling at the tree view node.
- * @param {Ref<TreeViewNode>} nodeModel A Ref to the model of the node
+ * @param {Ref<Object>} metaModel A Ref to the meta model of the node
  * @param {Ref<Element>} nodeElement A Ref to the HTML Element for the node
  * @param {Function} emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
  * @param {Ref<Boolean>} isMounted A Ref to the isMounted property of the node
  * @returns {Object} Methods to deal with tree view node level focus
  */
-export function useTreeViewNodeFocus(nodeModel, nodeElement, emit, isMounted) {
+export function useTreeViewNodeFocus(metaModel, nodeElement, emit, isMounted) {
 
   const { focus, focusFirst, focusLast, focusNext, focusPrevious, isFocused, unfocus } = useFocus();
 
-  const { getChildren } = useChildren();
+  const { getMetaChildren } = useChildren();
 
-  const nodeModelChildren = computed(() => getChildren(nodeModel));
+  const metaModelChildren = computed(() => getMetaChildren(metaModel));
 
-  watch(() => nodeModel.value.treeNodeSpec.focusable, function (newValue) {
+  watch(() => metaModel.value.focusable, function (newValue) {
+
     if (newValue === true) {
       // If focusable is set to true and the tree is mounted in the DOM,
       // also focus the node's element unless explicitly told not to do so.
-      if (isMounted.value && !nodeModel.value.treeNodeSpec._.keepCurrentDomFocus) {
+      if (isMounted.value && !metaModel.value._.keepCurrentDomFocus) {
         nodeElement.value.focus();
       }
 
-      delete nodeModel.value.treeNodeSpec._.keepCurrentDomFocus;
+      delete metaModel.value._.keepCurrentDomFocus;
 
-      emit(TreeEvent.FocusableChange, nodeModel.value);
+      emit(TreeEvent.FocusableChange, metaModel.value);
     }
   });
 
@@ -38,15 +39,15 @@ export function useTreeViewNodeFocus(nodeModel, nodeElement, emit, isMounted) {
    * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
   function focusNode(keepCurrentDomFocus = false) {
-    focus(nodeModel, keepCurrentDomFocus);
+    focus(metaModel, keepCurrentDomFocus);
   }
 
   function unfocusNode() {
-    unfocus(nodeModel);
+    unfocus(metaModel);
   }
 
   function isFocusedNode() {
-    return isFocused(nodeModel);
+    return isFocused(metaModel);
   }
 
   /**
@@ -54,7 +55,7 @@ export function useTreeViewNodeFocus(nodeModel, nodeElement, emit, isMounted) {
    * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
   function focusFirstChild(keepCurrentDomFocus = false) {
-    focusFirst(nodeModelChildren.value, keepCurrentDomFocus);
+    focusFirst(metaModelChildren.value, keepCurrentDomFocus);
   }
 
   /**
@@ -62,33 +63,33 @@ export function useTreeViewNodeFocus(nodeModel, nodeElement, emit, isMounted) {
    * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
   function focusLastChild(keepCurrentDomFocus = false) {
-    focusLast(nodeModelChildren.value, keepCurrentDomFocus);
+    focusLast(metaModelChildren.value, keepCurrentDomFocus);
   }
 
   /**
    * Focuses the next node in the tree.
-   * @param {TreeViewNode} childNode The node from which focusable should be moved
+   * @param {Object} childMetaNode The meta node from which focusable should be moved
    * @param {Boolean} ignoreChild True to not consider child nodes. This would be true if a user
    * requests to focus the next node while on the last child of this node; the next sibling of
    * this node should gain focus in that case, or the parent node if there is no next sibling.
    * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
-  function focusNextNode(childNode, ignoreChild, keepCurrentDomFocus = false) {
+  function focusNextNode(childMetaNode, ignoreChild, keepCurrentDomFocus = false) {
     // Call focusNext and see if it succeeds in focusing.
     // If not, punt this up to this node's parent.
-    if (!focusNext(nodeModelChildren.value, childNode, ignoreChild, keepCurrentDomFocus)) {
-      emit(TreeEvent.RequestNextFocus, unref(nodeModel), true);
+    if (!focusNext(metaModelChildren.value, childMetaNode, ignoreChild, keepCurrentDomFocus)) {
+      emit(TreeEvent.RequestNextFocus, unref(metaModel), true);
     }
   }
 
   /**
    * Focuses the previous node in the tree
-   * @param {TreeViewNode} childNode The node from which focusable should be moved
+   * @param {TreeViewNode} childMetaNode The meta node from which focusable should be moved
    * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
-  function focusPreviousNode(childNode, keepCurrentDomFocus = false) {
+  function focusPreviousNode(childMetaNode, keepCurrentDomFocus = false) {
     // If focusing previous of the first child, focusPrevious returns false. Focus this node.
-    if (!focusPrevious(nodeModelChildren.value, childNode, keepCurrentDomFocus)) {
+    if (!focusPrevious(metaModelChildren.value, childMetaNode, keepCurrentDomFocus)) {
       focusNode(keepCurrentDomFocus);
     }
   }

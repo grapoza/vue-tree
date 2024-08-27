@@ -8,7 +8,7 @@
       class="grtvn"
       :class="[
         customClasses.treeViewNode,
-        tns._.dragging ? 'grtvn-dragging' : '',
+        metaModel._.dragging ? 'grtvn-dragging' : '',
         filterIncludesNode ? '' : 'grtvn-hidden'
       ]"
       role="treeitem"
@@ -21,10 +21,10 @@
          :class="[customClasses.treeViewNodeSelf,
          isEffectivelySelected ? 'grtvn-self-selected' : '',
          isEffectivelySelected ? customClasses.treeViewNodeSelfSelected : '',
-         tns._.isDropTarget ? 'grtvn-self-drop-target': '',
-         tns._.isChildDropTarget ? 'grtvn-self-child-drop-target': '']"
-         :draggable="tns.draggable"
-         :dragging="tns._.dragging"
+         metaModel._.isDropTarget ? 'grtvn-self-drop-target': '',
+         metaModel._.isChildDropTarget ? 'grtvn-self-child-drop-target': '']"
+         :draggable="metaModel.draggable"
+         :dragging="metaModel._.dragging"
          @click="onClick"
          @dblclick="onDblclick"
          @dragend="onDragend"
@@ -36,7 +36,7 @@
 
       <!-- Top Drop Target -->
       <div class="grtvn-self-sibling-drop-target grtvn-self-prev-target"
-           :class="[tns._.isPrevDropTarget ? 'grtvn-self-sibling-drop-target-hover': '']"></div>
+           :class="[metaModel._.isPrevDropTarget ? 'grtvn-self-sibling-drop-target-hover': '']"></div>
 
       <!-- Expander -->
       <button :id="expanderId"
@@ -44,11 +44,11 @@
               v-if="canExpand"
               aria-hidden="true"
               tabindex="-1"
-              :title="tns.expanderTitle"
+              :title="metaModel.expanderTitle"
               class="grtvn-self-expander"
               :class="[customClasses.treeViewNodeSelfExpander,
-              tns.state.expanded ? 'grtvn-self-expanded' : '',
-              tns.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
+              metaModel.state.expanded ? 'grtvn-self-expanded' : '',
+              metaModel.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
               @click="toggleNodeExpanded">
               <i class="grtvn-self-expanded-indicator"
                  :class="customClasses.treeViewNodeSelfExpandedIndicator"></i></button>
@@ -58,15 +58,15 @@
 
       <!-- Inputs and labels -->
       <!-- Checkbox -->
-      <slot v-if="tns.input && tns.input.type === 'checkbox'"
+      <slot v-if="metaModel.input && metaModel.input.type === 'checkbox'"
             name="checkbox"
-            :model="model"
+            :metaModel="metaModel"
             :customClasses="customClasses"
             :inputId="inputId"
             :checkboxChangeHandler="onCheckboxChange">
 
         <label :for="inputId"
-               :title="tns.title"
+               :title="metaModel.title"
                class="grtvn-self-label"
                :class="customClasses.treeViewNodeSelfLabel">
 
@@ -75,8 +75,8 @@
                  class="grtvn-self-input grtvn-self-checkbox"
                  :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfCheckbox]"
                  type="checkbox"
-                 :disabled="tns.state.input.disabled"
-                 v-model="tns.state.input.value"
+                 :disabled="metaModel.state.input.disabled"
+                 v-model="metaModel.state.input.value"
                  @change="onCheckboxChange" />
 
           {{ label }}
@@ -84,16 +84,16 @@
       </slot>
 
       <!-- Radiobutton -->
-      <slot v-else-if="tns.input && tns.input.type === 'radio'"
+      <slot v-else-if="metaModel.input && metaModel.input.type === 'radio'"
             name="radio"
-            :model="model"
+            :metaModel="metaModel"
             :customClasses="customClasses"
             :inputId="inputId"
             :radioGroupValues="radioGroupValues"
             :radioChangeHandler="onRadioChange">
 
         <label :for="inputId"
-               :title="tns.title"
+               :title="metaModel.title"
                class="grtvn-self-label"
                :class="customClasses.treeViewNodeSelfLabel">
 
@@ -102,10 +102,10 @@
                  class="grtvn-self-input grtvn-self-radio"
                  :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfRadio]"
                  type="radio"
-                 :name="tns.input.name"
-                 :value="tns.input.value"
-                 :disabled="tns.state.input.disabled"
-                 v-model="radioGroupValues[tns.input.name]"
+                 :name="metaModel.input.name"
+                 :value="metaModel.input.value"
+                 :disabled="metaModel.state.input.disabled"
+                 v-model="radioGroupValues[metaModel.input.name]"
                  @change="onRadioChange" />
 
           {{ label }}
@@ -115,10 +115,10 @@
       <!-- Text (if not an input) -->
       <slot v-else
             name="text"
-            :model="model"
+            :metaModel="metaModel"
             :customClasses="customClasses">
 
-        <span :title="tns.title"
+        <span :title="metaModel.title"
               class="grtvn-self-text"
               :class="customClasses.treeViewNodeSelfText">
           {{ label }}
@@ -128,10 +128,10 @@
       <!-- Add Child button -->
       <button :id="addChildId"
               type="button"
-              v-if="tns.addChildCallback"
+              v-if="metaModel.addChildCallback"
               aria-hidden="true"
               tabindex="-1"
-              :title="tns.addChildTitle"
+              :title="metaModel.addChildTitle"
               class="grtvn-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfAddChild]"
               @click="addChild">
@@ -142,10 +142,10 @@
       <!-- Delete button -->
       <button :id="deleteId"
               type="button"
-              v-if="tns.deletable"
+              v-if="metaModel.deletable"
               aria-hidden="true"
               tabindex="-1"
-              :title="tns.deleteTitle"
+              :title="metaModel.deleteTitle"
               class="grtvn-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfDelete]"
               @click="onDelete">
@@ -155,15 +155,15 @@
 
       <!-- Bottom Drop Target -->
       <div class="grtvn-self-sibling-drop-target grtvn-self-next-target"
-           :class="[tns._.isNextDropTarget ? 'grtvn-self-sibling-drop-target-hover': '']"></div>
+           :class="[metaModel._.isNextDropTarget ? 'grtvn-self-sibling-drop-target-hover': '']"></div>
     </div>
 
     <!-- Children and Loading Placholder -->
     <div class="grtvn-children-wrapper"
             :class="customClasses.treeViewNodeChildrenWrapper">
-      <slot v-if="tns.state.expanded && !areChildrenLoaded"
+      <slot v-if="metaModel.state.expanded && !areChildrenLoaded"
             name="loading"
-            :model="model"
+            :metaModel="metaModel"
             :customClasses="customClasses">
 
         <span class="grtvn-loading"
@@ -171,16 +171,16 @@
           ...
         </span>
       </slot>
-      <ul v-show="tns.state.expanded"
+      <ul v-show="metaModel.state.expanded"
           v-if="hasChildren"
           class="grtvn-children"
           :class="customClasses.treeViewNodeChildren"
           role="group"
-          :aria-hidden="!tns.state.expanded">
-        <TreeViewNode v-for="(nodeModel, index) in children"
-                      :key="nodeModel[nodeModel.treeNodeSpec?.idProperty ?? 'id']"
+          :aria-hidden="!metaModel.state.expanded">
+        <TreeViewNode v-for="(childMetaModel, index) in metaModel.childMetaModels"
+                      :key="childMetaModel.data[childMetaModel.idProperty ?? 'id']"
                       :depth="depth + 1"
-                      v-model="children[index]"
+                      v-model="metaModel.childMetaModels[index]"
                       :model-defaults="modelDefaults"
                       :parent-id="id"
                       :selection-mode="selectionMode"
@@ -206,17 +206,17 @@
                       @treeNodeAriaRequestNextFocus="focusNextNode"
                       @treeNodeDragMove="dragMoveChild"
                       @treeNodeDrop="drop">
-          <template #checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
-            <slot name="checkbox" :model="model" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
+          <template #checkbox="{ metaModel, customClasses, inputId, checkboxChangeHandler }">
+            <slot name="checkbox" :metaModel="metaModel" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
           </template>
-          <template #radio="{ model, customClasses, inputId, radioGroupValues, radioChangeHandler }">
-            <slot name="radio" :model="model" :customClasses="customClasses" :inputId="inputId" :radioGroupValues="radioGroupValues" :radioChangeHandler="radioChangeHandler"></slot>
+          <template #radio="{ metaModel, customClasses, inputId, radioGroupValues, radioChangeHandler }">
+            <slot name="radio" :metaModel="metaModel" :customClasses="customClasses" :inputId="inputId" :radioGroupValues="radioGroupValues" :radioChangeHandler="radioChangeHandler"></slot>
           </template>
-          <template #text="{ model, customClasses }">
-            <slot name="text" :model="model" :customClasses="customClasses"></slot>
+          <template #text="{ metaModel, customClasses }">
+            <slot name="text" :metaModel="metaModel" :customClasses="customClasses"></slot>
           </template>
-          <template #loading="{ model, customClasses }">
-            <slot name="loading" :model="model" :customClasses="customClasses"></slot>
+          <template #loading="{ metaModel, customClasses }">
+            <slot name="loading" :metaModel="metaModel" :customClasses="customClasses"></slot>
           </template>
         </TreeViewNode>
       </ul>
@@ -226,8 +226,9 @@
 
 <script setup>
 
-import { computed, ref, toRef } from 'vue'
+import { computed, ref, toRef, watch } from 'vue'
 import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer.js';
+import { useChildren } from '../composables/children/children.js';
 import { useTreeViewNodeChildren } from '../composables/children/treeViewNodeChildren.js';
 import { useTreeViewNodeDragAndDrop } from '../composables/dragDrop/treeViewNodeDragAndDrop.js';
 import { useFocus } from '../composables/focus/focus.js';
@@ -258,7 +259,7 @@ const props = defineProps({
     required: true
   },
   modelDefaults: {
-    type: Object,
+    type: Function,
     required: true
   },
   selectionMode: {
@@ -301,7 +302,7 @@ const emit = defineEmits([
 // DATA
 
 const elementsThatIgnoreClicks = 'input, .grtvn-self-expander, .grtvn-self-expander *, .grtvn-self-action, .grtvn-self-action *';
-const model = defineModel({ required: true });
+const metaModel = defineModel({ required: true });
 
 const radioGroupValues = ref(props.initialRadioGroupValues);
 const nodeElement = ref(null); // template ref
@@ -312,35 +313,36 @@ const addChildId = computed(() => `${nodeId.value}-add-child`);
 
 const tabIndex = computed(() => isFocusedNode() ? 0 : -1);
 
-const customClasses = computed(() => tns.value.customizations?.classes ?? {});
+const customClasses = computed(() => metaModel.value.customizations?.classes ?? {});
 
 const deleteId = computed(() => `${nodeId.value}-delete`);
 
 const expanderId = computed(() => `${nodeId.value}-exp`);
 
-const id = computed(() => model.value[idPropName.value]);
+const id = computed(() => metaModel.value.data[idPropName.value]);
 
-const idPropName = computed(() => tns.value.idProperty ?? 'id');
+const idPropName = computed(() => metaModel.value.idProperty ?? 'id');
 
 const inputId = computed(() => `${nodeId.value}-input`);
 
 const isEffectivelySelected = computed(() => props.selectionMode !== SelectionMode.None && isNodeSelectable() && isNodeSelected());
 
-const label = computed(() => model.value[labelPropName.value]);
+const label = computed(() => metaModel.value.data[labelPropName.value]);
 
-const labelPropName = computed(() => tns.value.labelProperty ?? 'label');
+const labelPropName = computed(() => metaModel.value.labelProperty ?? 'label');
 
 const nodeId = computed(() => `${props.treeId}-${id.value}`);
-
-const tns = computed(() => model.value.treeNodeSpec);
 
 const treeId = computed(() => props.treeId);
 
 // COMPOSABLES
 
-const { normalizeNodeData } = useNodeDataNormalizer(model, props.modelDefaults, radioGroupValues);
+const { createMetaModel, normalizeNodeData } = useNodeDataNormalizer(metaModel, props.modelDefaults, radioGroupValues);
+normalizeNodeData(metaModel);
 
-normalizeNodeData();
+const {
+  getChildren,
+} = useChildren();
 
 const {
   addChild,
@@ -349,13 +351,13 @@ const {
   children,
   deleteChild,
   hasChildren,
-} = useTreeViewNodeChildren(model, emit);
+} = useTreeViewNodeChildren(metaModel, emit);
 
 const {
   filteredChildren,
   filterIncludesNode,
   mayHaveFilteredChildren
-} = useTreeViewNodeFilter(model, emit);
+} = useTreeViewNodeFilter(metaModel, emit);
 
 const {
   focus,
@@ -367,14 +369,14 @@ const {
   focusNextNode,
   focusPreviousNode,
   isFocusedNode
-} = useTreeViewNodeFocus(model, nodeElement, emit, toRef(props, "isMounted"));
+} = useTreeViewNodeFocus(metaModel, nodeElement, emit, toRef(props, "isMounted"));
 
 const {
   ariaSelected,
   isNodeSelectable,
   isNodeSelected,
   toggleNodeSelected,
-} = useTreeViewNodeSelection(model, toRef(props, "selectionMode"), emit);
+} = useTreeViewNodeSelection(metaModel, toRef(props, "selectionMode"), emit);
 
 const {
   ariaExpanded,
@@ -383,7 +385,7 @@ const {
   expandNode,
   isNodeExpanded,
   toggleNodeExpanded,
-} = useTreeViewNodeExpansion(model, emit);
+} = useTreeViewNodeExpansion(metaModel, emit);
 
 const {
   dragMoveChild,
@@ -394,7 +396,35 @@ const {
   onDragleave,
   onDrop,
   onDragend
-} = useTreeViewNodeDragAndDrop(model, children, treeId, emit);
+} = useTreeViewNodeDragAndDrop(metaModel, treeId, emit);
+
+// Watch the model children to make sure the metamodel is kept in sync
+watch([getChildren(metaModel), () => getChildren(metaModel)], () => {
+  // Patch the meta children to match the data children
+  const metaChildren = metaModel.value.childMetaModels;
+  const dataChildren = getChildren(metaModel);
+
+  dataChildren.forEach((node, index) => {
+    const metaIndex = metaChildren.findIndex((m) => m.data[idPropName.value] === node[idPropName.value]);
+
+    // If the indexes match, then the meta node is already in place and we can skip it.
+    if (index !== metaIndex) {
+      // Otherwise, if the node is not in the meta children, add it.
+      if (metaIndex === -1) {
+        metaChildren.splice(index, 0, createMetaModel(node));
+      }
+      else {
+        // If the node is in the meta children, but not in the right place, move it.
+        metaChildren.splice(index, 0, metaChildren.splice(metaIndex, 1)[0]);
+      }
+    }
+  });
+
+  // If there are more meta children than data children, remove the extra meta children.
+  if (metaChildren.length > dataChildren.length) {
+    metaChildren.splice(dataChildren.length);
+  }
+});
 
 // METHODS
 
@@ -404,7 +434,7 @@ const {
  * @param {Event} event The event that triggered the change
  */
 function onCheckboxChange(event) {
-  emit(TreeEvent.CheckboxChange, model.value, event);
+  emit(TreeEvent.CheckboxChange, metaModel.value, event);
 }
 
 /**
@@ -413,7 +443,7 @@ function onCheckboxChange(event) {
  * @param {Event} event The event that triggered the change
  */
 function onRadioChange(event) {
-  emit(TreeEvent.RadioChange, model.value, event);
+  emit(TreeEvent.RadioChange, metaModel.value, event);
 }
 
 /**
@@ -425,7 +455,7 @@ function onRadioChange(event) {
 function onClick(event) {
   // Don't fire this if the target is an element which has its own events
   if (!event.target.matches(elementsThatIgnoreClicks)) {
-    emit(TreeEvent.Click, model.value, event);
+    emit(TreeEvent.Click, metaModel.value, event);
     toggleNodeSelected();
   }
 
@@ -441,18 +471,18 @@ function onClick(event) {
 function onDblclick(event) {
   // Don't fire this if the target is an element which has its own events
   if (!event.target.matches(elementsThatIgnoreClicks)) {
-    emit(TreeEvent.DoubleClick, model.value, event);
+    emit(TreeEvent.DoubleClick, metaModel.value, event);
   }
 }
 
 /**
- * Handles node deletion eventing. A callback can be supplied in the treeNodeSpec to perform
+ * Handles node deletion eventing. A callback can be supplied in the metaModel to perform
  * and pre-processing of the node or to cancel the deletion entirely.
  * @param {Event} event The event that triggered this method call
  */
 async function onDelete(event) {
-  if (tns.value.deletable && (await tns.value.deleteNodeCallback?.(model.value) ?? true)) {
-    emit(TreeEvent.Delete, model.value);
+  if (metaModel.value.deletable && (await metaModel.value.deleteNodeCallback?.(metaModel.value) ?? true)) {
+    emit(TreeEvent.Delete, metaModel.value);
   }
 }
 
@@ -473,7 +503,7 @@ function onKeyDown(event) {
     // Performs the default action (e.g. onclick event) for the focused node.
     // Note that splitting activation and selection so explicitly differs from
     // https://www.w3.org/TR/wai-aria-practices-1.1/#keyboard-interaction-22 (Enter description, and Selection in multi-select trees)
-    if (tns.value.input && !tns.value.state.input.disabled) {
+    if (metaModel.value.input && !metaModel.value.state.input.disabled) {
       let tvns = nodeElement.value.querySelector('.grtvn-self');
       let target = tvns.querySelector('.grtvn-self-input') || tvns.querySelector('input');
 
@@ -523,13 +553,13 @@ function onKeyDown(event) {
     // Moves focus to the previous node that is focusable without opening or closing a node.
     // If focus is on the first node, does nothing
     // Parent handles setting focusability on a sibling (or child thereof) of this node, or itself.
-    emit(TreeEvent.RequestPreviousFocus, model.value);
+    emit(TreeEvent.RequestPreviousFocus, metaModel.value);
   }
   else if (props.ariaKeyMap.focusNextItem.includes(event.keyCode)) {
     // Moves focus to the next node that is focusable without opening or closing a node.
     // If focus is on the last node, does nothing.
     // Parent handles setting focusability on a sibling of this node, or its first child.
-    emit(TreeEvent.RequestNextFocus, model.value, false);
+    emit(TreeEvent.RequestNextFocus, metaModel.value, false);
   }
   else if (props.ariaKeyMap.insertItem.includes(event.keyCode)) {
     // Trigger insertion of a new child item if allowed.
@@ -581,14 +611,14 @@ function handleChildDeletion(node) {
 /**
  * Emits the treeNodeCheckboxChange event, and if the event is for
  * a direct child then it also emits the treeNodeChildCheckboxChange event.
- * @param {TreeViewNode} node The node on which the checkbox changed
+ * @param {TreeViewNode} metaNode The meta node on which the checkbox changed
  * @param {Event} event The event that triggered the change
  */
-function handleCheckboxChange(node, event) {
-  emit(TreeEvent.CheckboxChange, node, event);
+function handleCheckboxChange(metaNode, event) {
+  emit(TreeEvent.CheckboxChange, metaNode, event);
 
-  if (children.value.includes(node)) {
-    emit(TreeEvent.ChildCheckboxChange, model.value, node, event);
+  if (children.value.includes(metaNode)) {
+    emit(TreeEvent.ChildCheckboxChange, metaModel.value, metaNode, event);
   }
 }
 

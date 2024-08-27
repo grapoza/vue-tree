@@ -44,7 +44,7 @@ const RAW_RUNTIME_STATE =
           ["@vue/server-renderer", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:3.4.38"],\
           ["@vue/test-utils", "npm:2.4.6"],\
           ["babel-loader", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:8.3.0"],\
-          ["jsdom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:24.1.1"],\
+          ["jsdom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:24.1.3"],\
           ["react", "npm:17.0.2"],\
           ["react-dom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:17.0.2"],\
           ["vite", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:3.2.10"],\
@@ -4898,7 +4898,7 @@ const RAW_RUNTIME_STATE =
           ["@vue/server-renderer", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:3.4.38"],\
           ["@vue/test-utils", "npm:2.4.6"],\
           ["babel-loader", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:8.3.0"],\
-          ["jsdom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:24.1.1"],\
+          ["jsdom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:24.1.3"],\
           ["react", "npm:17.0.2"],\
           ["react-dom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:17.0.2"],\
           ["vite", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:3.2.10"],\
@@ -15454,17 +15454,17 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["jsdom", [\
-      ["npm:24.1.1", {\
-        "packageLocation": "./.yarn/cache/jsdom-npm-24.1.1-e38c142172-7b6e1ea1f0.zip/node_modules/jsdom/",\
+      ["npm:24.1.3", {\
+        "packageLocation": "./.yarn/cache/jsdom-npm-24.1.3-c45b6cf5c7-81e01d092a.zip/node_modules/jsdom/",\
         "packageDependencies": [\
-          ["jsdom", "npm:24.1.1"]\
+          ["jsdom", "npm:24.1.3"]\
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:24.1.1", {\
-        "packageLocation": "./.yarn/__virtual__/jsdom-virtual-2f964154b7/0/cache/jsdom-npm-24.1.1-e38c142172-7b6e1ea1f0.zip/node_modules/jsdom/",\
+      ["virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:24.1.3", {\
+        "packageLocation": "./.yarn/__virtual__/jsdom-virtual-f33d9a25c1/0/cache/jsdom-npm-24.1.3-c45b6cf5c7-81e01d092a.zip/node_modules/jsdom/",\
         "packageDependencies": [\
-          ["jsdom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:24.1.1"],\
+          ["jsdom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:24.1.3"],\
           ["@types/canvas", null],\
           ["canvas", null],\
           ["cssstyle", "npm:4.0.1"],\
@@ -21595,7 +21595,7 @@ const RAW_RUNTIME_STATE =
           ["debug", "virtual:5372f94f60354e044992e7caec3d7b6c0a01bc27684ca64c0ad5ec78bb1e4e3a5c8bae5ffc28175bcd04f35d90eeedc4d92f4267fad1d89e026bda696fcdd216#npm:4.3.6"],\
           ["execa", "npm:8.0.1"],\
           ["happy-dom", null],\
-          ["jsdom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:24.1.1"],\
+          ["jsdom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:24.1.3"],\
           ["magic-string", "npm:0.30.11"],\
           ["pathe", "npm:1.1.2"],\
           ["std-env", "npm:3.7.0"],\

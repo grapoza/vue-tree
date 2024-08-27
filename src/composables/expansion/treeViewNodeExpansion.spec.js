@@ -2,7 +2,7 @@ import { beforeEach, expect, describe, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
 import { useTreeViewNodeExpansion } from './treeViewNodeExpansion.js';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { generateMetaNodes } from '../../../tests/data/node-generator.js';
 import TreeEvent from '../../enums/event.js';
 
 let emit;
@@ -35,7 +35,7 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node is not expandable', () => {
 
       it('should return null', () => {
-        const node = ref(generateNodes(['s'])[0]);
+        const node = ref(generateMetaNodes(["s"])[0]);
         const wrapper = createTestComponent(node);
         expect(wrapper.vm.ariaExpanded).to.be.null;
       })
@@ -46,7 +46,7 @@ describe('treeViewNodeExpansion.js', () => {
       describe('and the node is not expanded', () => {
 
         it('should return false', () => {
-          const node = ref(generateNodes(['es', ['s']])[0]);
+          const node = ref(generateMetaNodes(['es', ['s']])[0]);
           const wrapper = createTestComponent(node);
           expect(wrapper.vm.ariaExpanded).to.be.false;
         });
@@ -55,7 +55,7 @@ describe('treeViewNodeExpansion.js', () => {
       describe('and the node is expanded', () => {
 
         it('should return true', () => {
-          const node = ref(generateNodes(['Es', ['s']])[0]);
+          const node = ref(generateMetaNodes(['Es', ['s']])[0]);
           const wrapper = createTestComponent(node);
           expect(wrapper.vm.ariaExpanded).to.be.true;
         });
@@ -68,7 +68,7 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node does not have children', () => {
 
       it('should return false', () => {
-        const node = ref(generateNodes(['es'])[0]);
+        const node = ref(generateMetaNodes(['es'])[0]);
         const wrapper = createTestComponent(node);
         expect(wrapper.vm.canExpand).to.be.false;
       });
@@ -77,7 +77,7 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node is not expandable', () => {
 
       it('should return false', () => {
-        const node = ref(generateNodes(['s', ['s']])[0]);
+        const node = ref(generateMetaNodes(['s', ['s']])[0]);
         const wrapper = createTestComponent(node);
         expect(wrapper.vm.canExpand).to.be.false;
       });
@@ -86,7 +86,7 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node is expandable and may have children', () => {
 
       it('should return true', () => {
-        const node = ref(generateNodes(['es', ['s']])[0]);
+        const node = ref(generateMetaNodes(['es', ['s']])[0]);
         const wrapper = createTestComponent(node);
         expect(wrapper.vm.canExpand).to.be.true;
       });
@@ -96,9 +96,9 @@ describe('treeViewNodeExpansion.js', () => {
   describe('when the expanded state changes', () => {
 
     it('should emit the expanded event', async () => {
-      const node = ref(generateNodes(['es', ['s']])[0]);
+      const node = ref(generateMetaNodes(['es', ['s']])[0]);
       createTestComponent(node);
-      node.value.treeNodeSpec.state.expanded = true;
+      node.value.state.expanded = true;
       await flushPromises();
       expect(emit).toHaveBeenCalledWith(TreeEvent.ExpandedChange, node.value);
     });
@@ -109,7 +109,7 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node is expandable', () => {
 
       it('should return true', () => {
-        const node = ref(generateNodes(['es'])[0]);
+        const node = ref(generateMetaNodes(['es'])[0]);
         const wrapper = createTestComponent(node);
         expect(wrapper.vm.isNodeExpandable()).to.be.true;
       });
@@ -118,7 +118,7 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node is not expandable', () => {
 
       it('should return false', () => {
-        const node = ref(generateNodes(['s'])[0]);
+        const node = ref(generateMetaNodes(['s'])[0]);
         const wrapper = createTestComponent(node);
         expect(wrapper.vm.isNodeExpandable()).to.be.false;
       });
@@ -130,7 +130,7 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node is expanded', () => {
 
       it('should return true', () => {
-        const node = ref(generateNodes(['Es'])[0]);
+        const node = ref(generateMetaNodes(['Es'])[0]);
         const wrapper = createTestComponent(node);
         expect(wrapper.vm.isNodeExpanded()).to.be.true;
       });
@@ -139,7 +139,7 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node is not expanded', () => {
 
       it('should return false', () => {
-        const node = ref(generateNodes(['es'])[0]);
+        const node = ref(generateMetaNodes(['es'])[0]);
         const wrapper = createTestComponent(node);
         expect(wrapper.vm.isNodeExpanded()).to.be.false;
       });
@@ -151,14 +151,14 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node is expanded', () => {
 
       it('should set the node as not expanded', () => {
-        const node = ref(generateNodes(['Es', ['s']])[0]);
+        const node = ref(generateMetaNodes(['Es', ['s']])[0]);
         const wrapper = createTestComponent(node);
         wrapper.vm.collapseNode();
-        expect(node.value.treeNodeSpec.state.expanded).to.be.false;
+        expect(node.value.state.expanded).to.be.false;
       });
 
       it('should return true', () => {
-        const node = ref(generateNodes(['Es', ['s']])[0]);
+        const node = ref(generateMetaNodes(['Es', ['s']])[0]);
         const wrapper = createTestComponent(node);
         expect(wrapper.vm.collapseNode()).to.be.true;
       });
@@ -167,7 +167,7 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node is not expanded', () => {
 
       it('should return false', () => {
-        const node = ref(generateNodes(['es', ['s']])[0]);
+        const node = ref(generateMetaNodes(['es', ['s']])[0]);
         const wrapper = createTestComponent(node);
         expect(wrapper.vm.collapseNode()).to.be.false;
       });
@@ -179,7 +179,7 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node is expanded', () => {
 
       it('should return false', () => {
-        const node = ref(generateNodes(['Es', ['s']])[0]);
+        const node = ref(generateMetaNodes(['Es', ['s']])[0]);
         const wrapper = createTestComponent(node);
         expect(wrapper.vm.expandNode()).to.be.false;
       });
@@ -188,14 +188,14 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node is not expanded', () => {
 
       it('should set the node as expanded', () => {
-        const node = ref(generateNodes(['es', ['s']])[0]);
+        const node = ref(generateMetaNodes(['es', ['s']])[0]);
         const wrapper = createTestComponent(node);
         wrapper.vm.expandNode();
-        expect(node.value.treeNodeSpec.state.expanded).to.be.true;
+        expect(node.value.state.expanded).to.be.true;
       });
 
       it('should return true', () => {
-        const node = ref(generateNodes(['es', ['s']])[0]);
+        const node = ref(generateMetaNodes(['es', ['s']])[0]);
         const wrapper = createTestComponent(node);
         expect(wrapper.vm.expandNode()).to.be.true;
       });
@@ -207,20 +207,20 @@ describe('treeViewNodeExpansion.js', () => {
     describe('and the node is expanded', () => {
 
       it('should set the node as not expanded', () => {
-        const node = ref(generateNodes(['Es', ['s']])[0]);
+        const node = ref(generateMetaNodes(['Es', ['s']])[0]);
         const wrapper = createTestComponent(node);
         wrapper.vm.toggleNodeExpanded();
-        expect(node.value.treeNodeSpec.state.expanded).to.be.false;
+        expect(node.value.state.expanded).to.be.false;
       });
     });
 
     describe('and the node is not expanded', () => {
 
       it('should set the node as expanded', () => {
-        const node = ref(generateNodes(['es', ['s']])[0]);
+        const node = ref(generateMetaNodes(['es', ['s']])[0]);
         const wrapper = createTestComponent(node);
         wrapper.vm.toggleNodeExpanded();
-        expect(node.value.treeNodeSpec.state.expanded).to.be.true;
+        expect(node.value.state.expanded).to.be.true;
       });
     });
   });

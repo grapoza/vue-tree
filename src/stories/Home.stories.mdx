@@ -48,7 +48,7 @@ If you're using it in a .vue file:
 
 ```html
 <template>
-  <tree-view  id="my-tree" v-model="dataModel"></tree-view>
+  <TreeView  id="my-tree" v-model="dataModel" />
 </template>
 
 // Options API
@@ -100,7 +100,7 @@ Vue.use(TreeView)
 ```
 Then add the component:
 ```html
-<tree-view id="my-tree" v-model="dataModel"></tree-view>
+<TreeView id="my-tree" v-model="dataModel" />
 ```
 ```javascript
 export default {
@@ -401,7 +401,7 @@ Sometimes the entire content of a node (_e.g._, the checkbox or text) needs cust
 Example usage:
 
 ```html
-<tree-view id="customtree" v-model="model">
+<TreeView id="customtree" v-model="model">
   <template #text="{ model, customClasses }">
     <!-- The TreeViewNode's model is available, and built-in classes and overrides are available -->
     <em :title="model.treeNodeSpec.title"
@@ -428,7 +428,7 @@ Example usage:
       <em>{{ "Slotted Content for " + model[model.treeNodeSpec.labelProperty] }}</em>
     </label>
   </template>
-</tree-view>
+</TreeView>
 ```
 
 ## Asynchronous Loading
