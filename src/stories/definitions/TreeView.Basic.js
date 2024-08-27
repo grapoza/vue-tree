@@ -1,5 +1,5 @@
 import TreeView from '../../components/TreeView.vue';
-import treeViewData from '../data/basicTreeViewData';
+import { treeData, modelDefaults } from '../data/basicTreeViewData';
 
 const Template = (args) => ({
   components: { TreeView },
@@ -15,36 +15,40 @@ const Template = (args) => ({
     };
   },
   template: `<span>
-<tree-view v-bind="argsWithoutValue" v-model="modelValue" ref="treeViewRef"></tree-view>
+<TreeView v-bind="argsWithoutValue" v-model="modelValue" ref="treeViewRef" />
 <section class="checked-nodes">
   <button type="button" style="margin-top: 1rem" @click="refreshCheckedTvList">What's been checked (checkboxes and radiobuttons)?</button>
   <ul id="checkedList">
-    <li v-for="checkedNode in checkedTvNodes">{{ checkedNode.id }}</li>
+    <li v-for="checkedNode in checkedTvNodes">{{ checkedNode.data.id }}</li>
   </ul>
 </section>
 </span>`,
   methods: {
     refreshCheckedTvList() {
-      this.checkedTvNodes = [...this.$refs.treeViewRef.getCheckedCheckboxes(), ...this.$refs.treeViewRef.getCheckedRadioButtons()];
-    }
-  }
+      this.checkedTvNodes = [
+        ...this.$refs.treeViewRef.getCheckedCheckboxes(),
+        ...this.$refs.treeViewRef.getCheckedRadioButtons(),
+      ];
+    },
+  },
 });
 
 export const Basic = Template.bind({});
 Basic.args = {
-  modelValue: treeViewData
+  modelValue: treeData,
+  modelDefaults,
 };
 
 const docsSourceCode = `
 <template>
-  <tree-view v-model="tvModel"></tree-view>
+  <TreeView v-model="tvModel" :model-defaults="modelDefaults" />
 </template>
 <script setup>
 import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
-import treeViewData from "../data/basicTreeViewData";
+import { treeData, modelDefaults } from "../data/basicTreeViewData";
 
-const tvModel = ref(treeViewData);
+const tvModel = ref(treeData);
 </script>`;
 
 Basic.parameters = {

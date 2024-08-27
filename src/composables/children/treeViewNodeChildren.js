@@ -1,39 +1,43 @@
 import { computed } from 'vue';
 import { useChildren } from './children.js';
+import { useTreeViewNodeDataUpdates } from '../treeViewNodeDataUpdates.js';
 import TreeEvent from '../../enums/event.js';
 
 /**
  * Composable dealing with children handling at the tree view node.
- * @param {TreeViewNode} nodeModel A Ref to the model of the node
+ * @param {Object} metaModel A Ref to the metadata model of the node
  * @param {Function} emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
  * @returns {Object} Methods to deal with a tree view node's children
  */
-export function useTreeViewNodeChildren(nodeModel, emit) {
+export function useTreeViewNodeChildren(metaModel, emit) {
 
   const {
-    getChildren
+    getMetaChildren
   } = useChildren();
 
-  const areChildrenLoaded = computed(() => typeof nodeModel.value.treeNodeSpec.loadChildrenAsync !== 'function' || nodeModel.value.treeNodeSpec._.state.areChildrenLoaded);
+  const { spliceChildNodeList, pushChildNode } = useTreeViewNodeDataUpdates(metaModel);
 
-  const areChildrenLoading = computed(() => nodeModel.value.treeNodeSpec._.state.areChildrenLoading);
+  const areChildrenLoaded = computed(() => typeof metaModel.value.loadChildrenAsync !== 'function' || metaModel.value._.state.areChildrenLoaded);
 
-  const children = computed(() => getChildren(nodeModel));
+  const areChildrenLoading = computed(() => metaModel.value._.state.areChildrenLoading);
+
+  const children = computed(() => getMetaChildren(metaModel));
 
   const hasChildren = computed(() => children.value && children.value.length > 0);
 
   const mayHaveChildren = computed(() => hasChildren.value || !areChildrenLoaded.value);
 
   async function loadChildren() {
-    const spec = nodeModel.value.treeNodeSpec;
+    const spec = metaModel.value;
     if (!spec._.state.areChildrenLoaded && !spec._.state.areChildrenLoading) {
 
       spec._.state.areChildrenLoading = true;
-      var childrenResult = await spec.loadChildrenAsync(nodeModel.value);
+      var childrenResult = await spec.loadChildrenAsync(metaModel.value);
+
       if (childrenResult) {
         spec._.state.areChildrenLoaded = true;
-        children.value.splice(0, children.value.length, ...childrenResult);
-        emit(TreeEvent.ChildrenLoad, nodeModel.value);
+        spliceChildNodeList(0, children.value.length, ...childrenResult);
+        emit(TreeEvent.ChildrenLoad, metaModel.value);
       }
 
       spec._.state.areChildrenLoading = false;
@@ -46,12 +50,12 @@ export function useTreeViewNodeChildren(nodeModel, emit) {
    * Emits a treeNodeAdd if a node is added
    */
   async function addChild() {
-    if (nodeModel.value.treeNodeSpec.addChildCallback) {
-      var childModel = await nodeModel.value.treeNodeSpec.addChildCallback(nodeModel.value);
+    if (metaModel.value.addChildCallback) {
+      var childModel = await metaModel.value.addChildCallback(metaModel.value);
 
       if (childModel) {
-        children.value.push(childModel);
-        emit(TreeEvent.Add, childModel, nodeModel.value);
+        pushChildNode(childModel);
+        emit(TreeEvent.Add, children.value[children.value.length - 1], metaModel.value);
       }
     }
   }
@@ -59,14 +63,14 @@ export function useTreeViewNodeChildren(nodeModel, emit) {
   /**
    * Removes the given node from the array of children if found.
    * This emits the treeNodeDelete event.
-   * @param {TreeViewNode} node The node to remove
+   * @param {Object} metaNode The meta node to remove
    */
-  function deleteChild(node) {
+  function deleteChild(metaNode) {
     // Remove the node from the array of children if it is an immediate child.
-    let targetIndex = children.value.indexOf(node);
+    let targetIndex = children.value.indexOf(metaNode);
     if (targetIndex > -1) {
-      children.value.splice(targetIndex, 1);
-      emit(TreeEvent.Delete, node);
+      spliceChildNodeList(targetIndex, 1);
+      emit(TreeEvent.Delete, metaNode);
     }
   }
 

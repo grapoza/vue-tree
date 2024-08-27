@@ -1,23 +1,23 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 import { ref } from 'vue';
 import { useTreeViewTraversal } from './treeViewTraversal.js';
-import { generateNodes } from '../../tests/data/node-generator.js';
+import { generateMetaNodes } from '../../tests/data/node-generator.js';
 
 describe('treeViewTraversal.js', () => {
 
-  let nodes;
+  let metaNodes;
 
   beforeEach(() => {
-    nodes = generateNodes(['e', ['e','e'], 'e']);
+    metaNodes = generateMetaNodes(['e', ['e','e'], 'e']);
   });
 
   describe('when traversing the tree depth-first', () => {
 
     it('should process each node in depth-first order', () => {
-      const { depthFirstTraverse } = useTreeViewTraversal(ref(nodes));
+      const { depthFirstTraverse } = useTreeViewTraversal(ref(metaNodes));
       let result = [];
       depthFirstTraverse((node) => {
-        result.push(node.id);
+        result.push(node.data.id);
       });
 
       expect(result.length).to.equal(4);
@@ -30,10 +30,10 @@ describe('treeViewTraversal.js', () => {
     describe('and the callback returns false', () => {
 
       it('should short-circuit the traversal', () => {
-        const { depthFirstTraverse } = useTreeViewTraversal(ref(nodes));
+        const { depthFirstTraverse } = useTreeViewTraversal(ref(metaNodes));
         let result = [];
         depthFirstTraverse((node) => {
-          result.push(node.id);
+          result.push(node.data.id);
           return false;
         });
 
@@ -46,10 +46,10 @@ describe('treeViewTraversal.js', () => {
   describe('when traversing the tree breadth-first', () => {
 
     it('should process each node in breadth-first order', () => {
-      const { breadthFirstTraverse } = useTreeViewTraversal(ref(nodes));
+      const { breadthFirstTraverse } = useTreeViewTraversal(ref(metaNodes));
       let result = [];
       breadthFirstTraverse((node) => {
-        result.push(node.id);
+        result.push(node.data.id);
       });
 
       expect(result.length).to.equal(4);
@@ -62,10 +62,10 @@ describe('treeViewTraversal.js', () => {
     describe('and the callback returns false', () => {
 
       it('should short-circuit the traversal', () => {
-        const { breadthFirstTraverse } = useTreeViewTraversal(ref(nodes));
+        const { breadthFirstTraverse } = useTreeViewTraversal(ref(metaNodes));
         let result = [];
         breadthFirstTraverse((node) => {
-          result.push(node.id);
+          result.push(node.data.id);
           return false;
         });
 

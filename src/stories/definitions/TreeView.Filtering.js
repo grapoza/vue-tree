@@ -1,5 +1,5 @@
 import TreeView from '../../components/TreeView.vue';
-import treeViewData from '../data/filteringTreeViewData';
+import { treeData, modelDefaults } from '../data/filteringTreeViewData';
 
 const Template = (args) => ({
   components: { TreeView },
@@ -17,14 +17,14 @@ const Template = (args) => ({
     };
   },
   template: `<span>
-<tree-view v-bind="argsWithoutValue" v-model="modelValue" :filter-method="filterMethod" ref="treeViewRef"></tree-view>
+<TreeView v-bind="argsWithoutValue" v-model="modelValue" :filter-method="filterMethod" ref="treeViewRef" />
 <section style="margin: 10px 0">
   <input v-model="filterText" type='text' id="filter" placeholder="Filter by label text" style="margin-right: 4px" /><button @click="applyFilter">Apply Filter</button>
 </section>
 <section class="checked-nodes">
   <button type="button" style="margin-top: 1rem" @click="refreshCheckedTvList">What's been checked (checkboxes and radiobuttons)?</button>
   <ul id="checkedList">
-    <li v-for="checkedNode in checkedTvNodes">{{ checkedNode.id }}</li>
+    <li v-for="checkedNode in checkedTvNodes">{{ checkedNode.data.id }}</li>
   </ul>
 </section>
 </span>`,
@@ -34,7 +34,7 @@ const Template = (args) => ({
         this.filterMethod = null;
       } else {
         const lowercaseFilter = this.filterText.toLowerCase();
-        this.filterMethod = (n) => n.label.toLowerCase().includes(lowercaseFilter);
+        this.filterMethod = (n) => n.data.label.toLowerCase().includes(lowercaseFilter);
       }
     },
     refreshCheckedTvList() {
@@ -48,13 +48,14 @@ const Template = (args) => ({
 
 export const Filtering = Template.bind({});
 Filtering.args = {
-  modelValue: treeViewData,
+  modelValue: treeData,
+  modelDefaults,
 };
 
 const docsSourceCode = `
 <template>
   <span>
-    <tree-view v-model="tvModel" :filter-method="filterMethod"></tree-view>
+    <TreeView v-model="tvModel" :model-defaults="modelDefaults" :filter-method="filterMethod" />
     <section style="margin: 10px 0">
       <input v-model="filterText" type='text' id="filter" placeholder="Filter by label text" style="margin-right: 4px" /><button @click="applyFilter">Apply Filter</button>
     </section>
@@ -63,9 +64,9 @@ const docsSourceCode = `
 <script setup>
 import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
-import treeViewData from "../data/filteringTreeViewData";
+import { treeData, modelDefaults } from '../data/filteringTreeViewData';
 
-const tvModel = ref(treeViewData);
+const tvModel = ref(treeData);
 const filterText = ref("");
 const filterMethod = ref(null);
 
@@ -75,7 +76,7 @@ const applyFilter = () => {
   }
   else {
     const lowercaseFilter = filterText.value.toLowerCase();
-    filterMethod.value = (n) => n.label.toLowerCase().includes(lowercaseFilter);
+    filterMethod.value = (n) => n.data.label.toLowerCase().includes(lowercaseFilter);
   }
 }
 </script>`;

@@ -1,5 +1,5 @@
-import TreeView from '../../components/TreeView.vue';
-import { treeData, modelDefaults } from '../data/staticTreeViewData';
+import TreeView from "../../components/TreeView.vue";
+import { treeData, modelDefaults } from "../data/customizationViaClassesTreeViewData";
 
 const Template = (args) => ({
   components: { TreeView },
@@ -16,28 +16,28 @@ const Template = (args) => ({
   template: '<TreeView v-bind="argsWithoutValue" v-model="modelValue" />',
 });
 
-export const Static = Template.bind({});
-Static.args = {
+export const CustomizationViaClasses = Template.bind({});
+CustomizationViaClasses.args = {
   modelValue: treeData,
   modelDefaults,
 };
 
-const docsSourceCode = `
+const docClassSourceCode = `
 <template>
   <TreeView v-model="tvModel" :model-defaults="modelDefaults" />
 </template>
 <script setup>
 import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
-import { treeData, modelDefaults } from '../data/staticTreeViewData';
+import { treeData, modeLDefaults } from "../data/customizationViaClassesTreeViewData";
 
 const tvModel = ref(treeData);
 </script>`;
 
-Static.parameters = {
+CustomizationViaClasses.parameters = {
   docs: {
     source: {
-      code: docsSourceCode,
+      code: docClassSourceCode,
       language: "html",
       type: "auto",
     },

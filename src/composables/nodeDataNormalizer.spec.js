@@ -2,6 +2,7 @@ import { expect, describe, it, beforeEach } from 'vitest';
 import { ref } from 'vue';
 import { useNodeDataNormalizer } from './nodeDataNormalizer.js';
 import { generateNodes } from '../../tests/data/node-generator.js';
+import InputType from "../enums/inputType";
 
 describe('nodeDataNormalizer.js', () => {
 
@@ -10,23 +11,25 @@ describe('nodeDataNormalizer.js', () => {
     let model;
 
     beforeEach(() => {
-      model = { id: 'my-node', label: 'My Node' };
-      const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+      const { nodes, modelDefaults } = generateNodes(['e']);
+      model = { data: nodes[0] };
+      const { normalizeNodeData } = useNodeDataNormalizer(ref(model), modelDefaults, ref({}));
       normalizeNodeData();
     });
 
     it('should normalize model data', () => {
-      expect(model.id).to.equal('my-node');
-      expect(model.label).to.equal('My Node');
-      expect(model.treeNodeSpec.title).to.be.null;
-      expect(model.treeNodeSpec.expandable).to.be.true;
-      expect(model.treeNodeSpec.selectable).to.be.false;
-      expect(model.treeNodeSpec.deletable).to.be.false;
-      expect(model.treeNodeSpec.state).to.exist;
-      expect(model.treeNodeSpec.state.expanded).to.be.false;
-      expect(model.treeNodeSpec.state.selected).to.be.false;
-      expect(model.treeNodeSpec.input).to.be.null;
-      expect(model.treeNodeSpec.state.input).to.not.exist;
+      expect(model.data.id).to.equal('n0');
+      expect(model.data.label).to.equal('Node 0');
+      expect(model.title).to.be.null;
+      expect(model.expandable).to.be.true;
+      expect(model.selectable).to.be.false;
+      expect(model.deletable).to.be.false;
+      expect(model.state).to.exist;
+      expect(model.state.expanded).to.be.false;
+      expect(model.state.selected).to.be.false;
+      expect(model.input).to.be.null;
+      expect(model.state.input).to.not.exist;
+      expect(model.childMetaModels).to.be.empty;
     });
   });
 
@@ -35,25 +38,28 @@ describe('nodeDataNormalizer.js', () => {
     let model;
 
     beforeEach(() => {
-      model = { id: 'my-node', label: 'My Node', treeNodeSpec: { expandable: true } };
-      const modelDefaults = {
+      const { nodes, modelDefaultMap, modelDefaults } = generateNodes(["e"]);
+
+      model = { data: nodes[0], expandable: true };
+      Object.assign(modelDefaultMap.get("n0"), {
         expandable: false,
         selectable: true,
         state: {
-          selected: true
+          selected: true,
         }
-      };
+      });
+
       const { normalizeNodeData } = useNodeDataNormalizer(ref(model), modelDefaults, ref({}));
       normalizeNodeData();
     });
 
     it('should incorporate the default data into the model for unspecified properties', () => {
-      expect(model.treeNodeSpec.selectable).to.be.true;
-      expect(model.treeNodeSpec.state.selected).to.be.true;
+      expect(model.selectable).to.be.true;
+      expect(model.state.selected).to.be.true;
     });
 
     it('should use the model\'s data over the default data for specified properties', () => {
-      expect(model.treeNodeSpec.expandable).to.be.true;
+      expect(model.expandable).to.be.true;
     });
   });
 
@@ -66,14 +72,14 @@ describe('nodeDataNormalizer.js', () => {
         let model;
 
         beforeEach(() => {
-          model = generateNodes(['ces'])[0];
-          model.treeNodeSpec.input.name = 42;
-          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+          const { nodes } = generateNodes(["ces"]);
+          model = { data: nodes[0], input: { name: 42, type: InputType.Checkbox } };
+          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), () => {}, ref({}));
           normalizeNodeData();
         });
 
         it('should set the name to null', () => {
-          expect(model.treeNodeSpec.input.name).to.be.null;
+          expect(model.input.name).to.be.null;
         });
       });
 
@@ -82,14 +88,14 @@ describe('nodeDataNormalizer.js', () => {
         let model;
 
         beforeEach(() => {
-          model = generateNodes(['ces'])[0];
-          model.treeNodeSpec.input.name = ' ';
-          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+          const { nodes } = generateNodes(["ces"]);
+          model = { data: nodes[0], input: { name: ' ', type: InputType.Checkbox } };
+          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), () => {}, ref({}));
           normalizeNodeData();
         });
 
         it('should set the name to null', () => {
-          expect(model.treeNodeSpec.input.name).to.be.null;
+          expect(model.input.name).to.be.null;
         });
       });
     });
@@ -99,32 +105,32 @@ describe('nodeDataNormalizer.js', () => {
       let model;
 
       beforeEach(() => {
-        model = generateNodes(['r'])[0];
+        model = { data: generateNodes(['r']).nodes[0], input: { name: 'Radio Name', type: InputType.RadioButton } };
       });
 
       describe('and that name is not a string', () => {
 
         beforeEach(() => {
-          model.treeNodeSpec.input.name = 42;
-          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+          model.input.name = 42;
+          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), () => {}, ref({}));
           normalizeNodeData();
         });
 
         it('should set the name to unspecifiedRadioName', () => {
-          expect(model.treeNodeSpec.input.name).to.equal('unspecifiedRadioName');
+          expect(model.input.name).to.equal('unspecifiedRadioName');
         });
       });
 
       describe('and that trimmed name is an empty string', () => {
 
         beforeEach(() => {
-          model.treeNodeSpec.input.name = ' ';
-          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+          model.input.name = ' ';
+          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), () => {}, ref({}));
           normalizeNodeData();
         });
 
-        it('should set the name to null', () => {
-          expect(model.treeNodeSpec.input.name).to.equal('unspecifiedRadioName');
+        it("should set the name to unspecifiedRadioName", () => {
+          expect(model.input.name).to.equal("unspecifiedRadioName");
         });
       });
     });
@@ -137,33 +143,33 @@ describe('nodeDataNormalizer.js', () => {
       let model;
 
       beforeEach(() => {
-        model = generateNodes(['r'])[0];
-        model.label = 'A \'Label\' & <Thing>/ "Stuff"';
+        model = { data: generateNodes(['r']).nodes[0], input: { name: 'Radio Name', type: InputType.RadioButton } };
+        model.data.label = 'A \'Label\' & <Thing>/ "Stuff"';
       });
 
       describe('and that value is not a string', () => {
 
         beforeEach(() => {
-          model.treeNodeSpec.input.value = 42;
-          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+          model.input.value = 42;
+          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), () => {}, ref({}));
           normalizeNodeData();
         });
 
         it('should set the value to the label value, minus disallowed characters', () => {
-          expect(model.treeNodeSpec.input.value).to.equal('ALabelThingStuff');
+          expect(model.input.value).to.equal('ALabelThingStuff');
         });
       });
 
       describe('and that trimmed value is an empty string', () => {
 
         beforeEach(() => {
-          model.treeNodeSpec.input.value = ' ';
-          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+          model.input.value = ' ';
+          const { normalizeNodeData } = useNodeDataNormalizer(ref(model), () => {}, ref({}));
           normalizeNodeData();
         });
 
         it('should set the value to the label value, minus disallowed characters', () => {
-          expect(model.treeNodeSpec.input.value).to.equal('ALabelThingStuff');
+          expect(model.input.value).to.equal('ALabelThingStuff');
         });
       });
     });
@@ -174,20 +180,23 @@ describe('nodeDataNormalizer.js', () => {
     let model;
 
     beforeEach(() => {
-      model = generateNodes(['c'])[0];
-      model.treeNodeSpec.state.input = null;
-      const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+      model = {
+        data: generateNodes(['c']).nodes[0],
+        input: { name: 'Name', type: InputType.Checkbox },
+        state: { input: null }
+      };
+      const { normalizeNodeData } = useNodeDataNormalizer(ref(model), () => {}, ref({}));
       normalizeNodeData();
     });
 
     it('should default the disabled state to false', () => {
-      expect(model.treeNodeSpec.state.input.disabled).to.be.false;
+      expect(model.state.input.disabled).to.be.false;
     });
 
     describe('and the input is a checkbox', () => {
 
       it('should set the value of the input to false', () => {
-        expect(model.treeNodeSpec.state.input.value).to.be.false;
+        expect(model.state.input.value).to.be.false;
       });
     });
   });
@@ -197,18 +206,18 @@ describe('nodeDataNormalizer.js', () => {
     let model;
 
     beforeEach(() => {
-      model = generateNodes(['c'])[0];
-      model.treeNodeSpec.expanderTitle = '';
-      model.treeNodeSpec.addChildTitle = '';
-      model.treeNodeSpec.deleteTitle = '';
-      const { normalizeNodeData } = useNodeDataNormalizer(ref(model), {}, ref({}));
+      model = { data: generateNodes(["c"]).nodes[0] };
+      model.expanderTitle = '';
+      model.addChildTitle = '';
+      model.deleteTitle = '';
+      const { normalizeNodeData } = useNodeDataNormalizer(ref(model), () => {}, ref({}));
       normalizeNodeData();
     });
 
     it('should set the title properties to null', () => {
-      expect(model.treeNodeSpec.expanderTitle).to.be.null;
-      expect(model.treeNodeSpec.addChildTitle).to.be.null;
-      expect(model.treeNodeSpec.deleteTitle).to.be.null;
+      expect(model.expanderTitle).to.be.null;
+      expect(model.addChildTitle).to.be.null;
+      expect(model.deleteTitle).to.be.null;
     });
   });
 });

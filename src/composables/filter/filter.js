@@ -8,15 +8,15 @@ import { useChildren } from '../children/children.js';
 export function useFilter() {
 
   const {
-    getChildren
+    getMetaChildren
   } = useChildren();
 
-  function getFilteredChildren(targetNodeModel) {
-    return getFilteredNodes(getChildren(targetNodeModel));
+  function getFilteredChildren(targetMetaModel) {
+    return getFilteredNodes(getMetaChildren(targetMetaModel));
   }
 
-  function getFilteredNodes(targetNodeModels) {
-    return unref(targetNodeModels).filter(c => c.treeNodeSpec?._?.state?.matchesFilter || c.treeNodeSpec?._?.state?.subnodeMatchesFilter);
+  function getFilteredNodes(targetMetaModels) {
+    return unref(targetMetaModels).filter(c => c._?.state?.matchesFilter || c._?.state?.subnodeMatchesFilter);
   }
 
   return {

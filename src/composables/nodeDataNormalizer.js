@@ -7,93 +7,93 @@ const { isProbablyObject } = useObjectMethods();
 
 const allowedEffectAllowedValues = [EffectAllowed.Copy, EffectAllowed.Move, EffectAllowed.CopyMove, EffectAllowed.None];
 
-export function useNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
+export function useNodeDataNormalizer(metaModel, modelDefaults, radioGroupValues) {
+
+  /**
+   * Creates a new metadata model object. The object will get normalized
+   * to the expected format by the normalizeNodeData method when its
+   * TreeViewNode is created.
+   * @param {Object} nodeData The data to be used in the node
+   * @returns {Object} The metadata model object
+   */
+  const createMetaModel = (nodeData) => ({ data: nodeData, childMetaModels: [] });
 
   /**
    * Normalizes the data model to the format consumable by TreeViewNode.
    */
   function normalizeNodeData() {
 
-    if (!model.value.treeNodeSpec) {
-      model.value.treeNodeSpec = {};
-    }
+    const rawMetaModel = unref(metaModel);
 
-    const tns = model.value.treeNodeSpec;
-
-    assignDefaultProps(unref(modelDefaults), tns);
+    assignDefaultProps(unref(modelDefaults)(rawMetaModel.data), rawMetaModel);
 
     // Set expected properties if not provided
-    if (typeof tns.childrenProperty !== 'string') {
-      tns.childrenProperty = 'children';
+    if (typeof rawMetaModel.idProperty !== 'string') {
+      rawMetaModel.idProperty = 'id';
     }
-    if (typeof tns.idProperty !== 'string') {
-      tns.idProperty = 'id';
-    }
-    if (typeof tns.labelProperty !== 'string') {
-      tns.labelProperty = 'label';
+    if (typeof rawMetaModel.labelProperty !== 'string') {
+      rawMetaModel.labelProperty = 'label';
     }
 
-    if (!Array.isArray(model.value[tns.childrenProperty])) {
-      model.value[tns.childrenProperty] = [];
+    if (typeof rawMetaModel.expandable !== 'boolean') {
+      rawMetaModel.expandable = true;
     }
-    if (typeof tns.expandable !== 'boolean') {
-      tns.expandable = true;
+    if (typeof rawMetaModel.selectable !== 'boolean') {
+      rawMetaModel.selectable = false;
     }
-    if (typeof tns.selectable !== 'boolean') {
-      tns.selectable = false;
+    if (typeof rawMetaModel.deletable !== 'boolean') {
+      rawMetaModel.deletable = false;
     }
-    if (typeof tns.deletable !== 'boolean') {
-      tns.deletable = false;
+    if (typeof rawMetaModel.draggable !== 'boolean') {
+      rawMetaModel.draggable = false;
     }
-    if (typeof tns.draggable !== 'boolean') {
-      tns.draggable = false;
+    if (typeof rawMetaModel.allowDrop !== 'boolean') {
+      rawMetaModel.allowDrop = false;
     }
-    if (typeof tns.allowDrop !== 'boolean') {
-      tns.allowDrop = false;
+    if (typeof rawMetaModel.dataTransferEffectAllowed !== 'string' || !allowedEffectAllowedValues.includes(rawMetaModel.dataTransferEffectAllowed)) {
+      rawMetaModel.dataTransferEffectAllowed = EffectAllowed.CopyMove;
     }
-    if (typeof tns.dataTransferEffectAllowed !== 'string' || !allowedEffectAllowedValues.includes(tns.dataTransferEffectAllowed)) {
-      tns.dataTransferEffectAllowed = EffectAllowed.CopyMove;
-    }
-    if (typeof tns.focusable !== 'boolean') {
-      tns.focusable = false;
+    if (typeof rawMetaModel.focusable !== 'boolean') {
+      rawMetaModel.focusable = false;
     }
 
-    if (typeof tns.addChildCallback !== 'function') {
-      tns.addChildCallback = null;
+    if (typeof rawMetaModel.addChildCallback !== 'function') {
+      rawMetaModel.addChildCallback = null;
     }
-    if (typeof tns.deleteNodeCallback !== 'function') {
-      tns.deleteNodeCallback = null;
-    }
-
-    if (typeof tns.title !== 'string' || tns.title.trim().length === 0) {
-      tns.title = null;
-    }
-    if (typeof tns.expanderTitle !== 'string' || tns.expanderTitle.trim().length === 0) {
-      tns.expanderTitle = null;
-    }
-    if (typeof tns.addChildTitle !== 'string' || tns.addChildTitle.trim().length === 0) {
-      tns.addChildTitle = null;
-    }
-    if (typeof tns.deleteTitle !== 'string' || tns.deleteTitle.trim().length === 0) {
-      tns.deleteTitle = null;
+    if (typeof rawMetaModel.deleteNodeCallback !== 'function') {
+      rawMetaModel.deleteNodeCallback = null;
     }
 
-    if (tns.customizations == null || typeof tns.customizations !== 'object') {
-      tns.customizations = {};
+    if (typeof rawMetaModel.title !== 'string' || rawMetaModel.title.trim().length === 0) {
+      rawMetaModel.title = null;
+    }
+    if (typeof rawMetaModel.expanderTitle !== 'string' || rawMetaModel.expanderTitle.trim().length === 0) {
+      rawMetaModel.expanderTitle = null;
+    }
+    if (typeof rawMetaModel.addChildTitle !== 'string' || rawMetaModel.addChildTitle.trim().length === 0) {
+      rawMetaModel.addChildTitle = null;
+    }
+    if (typeof rawMetaModel.deleteTitle !== 'string' || rawMetaModel.deleteTitle.trim().length === 0) {
+      rawMetaModel.deleteTitle = null;
     }
 
-    if (typeof tns.loadChildrenAsync !== 'function') {
-      tns.loadChildrenAsync = null;
+    if (rawMetaModel.customizations == null || typeof rawMetaModel.customizations !== 'object') {
+      rawMetaModel.customizations = {};
+    }
+
+    if (typeof rawMetaModel.loadChildrenAsync !== 'function') {
+      rawMetaModel.loadChildrenAsync = null;
     }
 
     // Internal members
-    tns._ = {};
-    tns._.dragging = false;
+    rawMetaModel._ = {};
+    rawMetaModel._.dragging = false;
 
-    normalizeNodeInputData(tns);
-    normalizeNodeStateData(tns);
+    normalizeNodeInputData(rawMetaModel);
+    normalizeNodeStateData(rawMetaModel);
+    normalizeNodeChildrenData(rawMetaModel);
 
-    model.value.treeNodeSpec = tns;
+    metaModel.value = rawMetaModel;
   }
 
   /**
@@ -137,14 +137,14 @@ export function useNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
   /**
    * Normalizes the data model's data related to input element generation.
    */
-  function normalizeNodeInputData(tns) {
+  function normalizeNodeInputData(rawMetaModel) {
 
-    let input = tns.input;
+    let input = rawMetaModel.input;
 
     // For nodes that are inputs, they must specify at least a type.
     // Only a subset of types are accepted.
     if (input === null || typeof input !== 'object' || !Object.values(InputType).includes(input.type)) {
-      tns.input = null;
+      rawMetaModel.input = null;
     }
     else {
       if (typeof input.name !== 'string' || input.name.trim().length === 0) {
@@ -156,7 +156,7 @@ export function useNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
           input.name = 'unspecifiedRadioName';
         }
         if (typeof input.value !== 'string' || input.value.trim().length === 0) {
-          input.value = model.value[tns.labelProperty].replace(/[\s&<>"'\/]/g, '');
+          input.value = rawMetaModel.data[rawMetaModel.labelProperty].replace(/[\s&<>"'\/]/g, '');
         }
         if (!radioGroupValues.value.hasOwnProperty(input.name)) {
           radioGroupValues.value[input.name] = '';
@@ -171,20 +171,20 @@ export function useNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
   /**
    * Normalizes the data model's data related to the node's state.
    */
-  function normalizeNodeStateData(tns) {
-    if (tns.state === null || typeof tns.state !== 'object') {
-      tns.state = {};
+  function normalizeNodeStateData(rawMetaModel) {
+    if (rawMetaModel.state === null || typeof rawMetaModel.state !== 'object') {
+      rawMetaModel.state = {};
     }
-    if (tns._.state === null || typeof tns._.state !== 'object') {
-      tns._.state = {};
+    if (rawMetaModel._.state === null || typeof rawMetaModel._.state !== 'object') {
+      rawMetaModel._.state = {};
     }
 
-    let state = tns.state;
-    let privateState = tns._.state;
+    let state = rawMetaModel.state;
+    let privateState = rawMetaModel._.state;
 
     // areChildrenLoaded and areChildrenLoading are internal state used with asynchronous child
     // node loading. Any node with asynchronously loaded children starts as not expanded.
-    privateState.areChildrenLoaded = typeof tns.loadChildrenAsync !== 'function';
+    privateState.areChildrenLoaded = typeof rawMetaModel.loadChildrenAsync !== 'function';
     privateState.areChildrenLoading = false;
 
     if (typeof state.expanded !== 'boolean' || !privateState.areChildrenLoaded) {
@@ -194,7 +194,7 @@ export function useNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
       state.selected = false;
     }
 
-    if (tns.input) {
+    if (rawMetaModel.input) {
       if (state.input === null || typeof state.input !== 'object') {
         state.input = {};
       }
@@ -203,7 +203,7 @@ export function useNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
         state.input.disabled = false;
       }
 
-      if (tns.input.type === InputType.Checkbox) {
+      if (rawMetaModel.input.type === InputType.Checkbox) {
 
         if (typeof state.input.value !== 'boolean') {
           state.input.value = false;
@@ -212,7 +212,31 @@ export function useNodeDataNormalizer(model, modelDefaults, radioGroupValues) {
     }
   }
 
+  /**
+   * Normalizes the data model's data related to the node's children.
+   */
+  function normalizeNodeChildrenData(rawMetaModel) {
+
+    if (typeof rawMetaModel.childrenProperty !== 'string') {
+      rawMetaModel.childrenProperty = 'children';
+    }
+    if (!Array.isArray(rawMetaModel.data[rawMetaModel.childrenProperty])) {
+      rawMetaModel.data[rawMetaModel.childrenProperty] = [];
+    }
+    if (!Array.isArray(rawMetaModel.childMetaModels)) {
+      rawMetaModel.childMetaModels = [];
+    }
+
+    // Make sure each child has a meta model
+    rawMetaModel.data[rawMetaModel.childrenProperty].forEach(childModel => {
+      if (!rawMetaModel.childMetaModels.some(childMetaModel => childMetaModel.data === childModel)) {
+        rawMetaModel.childMetaModels.push(createMetaModel(childModel));
+      }
+    });
+  }
+
   return {
-    normalizeNodeData
+    createMetaModel,
+    normalizeNodeData,
   };
 }

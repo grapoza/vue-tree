@@ -6,20 +6,20 @@ import TreeEvent from '../../enums/event';
 
 /**
  * Composable dealing with selection handling at the top level of the tree view.
- * @param {Ref<TreeViewNode[]>} treeModel A Ref to the top level model of the tree
+ * @param {Ref<Object[]>} metaModel A Ref to the top level meta model of the tree
  * @param {Ref<SelectionMode>} selectionMode A Ref to the selection mode in use for the tree.
- * @param {Ref<TreeViewNode>} focusableNodeModel A Ref to the currently focusable node model for the tree
+ * @param {Ref<Object>} focusableNodeMetaModel A Ref to the currently focusable node meta model for the tree
  * @param {Function} emit The TreeView's emit function, used to emit selection events on the tree's behalf
  * @returns {Object} Methods to deal with tree view level selection
  */
-export function useTreeViewSelection(treeModel, selectionMode, focusableNodeModel, emit) {
+export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMetaModel, emit) {
 
-  const { depthFirstTraverse } = useTreeViewTraversal(treeModel);
-  const { deselect, isSelectable, isSelected, select } = useSelection(selectionMode);
+  const { depthFirstTraverse } = useTreeViewTraversal(metaModel);
+  const { deselect, isSelectable, isSelected, select } = useSelection();
 
   watch(selectionMode, enforceSelectionMode);
 
-  watch(focusableNodeModel, (node) => {
+  watch(focusableNodeMetaModel, (node) => {
     if (unref(selectionMode) === SelectionMode.SelectionFollowsFocus) {
       exclusivelySelectNode(node);
     }
@@ -55,7 +55,7 @@ export function useTreeViewSelection(treeModel, selectionMode, focusableNodeMode
     // For single selection mode, only allow one selected node.
     let alreadyFoundSelected = false;
     depthFirstTraverse((node) => {
-      if (node.treeNodeSpec.state && isSelected(node)) {
+      if (node.state && isSelected(node)) {
         if (alreadyFoundSelected) {
           deselect(node);
         }
@@ -69,9 +69,9 @@ export function useTreeViewSelection(treeModel, selectionMode, focusableNodeMode
   function enforceSelectionFollowsFocusMode() {
     // Make sure the actual focusable item is selected if the mode changes, and deselect all others
     depthFirstTraverse((node) => {
-      let idPropName = node.treeNodeSpec.idProperty;
-      let focusableIdPropName = focusableNodeModel.value.treeNodeSpec.idProperty;
-      if (node[idPropName] === focusableNodeModel.value[focusableIdPropName]) {
+      let idPropName = node.idProperty;
+      let focusableIdPropName = focusableNodeMetaModel.value.idProperty;
+      if (node.data[idPropName] === focusableNodeMetaModel.value.data[focusableIdPropName]) {
         if (isSelectable(node)) {
           select(node);
         }
@@ -87,25 +87,25 @@ export function useTreeViewSelection(treeModel, selectionMode, focusableNodeMode
    * For selectionFollowsFocus mode for TreeView, selection state is handled in
    * the focus watcher in treeViewNodeSelection.js.
    * In all cases this emits treeNodeSelectedChange for the node parameter.
-   * @param {TreeViewNode} node The node for which selection changed
+   * @param {Object} metaNode The meta node for which selection changed
    */
-  function handleNodeSelectedChange(node) {
-    if (unref(selectionMode) === SelectionMode.Single && isSelected(node)) {
-      exclusivelySelectNode(node);
+  function handleNodeSelectedChange(metaNode) {
+    if (unref(selectionMode) === SelectionMode.Single && isSelected(metaNode)) {
+      exclusivelySelectNode(metaNode);
     }
-    emit(TreeEvent.SelectedChange, node);
+    emit(TreeEvent.SelectedChange, metaNode);
   }
 
   /**
    * Given a node that should remain selected, deselect another selected node.
    * This is used only when one node at a time can be selected (Single/SelectionFollowsFocus).
-   * @param {TreeViewNode} node The node that should remain selected
+   * @param {Object} node The meta node that should remain selected
    */
   function exclusivelySelectNode(node) {
-    const nodeId = node[node.treeNodeSpec.idProperty];
+    const nodeId = node.data[node.idProperty];
 
     depthFirstTraverse((current) => {
-      if (isSelected(current) && current[current.treeNodeSpec.idProperty] !== nodeId) {
+      if (isSelected(current) && current.data[current.idProperty] !== nodeId) {
         deselect(current);
         return false;
       }

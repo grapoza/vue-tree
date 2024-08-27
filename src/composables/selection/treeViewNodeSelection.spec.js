@@ -1,7 +1,7 @@
 import { expect, describe, it, beforeEach, vi } from 'vitest';
 import { ref } from 'vue';
 import { useTreeViewNodeSelection } from './treeViewNodeSelection.js';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { generateMetaNodes } from '../../../tests/data/node-generator.js';
 import SelectionMode from '../../enums/selectionMode.js';
 import TreeEvent from '../../enums/event.js';
 
@@ -19,9 +19,9 @@ describe('useTreeViewNodeSelection.js', () => {
 
     beforeEach(() => {
       // Calling the use sets up the watcher
-      node = ref(generateNodes(['s'])[0]);
+      node = ref(generateMetaNodes(['s'])[0]);
       useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
-      node.value.treeNodeSpec.state.selected = true;
+      node.value.state.selected = true;
     });
 
     it('should emit the selected change event', () => {
@@ -36,39 +36,39 @@ describe('useTreeViewNodeSelection.js', () => {
     describe('and the selection mode is not selection follows focus', () => {
 
       beforeEach(() => {
-        node = ref(generateNodes(['s'])[0]);
+        node = ref(generateMetaNodes(['s'])[0]);
         useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
-        node.value.treeNodeSpec.focusable = true;
+        node.value.focusable = true;
       });
 
       it('should not change the selection state', () => {
-        expect(node.value.treeNodeSpec.state.selected).to.be.false;
+        expect(node.value.state.selected).to.be.false;
       });
     });
 
     describe('and the node is not selectable', () => {
 
       beforeEach(() => {
-        node = ref(generateNodes([''])[0]);
+        node = ref(generateMetaNodes([''])[0]);
         useTreeViewNodeSelection(node, ref(SelectionMode.SelectionFollowsFocus), emit);
-        node.value.treeNodeSpec.focusable = true;
+        node.value.focusable = true;
       });
 
       it('should not change the selection state', () => {
-        expect(node.value.treeNodeSpec.state.selected).to.be.false;
+        expect(node.value.state.selected).to.be.false;
       });
     });
 
     describe('and the node is selectable with a selection mode of selection follows focus', () => {
 
       beforeEach(() => {
-        node = ref(generateNodes(['s'])[0]);
+        node = ref(generateMetaNodes(['s'])[0]);
         useTreeViewNodeSelection(node, ref(SelectionMode.SelectionFollowsFocus), emit);
-        node.value.treeNodeSpec.focusable = true;
+        node.value.focusable = true;
       });
 
       it('should change the selection state', () => {
-        expect(node.value.treeNodeSpec.state.selected).to.be.true;
+        expect(node.value.state.selected).to.be.true;
       });
     });
   });
@@ -76,20 +76,20 @@ describe('useTreeViewNodeSelection.js', () => {
   describe('when selecting the node', () => {
 
     it('should set the node as selected', () => {
-      const node = ref(generateNodes(['s'])[0]);
+      const node = ref(generateMetaNodes(['s'])[0]);
       const { selectNode } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
       selectNode();
-      expect(node.value.treeNodeSpec.state.selected).to.be.true;
+      expect(node.value.state.selected).to.be.true;
     });
   });
 
   describe('when deselecting the node', () => {
 
     it('should set the node as deselected', () => {
-      const node = ref(generateNodes(['eS'])[0]);
+      const node = ref(generateMetaNodes(['eS'])[0]);
       const { deselectNode } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
       deselectNode();
-      expect(node.value.treeNodeSpec.state.selected).to.be.false;
+      expect(node.value.state.selected).to.be.false;
     });
   });
 
@@ -98,20 +98,20 @@ describe('useTreeViewNodeSelection.js', () => {
     describe('and the state is set to true', () => {
 
       it('should set the node as selected', () => {
-        const node = ref(generateNodes(['es'])[0]);
+        const node = ref(generateMetaNodes(['es'])[0]);
         const { setNodeSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
         setNodeSelected(true);
-        expect(node.value.treeNodeSpec.state.selected).to.be.true;
+        expect(node.value.state.selected).to.be.true;
       });
     });
 
     describe('and the state is set to false', () => {
 
       it('should set the node as deselected', () => {
-        const node = ref(generateNodes(['eS'])[0]);
+        const node = ref(generateMetaNodes(['eS'])[0]);
         const { setNodeSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
         setNodeSelected(false);
-        expect(node.value.treeNodeSpec.state.selected).to.be.false;
+        expect(node.value.state.selected).to.be.false;
       });
     });
   });
@@ -121,40 +121,40 @@ describe('useTreeViewNodeSelection.js', () => {
     describe('and the node is not selectable', () => {
 
       it('should not toggle selectedness', () => {
-        const node = ref(generateNodes(['e'])[0]);
+        const node = ref(generateMetaNodes(['e'])[0]);
         const { toggleNodeSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
         toggleNodeSelected();
-        expect(node.value.treeNodeSpec.state.selected).to.be.false;
+        expect(node.value.state.selected).to.be.false;
       });
     });
 
     describe('and the selection mode is not Single or Multiple', () => {
 
       it('should not toggle selectedness', () => {
-        const node = ref(generateNodes(['es'])[0]);
+        const node = ref(generateMetaNodes(['es'])[0]);
         const { toggleNodeSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.SelectionFollowsFocus), emit);
         toggleNodeSelected();
-        expect(node.value.treeNodeSpec.state.selected).to.be.false;
+        expect(node.value.state.selected).to.be.false;
       });
     });
 
     describe('and the node is selectable with a selection mode of Single', () => {
 
       it('should toggle selectedness', () => {
-        const node = ref(generateNodes(['es'])[0]);
+        const node = ref(generateMetaNodes(['es'])[0]);
         const { toggleNodeSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
         toggleNodeSelected();
-        expect(node.value.treeNodeSpec.state.selected).to.be.true;
+        expect(node.value.state.selected).to.be.true;
       });
     });
 
     describe('and the node is selectable with a selection mode of Multiple', () => {
 
       it('should toggle selectedness', () => {
-        const node = ref(generateNodes(['es'])[0]);
+        const node = ref(generateMetaNodes(['es'])[0]);
         const { toggleNodeSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Multiple), emit);
         toggleNodeSelected();
-        expect(node.value.treeNodeSpec.state.selected).to.be.true;
+        expect(node.value.state.selected).to.be.true;
       });
     });
   });
@@ -164,7 +164,7 @@ describe('useTreeViewNodeSelection.js', () => {
     describe('and the node is selectable', () => {
 
       it('should return true', () => {
-        let node = ref(generateNodes(['es'])[0]);
+        let node = ref(generateMetaNodes(['es'])[0]);
         const { isNodeSelectable } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
         expect(isNodeSelectable()).to.be.true;
       });
@@ -173,7 +173,7 @@ describe('useTreeViewNodeSelection.js', () => {
     describe('and the node is not selectable', () => {
 
       it('should return false', () => {
-        let node = ref(generateNodes(['e'])[0]);
+        let node = ref(generateMetaNodes(['e'])[0]);
         const { isNodeSelectable } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
         expect(isNodeSelectable()).to.be.false;
       });
@@ -185,7 +185,7 @@ describe('useTreeViewNodeSelection.js', () => {
     describe('and the node is selected', () => {
 
       it('should return true', () => {
-        let node = ref(generateNodes(['eS'])[0]);
+        let node = ref(generateMetaNodes(['eS'])[0]);
         const { isNodeSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
         expect(isNodeSelected()).to.be.true;
       });
@@ -194,7 +194,7 @@ describe('useTreeViewNodeSelection.js', () => {
     describe('and the node is not selected', () => {
 
       it('should return false', () => {
-        let node = ref(generateNodes(['es'])[0]);
+        let node = ref(generateMetaNodes(['es'])[0]);
       const { isNodeSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
         expect(isNodeSelected()).to.be.false;
       });
@@ -206,7 +206,7 @@ describe('useTreeViewNodeSelection.js', () => {
     describe('and the selection mode is None', () => {
 
       it('should return null', () => {
-        let node = ref(generateNodes(['es'])[0]);
+        let node = ref(generateMetaNodes(['es'])[0]);
         const { ariaSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.None), emit);
         expect(ariaSelected.value).to.be.null;
       });
@@ -215,7 +215,7 @@ describe('useTreeViewNodeSelection.js', () => {
     describe('and the node is not selectable', () => {
 
       it('should return null', () => {
-        let node = ref(generateNodes(['e'])[0]);
+        let node = ref(generateMetaNodes(['e'])[0]);
         const { ariaSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
         expect(ariaSelected.value).to.be.null;
       });
@@ -226,7 +226,7 @@ describe('useTreeViewNodeSelection.js', () => {
       describe('and the node is selected', () => {
 
         it('should return true', () => {
-          let node = ref(generateNodes(['eS'])[0]);
+          let node = ref(generateMetaNodes(['eS'])[0]);
           const { ariaSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
           expect(ariaSelected.value).to.be.true;
         });
@@ -235,7 +235,7 @@ describe('useTreeViewNodeSelection.js', () => {
       describe('and the node is not selected', () => {
 
         it('should return null', () => {
-          let node = ref(generateNodes(['es'])[0]);
+          let node = ref(generateMetaNodes(['es'])[0]);
           const { ariaSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
           expect(ariaSelected.value).to.be.null;
         });
@@ -247,7 +247,7 @@ describe('useTreeViewNodeSelection.js', () => {
       describe('and the node is selected', () => {
 
         it('should return true', () => {
-          let node = ref(generateNodes(['eS'])[0]);
+          let node = ref(generateMetaNodes(['eS'])[0]);
           const { ariaSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Multiple), emit);
           expect(ariaSelected.value).to.be.true;
         });
@@ -256,7 +256,7 @@ describe('useTreeViewNodeSelection.js', () => {
       describe('and the node is not selected', () => {
 
         it('should return false', () => {
-          let node = ref(generateNodes(['es'])[0]);
+          let node = ref(generateMetaNodes(['es'])[0]);
           const { ariaSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Multiple), emit);
           expect(ariaSelected.value).to.be.false;
         });

@@ -23,78 +23,114 @@ import InputType from '../../src/enums/inputType';
  * @param {String} baseId The base string used in the node IDs.
  * @param {Function} addChildCallback A method that returns a Promise that resolves to the node data to add as a subnode.
  * @param {Function} loadChildrenAsync A method that returns a Promise that resolves to child nodes to set as the children.
- * @returns {TreeViewNode[]} The requested nodes
+ * @returns {TreeViewNode[], Function} The requested nodes and a function to define model defaults. These can be used as the v-model and modelDefaults props of the TreeView component.
  */
 export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, loadChildrenAsync = null) {
-    let nodes = [];
-    let prevNode = null;
+  let nodes = [];
+  let prevNode = null;
+  let modelDefaultMap = new Map();
 
-    nodeSpec.forEach(function (item, index) {
-        if (Array.isArray(item)) {
-            // Generate child nodes for Arrays
-            if (prevNode === null) {
-                return;
+  nodeSpec.forEach(function (item, index) {
+    if (Array.isArray(item)) {
+      // Generate child nodes for Arrays
+      if (prevNode === null) {
+        return;
+      }
+      const result = generateNodes(item, prevNode.id, addChildCallback);
+      prevNode.children = result.nodes;
+      result.modelDefaultMap.forEach((value, key) => modelDefaultMap.set(key, value));
+    }
+    else {
+      let lowerItem = item.toLowerCase();
+      let idString = baseId + 'n' + index;
+
+      prevNode = {
+        id: idString,
+        label: 'Node ' + index,
+        children: [],
+      };
+
+      const prevMeta = {
+        _: {
+          state: {
+            areChildrenLoaded: loadChildrenAsync === null,
+            matchesFilter: true,
+          },
+        },
+        childMetaModels: [],
+        childrenProperty: "children",
+        idProperty: "id",
+        labelProperty: "label",
+        loadChildrenAsync,
+        expandable: lowerItem.includes("e"),
+        selectable: lowerItem.includes("s"),
+        deletable: lowerItem.includes("d"),
+        focusable: lowerItem.includes("f"),
+        input: lowerItem.includes("c")
+          ? { type: InputType.Checkbox, name: `${idString}-cbx` }
+          : lowerItem.includes("r")
+          ? {
+              type: InputType.RadioButton,
+              name: `${baseId || "root"}-rb`,
+              value: `${idString}-val`,
             }
-            prevNode.children = generateNodes(item, prevNode.id, addChildCallback);
+          : null,
+        state: {
+          expanded: item.includes("E"),
+          selected: item.includes("S"),
+        },
+        addChildCallback,
+      };
+
+      // Set up input state if needed
+      if (prevMeta.input) {
+
+        // Disable inputs
+        prevMeta.state.input = {
+          disabled: item.includes("!"),
+        };
+
+        // Set up checkbox state
+        if (lowerItem.includes('c')) {
+          prevMeta.state.input.value = item.includes("C");
         }
-        else {
-            let lowerItem = item.toLowerCase();
-            let idString = baseId + 'n' + index;
 
-            prevNode = {
-                id: idString,
-                label: 'Node ' + index,
-                children: [],
-                treeNodeSpec: {
-                    _: {
-                        state: {
-                            areChildrenLoaded: loadChildrenAsync === null,
-                            matchesFilter: true
-                        }
-                    },
-                    childrenProperty: 'children',
-                    idProperty: 'id',
-                    labelProperty: 'label',
-                    loadChildrenAsync,
-                    expandable: lowerItem.includes('e'),
-                    selectable: lowerItem.includes('s'),
-                    deletable: lowerItem.includes('d'),
-                    focusable: lowerItem.includes('f'),
-                    input: lowerItem.includes('c')
-                        ? { type: InputType.Checkbox, name: `${idString}-cbx` }
-                        : lowerItem.includes('r')
-                            ? { type: InputType.RadioButton, name: `${baseId || 'root'}-rb`, value: `${idString}-val` }
-                            : null,
-                    state: {
-                        expanded: item.includes('E'),
-                        selected: item.includes('S')
-                    },
-                    addChildCallback
-                }
-            };
-
-            // Set up input state if needed
-            if (prevNode.treeNodeSpec.input) {
-
-                // Disable inputs
-                prevNode.treeNodeSpec.state.input = {
-                    disabled: item.includes('!')
-                };
-
-                // Set up checkbox state
-                if (lowerItem.includes('c')) {
-                    prevNode.treeNodeSpec.state.input.value = item.includes('C')
-                }
-
-                // Set up the radiobutton state in the radioState
-                if (item.includes('R')) {
-                    prevNode.treeNodeSpec.input.isInitialRadioGroupValue = true;
-                }
-            }
-
-            nodes.push(prevNode);
+        // Set up the radiobutton state in the radioState
+        if (item.includes('R')) {
+          prevMeta.input.isInitialRadioGroupValue = true;
         }
-    });
+      }
 
-    return nodes;
+      nodes.push(prevNode);
+      modelDefaultMap.set(idString, prevMeta);
+    }
+  });
+
+  return { nodes, modelDefaultMap, modelDefaults: (node) => modelDefaultMap.get(node.id) };
+}
+
+export function generateMetaNodes(nodeSpec, baseId = "", addChildCallback = null, loadChildrenAsync = null) {
+  const { nodes, modelDefaults } = generateNodes(nodeSpec, baseId, addChildCallback, loadChildrenAsync);
+  return generateMetaNodesForList(nodes, modelDefaults);
+}
+
+export function generateNodesAndMetaNodes(nodeSpec, baseId = "", addChildCallback = null, loadChildrenAsync = null) {
+  const { nodes, modelDefaults } = generateNodes(nodeSpec, baseId, addChildCallback, loadChildrenAsync);
+  return { nodes, metaNodes: generateMetaNodesForList(nodes, modelDefaults) };
+}
+
+function generateMetaNodesForList(nodes, modelDefaults) {
+  let metaNodes = [];
+
+  nodes.forEach(function (item) {
+    const metaNode = {
+      data: item,
+      ...modelDefaults(item),
+    };
+    metaNode.childMetaModels.splice(0, 0, ...generateMetaNodesForList(item.children, modelDefaults)),
+
+    metaNodes.push(metaNode);
+  });
+
+  return metaNodes;
 }

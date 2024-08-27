@@ -8,13 +8,13 @@ const Template = (args) => ({
   data() {
     return { modelValue: [] }
   },
-  template: '<tree-view v-bind="args" v-model="modelValue" />'
+  template: '<TreeView v-bind="args" v-model="modelValue" />'
 });
 
 export const Async = Template.bind({});
 Async.args = {
   loadNodesAsync: loadNodesCallback,
-  modelDefaults: { loadChildrenAsync: loadChildrenCallback },
+  modelDefaults: () => ({ loadChildrenAsync: loadChildrenCallback }),
 };
 let asyncChildCounter = 0;
 async function loadNodesCallback() {
@@ -23,18 +23,18 @@ async function loadNodesCallback() {
 async function loadChildrenCallback(parentModel) {
   asyncChildCounter++;
   let currentCounter = asyncChildCounter;
-  return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: `async-child-node${currentCounter}`, label: `Child ${currentCounter} from parent ${parentModel.id}` }]), 1000));
+  return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: `async-child-node${currentCounter}`, label: `Child ${currentCounter} from parent ${parentModel.data.id}` }]), 1000));
 }
 
 const docSourceCode = `
 <template>
-  <tree-view :load-nodes-async=""loadNodesCallback" :model-defaults="modelDefaults"></tree-view>
+  <TreeView :load-nodes-async=""loadNodesCallback" :model-defaults="modelDefaults" />
 </template>
 <script setup>
 import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
 
-const modelDefaults = ref({ loadChildrenAsync: loadChildrenCallback });
+const modelDefaults = ref(() => ({ loadChildrenAsync: loadChildrenCallback }));
 
 let asyncChildCounter = 0;
 async function loadNodesCallback() {
@@ -43,9 +43,8 @@ async function loadNodesCallback() {
 async function loadChildrenCallback(parentModel) {
   asyncChildCounter++;
   let currentCounter = asyncChildCounter;
-  return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: \`async-child-node\${ currentCounter } \`, label: \`Child \${ currentCounter } from parent \${ parentModel.id }\` }]), 1000));
+  return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: \`async-child-node\${currentCounter}\`, label: \`Child \${currentCounter} from parent \${parentModel.data.id}\` }]), 1000));
 }
-
 </script>`;
 
 Async.parameters = {

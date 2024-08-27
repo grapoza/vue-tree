@@ -17,28 +17,28 @@ export function useFocus() {
 
   /**
    * Marks the given node as the focusable node in the tree
-   * @param {TreeViewNode} targetNodeModel The model to mark as focusable
+   * @param {Object} targetMetaModel The meta model to mark as focusable
    * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
-  function focus(targetNodeModel, keepCurrentDomFocus = false) {
-    unref(targetNodeModel).treeNodeSpec._.keepCurrentDomFocus = keepCurrentDomFocus;
-    unref(targetNodeModel).treeNodeSpec.focusable = true;
+  function focus(targetMetaModel, keepCurrentDomFocus = false) {
+    unref(targetMetaModel)._.keepCurrentDomFocus = keepCurrentDomFocus;
+    unref(targetMetaModel).focusable = true;
   }
 
   /**
    * Unmarks the given node as the focusable node in the tree
-   * @param {TreeViewNode} targetNodeModel The model to unmark as focusable
+   * @param {Object} targetMetaModel The meta model to unmark as focusable
    */
-  function unfocus(targetNodeModel) {
-    unref(targetNodeModel).treeNodeSpec.focusable = false;
+  function unfocus(targetMetaModel) {
+    unref(targetMetaModel).focusable = false;
   }
 
   /**
    * Gets whether the given node is focusable
-   * @param {TreeViewNode} targetNodeModel The model check for focusable
+   * @param {Object} targetMetaModel The meta model check for focusable
    */
-  function isFocused(targetNodeModel) {
-    return unref(targetNodeModel).treeNodeSpec.focusable === true;
+  function isFocused(targetMetaModel) {
+    return unref(targetMetaModel).focusable === true;
   }
 
   /**
@@ -56,7 +56,7 @@ export function useFocus() {
 
   /**
    * Sets the last expanded node in the given part of the hierarchy as focusable.
-   * @param {TreeViewNode[]} targetCollection The collection of nodes
+   * @param {Object[]} targetCollection The collection of meta nodes
    * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
   function focusLast(targetCollection, keepCurrentDomFocus = false) {
@@ -74,8 +74,8 @@ export function useFocus() {
 
   /**
    * Focuses the next node in the collection.
-   * @param {TreeViewNode[]} targetCollection The collection of nodes
-   * @param {TreeViewNode} childNode The node from which focusable should be moved
+   * @param {Object[]} targetCollection The collection of meta nodes
+   * @param {Object} childNode The meta node from which focusable should be moved
    * @param {Boolean} ignoreChild True to not consider child nodes. This would be true if a user
    * requests to focus the next node while on the last child of this node; the next sibling of
    * this node should gain focus in that case, or the parent node if there is no next sibling.
@@ -88,7 +88,7 @@ export function useFocus() {
     // If the node is expanded, focus first child unless we're ignoring it (this was punted from a grandchild)
     // If the node has a next sibling, focus that
     // Otherwise, return false to let the caller know. A Node will punt to its parent if it has one.
-    let childIndex = filteredCollection.findIndex(n => n[n.treeNodeSpec.idProperty] === childNode[childNode.treeNodeSpec.idProperty]);
+    let childIndex = filteredCollection.findIndex(n => n.data[n.idProperty] === childNode.data[childNode.idProperty]);
     let childNodeChildren = getFilteredChildren(childNode);
 
     if (!ignoreChild && childNodeChildren.length > 0 && isExpanded(childNode)) {
@@ -106,8 +106,8 @@ export function useFocus() {
 
   /**
    * Focuses the previous node in the tree
-   * @param {TreeViewNode[]} targetCollection The collection of nodes
-   * @param {TreeViewNode} childNode The node from which focusable should be moved
+   * @param {Object[]} targetCollection The collection of meta nodes
+   * @param {Object} childNode The meta node from which focusable should be moved
    * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    * @return {Boolean} true if a node was focused, false otherwise
    */
@@ -116,7 +116,7 @@ export function useFocus() {
 
     // If focusing previous of the first child, defer to the caller to focus the parent.
     // If focusing previous of any other node, focus the last expanded node within the previous sibling.
-    let childIndex = filteredCollection.findIndex(n => n[n.treeNodeSpec.idProperty] === childNode[childNode.treeNodeSpec.idProperty]);
+    let childIndex = filteredCollection.findIndex(n => n.data[n.idProperty] === childNode.data[childNode.idProperty]);
 
     if (childIndex !== 0) {
       let lastModel = filteredCollection[childIndex - 1];

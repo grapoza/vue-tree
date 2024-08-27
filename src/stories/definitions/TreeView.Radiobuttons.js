@@ -1,5 +1,5 @@
 import TreeView from '../../components/TreeView.vue';
-import radiobuttonsTreeData from "../data/radiobuttonsTreeViewData";
+import { treeData, modelDefaults } from "../data/radiobuttonsTreeViewData";
 
 const Template = (args) => ({
   components: { TreeView },
@@ -15,11 +15,11 @@ const Template = (args) => ({
     };
   },
   template: `<span>
-<tree-view v-bind="args" ref="treeViewRef"></tree-view>
+<TreeView v-bind="argsWithoutValue" v-model="modelValue" ref="treeViewRef" />
 <section class="checked-nodes">
   <button type="button" style="margin-top: 1rem" @click="refreshCheckedTvList">What's been checked?</button>
   <ul id="checkedList">
-    <li v-for="checkedNode in checkedTvNodes">{{ checkedNode.id }}</li>
+    <li v-for="checkedNode in checkedTvNodes">{{ checkedNode.data.id }}</li>
   </ul>
 </section>
 </span>`,
@@ -32,30 +32,20 @@ const Template = (args) => ({
 
 export const Radiobuttons = Template.bind({});
 Radiobuttons.args = {
-  modelValue: radiobuttonsTreeData,
-  modelDefaults: {
-    addChildTitle: 'Add a new child node',
-    deleteTitle: 'Delete this node',
-    expanderTitle: 'Expand this node'
-  }
+  modelValue: treeData,
+  modelDefaults,
 };
 
 const docSourceCode = `
 <template>
-  <tree-view v-model="tvModel" :model-defaults="modelDefaults"></tree-view>
+  <TreeView v-model="tvModel" :model-defaults="modelDefaults" />
 </template>
 <script setup>
 import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
-import treeViewData from "../data/radiobuttonsTreeViewData";
+import { treeData, modelDefaults } from "../data/radiobuttonsTreeViewData";
 
-const modelDefaults = ref({
-  addChildTitle: 'Add a new child node',
-  deleteTitle: 'Delete this node',
-  expanderTitle: 'Expand this node'
-});
-
-const tvModel = ref(treeViewData);
+const tvModel = ref(treeData);
 </script>`;
 
 Radiobuttons.parameters = {

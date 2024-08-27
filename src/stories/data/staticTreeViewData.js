@@ -1,4 +1,4 @@
-export default [
+export const treeData = [
   {
     id: 'static-node1',
     label: 'My First Node',
@@ -27,3 +27,12 @@ export default [
     ],
   }
 ];
+
+export function modelDefaults() {
+  return {
+    expandable: false,
+    state: {
+      expanded: true,
+    },
+  };
+}

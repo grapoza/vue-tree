@@ -1,5 +1,5 @@
 import TreeView from '../../components/TreeView.vue';
-import selectionTreeData from "../data/selectionTreeViewData";
+import { treeData, modelDefaults } from "../data/selectionTreeViewData";
 
 const selectionTemplateHtml = `<span>
 <label for="modeSelect">Selection Mode</label>
@@ -9,11 +9,11 @@ const selectionTemplateHtml = `<span>
   <option value="multiple">Multiple</option>
   <option value="">No Selection</option>
 </select>
-<tree-view v-bind="argsWithoutValue" v-model="modelValue" :selection-mode="normalizedSelectionMode" ref="treeViewRef"></tree-view>
+<TreeView v-bind="argsWithoutValue" v-model="modelValue" :selection-mode="normalizedSelectionMode" ref="treeViewRef" />
 <section class="selected-nodes">
   <button type="button" style="margin-top: 1rem" @click="refreshSelectedList">What's selected?</button>
   <ul id="selectedList">
-    <li v-for="selectedNode in selectedNodes">{{ selectedNode.id }}</li>
+    <li v-for="selectedNode in selectedNodes">{{ selectedNode.data.id }}</li>
   </ul>
 </section>
 </span>`;
@@ -47,20 +47,21 @@ const Template = (args) => ({
 
 export const Selection = Template.bind({});
 Selection.args = {
-  modelValue: selectionTreeData,
+  modelValue: treeData,
+  modelDefaults,
   selectionMode: "single",
 };
 
 const docSourceCode = `
 <template>
-  <tree-view v-model="tvModel" selection-mode="single"></tree-view>
+  <TreeView v-model="tvModel" :model-defaults="modelDefaults" selection-mode="single" />
 </template>
 <script setup>
 import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
-import treeViewData from "../data/selectionTreeViewData";
+import { treeData, modelDefaults } from "../data/selectionTreeViewData";
 
-const tvModel = ref(treeViewData);
+const tvModel = ref(treeData);
 </script>`;
 
 Selection.parameters = {

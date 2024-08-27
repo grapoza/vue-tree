@@ -10,7 +10,7 @@ export function useTreeViewFocus() {
   const { unfocus } = useFocus();
 
   /**
-   * Stores the currently focusable node model
+   * Stores the currently focusable node meta model
    */
   const focusableNodeModel = ref(null);
 
@@ -19,15 +19,15 @@ export function useTreeViewFocus() {
    * A tree can only have one focusable node; that is, one node to which
    * focus is given when the treeview as a whole is given focus, e.g., by
    * tabbing into it.
-   * @param {TreeViewNode} newNodeModel The newly focusable node
+   * @param {TreeViewNode} newMetaModel The newly focusable meta node
    */
-  function handleFocusableChange(newNodeModel) {
-    if (focusableNodeModel.value !== newNodeModel) {
+  function handleFocusableChange(newMetaModel) {
+    if (focusableNodeModel.value !== newMetaModel) {
       if (focusableNodeModel.value) {
         unfocus(focusableNodeModel);
       }
 
-      focusableNodeModel.value = newNodeModel;
+      focusableNodeModel.value = newMetaModel;
     }
   }
 

@@ -1,6 +1,6 @@
 import { expect, describe, it, beforeEach } from 'vitest';
 import { useFocus } from './focus.js';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { generateMetaNodes } from '../../../tests/data/node-generator.js';
 
 const {
   focus,
@@ -17,18 +17,18 @@ describe('focus.js', () => {
   describe('when focusing a node', () => {
 
     it('should set the node as focused', () => {
-      const node = generateNodes(['es'])[0];
+      const node = generateMetaNodes(['es'])[0];
       focus(node);
-      expect(node.treeNodeSpec.focusable).to.be.true;
+      expect(node.focusable).to.be.true;
     });
   });
 
   describe('when unfocusing a node', () => {
 
     it('should set the node as unfocused', () => {
-      const node = generateNodes(['esf'])[0];
+      const node = generateMetaNodes(['esf'])[0];
       unfocus(node);
-      expect(node.treeNodeSpec.focusable).to.be.false;
+      expect(node.focusable).to.be.false;
     });
   });
 
@@ -37,7 +37,7 @@ describe('focus.js', () => {
     describe('and the node is focusable', () => {
 
       it('should return true', () => {
-        const node = generateNodes(['esf'])[0];
+        const node = generateMetaNodes(['esf'])[0];
         expect(isFocused(node)).to.be.true;
       });
     });
@@ -45,7 +45,7 @@ describe('focus.js', () => {
     describe('and the node is not focusable', () => {
 
       it('should return false', () => {
-        const node = generateNodes(['es'])[0];
+        const node = generateMetaNodes(['es'])[0];
         expect(isFocused(node)).to.be.false;
       });
     });
@@ -56,36 +56,36 @@ describe('focus.js', () => {
     let nodes;
 
     beforeEach(() => {
-      nodes = generateNodes(['ecs', 'eCsf']);
+      nodes = generateMetaNodes(['ecs', 'eCsf']);
       focusFirst(nodes);
     });
 
     it('should set the focusable attribute of the first node to true', () => {
-      expect(nodes[0].treeNodeSpec.focusable).to.be.true;
+      expect(nodes[0].focusable).to.be.true;
     });
   });
 
   describe('when focusing the last node', () => {
 
     it('should focus the last visible node', () => {
-      const nodes = generateNodes(['ecsf', 'eCs']);
+      const nodes = generateMetaNodes(['ecsf', 'eCs']);
       focusLast(nodes);
 
-      expect(nodes[1].treeNodeSpec.focusable).to.be.true;
+      expect(nodes[1].focusable).to.be.true;
     });
 
     it('should ignore non-expanded child nodes', () => {
-      const nodes = generateNodes(['ecsf', 'eCs', 'ecs', ['ecs']]);
+      const nodes = generateMetaNodes(['ecsf', 'eCs', 'ecs', ['ecs']]);
       focusLast(nodes);
 
-      expect(nodes[2].treeNodeSpec.focusable).to.be.true;
+      expect(nodes[2].focusable).to.be.true;
     });
 
     it('should focus the deepest last node', () => {
-      const nodes = generateNodes(['ecsf', 'eCs', 'Ecs', ['ecs']]);
+      const nodes = generateMetaNodes(['ecsf', 'eCs', 'Ecs', ['ecs']]);
       focusLast(nodes);
 
-      expect(nodes[2].children[0].treeNodeSpec.focusable).to.be.true;
+      expect(nodes[2].childMetaModels[0].focusable).to.be.true;
     });
   });
 
@@ -94,18 +94,18 @@ describe('focus.js', () => {
     describe('and the last node is focused', () => {
 
       it('should not change focusableness', () => {
-        const nodes = generateNodes(['ecs', 'eCsf']);
+        const nodes = generateMetaNodes(['ecs', 'eCsf']);
         focusNext(nodes, nodes[1]);
-        expect(nodes[1].treeNodeSpec.focusable).to.be.true;
+        expect(nodes[1].focusable).to.be.true;
       });
     });
 
     describe('and the current node does not have any expanded children', () => {
 
       it('should set the next sibling node as focusable', () => {
-        const nodes = generateNodes(['ecsf', ['ecs', 'ecs'], 'ecs']);
+        const nodes = generateMetaNodes(['ecsf', ['ecs', 'ecs'], 'ecs']);
         focusNext(nodes, nodes[0]);
-        expect(nodes[1].treeNodeSpec.focusable).to.be.true;
+        expect(nodes[1].focusable).to.be.true;
       });
     });
 
@@ -114,19 +114,19 @@ describe('focus.js', () => {
       let nodes;
 
       beforeEach(() => {
-        nodes = generateNodes(['Ecsf', ['ecs', 'ecs'], 'ecs']);
+        nodes = generateMetaNodes(['Ecsf', ['ecs', 'ecs'], 'ecs']);
       });
 
       it('should set the first expanded child node as focusable', () => {
         focusNext(nodes, nodes[0]);
-        expect(nodes[0].children[0].treeNodeSpec.focusable).to.be.true;
+        expect(nodes[0].childMetaModels[0].focusable).to.be.true;
       });
 
       describe('and the children are explicitly ignored', () => {
 
         it('sets the next sibling node as focusable', () => {
           focusNext(nodes, nodes[0], true);
-          expect(nodes[1].treeNodeSpec.focusable).to.be.true;
+          expect(nodes[1].focusable).to.be.true;
         });
       });
     });
@@ -137,27 +137,27 @@ describe('focus.js', () => {
     describe('and the first node is focused', () => {
 
       it('should not change focusableness', () => {
-        const nodes = generateNodes(['ecsf', 'eCs']);
+        const nodes = generateMetaNodes(['ecsf', 'eCs']);
         focusPrevious(nodes, nodes[0]);
-        expect(nodes[0].treeNodeSpec.focusable).to.be.true;
+        expect(nodes[0].focusable).to.be.true;
       });
     });
 
     describe('and the previous node does not have any expanded children', () => {
 
       it('should set the previous node as focusable', () => {
-        const nodes = generateNodes(['ecs', ['ecs', 'ecs'], 'ecsf']);
+        const nodes = generateMetaNodes(['ecs', ['ecs', 'ecs'], 'ecsf']);
         focusPrevious(nodes, nodes[1]);
-        expect(nodes[0].treeNodeSpec.focusable).to.be.true;
+        expect(nodes[0].focusable).to.be.true;
       });
     });
 
     describe('and the previous node has expanded children', () => {
 
       it('should set the last expanded previous node as focusable', () => {
-        const nodes = generateNodes(['Ecs', ['ecs', 'ecs'], 'ecsf']);
+        const nodes = generateMetaNodes(['Ecs', ['ecs', 'ecs'], 'ecsf']);
         focusPrevious(nodes, nodes[1]);
-        expect(nodes[0].children[1].treeNodeSpec.focusable).to.be.true;
+        expect(nodes[0].childMetaModels[1].focusable).to.be.true;
       });
     });
   });

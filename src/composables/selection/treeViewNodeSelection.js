@@ -5,25 +5,25 @@ import TreeEvent from '../../enums/event.js';
 
 /**
  * Composable dealing with selection handling at the tree view node.
- * @param {Ref<TreeViewNode>} nodeModel A Ref to the model of the node
+ * @param {Ref<Object>} metaModel A Ref to the meta model of the node
  * @param {Ref<SelectionMode>} selectionMode A Ref to the selection mode in use for the tree
  * @param {Function} emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
  * @returns {Object} Methods to deal with tree view node level selection
  */
-export function useTreeViewNodeSelection(nodeModel, selectionMode, emit) {
+export function useTreeViewNodeSelection(metaModel, selectionMode, emit) {
 
   const {
     deselect,
     isSelectable,
     isSelected,
     setSelected,
-    select } = useSelection(selectionMode);
+    select } = useSelection();
 
-  watch(() => nodeModel.value.treeNodeSpec.state.selected, () => {
-    emit(TreeEvent.SelectedChange, nodeModel.value);
+  watch(() => metaModel.value.state.selected, () => {
+    emit(TreeEvent.SelectedChange, metaModel.value);
   });
 
-  watch(() => nodeModel.value.treeNodeSpec.focusable, function (newValue) {
+  watch(() => metaModel.value.focusable, function (newValue) {
     // In selectionFollowsFocus selection mode, this focus watch is responsible for updating selection.
     if (isNodeSelectable() && selectionMode.value === SelectionMode.SelectionFollowsFocus) {
       setNodeSelected(newValue);
@@ -31,15 +31,15 @@ export function useTreeViewNodeSelection(nodeModel, selectionMode, emit) {
   });
 
   function selectNode() {
-    select(nodeModel);
+    select(metaModel);
   }
 
   function deselectNode() {
-    deselect(nodeModel);
+    deselect(metaModel);
   }
 
   function setNodeSelected(newValue) {
-    setSelected(nodeModel, newValue);
+    setSelected(metaModel, newValue);
   }
 
   /**
@@ -48,17 +48,17 @@ export function useTreeViewNodeSelection(nodeModel, selectionMode, emit) {
    * "model.treeNodeSpec.focusable" watcher method above.
    */
   function toggleNodeSelected() {
-    if (isSelectable(nodeModel) && [SelectionMode.Single, SelectionMode.Multiple].includes(selectionMode.value)) {
-      setSelected(nodeModel, !isNodeSelected());
+    if (isSelectable(metaModel) && [SelectionMode.Single, SelectionMode.Multiple].includes(selectionMode.value)) {
+      setSelected(metaModel, !isNodeSelected());
     }
   }
 
   function isNodeSelectable() {
-    return isSelectable(nodeModel);
+    return isSelectable(metaModel);
   }
 
   function isNodeSelected() {
-    return isSelected(nodeModel);
+    return isSelected(metaModel);
   }
 
   const ariaSelected = computed(() => {

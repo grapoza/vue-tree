@@ -2,10 +2,10 @@ import { useFilter } from "./filter/filter.js";
 
 /**
  * Composable dealing with methods for traversing tree nodes
- * @param {Ref<TreeViewNode>} treeModel A Ref to the model from which traversals should start
+ * @param {Ref<Object>} treeMetaModel A Ref to the meta model from which traversals should start
  * @returns {Object} Methods for traversing tree nodes
  */
-export function useTreeViewTraversal(treeModel) {
+export function useTreeViewTraversal(treeMetaModel) {
 
   const {
     getFilteredChildren,
@@ -35,7 +35,7 @@ export function useTreeViewTraversal(treeModel) {
    */
   function traverse(nodeActionCallback, depthFirst) {
 
-    const filteredNodes = getFilteredNodes(treeModel);
+    const filteredNodes = getFilteredNodes(treeMetaModel);
     if (filteredNodes.length === 0) {
       return;
     }

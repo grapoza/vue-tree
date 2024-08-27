@@ -6,11 +6,11 @@ import TreeEvent from '../../enums/event.js';
 
 /**
  * Composable dealing with expansion handling at the tree view node.
- * @param {Ref<TreeViewNode>} nodeModel A Ref to the model of the node
+ * @param {Ref<Object>} metaModel A Ref to the metadata model of the node
  * @param {Function} emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
  * @returns {Object} Methods to deal with tree view node level expansion
  */
-export function useTreeViewNodeExpansion(nodeModel, emit) {
+export function useTreeViewNodeExpansion(metaModel, emit) {
 
   const {
     isExpandable,
@@ -19,21 +19,19 @@ export function useTreeViewNodeExpansion(nodeModel, emit) {
 
   const {
     loadChildren,
-  } = useTreeViewNodeChildren(nodeModel, emit);
+  } = useTreeViewNodeChildren(metaModel, emit);
 
   const {
     mayHaveFilteredChildren,
-  } = useTreeViewNodeFilter(nodeModel, emit);
+  } = useTreeViewNodeFilter(metaModel, emit);
 
   const ariaExpanded = computed(() => canExpand.value ? isNodeExpanded() : null);
 
-  const canExpand = computed(() => {
-    return isNodeExpandable() && mayHaveFilteredChildren.value;
-  });
+  const canExpand = computed(() => isNodeExpandable() && mayHaveFilteredChildren.value);
 
-  watch(() => nodeModel.value.treeNodeSpec.state.expanded, async function () {
+  watch(() => metaModel.value.state.expanded, async function () {
 
-    emit(TreeEvent.ExpandedChange, nodeModel.value);
+    emit(TreeEvent.ExpandedChange, metaModel.value);
 
     // If children need to be loaded asynchronously, load them.
     if (isNodeExpanded()) {
@@ -42,16 +40,16 @@ export function useTreeViewNodeExpansion(nodeModel, emit) {
   });
 
   function isNodeExpandable() {
-    return isExpandable(nodeModel);
+    return isExpandable(metaModel);
   }
 
   function isNodeExpanded() {
-    return isExpanded(nodeModel);
+    return isExpanded(metaModel);
   }
 
   function collapseNode() {
     if (canExpand.value && isNodeExpanded()) {
-      nodeModel.value.treeNodeSpec.state.expanded = false;
+      metaModel.value.state.expanded = false;
       return true;
     }
     return false;
@@ -59,7 +57,7 @@ export function useTreeViewNodeExpansion(nodeModel, emit) {
 
   function expandNode() {
     if (canExpand.value && !isNodeExpanded()) {
-      nodeModel.value.treeNodeSpec.state.expanded = true;
+      metaModel.value.state.expanded = true;
       return true;
     }
     return false;

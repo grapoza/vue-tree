@@ -1,11 +1,11 @@
 import TreeView from '../../components/TreeView.vue';
-import dragDropTreeData from "../data/dragDropTreeViewData";
+import { tree1Data, tree2Data, modelDefaults } from "../data/dragDropTreeViewData";
 
 const dragDropTemplateHtml = `<span>
 <h2>Tree 1</h2>
-<tree-view v-model="modelValue1" :model-defaults="args.modelDefaults"></tree-view>
+<TreeView v-model="modelValue1" :model-defaults="args.modelDefaults" />
 <h2>Tree 2</h2>
-<tree-view v-model="modelValue2" :model-defaults="args.modelDefaults"></tree-view>
+<TreeView v-model="modelValue2" :model-defaults="args.modelDefaults" />
 <h2>Text Drop Target</h2>
 <textarea style="width: 90%" rows="10"></textarea>
 </span>`;
@@ -26,42 +26,27 @@ const Template = (args) => ({
 
 export const DragDrop = Template.bind({});
 DragDrop.args = {
-  modelValue1: dragDropTreeData.tree1Data,
-  modelValue2: dragDropTreeData.tree2Data,
-  modelDefaults: {
-    expanderTitle: 'Expand this node',
-    draggable: true,
-    allowDrop: true,
-    state: {
-      expanded: true
-    }
-  }
+  modelValue1: tree1Data,
+  modelValue2: tree2Data,
+  modelDefaults,
 };
 
 const docSourceCode = `
 <template>
   <h2>Tree 1</h2>
-  <tree-view v-model="tvModel.tree1Data" :model-defaults="modelDefaults"></tree-view>
+  <TreeView v-model="tv1Model" :model-defaults="modelDefaults" />
   <h2>Tree 2</h2>
-  <tree-view v-model="tvModel.tree2Data" :model-defaults="modelDefaults"></tree-view>
+  <TreeView v-model="tv2Model" :model-defaults="modelDefaults" />
   <h2>Text Drop Target</h2>
   <textarea style="width: 90%" rows="10"></textarea>
 </template>
 <script setup>
 import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
-import treeViewData from "../data/checkboxesTreeViewData";
+import { tree1Data, tree2Data, modelDefaults } from "../data/dragDropTreeViewData";
 
-const modelDefaults = ref({
-  expanderTitle: 'Expand this node',
-  draggable: true,
-  allowDrop: true,
-  state: {
-    expanded: true
-  }
-});
-
-const tvModel = ref(treeViewData);
+const tv1Model = ref(tree1Data);
+const tv2Model = ref(tree2Data);
 </script>`;
 
 DragDrop.parameters = {

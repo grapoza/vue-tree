@@ -1,5 +1,5 @@
 import TreeView from '../../components/TreeView.vue';
-import slotsTreeData from "../data/slotsTreeViewData";
+import { treeData, modelDefaults } from "../data/slotsTreeViewData";
 
 const Template = (args) => ({
   components: { TreeView },
@@ -14,87 +14,88 @@ const Template = (args) => ({
     };
   },
   template: `<span>
-  <tree-view v-bind="argsWithoutValue" v-model="modelValue">
+<TreeView v-bind="argsWithoutValue" v-model="modelValue">
   <template v-slot:loading-root>Root loading custom slot (Not used in this demo)</template>
-  <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
-    <label :for="inputId" :title="model.treeNodeSpec.title">
+  <template v-slot:checkbox="{ metaModel, customClasses, inputId, checkboxChangeHandler }">
+    <label :for="inputId" :title="metaModel.title">
       <input :id="inputId"
             type="checkbox"
-            :disabled="model.treeNodeSpec.state.input.disabled"
-            v-model="model.treeNodeSpec.state.input.value"
+            :disabled="metaModel.state.input.disabled"
+            v-model="metaModel.state.input.value"
             @change="checkboxChangeHandler" />
-      <em style="max-width: 6rem">{{ model[model.treeNodeSpec.labelProperty] }}. This is custom slot content.</em>
+      <em style="max-width: 6rem">{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</em>
     </label>
   </template>
-  <template v-slot:radio="{ model, customClasses, inputId, radioGroupValues, radioChangeHandler }">
-    <label :for="inputId" :title="model.treeNodeSpec.title">
+  <template v-slot:radio="{ metaModel, customClasses, inputId, radioGroupValues, radioChangeHandler }">
+    <label :for="inputId" :title="metaModel.title">
       <input v-if="radioGroupValues"
             :id="inputId"
             type="radio"
-            :name="model.treeNodeSpec.input.name"
-            :value="model.treeNodeSpec.input.value"
-            :disabled="model.treeNodeSpec.state.input.disabled"
-            v-model="radioGroupValues[model.treeNodeSpec.input.name]"
+            :name="metaModel.input.name"
+            :value="metaModel.input.value"
+            :disabled="metaModel.state.input.disabled"
+            v-model="radioGroupValues[metaModel.input.name]"
             @change="radioChangeHandler" />
-      <span style="font-weight: bolder">{{ model[model.treeNodeSpec.labelProperty] }}. This is custom slot content.</span>
+      <span style="font-weight: bolder">{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</span>
     </label>
   </template>
-  <template v-slot:text="{ model, customClasses }"><span>{{ model[model.treeNodeSpec.labelProperty] }}. This is custom slot content.</span></template>
-  <template v-slot:loading="{ model, customClasses }">
+  <template v-slot:text="{ metaModel, customClasses }"><span>{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</span></template>
+  <template v-slot:loading="{ metaModel, customClasses }">
     <span class="grtvn-loading">
-      LOADING PLACHOLDER FOR CHILDREN OF {{ model[model.treeNodeSpec.labelProperty] }}. This is custom slot content.
+      LOADING PLACHOLDER FOR CHILDREN OF {{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.
     </span>
   </template>
-</tree-view>
+</TreeView>
 </span>`,
 });
 
 export const Slots = Template.bind({});
 Slots.args = {
-  modelValue: slotsTreeData,
+  modelValue: treeData,
+  modelDefaults,
 };
 
 const docsSourceCode = `
 <template>
-  <tree-view v-model="tvModel">
+  <TreeView v-bind="argsWithoutValue" v-model="modelValue">
     <template v-slot:loading-root>Root loading custom slot (Not used in this demo)</template>
-    <template v-slot:checkbox="{ model, customClasses, inputId, checkboxChangeHandler }">
-      <label :for="inputId" :title="model.treeNodeSpec.title">
+    <template v-slot:checkbox="{ metaModel, customClasses, inputId, checkboxChangeHandler }">
+      <label :for="inputId" :title="metaModel.title">
         <input :id="inputId"
               type="checkbox"
-              :disabled="model.treeNodeSpec.state.input.disabled"
-              v-model="model.treeNodeSpec.state.input.value"
+              :disabled="metaModel.state.input.disabled"
+              v-model="metaModel.state.input.value"
               @change="checkboxChangeHandler" />
-        <em style="max-width: 6rem">{{ model[model.treeNodeSpec.labelProperty] }}. This is custom slot content.</em>
+        <em style="max-width: 6rem">{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</em>
       </label>
     </template>
-    <template v-slot:radio="{ model, customClasses, inputId, radioGroupValues, radioChangeHandler }">
-      <label :for="inputId" :title="model.treeNodeSpec.title">
+    <template v-slot:radio="{ metaModel, customClasses, inputId, radioGroupValues, radioChangeHandler }">
+      <label :for="inputId" :title="metaModel.title">
         <input v-if="radioGroupValues"
               :id="inputId"
               type="radio"
-              :name="model.treeNodeSpec.input.name"
-              :value="model.treeNodeSpec.input.value"
-              :disabled="model.treeNodeSpec.state.input.disabled"
-              v-model="radioGroupValues[model.treeNodeSpec.input.name]"
+              :name="metaModel.input.name"
+              :value="metaModel.input.value"
+              :disabled="metaModel.state.input.disabled"
+              v-model="radioGroupValues[metaModel.input.name]"
               @change="radioChangeHandler" />
-        <span style="font-weight: bolder">{{ model[model.treeNodeSpec.labelProperty] }}. This is custom slot content.</span>
+        <span style="font-weight: bolder">{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</span>
       </label>
     </template>
-    <template v-slot:text="{ model, customClasses }"><span>{{ model[model.treeNodeSpec.labelProperty] }}. This is custom slot content.</span></template>
-    <template v-slot:loading="{ model, customClasses }">
+    <template v-slot:text="{ metaModel, customClasses }"><span>{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</span></template>
+    <template v-slot:loading="{ metaModel, customClasses }">
       <span class="grtvn-loading">
-        LOADING PLACHOLDER FOR CHILDREN OF {{ model[model.treeNodeSpec.labelProperty] }}. This is custom slot content.
+        LOADING PLACHOLDER FOR CHILDREN OF {{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.
       </span>
     </template>
-  </tree-view>
+  </TreeView>
 </template>
 <script setup>
 import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
-import treeViewData from "../data/basicTreeViewData";
+import { treeData, modelDefaults } from "../data/slotsTreeViewData";
 
-const tvModel = ref(treeViewData);
+const tvModel = ref(treeData);
 </script>`;
 
 Slots.parameters = {

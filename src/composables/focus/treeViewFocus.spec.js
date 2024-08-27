@@ -1,7 +1,7 @@
 import { expect, describe, it, beforeEach } from 'vitest';
 import { ref } from 'vue';
 import { useTreeViewFocus } from './treeViewFocus.js';
-import { generateNodes } from '../../../tests/data/node-generator.js';
+import { generateMetaNodes } from '../../../tests/data/node-generator.js';
 
 describe('treeViewFocus.js', () => {
 
@@ -12,16 +12,16 @@ describe('treeViewFocus.js', () => {
     let focusableNodeModel;
 
     beforeEach(async () => {
-      nodes = generateNodes(['ecsf', 'eCs']);
+      nodes = generateMetaNodes(['ecsf', 'eCs']);
       ({ handleFocusableChange, focusableNodeModel } = useTreeViewFocus());
       focusableNodeModel.value = nodes[0];
 
-      nodes[1].treeNodeSpec.focusable = true;
+      nodes[1].focusable = true;
       handleFocusableChange(nodes[1]);
     });
 
     it('should remove focusable from the previous focusable node', () => {
-      expect(nodes[0].treeNodeSpec.focusable).to.be.false;
+      expect(nodes[0].focusable).to.be.false;
     });
 
     it('should set the new node as the focusableNodeModel', () => {

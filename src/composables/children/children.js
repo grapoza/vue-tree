@@ -6,11 +6,16 @@ import { unref } from 'vue';
  */
 export function useChildren() {
 
-  function getChildren(targetNodeModel) {
-    return unref(targetNodeModel)[unref(targetNodeModel).treeNodeSpec.childrenProperty ?? 'children'];
+  function getChildren(metaModel) {
+    return unref(metaModel).data[unref(metaModel).childrenProperty ?? 'children'];
+  }
+
+  function getMetaChildren(metaModel) {
+    return unref(metaModel).childMetaModels;
   }
 
   return {
     getChildren,
+    getMetaChildren,
   };
 }
