@@ -35,13 +35,14 @@
         @treeNodeDragMove="dragMoveNode"
         @treeNodeDrop="drop">
 
+        <template #expander="{ metaModel, customClasses, expanderId, canExpand, toggleNodeExpanded }">
+          <slot name="expander" :metaModel="metaModel" :customClasses="customClasses" :expanderId="expanderId" :canExpand="canExpand" :toggleNodeExpanded="toggleNodeExpanded"></slot>
+        </template>
         <template #checkbox="{ metaModel, customClasses, inputId, checkboxChangeHandler }">
-          <slot name="checkbox" :metaModel="metaModel" :customClasses="customClasses" :inputId="inputId"
-            :checkboxChangeHandler="checkboxChangeHandler"></slot>
+          <slot name="checkbox" :metaModel="metaModel" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
         </template>
         <template #radio="{ metaModel, customClasses, inputId, radioGroupValues, radioChangeHandler }">
-          <slot name="radio" :metaModel="metaModel" :customClasses="customClasses" :inputId="inputId"
-            :radioGroupValues="radioGroupValues" :radioChangeHandler="radioChangeHandler"></slot>
+          <slot name="radio" :metaModel="metaModel" :customClasses="customClasses" :inputId="inputId" :radioGroupValues="radioGroupValues" :radioChangeHandler="radioChangeHandler"></slot>
         </template>
         <template #text="{ metaModel, customClasses }">
           <slot name="text" :metaModel="metaModel" :customClasses="customClasses"></slot>

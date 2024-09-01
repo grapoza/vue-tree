@@ -1053,6 +1053,44 @@ describe('TreeViewNode.vue', () => {
         expect(wrapper.find('span.slot-custom-classes').text()).to.equal(JSON.stringify(customClasses));
       });
     });
+
+    describe('and customizing the expander', () => {
+
+      const customClasses = { treeViewNode: "customnodeclass" };
+
+      beforeEach(async () => {
+        let modelValue = generateMetaNodes(["e", [""]], "baseId")[0];
+
+        wrapper = await createWrapper(
+          {
+            ariaKeyMap: {},
+            modelValue,
+            modelDefaults: () => ({ customizations: { classes: customClasses } }),
+            depth: 0,
+            treeId: "tree",
+            initialRadioGroupValues: {},
+            isMounted: false,
+          },
+          {
+            text: '<template #expander="props"><span :id="props.metaModel.data.id" class="expander-slot-content"><span class="slot-custom-classes">{{ JSON.stringify(props.customClasses) }}</span></span></template>',
+          }
+        );
+      });
+
+      it("should render the slot template", () => {
+        expect(wrapper.find(".expander-slot-content").exists()).to.be.true;
+      });
+
+      it("should have model data", () => {
+        expect(wrapper.find("span#baseIdn0.expander-slot-content").exists()).to.be.true;
+      });
+
+      it("should have custom classes data", () => {
+        expect(wrapper.find("span.slot-custom-classes").text()).to.equal(
+          JSON.stringify(customClasses)
+        );
+      });
+    });
   });
 
   describe('when the node\'s body is clicked', () => {

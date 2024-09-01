@@ -39,22 +39,30 @@
            :class="[metaModel._.isPrevDropTarget ? 'grtvn-self-sibling-drop-target-hover': '']"></div>
 
       <!-- Expander -->
-      <button :id="expanderId"
-              type="button"
-              v-if="canExpand"
-              aria-hidden="true"
-              tabindex="-1"
-              :title="metaModel.expanderTitle"
-              class="grtvn-self-expander"
-              :class="[customClasses.treeViewNodeSelfExpander,
-              metaModel.state.expanded ? 'grtvn-self-expanded' : '',
-              metaModel.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
-              @click="toggleNodeExpanded">
-              <i class="grtvn-self-expanded-indicator"
-                 :class="customClasses.treeViewNodeSelfExpandedIndicator"></i></button>
-      <span v-else
-            class="grtvn-self-spacer"
-            :class="customClasses.treeViewNodeSelfSpacer"></span>
+      <slot name="expander"
+            :metaModel="metaModel"
+            :customClasses="customClasses"
+            :expanderId="expanderId"
+            :canExpand="canExpand"
+            :toggleNodeExpanded="toggleNodeExpanded">
+
+        <button :id="expanderId"
+                type="button"
+                v-if="canExpand"
+                aria-hidden="true"
+                tabindex="-1"
+                :title="metaModel.expanderTitle"
+                class="grtvn-self-expander"
+                :class="[customClasses.treeViewNodeSelfExpander,
+                metaModel.state.expanded ? 'grtvn-self-expanded' : '',
+                metaModel.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
+                @click="toggleNodeExpanded">
+                <i class="grtvn-self-expanded-indicator"
+                  :class="customClasses.treeViewNodeSelfExpandedIndicator"></i></button>
+        <span v-else
+              class="grtvn-self-spacer"
+              :class="customClasses.treeViewNodeSelfSpacer"></span>
+      </slot>
 
       <!-- Inputs and labels -->
       <!-- Checkbox -->
@@ -206,6 +214,9 @@
                       @treeNodeAriaRequestNextFocus="focusNextNode"
                       @treeNodeDragMove="dragMoveChild"
                       @treeNodeDrop="drop">
+        <template #expander="{ metaModel, customClasses, expanderId, canExpand, toggleNodeExpanded }">
+          <slot name="expander" :metaModel="metaModel" :customClasses="customClasses" :expanderId="expanderId" :canExpand="canExpand" :toggleNodeExpanded="toggleNodeExpanded"></slot>
+        </template>
           <template #checkbox="{ metaModel, customClasses, inputId, checkboxChangeHandler }">
             <slot name="checkbox" :metaModel="metaModel" :customClasses="customClasses" :inputId="inputId" :checkboxChangeHandler="checkboxChangeHandler"></slot>
           </template>

@@ -15,8 +15,26 @@ const Template = (args) => ({
   },
   template: `<span>
 <TreeView v-bind="argsWithoutValue" v-model="modelValue">
-  <template v-slot:loading-root>Root loading custom slot (Not used in this demo)</template>
-  <template v-slot:checkbox="{ metaModel, customClasses, inputId, checkboxChangeHandler }">
+  <template #loading-root>Root loading custom slot (Not used in this demo)</template>
+  <template #expander="{ metaModel, customClasses, expanderId, canExpand, toggleNodeExpanded }">
+    <button :id="expanderId"
+            type="button"
+            v-if="canExpand"
+            aria-hidden="true"
+            tabindex="-1"
+            :title="metaModel.expanderTitle"
+            class="grtvn-self-expander"
+            :class="[customClasses.treeViewNodeSelfExpander,
+            metaModel.state.expanded ? 'grtvn-self-expanded' : '',
+            metaModel.state.expanded ? customClasses.treeViewNodeSelfExpanded : '']"
+            @click="toggleNodeExpanded">
+      {{ metaModel.state.expanded ? 'v' : '>' }}
+    </button>
+    <span v-else
+          class="grtvn-self-spacer"
+          :class="customClasses.treeViewNodeSelfSpacer"></span>
+  </template>
+  <template #checkbox="{ metaModel, customClasses, inputId, checkboxChangeHandler }">
     <label :for="inputId" :title="metaModel.title">
       <input :id="inputId"
             type="checkbox"
@@ -26,7 +44,7 @@ const Template = (args) => ({
       <em style="max-width: 6rem">{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</em>
     </label>
   </template>
-  <template v-slot:radio="{ metaModel, customClasses, inputId, radioGroupValues, radioChangeHandler }">
+  <template #radio="{ metaModel, customClasses, inputId, radioGroupValues, radioChangeHandler }">
     <label :for="inputId" :title="metaModel.title">
       <input v-if="radioGroupValues"
             :id="inputId"
@@ -39,8 +57,8 @@ const Template = (args) => ({
       <span style="font-weight: bolder">{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</span>
     </label>
   </template>
-  <template v-slot:text="{ metaModel, customClasses }"><span>{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</span></template>
-  <template v-slot:loading="{ metaModel, customClasses }">
+  <template #text="{ metaModel, customClasses }"><span>{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</span></template>
+  <template #loading="{ metaModel, customClasses }">
     <span class="grtvn-loading">
       LOADING PLACHOLDER FOR CHILDREN OF {{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.
     </span>
@@ -58,8 +76,8 @@ Slots.args = {
 const docsSourceCode = `
 <template>
   <TreeView v-bind="argsWithoutValue" v-model="modelValue">
-    <template v-slot:loading-root>Root loading custom slot (Not used in this demo)</template>
-    <template v-slot:checkbox="{ metaModel, customClasses, inputId, checkboxChangeHandler }">
+    <template #loading-root>Root loading custom slot (Not used in this demo)</template>
+    <template #checkbox="{ metaModel, customClasses, inputId, checkboxChangeHandler }">
       <label :for="inputId" :title="metaModel.title">
         <input :id="inputId"
               type="checkbox"
@@ -69,7 +87,7 @@ const docsSourceCode = `
         <em style="max-width: 6rem">{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</em>
       </label>
     </template>
-    <template v-slot:radio="{ metaModel, customClasses, inputId, radioGroupValues, radioChangeHandler }">
+    <template #radio="{ metaModel, customClasses, inputId, radioGroupValues, radioChangeHandler }">
       <label :for="inputId" :title="metaModel.title">
         <input v-if="radioGroupValues"
               :id="inputId"
@@ -82,8 +100,8 @@ const docsSourceCode = `
         <span style="font-weight: bolder">{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</span>
       </label>
     </template>
-    <template v-slot:text="{ metaModel, customClasses }"><span>{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</span></template>
-    <template v-slot:loading="{ metaModel, customClasses }">
+    <template #text="{ metaModel, customClasses }"><span>{{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.</span></template>
+    <template #loading="{ metaModel, customClasses }">
       <span class="grtvn-loading">
         LOADING PLACHOLDER FOR CHILDREN OF {{ metaModel.data[metaModel.labelProperty] }}. This is custom slot content.
       </span>
