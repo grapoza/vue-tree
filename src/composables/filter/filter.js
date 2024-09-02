@@ -11,12 +11,12 @@ export function useFilter() {
     getMetaChildren
   } = useChildren();
 
-  function getFilteredChildren(targetMetaModel) {
-    return getFilteredNodes(getMetaChildren(targetMetaModel));
+  function getFilteredChildren(metaModel) {
+    return getFilteredNodes(getMetaChildren(metaModel));
   }
 
-  function getFilteredNodes(targetMetaModels) {
-    return unref(targetMetaModels).filter(c => c._?.state?.matchesFilter || c._?.state?.subnodeMatchesFilter);
+  function getFilteredNodes(metaModels) {
+    return unref(metaModels).filter(c => c._?.state?.matchesFilter || c._?.state?.subnodeMatchesFilter);
   }
 
   return {

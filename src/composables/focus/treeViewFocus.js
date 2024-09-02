@@ -12,7 +12,7 @@ export function useTreeViewFocus() {
   /**
    * Stores the currently focusable node meta model
    */
-  const focusableNodeModel = ref(null);
+  const focusableNodeMetaModel = ref(null);
 
   /**
    * Handles changes to the node on which the focusable property is true.
@@ -22,17 +22,17 @@ export function useTreeViewFocus() {
    * @param {TreeViewNode} newMetaModel The newly focusable meta node
    */
   function handleFocusableChange(newMetaModel) {
-    if (focusableNodeModel.value !== newMetaModel) {
-      if (focusableNodeModel.value) {
-        unfocus(focusableNodeModel);
+    if (focusableNodeMetaModel.value !== newMetaModel) {
+      if (focusableNodeMetaModel.value) {
+        unfocus(focusableNodeMetaModel);
       }
 
-      focusableNodeModel.value = newMetaModel;
+      focusableNodeMetaModel.value = newMetaModel;
     }
   }
 
   return {
-    focusableNodeModel,
+    focusableNodeMetaModel,
     handleFocusableChange
   }
 }

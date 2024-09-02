@@ -44,10 +44,9 @@ SettingDefaults.args = {
 
 const docSourceCode = `
 <template>
-  <TreeView v-model="tvModel" :model-defaults="modelDefaults" />
+  <TreeView v-model="treeData" :model-defaults="modelDefaults" />
 </template>
 <script setup>
-import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
 
 const modelDefaults = () => ({
@@ -58,7 +57,7 @@ const modelDefaults = () => ({
   }
 });
 
-const tvModel = ref([
+const treeData = [
   {
     identifier: "node1",
     description: "Node with no children"
@@ -73,7 +72,7 @@ const tvModel = ref([
       }
     ]
   }
-]);
+];
 </script>`;
 
 SettingDefaults.parameters = {

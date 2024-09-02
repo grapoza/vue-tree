@@ -85,5 +85,3 @@ export function modelDefaults(node) {
 
   return baseDefaults;
 };
-
-

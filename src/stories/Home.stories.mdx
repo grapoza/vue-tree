@@ -41,6 +41,10 @@ or
 ```shell
 npm install --save @grapoza/vue-tree
 ```
+or
+```shell
+bun add @grapoza/vue-tree
+```
 
 ## Usage
 
@@ -127,15 +131,15 @@ To see it in action, try out the [demos](/docs/examples-treeview--basic#examples
 
 ## Tree Props
 
-| Prop              | Type     | Description                                                                                        | Default value                     | Required |
-|:------------------|:---------|:---------------------------------------------------------------------------------------------------|:----------------------------------|:---------|
-| modelValue        | Array    | The data model containing [model data](#model-data); used with `v-model`                           | `[]`                              |          |
-| customAriaKeyMap  | Object   | An object, the properties of which are arrays to keyCodes for various actions                      | See [Aria](#setting-key-bindings) |          |
-| loadNodesAsync    | Function | A function that is called on mount to asynchronously load [model data](#model-data)                | `null`                            |          |
-| modelDefaults     | Object   | An object containing defaults for all nodes that do not specify the given properties               | `{}`                              |          |
-| selectionMode     | String   | How selection should operate (see [Selection Mode](#selection-mode))                               | `null` (cannot select nodes)      |          |
-| skinClass         | String   | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins))               | `"grtv-default-skin"`             |          |
-| filterMethod      | Function | A boolean function against which nodes are evaluated to see if they should be included in the tree | `null` (no filtering)             |          |
+| Prop              | Type     | Description                                                                                                               | Default value                     | Required |
+|:------------------|:---------|:--------------------------------------------------------------------------------------------------------------------------|:----------------------------------|:---------|
+| modelValue        | Array    | The data model containing a tree structure of node data; used with `v-model`                                              |                                   | Yes      |
+| customAriaKeyMap  | Object   | An object, the properties of which are arrays to keyCodes for various actions                                             | See [Aria](#setting-key-bindings) |          |
+| filterMethod      | Function | A boolean function against which nodes are evaluated to see if they should be included in the tree                        | `null` (no filtering)             |          |
+| loadNodesAsync    | Function | A function that is called on mount to asynchronously load the root data model (use with a `v-model` of `[]`)              | `null`                            |          |
+| modelDefaults     | Function | An function that returns the default metadata for a given data node from the `modelValue` (see [Model Data](#model-data)) | `() => {}`                        |          |
+| selectionMode     | String   | How selection should operate (see [Selection Mode](#selection-mode))                                                      | `null` (cannot select nodes)      |          |
+| skinClass         | String   | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins))                                      | `"grtv-default-skin"`             |          |
 
 ## Selection Mode
 
@@ -150,79 +154,97 @@ When clicking on a node, it is only selected if the click target was not interac
 
 ## Model Data
 
-Model data can be loaded either synchronously through the `modelValue` property or asynchronously through the `loadNodesAsync` property. If both are specified then the data from `modelValue` is overwritten when the `loadNodesAsync` function returns data.
+Model data can be loaded either synchronously through the `v-model` or asynchronously through the `loadNodesAsync` property. If both are specified then the data from `v-model` is overwritten when the `loadNodesAsync` function returns data, so a `v-model` of `[]` is the appropriate value to use when loading the root nodes asynchronously.
 
-The data passed to the tree view's `modelValue` prop or returned from `loadNodesAsync` should be an array of nodes, where each node should have:
+The data passed to the tree view's `v-model` or returned from `loadNodesAsync` should be an array of nodes, where each node should have:
 
 * Required: A property with a value that will be used as the node's ID (by default the node looks for a property named `id`)
 * Required: A property with a value that will be used as the node's label (by default the node looks for a property named `label`)
 * Optional: A property containing any subnodes (by default the node looks for a property named `children`)
-* Optional: A `treeNodeSpec` property that contains any data about the node's capabilities and its initial state
 * Optional: Any other data you want on your node
 
-The `treeNodeSpec` of the objects in the data model passed to the tree view's `modelValue` property will be updated by the tree view nodes themselves on creation to include missing properties.
+Meta data about a node in the tree is created when the node is initialized in the tree view, and can be customized using the `modelDefaults` property. The `modelDefaults` should be a method that takes the data for the node from the `v-model` and returns an object specifying any default tree node state related to that node. That returned value will be merged with the defaults to create the node meta data used by the tree view.
+
+The meta data for the entire tree is exposed via a `metaModel`, and can be manipulated to programmatically change the tree state if needed, _e.g._, to set a checkbox's checked state or a node's selectable state.
+
+Some example node data, as passed to `v-model`:
 
 ```javascript
-{
+[{
   id: "node0",
   label: "A checkbox node",
   children: [],
-  treeNodeSpec: {
-    title: "This will be the value of the node text/label's 'title' attribute.",
-    expandable: true,
-    selectable: false,
-    focusable: true,
-    input: {
-      type: 'checkbox'
-    },
-    state: {
-      expanded: true,
-      selected: false,
-      input: {
-        value: false,
-        disabled: false
-      }
-    }
-  }
 },
 {
   otherIdProp: "node1",
   textProp: "A radio button node",
   subThings: [],
   extraIrrelevantData: "February",
-  treeNodeSpec: {
-    idProperty: "otherIdProp", // Customize what model props are checked for the id, label, and children
-    labelProperty: "textProp",
-    childrenProperty: "subThings",
+}]
+```
+
+And a function to use for `modelDefaults for those nodes:
+
+```javascript
+function modelDefaults(node) {
+  const baseDefaults = {
     expandable: true,
     selectable: false,
-    input: {
-      type: 'radio',
-      name: 'rbGroup1',   // Used as the name attribute for the radio button
-      value: 'thisValue', // Used as the value attribute for the radio button
-      isInitialRadioGroupValue: true // Indicates this should be the initially selected value for the group
-    },
     state: {
       expanded: true,
-      selected: false
-      // No input.value here; to let complex radio button groupings work, state value is
-      // bound to an internal tree-level property. input.disabled, however, is valid here for radio buttons.
-    },
-    addChildCallback: () => Promise.resolve({ id: '1', label: 'label' })
+      selected: false,
+    }
+  };
+
+  switch (node.id) {
+    case 'node0':
+      return Object.assign(baseDefaults, {
+        title: "This will be the value of the node text/label's 'title' attribute.",
+        focusable: true,
+        input: {
+          type: 'checkbox'
+        },
+        state: {
+          input: {
+            value: false,
+            disabled: false
+          }
+        }
+      });
+    case 'node1':
+     return Object.assign(baseDefaults {
+      idProperty: "otherIdProp", // Customize what model props are checked for the id, label, and children
+      labelProperty: "textProp",
+      childrenProperty: "subThings",
+      input: {
+        type: 'radio',
+        name: 'rbGroup1',   // Used as the name attribute for the radio button
+        value: 'thisValue', // Used as the value attribute for the radio button
+        isInitialRadioGroupValue: true // Indicates this should be the initially selected value for the group
+      },
+      state: {
+        // No input.value here; to let complex radio button groupings work, state value is
+        // bound to an internal tree-level property. input.disabled, however, is valid here for radio buttons.
+      },
+      addChildCallback: () => Promise.resolve({ id: '1', label: 'label' })
+     });
+    default:
+      return baseDefaults;
   }
 }
 ```
 
-The properties below can be specified for each node. Note that `id`, `label`, and `children` are the default properties nodes look for to get data, but the names of the properties can be overridden using the `treeNodeSpec`.
+The properties below can be specified for each node. Note that `id`, `label`, and `children` are the default properties nodes look for to get data, but the names of the properties can be overridden using the `modelDefaults`.
 
 | Prop                 | Type            | Description                                                                | Default value                      | Required |
 |:---------------------|:----------------|:---------------------------------------------------------------------------|:-----------------------------------|:---------|
 | id                   | Number/String   | An ID that uniquely identifies this node within the tree                   | -                                  | Yes      |
 | label                | String          | The text to show in the tree view                                          | -                                  | Yes      |
 | children             | Array<Object\>  | The child nodes of this node                                               | `[]`                               |          |
-| treeNodeSpec         | Object          | The object containing data about the node's capabilities and initial state | See next table                     |          |
 
-The `treeNodeSpec` property contains any data about the node's capabilities and its initial state. This keeps the tree-specific data separate from the data of the model itself. This makes it more convenient to drop data into the tree view as-is, potentially with a `modelDefaults` specified on the tree view to define common values used in the `treeNodeSpec` of every node.
+## Default Data
+
+The `modelDefaults` property's return value contains any data about the node's capabilities and its initial state. This keeps the tree-specific data separate from the data of the model itself. This makes it more convenient to drop data into the tree view as-is, potentially with a `modelDefaults` specified on the tree view to define common values used in every node. The following table lists the properties that can be part of the value returned from `modelDefaults`.
 
 | Prop                 | Type     | Description                                                                               | Default value                      | Required |
 |:---------------------|:---------|:------------------------------------------------------------------------------------------|:-----------------------------------|:---------|
@@ -260,52 +282,31 @@ The `treeNodeSpec` property contains any data about the node's capabilities and 
 
 \*\* If `input.value` is not supplied, it defaults to the node's label value replaced with the regular expression `/[\s&<>"'\/]/g, ''`
 
-## Default Data
+## Public Methods and Values
 
-If specified, the `modelDefaults` property of the TreeView will be merged with node model's `treeNodeSpec` data such that any data not explicitly specified for the node will be set to the value from `modelDefaults`. This is useful for situations where all (or most) nodes will use the same values. For instance, in a tree view that is all enabled, collapsed, unchecked checkboxes the user could use a `modelDefaults` of
-
-```javascript
-{
-  expandable: true,
-  selectable: true,
-  input: {
-    type: 'checkbox',
-  },
-  state: {
-    expanded: false,
-    selected: false,
-    input: {
-      value: false,
-      disabled: false
-    }
-  }
-}
-```
-
-## Public Methods
-
-| Method                 | Description                                 | Parameters | Returns                                                     |
-|:-----------------------|:--------------------------------------------|:-----------|:------------------------------------------------------------|
-| getCheckedCheckboxes   | Gets models for checked checkbox nodes      |            | An `Array<Object>` of models for checked checkbox nodes     |
-| getCheckedRadioButtons | Gets models for checked radio nodes         |            | An `Array<Object>` of models for checked radio button nodes |
-| getSelected            | Gets models for selected nodes              |            | An `Array<Object>` of models for selected nodes             |
-| getMatching            | Gets models for nodes that match a function | `matcherFunction`: A function that takes a node model and returns a boolean indicating whether that node should be returned. <br/> `maxMatches` The maximum number of matches to return. | An `Array<Object>` of models for matched nodes |
+| Method                 | Description                                     | Parameters | Returns                                                     |
+|:-----------------------|:------------------------------------------------|:-----------|:------------------------------------------------------------|
+| getCheckedCheckboxes   | Gets models for checked checkbox nodes          |            | An `Array<Object>` of models for checked checkbox nodes     |
+| getCheckedRadioButtons | Gets models for checked radio nodes             |            | An `Array<Object>` of models for checked radio button nodes |
+| getSelected            | Gets models for selected nodes                  |            | An `Array<Object>` of models for selected nodes             |
+| getMatching            | Gets models for nodes that match a function     | `matcherFunction`: A function that takes a node model and returns a boolean indicating whether that node should be returned. <br/> `maxMatches` The maximum number of matches to return. | An `Array<Object>` of models for matched nodes |
+| metaModel              | An object containing the meta data for the tree nodes. Its structure mirrors the `v-model` data. | N/A        | N/A        |
 
 ## Events
 
-| Event                       | Description                                                    | Handler Parameters                                                     |
-|:----------------------------|:---------------------------------------------------------------|:-----------------------------------------------------------------------|
-| treeNodeAdd                 | Emitted when a node is added                                   | `target` The model of the target (child) node <br/> `parent` The model of the parent node |
-| treeNodeClick               | Emitted when a node is clicked                                 | `target` The model of the target node <br/> `event` The original event |
-| treeNodeDblclick            | Emitted when a node is double clicked                          | `target` The model of the target node <br/> `event` The original event |
-| treeNodeDelete              | Emitted when a node is deleted                                 | `target` The model of the target node                                  |
-| treeNodeCheckboxChange      | Emitted when a node's checkbox emits a change event            | `target` The model of the target node <br/> `event` The original event |
-| treeNodeChildCheckboxChange | Emitted when a child node's checkbox emits a change event      | `target` The model of the target node (the parent of the changed node) <br/> `child` The model of changed node <br/> `event` The original event |
-| treeNodeRadioChange         | Emitted when a node's radio button emits a change event        | `target` The model of the target node <br/> `event` The original event |
-| treeNodeExpandedChange      | Emitted when a node is expanded or collapsed                   | `target` The model of the target node                                  |
-| treeNodeSelectedChange      | Emitted when a node is selected or deselected                  | `target` The model of the target node                                  |
-| treeNodeChildrenLoad        | Emitted when a node's children are done loading asynchronously | `target` The model of the target node                                  |
-| treeRootNodesLoad           | Emitted when the root nodes are done loading asynchronously    |                                                                        |
+| Event                       | Description                                                    | Handler Parameters                                                          |
+|:----------------------------|:---------------------------------------------------------------|:----------------------------------------------------------------------------|
+| treeNodeAdd                 | Emitted when a node is added                                   | `target` The meta model of the target (child) node <br/> `parent` The model of the parent node |
+| treeNodeClick               | Emitted when a node is clicked                                 | `target` The meta model of the target node <br/> `event` The original event |
+| treeNodeDblclick            | Emitted when a node is double clicked                          | `target` The meta model of the target node <br/> `event` The original event |
+| treeNodeDelete              | Emitted when a node is deleted                                 | `target` The meta model of the target node                                  |
+| treeNodeCheckboxChange      | Emitted when a node's checkbox emits a change event            | `target` The meta model of the target node <br/> `event` The original event |
+| treeNodeChildCheckboxChange | Emitted when a child node's checkbox emits a change event      | `target` The meta model of the target node (the parent of the changed node) <br/> `child` The model of changed node <br/> `event` The original event |
+| treeNodeRadioChange         | Emitted when a node's radio button emits a change event        | `target` The meta model of the target node <br/> `event` The original event |
+| treeNodeExpandedChange      | Emitted when a node is expanded or collapsed                   | `target` The meta model of the target node                                  |
+| treeNodeSelectedChange      | Emitted when a node is selected or deselected                  | `target` The meta model of the target node                                  |
+| treeNodeChildrenLoad        | Emitted when a node's children are done loading asynchronously | `target` The meta model of the target node                                  |
+| treeRootNodesLoad           | Emitted when the root nodes are done loading asynchronously    |                                                                             |
 
 ## CSS Classes
 
@@ -346,7 +347,7 @@ The display of the tree view can be customized via CSS using the following class
 
 ### Customizations Property
 
-It's often helpful to be able to make adjustments to the markup or styles for the tree. You can provide an object to the `modelDefaults.customizations` property of the tree to set a customization affecting all nodes, or to the `treeNodeSpec.customizations` property of a single node. Node-specific customizations will override `modelDefault` customizations.
+It's often helpful to be able to make adjustments to the markup or styles for the tree. You can provide an object from the `modelDefaults` using the `customizations` property to set a customization affecting all or some nodes.
 
 A customizations object may have the following properties:
 
@@ -397,7 +398,7 @@ Sometimes the entire content of a node (_e.g._, the checkbox or text) needs cust
 |              |                                                             | radioChangeHandler - The handler for radio button change events. You should fire this on `change`. |
 | loading      | Replaces the span used when loading children asynchronously | metaModel - The TreeViewNode's metaModel                                                           |
 |              |                                                             | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
-| expander     | Replaces the button and spacer used for expandign nodees    | metaModel - The TreeViewNode's metaModel                                                           |
+| expander     | Replaces the button and spacer used for expanding nodes     | metaModel - The TreeViewNode's metaModel                                                           |
 |              |                                                             | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
 |              |                                                             | expanderId - The ID for the expander buton 9as generated by the TreeViewNode)                      |
 |              |                                                             | canExpand - The TreeViewNode's computed boolean indicating whether the node can expand             |
@@ -438,22 +439,22 @@ Example usage:
 
 ## Asynchronous Loading
 
-Child nodes can be loaded asynchronously by providing a method to the `treeNodeSpec.loadChildrenAsync` property of the model. The method will be called when the node is expanded, and the property containing the node's children will be _overwritten_ with the results of the async call. For example, the following could be used as `modelDefaults` that would have every node load children when it was expanded.
+Child nodes can be loaded asynchronously by providing a method to the `loadChildrenAsync` property of the model returned by `modelDefaults`. The method will be called when the node is expanded, and the property containing the node's children will be _overwritten_ with the results of the async call. For example, the following could be used as `modelDefaults` that would have every node load children when it was expanded.
 
 ```javascript
-{
+() => {{
   expandable: true,
   loadChildrenAsync: (m) => axios.get(`/children/${m.id}`)
-}
+})
 ```
 
-The method may accept one argument, which will be the model of the node that has been expanded. It should resolve to an array of child node models.
+The method may accept one argument, which will be the meta data of the node that has been expanded. It should resolve to an array of child node models.
 
 The load method is called once, and after that the children are part of the model and are not reloaded.
 
 ## Drag and Drop
 
-A user can drag and drop an individual TreeViewNode. A drag only affects the node where the dragging starts, and has nothing to do with any node selection within the tree. To make a node draggable, the node's `treeNodeSpec.draggable` must be `true`. To make a node accept drops, the node's `treeNodeSpec.allowDrop` must be `true`. Both Move and Copy operations are supported. To copy in most browsers hold down the `Ctrl` key while dragging.
+A user can drag and drop an individual TreeViewNode. A drag only affects the node where the dragging starts, and has nothing to do with any node selection within the tree. To make a node draggable, the node's `draggable` must be `true` in its meta data. To make a node accept drops, the `allowDrop` property must be `true` in the node's meta data. Both Move and Copy operations are supported. To copy in most browsers hold down the `Ctrl` key while dragging.
 
 When dropping a node on another node, there are three areas of the target node where a drop can occur. If dropped at the top of the target node in the shaded area then the node will be inserted before the target. If dropped at the bottom of the target node in the shaded area then the node will be inserted after the target. If dropped directly on the of the target node then the node will be inserted as a child of the target. The drop can occur on a node in the same tree or in a different tree as long as the receiving node allows drops.
 
@@ -492,7 +493,7 @@ The keys used to navigate the tree view can be customized using the `customAriaK
 
 ### Focusable
 
-The tree view uses a roaming tab index to maintain focusability in the tree. A node model can specify a `treeNodeSpec.focusable` property of `true` in order for that node to be used as the initial target of keyboard focus within the tree view. If multiple node models specify this then only the first will have `treeNodeSpec.focusable` set to `true` once the tree view is intialized. If no models have it specified then the first selected node in the tree view is given a `treeNodeSpec.focusable` of `true`. If there are no selected nodes then the first node in the tree view is given a `treeNodeSpec.focusable` of `true`.
+The tree view uses a roving tab index to maintain focusability in the tree. A node's meta model can specify a `focusable` property of `true` in order for that node to be used as the initial target of keyboard focus within the tree view. If multiple nodes specify this then only the first will have `focusable` set to `true` once the tree view is intialized. If no models have it specified then the first selected node in the tree view is given a `focusable` of `true`. If there are no selected nodes then the first node in the tree view is given a `focusable` of `true`.
 
 ### More about ARIA Tree Views
 

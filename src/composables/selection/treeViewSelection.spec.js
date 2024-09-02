@@ -19,8 +19,8 @@ describe('treeViewSelection.js', () => {
     beforeEach(() => {
       nodes = generateMetaNodes(['Sf', 'S']);
       const selectionMode = ref(SelectionMode.Multiple);
-      const focusableNodeModel = ref(nodes[0]);
-      useTreeViewSelection(ref(nodes), selectionMode, focusableNodeModel, emit);
+      const focusableNodeMetaModel = ref(nodes[0]);
+      useTreeViewSelection(ref(nodes), selectionMode, focusableNodeMetaModel, emit);
 
       selectionMode.value = SelectionMode.Single;
     });
@@ -38,10 +38,10 @@ describe('treeViewSelection.js', () => {
       beforeEach(() => {
         nodes = generateMetaNodes(['Sf', 's']);
         const selectionMode = ref(SelectionMode.Single);
-        const focusableNodeModel = ref(nodes[0]);
-        useTreeViewSelection(ref(nodes), selectionMode, focusableNodeModel, emit);
+        const focusableNodeMetaModel = ref(nodes[0]);
+        useTreeViewSelection(ref(nodes), selectionMode, focusableNodeMetaModel, emit);
 
-        focusableNodeModel.value = nodes[1];
+        focusableNodeMetaModel.value = nodes[1];
       });
 
       it('should not deselect nodes that are not the newly focused node', () => {
@@ -54,10 +54,10 @@ describe('treeViewSelection.js', () => {
       beforeEach(() => {
         nodes = generateMetaNodes(['Sf', 's']);
         const selectionMode = ref(SelectionMode.SelectionFollowsFocus);
-        const focusableNodeModel = ref(nodes[0]);
-        useTreeViewSelection(ref(nodes), selectionMode, focusableNodeModel, emit);
+        const focusableNodeMetaModel = ref(nodes[0]);
+        useTreeViewSelection(ref(nodes), selectionMode, focusableNodeMetaModel, emit);
 
-        focusableNodeModel.value = nodes[1];
+        focusableNodeMetaModel.value = nodes[1];
       });
 
       it('should deselect nodes that are not the newly focused node', () => {
@@ -73,8 +73,8 @@ describe('treeViewSelection.js', () => {
       it('should return null', () => {
         nodes = generateMetaNodes(['sf']);
         const selectionMode = ref(SelectionMode.None);
-        const focusableNodeModel = ref(nodes[0]);
-        const { ariaMultiselectable } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeModel, emit);
+        const focusableNodeMetaModel = ref(nodes[0]);
+        const { ariaMultiselectable } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeMetaModel, emit);
         expect(ariaMultiselectable.value).to.be.null;
       });
     });
@@ -84,8 +84,8 @@ describe('treeViewSelection.js', () => {
       it('should return false', () => {
         nodes = generateMetaNodes(['sf']);
         const selectionMode = ref(SelectionMode.Single);
-        const focusableNodeModel = ref(nodes[0]);
-        const { ariaMultiselectable } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeModel, emit);
+        const focusableNodeMetaModel = ref(nodes[0]);
+        const { ariaMultiselectable } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeMetaModel, emit);
         expect(ariaMultiselectable.value).to.be.false;
       });
     });
@@ -95,8 +95,8 @@ describe('treeViewSelection.js', () => {
       it('should return true', () => {
         nodes = generateMetaNodes(['sf']);
         const selectionMode = ref(SelectionMode.Multiple);
-        const focusableNodeModel = ref(nodes[0]);
-        const { ariaMultiselectable } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeModel, emit);
+        const focusableNodeMetaModel = ref(nodes[0]);
+        const { ariaMultiselectable } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeMetaModel, emit);
         expect(ariaMultiselectable.value).to.be.true;
       });
     });
@@ -109,8 +109,8 @@ describe('treeViewSelection.js', () => {
       it('should deselect any nodes after the first (depth-first)', () => {
         nodes = generateMetaNodes(['sf', ['S'], 'S']);
         const selectionMode = ref(SelectionMode.Single);
-        const focusableNodeModel = ref(nodes[0]);
-        const { enforceSelectionMode } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeModel, emit);
+        const focusableNodeMetaModel = ref(nodes[0]);
+        const { enforceSelectionMode } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeMetaModel, emit);
         enforceSelectionMode();
 
         expect(nodes[0].state.selected).to.be.false;
@@ -134,8 +134,8 @@ describe('treeViewSelection.js', () => {
           delete nodes[1].data.id;
 
           const selectionMode = ref(SelectionMode.Single);
-          const focusableNodeModel = ref(nodes[0]);
-          const { enforceSelectionMode } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeModel, emit);
+          const focusableNodeMetaModel = ref(nodes[0]);
+          const { enforceSelectionMode } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeMetaModel, emit);
           enforceSelectionMode();
 
           expect(nodes[0].state.selected).to.be.false;
@@ -150,8 +150,8 @@ describe('treeViewSelection.js', () => {
       it('should select only the focusable node', () => {
         nodes = generateMetaNodes(['S', ['S'], 'sf', 'S']);
         const selectionMode = ref(SelectionMode.SelectionFollowsFocus);
-        const focusableNodeModel = ref(nodes[1]);
-        const { enforceSelectionMode } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeModel, emit);
+        const focusableNodeMetaModel = ref(nodes[1]);
+        const { enforceSelectionMode } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeMetaModel, emit);
         enforceSelectionMode();
 
         expect(nodes[0].state.selected).to.be.false;
@@ -167,8 +167,8 @@ describe('treeViewSelection.js', () => {
     it('should emit the selected change event', () => {
       nodes = generateMetaNodes(['Sf', 's']);
       const selectionMode = ref(SelectionMode.Single);
-      const focusableNodeModel = ref(nodes[0]);
-      const { handleNodeSelectedChange } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeModel, emit);
+      const focusableNodeMetaModel = ref(nodes[0]);
+      const { handleNodeSelectedChange } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeMetaModel, emit);
       nodes[0].state.selected = false;
       handleNodeSelectedChange(nodes[0]);
       expect(emit).toHaveBeenCalledWith(TreeEvent.SelectedChange, nodes[0]);
@@ -179,8 +179,8 @@ describe('treeViewSelection.js', () => {
       it('should deselect any other nodes', () => {
         nodes = generateMetaNodes(['Sf', 's']);
         const selectionMode = ref(SelectionMode.Single);
-        const focusableNodeModel = ref(nodes[0]);
-        const { handleNodeSelectedChange } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeModel, emit);
+        const focusableNodeMetaModel = ref(nodes[0]);
+        const { handleNodeSelectedChange } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeMetaModel, emit);
         nodes[1].state.selected = true;
         handleNodeSelectedChange(nodes[1]);
         expect(nodes[0].state.selected).to.be.false;

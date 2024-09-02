@@ -6,24 +6,24 @@ import { unref } from 'vue'
  */
 export function useSelection() {
 
-  function select(targetMetaModel) {
-    unref(targetMetaModel).state.selected = true;
+  function select(metaModel) {
+    unref(metaModel).state.selected = true;
   }
 
-  function deselect(targetMetaModel) {
-    unref(targetMetaModel).state.selected = false;
+  function deselect(metaModel) {
+    unref(metaModel).state.selected = false;
   }
 
-  function setSelected(targetMetaModel, newValue) {
-    unref(targetMetaModel).state.selected = newValue;
+  function setSelected(metaModel, newValue) {
+    unref(metaModel).state.selected = newValue;
   }
 
-  function isSelectable(targetMetaModel) {
-    return unref(targetMetaModel).selectable === true;
+  function isSelectable(metaModel) {
+    return unref(metaModel).selectable === true;
   }
 
-  function isSelected(targetMetaModel) {
-    return unref(targetMetaModel).state.selected === true;
+  function isSelected(metaModel) {
+    return unref(metaModel).state.selected === true;
   }
 
   return {

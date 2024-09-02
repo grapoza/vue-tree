@@ -19,8 +19,10 @@ or
 ```shell
 npm install --save @grapoza/vue-tree
 ```
-
-The default import from this package is the components from the .vue files. In addition to this, pre-compiled versions of the Tree View component and CSS are also available in the package but you will need to reference them manually from your own project.
+or
+```shell
+bun add @grapoza/vue-tree
+```
 
 ## Usage
 
