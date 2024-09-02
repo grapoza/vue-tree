@@ -17,9 +17,9 @@ import './css/solid.min.css';
 
 ## A Basic Tree View
 
-The most basic use of the tree view consists of giving it some data and letting the tree populate the model with the default tree node properties, which it does by adding a `treeNodeSpec` property to each object in the hierarchy. This can be useful if you have a model and want it in a tree view, and also don't care if the tree view modifies that data. If you don't want the tree view to modify your data at all, you'll need to make a copy first and provide that to the tree view.
+The most basic use of the tree view consists of giving it some data and letting the tree use the default tree node properties.
 
-If you want more control over the model, you can specify `treeNodeSpec` and its properties directly in the data.
+If you want more control over the model, you can specify a function for the `modelDefaults` property which takes a node from your model and returns configuration to use for that node.
 
 <a target="_blank" href="assets_data/basicTreeViewData.js">See the Model Data</a>
 
@@ -39,7 +39,7 @@ If all you need is a static tree (no expanding subnodes) then set the `expandabl
 
 ## Setting Defaults
 
-If there are common settings that should be used by all (or even most) nodes, these can be given to the tree in the `modelDefaults` property. This is a great place to customize things like what model props are used for the nodes' labels and whether all nodes are a certain type of input. Note that the expandable node below is expanded by default, as set from `modelDefaults`. The tree below uses the `identifier` and `description` properties of the node objects instead of `id` and `label`, and has all nodes expanded by default. These are set for all nodes at once by using `modelDefaults`. For more info, see [the docs](?path=/docs/grapoza-vue-tree-home--page#default-data).
+If there are common settings that should be used by all nodes, specific nodes, or even a single node, these can be given to the tree using the `modelDefaults` property. This allows you to customize things like what model props are used for the nodes' labels and whether all nodes are a certain type of input. Note that the expandable node below is expanded by default, as set from `modelDefaults`. The tree below uses the `identifier` and `description` properties of the node objects instead of  the defaults (`id` and `label`), and has all nodes expanded by default. These are set for all nodes at once by using `modelDefaults`. For more info, see [the docs](?path=/docs/grapoza-vue-tree-home--page#default-data).
 
 <Canvas>
 <Story id="examples-treeview--setting-defaults" />
@@ -47,7 +47,7 @@ If there are common settings that should be used by all (or even most) nodes, th
 
 ## Adding and Removing Nodes
 
-Any node can be marked as deletable or provide a callback used to create a new child node. To allow a node to have children added, set an `addChildCallback` property on the node's `treeNodeSpec` (or use `modelDefaults` to use the same callback for all nodes). The `addChildCallback` can take the parent node's model data as an argument, and should return a Promise that resolves to the node data to add. To make a node deletable, just set a `deletable` property to `true` in that node's `treeNodeSpec`. You can optionally specify a `deleteNodeCallback` method that accepts the node model to delete as an argument and returns a Promise resoving to a boolean indicating whether to delete that node.
+Any node can be marked as deletable or provide a callback used to create a new child node. To allow a node to have children added, set an `addChildCallback` property on the returned value for the node from `modelDefaults`. The `addChildCallback` can take the parent node's meta data as an argument, and should return a Promise that resolves to the node data to add to the model. To make a node deletable, just set a `deletable` property to `true` on the returned value for the node from `modelDefaults`. You can also optionally specify a `deleteNodeCallback` method that accepts the meta data of the node to delete as an argument and returns a Promise resoving to a boolean indicating whether to delete that node.
 
 <a target="_blank" href="assets_data/addRemoveTreeViewData.js">See the Model Data</a>
 
@@ -59,7 +59,7 @@ Any node can be marked as deletable or provide a callback used to create a new c
 
 Support for checkboxes is built into the tree view.
 
-To create a checkbox node, specify `input.type = 'checkbox'` on the node's `treeNodeSpec`. To initialize the node as checked, specify `state.input.value = true`.
+To create a checkbox node, specify `input.type = 'checkbox'` on the returned value for the node from `modelDefaults`. To initialize the node as checked, specify `state.input.value = true`.
 
 The convenience method `getCheckedCheckboxes` is exposed on the tree component to make it easy to get the checkbox nodes that have been checked.
 
@@ -73,7 +73,7 @@ The convenience method `getCheckedCheckboxes` is exposed on the tree component t
 
 Support for radio buttons is also built into the tree view.
 
-To create a radio button node, specify `input.type = 'radio'` on the node's `treeNodeSpec`, give the node a name using the `input.name` property, and give the node a value using `input.value`. The name will determine the radio button group to which the radio button belongs. To initialize a node as checked set the node's `input.isInitialRadioGroupValue` to `true`. If multiple nodes within a radio button group are specified as `isInitialRadioGroupValue`, the last one in wins.
+To create a radio button node, specify `input.type = 'radio'` on the returned value for the node from `modelDefaults`, give the node a name using the `input.name` property, and give the node a value using `input.value`. The name will determine the radio button group to which the radio button belongs. To initialize a node as checked set `input.isInitialRadioGroupValue` to `true` on the returned value for the node from `modelDefaults`. If multiple nodes within a radio button group are specified as `isInitialRadioGroupValue`, the last one in wins.
 
 The convenience method `getCheckedRadioButtons` is exposed on the tree component to make it easy to get the radio nodes that have been checked.
 
@@ -85,7 +85,7 @@ The convenience method `getCheckedRadioButtons` is exposed on the tree component
 
 ## Selection
 
-Any node can be marked as selectable. To set a node's selectability, set a `selectable` property to `true` or `false` (the default) in that node's `treeNodeSpec`. Different selection modes allow different selection behavior, but only affect nodes that are selectable.
+Any node can be marked as selectable. To set a node's selectability, set a `selectable` property to `true` or `false` (the default) on the returned value for the node from `modelDefaults`. Different selection modes allow different selection behavior, but only affect nodes that are selectable.
 
 The convenience method `getSelected` is exposed on the tree component to make it easy to get the nodes that have been selected. For more info see [the docs](?path=/docs/grapoza-vue-tree-home--page#selection-mode).
 
@@ -97,7 +97,7 @@ The convenience method `getSelected` is exposed on the tree component to make it
 
 ## Slots
 
-A tree view has slots available for replacing specific types of nodes. The `text`, `checkbox`, `radio`, `loading-root` and `loading` slots replace the correpsonding types of nodes. For more info, see [the docs](?path=/docs/grapoza-vue-tree-home--page#slots).
+A tree view has slots available for replacing specific types of nodes. The `expander`, `text`, `checkbox`, `radio`, `loading-root` and `loading` slots replace the correpsonding types of nodes. For more info, see [the docs](?path=/docs/grapoza-vue-tree-home--page#slots).
 
 <a target="_blank" href="assets_data/slotsTreeViewData.js">See the Model Data</a>
 
@@ -111,7 +111,7 @@ Two types of asynchronous loading are available. The first loads the root data f
 
 You can load root nodes asynchronously by providing a function to the `loadNodesAsync` property of the tree view. The function should return a Promise that resolves to an array of model data to add as root nodes.
 
-You can load child nodes asynchronously by providing a function to the `loadChildrenAsync` property in a node's `treeNodeSpec` (or use `modelDefaults` to use the same method for all nodes). The function can take the parent node's model data as an argument, and should return a Promise that resolves to an array of model data to add as children.
+You can load child nodes asynchronously by providing a function to the `loadChildrenAsync` property on the returned value for the node from `modelDefaults`. The function can take the parent node's meta data as an argument, and should return a Promise that resolves to an array of model data to add as children.
 
 <Canvas>
 <Story id="examples-treeview--async" />
@@ -119,13 +119,15 @@ You can load child nodes asynchronously by providing a function to the `loadChil
 
 ## Custom Styles
 
-Custom styling is achieved through a combination of using the `customizations` property of TreeViewNode data to apply custom styles to parts of nodes, along with a custom `skinStyle` TreeView prop and associated stylesheet. Of course, you could also just write some very specific selectors to override the default styles. For more info, see [the docs](?path=/docs/grapoza-vue-tree-home--page#customizing-the-tree-view).
+Custom styling is achieved through a combination of using the `customizations` property on the returned value for the node from `modelDefaults` to apply custom styles to parts of nodes, along with a custom `skinStyle` TreeView prop and associated stylesheet. Of course, you could also just write some very specific selectors to override the default styles. For more info, see [the docs](?path=/docs/grapoza-vue-tree-home--page#customizing-the-tree-view).
 
 The default styles are applied to all of the other examples on this page (with the exception of the Slots example). There's not much to see there, since the intention is for the user to handle styling the tree view while the component focuses on creating a workable structure. Things generally line up right, but not much more can be said for it.
 
-Some simple customizations can be done by applying custom classes to various parts of the tree using the `customizations` property, most likely in the `modelDefaults` parameter of the TreeView component itself. In this example, `customizations.classes.treeViewNodeSelfText` is given a value of `big-text`. The `big-text` class is defined in a classbased.css stylesheet.
+Some simple customizations can be done by applying custom classes to various parts of the tree using the `customizations` property on the returned value from `modelDefaults`. In this example, `customizations.classes.treeViewNodeSelfText` is given a value of `big-text`. The `big-text` class is defined in a classbased.css stylesheet.
 
 <a target="_blank" href="assets_css/classbased.css">See the Stylesheet</a>
+<br />
+<a target="_blank" href="assets_data/customizationViaClassesTreeViewData.js">See the Model Data</a>
 
 <Canvas>
 <Story id="examples-treeview--customization-via-classes" />
@@ -134,6 +136,8 @@ Some simple customizations can be done by applying custom classes to various par
 In the next example, a tree view has been given a `skin-class` prop value of `grayscale`. This effectively swaps out a class named `grtv-default-skin` on the TreeView for the one specified as the `skin-class`. This _completely removes_ the default styling. To provide new styles, a new stylesheet was created based on the default styles (copied right from the browser). This gives complete control of the styling, allowing for easier usage of things like Font Awesome as seen here.
 
 <a target="_blank" href="assets_css/grayscale.css">See the Stylesheet</a>
+<br />
+<a target="_blank" href="assets_data/customizationViaSkinTreeViewData.js">See the Model Data</a>
 
 <Canvas>
 <Story id="examples-treeview--customization-via-skin" />
@@ -141,7 +145,7 @@ In the next example, a tree view has been given a `skin-class` prop value of `gr
 
 ## Drag and Drop
 
-You can drag a node that has the `draggable` property in a node's `treeNodeSpec` set to `true`. Any node with `allowDrop` set to `true` in the `treeNodeSpec` can accept a drop from any TreeView.
+You can drag a node that has the `draggable` property on the returned value for the node from `modelDefaults` set to `true`. Any node with `allowDrop` set to `true` can accept a drop from any TreeView.
 
 <a target="_blank" href="assets_data/dragDropTreeViewData.js">See the Model Data</a>
 
@@ -157,4 +161,14 @@ You can provide a method by which data should be filtered. Any node for which th
 
 <Canvas>
 <Story id="examples-treeview--filtering" />
+</Canvas>
+
+## External Model Changes
+
+The tree is bound to your data model and should react to updates (and update the model) as you would generally expect.
+
+<a target="_blank" href="assets_data/externalDataChangesTreeViewData.js">See the Model Data</a>
+
+<Canvas>
+<Story id="examples-treeview--external-data-changes" />
 </Canvas>

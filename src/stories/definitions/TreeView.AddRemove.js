@@ -25,14 +25,34 @@ AddRemove.args = {
 
 const docSourceCode = `
 <template>
-  <TreeView v-model="tvModel" :model-defaults="modelDefaults" />
+  <TreeView v-model="treeData" :model-defaults="modelDefaults" />
 </template>
 <script setup>
-import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
-import { treeData, modelDefaults } from "../data/addRemoveTreeViewData";
 
-const tvModel = ref(treeData);
+const treeData = [
+  {
+    id: 'addremove-rootNode',
+    label: 'Root Node',
+  }
+];
+
+function modelDefaults(node) {
+  const baseNodeSpec = {
+    addChildCallback,
+    deleteNodeCallback,
+    state: {
+      expanded: true,
+    },
+  };
+
+  switch (node.id) {
+    case 'addremove-rootNode':
+      return baseNodeSpec;
+    default:
+      return Object.assign(baseNodeSpec, { deletable: true });
+  }
+};
 
 let addRemoveChildCounter = 0;
 function addChildCallback(parentModel) {

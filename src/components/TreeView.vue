@@ -124,7 +124,7 @@ const props = defineProps({
   }
 });
 
-const model = defineModel({ default: function () { return []; } });
+const model = defineModel({ type: Array, required: true });
 
 // EMITS
 
@@ -180,7 +180,7 @@ const { generateUniqueId } = useIdGeneration();
 const { depthFirstTraverse } = useTreeViewTraversal(metaModel);
 
 const {
-  focusableNodeModel,
+  focusableNodeMetaModel,
   handleFocusableChange,
 } = useTreeViewFocus();
 
@@ -198,7 +198,7 @@ const {
   ariaMultiselectable,
   enforceSelectionMode,
   handleNodeSelectedChange,
-} = useTreeViewSelection(metaModel, toRef(props, "selectionMode"), focusableNodeModel, emit);
+} = useTreeViewSelection(metaModel, toRef(props, "selectionMode"), focusableNodeMetaModel, emit);
 
 const {
   isSelectable,
@@ -222,7 +222,10 @@ const { spliceNodeList } = useTreeViewDataUpdates(model, metaModel);
 useTreeViewFilter(metaModel);
 
 // Watch the model to make sure the metamodel is kept in sync
-watch([model.value, () => model.value], () => {
+watch([model, model.value], () => {
+  // WARNINGS: For whatever reason, the Storybook stories don't fire this watch when model is updated unless the
+  // model.value is also included in the watch. This is a workaround for that issue. I have no idea why this is happening.
+  // However, it also (rightly) adds warnings in the console that model.value is not a valid watch source.
 
   model.value.forEach((node, index) => {
     const metaIndex = metaModel.value.findIndex((m) => m.data[m.idProperty] === node[m.idProperty]);
@@ -274,28 +277,28 @@ onMounted(async () => {
     // If none are found, set to true for the first root, or the first selected node if one exists.
     // If one is found, set any subsequent to false.
     let firstSelectedNode = null;
-    depthFirstTraverse((node) => {
-      if (isFocused(node)) {
-        if (focusableNodeModel.value) {
-          unfocus(node);
+    depthFirstTraverse((metaNode) => {
+      if (isFocused(metaNode)) {
+        if (focusableNodeMetaModel.value) {
+          unfocus(metaNode);
         }
         else {
-          focusableNodeModel.value = node;
+          focusableNodeMetaModel.value = metaNode;
         }
       }
-      if (props.selectionMode !== SelectionMode.None && firstSelectedNode === null && isSelected(node)) {
-        firstSelectedNode = node;
+      if (props.selectionMode !== SelectionMode.None && firstSelectedNode === null && isSelected(metaNode)) {
+        firstSelectedNode = metaNode;
       }
     });
-    if (!focusableNodeModel.value) {
-      focusableNodeModel.value = firstSelectedNode || metaModel.value[0];
-      focus(focusableNodeModel);
+    if (!focusableNodeMetaModel.value) {
+      focusableNodeMetaModel.value = firstSelectedNode || metaModel.value[0];
+      focus(focusableNodeMetaModel);
     }
 
     // Also default the selection to the focused node if no selected node was found
     // and the selection mode is selectionFollowsFocus.
-    if (firstSelectedNode === null && isSelectable(focusableNodeModel) && props.selectionMode === SelectionMode.SelectionFollowsFocus) {
-      select(focusableNodeModel);
+    if (firstSelectedNode === null && isSelectable(focusableNodeMetaModel) && props.selectionMode === SelectionMode.SelectionFollowsFocus) {
+      select(focusableNodeMetaModel);
     }
 
     enforceSelectionMode();

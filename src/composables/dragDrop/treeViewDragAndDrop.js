@@ -25,10 +25,10 @@ export function useTreeViewDragAndDrop(treeModel, metaModel, uniqueId, findById,
   /**
    * Removes the given node from this node's children
    * after a drag-and-drop move operation between trees.
-   * @param {Object} node The data for the moved node
+   * @param {Object} metaNode The data for the moved node
    */
-  function dragMoveNode(node) {
-    const targetIndex = metaModel.value.indexOf(node);
+  function dragMoveNode(metaNode) {
+    const targetIndex = metaModel.value.indexOf(metaNode);
     if (targetIndex > -1) {
       spliceNodeList(targetIndex, 1);
     }

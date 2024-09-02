@@ -9,12 +9,12 @@ describe('treeViewFocus.js', () => {
 
     let nodes;
     let handleFocusableChange;
-    let focusableNodeModel;
+    let focusableNodeMetaModel;
 
     beforeEach(async () => {
       nodes = generateMetaNodes(['ecsf', 'eCs']);
-      ({ handleFocusableChange, focusableNodeModel } = useTreeViewFocus());
-      focusableNodeModel.value = nodes[0];
+      ({ handleFocusableChange, focusableNodeMetaModel } = useTreeViewFocus());
+      focusableNodeMetaModel.value = nodes[0];
 
       nodes[1].focusable = true;
       handleFocusableChange(nodes[1]);
@@ -24,8 +24,8 @@ describe('treeViewFocus.js', () => {
       expect(nodes[0].focusable).to.be.false;
     });
 
-    it('should set the new node as the focusableNodeModel', () => {
-      expect(nodes[1].id).to.equal(focusableNodeModel.value.id);
+    it('should set the new node as the focusableNodeMetaModel', () => {
+      expect(nodes[1].id).to.equal(focusableNodeMetaModel.value.id);
     });
   });
 });

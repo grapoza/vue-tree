@@ -19,9 +19,9 @@ export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMeta
 
   watch(selectionMode, enforceSelectionMode);
 
-  watch(focusableNodeMetaModel, (node) => {
+  watch(focusableNodeMetaModel, (metaNode) => {
     if (unref(selectionMode) === SelectionMode.SelectionFollowsFocus) {
-      exclusivelySelectNode(node);
+      exclusivelySelectNode(metaNode);
     }
   });
 
@@ -54,10 +54,10 @@ export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMeta
   function enforceSingleSelectionMode() {
     // For single selection mode, only allow one selected node.
     let alreadyFoundSelected = false;
-    depthFirstTraverse((node) => {
-      if (node.state && isSelected(node)) {
+    depthFirstTraverse((metaNode) => {
+      if (metaNode.state && isSelected(metaNode)) {
         if (alreadyFoundSelected) {
-          deselect(node);
+          deselect(metaNode);
         }
         else {
           alreadyFoundSelected = true;
@@ -68,16 +68,16 @@ export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMeta
 
   function enforceSelectionFollowsFocusMode() {
     // Make sure the actual focusable item is selected if the mode changes, and deselect all others
-    depthFirstTraverse((node) => {
-      let idPropName = node.idProperty;
+    depthFirstTraverse((metaNode) => {
+      let idPropName = metaNode.idProperty;
       let focusableIdPropName = focusableNodeMetaModel.value.idProperty;
-      if (node.data[idPropName] === focusableNodeMetaModel.value.data[focusableIdPropName]) {
-        if (isSelectable(node)) {
-          select(node);
+      if (metaNode.data[idPropName] === focusableNodeMetaModel.value.data[focusableIdPropName]) {
+        if (isSelectable(metaNode)) {
+          select(metaNode);
         }
       }
-      else if (isSelected(node)) {
-        deselect(node);
+      else if (isSelected(metaNode)) {
+        deselect(metaNode);
       }
     });
   }
@@ -99,10 +99,10 @@ export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMeta
   /**
    * Given a node that should remain selected, deselect another selected node.
    * This is used only when one node at a time can be selected (Single/SelectionFollowsFocus).
-   * @param {Object} node The meta node that should remain selected
+   * @param {Object} metaNode The meta node that should remain selected
    */
-  function exclusivelySelectNode(node) {
-    const nodeId = node.data[node.idProperty];
+  function exclusivelySelectNode(metaNode) {
+    const nodeId = metaNode.data[metaNode.idProperty];
 
     depthFirstTraverse((current) => {
       if (isSelected(current) && current.data[current.idProperty] !== nodeId) {

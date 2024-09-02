@@ -28,13 +28,13 @@ async function loadChildrenCallback(parentModel) {
 
 const docSourceCode = `
 <template>
-  <TreeView :load-nodes-async=""loadNodesCallback" :model-defaults="modelDefaults" />
+  <TreeView v-model="modelValue" :load-nodes-async=""loadNodesCallback" :model-defaults="modelDefaults" />
 </template>
 <script setup>
-import { ref } from "vue";
 import { TreeView } from "@grapoza/vue-tree";
 
-const modelDefaults = ref(() => ({ loadChildrenAsync: loadChildrenCallback }));
+const modelValue = [];
+const modelDefaults = () => ({ loadChildrenAsync: loadChildrenCallback });
 
 let asyncChildCounter = 0;
 async function loadNodesCallback() {

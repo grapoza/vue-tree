@@ -16,33 +16,33 @@ export function useFocus() {
   } = useFilter();
 
   /**
-   * Marks the given node as the focusable node in the tree
-   * @param {Object} targetMetaModel The meta model to mark as focusable
+   * Marks the given meta node as the focusable node in the tree
+   * @param {Object} metaModel The meta model to mark as focusable
    * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
-  function focus(targetMetaModel, keepCurrentDomFocus = false) {
-    unref(targetMetaModel)._.keepCurrentDomFocus = keepCurrentDomFocus;
-    unref(targetMetaModel).focusable = true;
+  function focus(metaModel, keepCurrentDomFocus = false) {
+    unref(metaModel)._.keepCurrentDomFocus = keepCurrentDomFocus;
+    unref(metaModel).focusable = true;
   }
 
   /**
-   * Unmarks the given node as the focusable node in the tree
-   * @param {Object} targetMetaModel The meta model to unmark as focusable
+   * Unmarks the given meta node as the focusable node in the tree
+   * @param {Object} metaModel The meta model to unmark as focusable
    */
-  function unfocus(targetMetaModel) {
-    unref(targetMetaModel).focusable = false;
+  function unfocus(metaModel) {
+    unref(metaModel).focusable = false;
   }
 
   /**
-   * Gets whether the given node is focusable
-   * @param {Object} targetMetaModel The meta model check for focusable
+   * Gets whether the given meta node is focusable
+   * @param {Object} metaModel The meta model check for focusable
    */
-  function isFocused(targetMetaModel) {
-    return unref(targetMetaModel).focusable === true;
+  function isFocused(metaModel) {
+    return unref(metaModel).focusable === true;
   }
 
   /**
-   * Sets the first node in the node collection as focusable.
+   * Sets the first meta node in the collection as focusable.
    * @param {TreeViewNode[]} targetCollection The collection of nodes
    * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
@@ -75,23 +75,23 @@ export function useFocus() {
   /**
    * Focuses the next node in the collection.
    * @param {Object[]} targetCollection The collection of meta nodes
-   * @param {Object} childNode The meta node from which focusable should be moved
+   * @param {Object} childMetaNode The meta node from which focusable should be moved
    * @param {Boolean} ignoreChild True to not consider child nodes. This would be true if a user
    * requests to focus the next node while on the last child of this node; the next sibling of
    * this node should gain focus in that case, or the parent node if there is no next sibling.
    * @param {boolean} keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    * @return {Boolean} true if a node was focused, false otherwise
    */
-  function focusNext(targetCollection, childNode, ignoreChild, keepCurrentDomFocus = false) {
+  function focusNext(targetCollection, childMetaNode, ignoreChild, keepCurrentDomFocus = false) {
     const filteredCollection = getFilteredNodes(targetCollection);
 
     // If the node is expanded, focus first child unless we're ignoring it (this was punted from a grandchild)
     // If the node has a next sibling, focus that
     // Otherwise, return false to let the caller know. A Node will punt to its parent if it has one.
-    let childIndex = filteredCollection.findIndex(n => n.data[n.idProperty] === childNode.data[childNode.idProperty]);
-    let childNodeChildren = getFilteredChildren(childNode);
+    let childIndex = filteredCollection.findIndex(n => n.data[n.idProperty] === childMetaNode.data[childMetaNode.idProperty]);
+    let childNodeChildren = getFilteredChildren(childMetaNode);
 
-    if (!ignoreChild && childNodeChildren.length > 0 && isExpanded(childNode)) {
+    if (!ignoreChild && childNodeChildren.length > 0 && isExpanded(childMetaNode)) {
       focus(childNodeChildren[0], keepCurrentDomFocus);
     }
     else if (childIndex < filteredCollection.length - 1) {
@@ -119,14 +119,14 @@ export function useFocus() {
     let childIndex = filteredCollection.findIndex(n => n.data[n.idProperty] === childNode.data[childNode.idProperty]);
 
     if (childIndex !== 0) {
-      let lastModel = filteredCollection[childIndex - 1];
-      let lastModelChildren = getFilteredChildren(lastModel);
-      while (lastModelChildren.length > 0 && isExpanded(lastModel)) {
-        lastModel = lastModelChildren[lastModelChildren.length - 1];
-        lastModelChildren = getFilteredChildren(lastModel);
+      let lastMetaModel = filteredCollection[childIndex - 1];
+      let lastModelChildren = getFilteredChildren(lastMetaModel);
+      while (lastModelChildren.length > 0 && isExpanded(lastMetaModel)) {
+        lastMetaModel = lastModelChildren[lastModelChildren.length - 1];
+        lastModelChildren = getFilteredChildren(lastMetaModel);
       }
 
-      focus(lastModel, keepCurrentDomFocus);
+      focus(lastMetaModel, keepCurrentDomFocus);
       return true;
     }
 

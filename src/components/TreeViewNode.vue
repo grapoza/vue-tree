@@ -597,32 +597,32 @@ function onKeyDown(event) {
  * Note that only the node that was deleted fires these, not any subnode, so
  * this comes from a request from the child node for this node to delete it.
  * This emits the treeNodeDelete event.
- * @param {TreeViewNode} node The node to remove
+ * @param {Object} metaNode The node to remove
  */
-function handleChildDeletion(node) {
+function handleChildDeletion(metaNode) {
   // Remove the node from the array of children if this is an immediate child.
   // Note that only the node that was deleted fires these, not any subnode.
-  let targetIndex = filteredChildren.value.indexOf(node);
+  let targetIndex = filteredChildren.value.indexOf(metaNode);
   if (targetIndex > -1) {
-    if (isFocused(node)) {
+    if (isFocused(metaNode)) {
       // When this is the first of several siblings, focus the next node.
       // Otherwise, focus the previous node.
-      if (filteredChildren.value.length > 1 && filteredChildren.value.indexOf(node) === 0) {
-        focusNextNode(node);
+      if (filteredChildren.value.length > 1 && filteredChildren.value.indexOf(metaNode) === 0) {
+        focusNextNode(metaNode);
       }
       else {
-        focusPreviousNode(node);
+        focusPreviousNode(metaNode);
       }
     }
 
-    deleteChild(node);
+    deleteChild(metaNode);
   }
 }
 
 /**
  * Emits the treeNodeCheckboxChange event, and if the event is for
  * a direct child then it also emits the treeNodeChildCheckboxChange event.
- * @param {TreeViewNode} metaNode The meta node on which the checkbox changed
+ * @param {Object} metaNode The meta node on which the checkbox changed
  * @param {Event} event The event that triggered the change
  */
 function handleCheckboxChange(metaNode, event) {
