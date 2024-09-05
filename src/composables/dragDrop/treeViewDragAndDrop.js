@@ -1,9 +1,8 @@
 import { dropEffect as DropEffect, targetZone as TargetZone } from '../../enums/dragDrop.js';
-import { useObjectMethods } from '../objectMethods.js';
+import { useObjectMethods } from '../objectMethods';
 import { useIdGeneration } from '../idGeneration.js'
 import { useTreeViewDataUpdates } from '../treeViewDataUpdates.js';
 import { useFocus } from '../focus/focus.js';
-import { unref } from 'vue';
 
 const { resolveNodeIdConflicts } = useIdGeneration();
 const { cheapCopyObject } = useObjectMethods();

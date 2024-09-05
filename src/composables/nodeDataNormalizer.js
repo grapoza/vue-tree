@@ -1,7 +1,7 @@
 import { unref } from 'vue';
 import { effectAllowed as EffectAllowed } from '../enums/dragDrop.js'
 import InputType from '../enums/inputType';
-import { useObjectMethods } from './objectMethods.js';
+import { useObjectMethods } from './objectMethods';
 
 const { isProbablyObject } = useObjectMethods();
 

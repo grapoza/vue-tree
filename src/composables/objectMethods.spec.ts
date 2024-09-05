@@ -1,4 +1,3 @@
-import { expect, describe, it } from 'vitest';
 import { useObjectMethods } from './objectMethods.js';
 
 const { isProbablyObject, cheapCopyObject } = useObjectMethods();
