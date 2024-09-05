@@ -58,7 +58,7 @@ describe('myComponent', () => {
 });
 ```
 
-When writing tests, it's often required to have node data to test with. There's a helper method available in `tests/data/node-generator.js` that can help with creating various nodes for testing. See existing tests and the comment in that file for examples of how to craft test node data.
+When writing tests, it's often required to have node data to test with. There's a helper method available in `tests/data/node-generator.ts` that can help with creating various nodes for testing. See existing tests and the comment in that file for examples of how to craft test node data.
 
 In addition to unit tests, the Storybook documentation pages can run locally and provide a way to both document and test changes. You can run `yarn storybook` to start the site. If your changes would make sense with a demonstration, go ahead and add to the demos on this site.
 

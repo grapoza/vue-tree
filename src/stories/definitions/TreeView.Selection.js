@@ -1,4 +1,5 @@
 import TreeView from '../../components/TreeView.vue';
+import { SelectionMode } from '../../types/selectionMode';
 import { treeData, modelDefaults } from "../data/selectionTreeViewData";
 
 const selectionTemplateHtml = `<span>
@@ -7,9 +8,9 @@ const selectionTemplateHtml = `<span>
   <option value="single">Single</option>
   <option value="selectionFollowsFocus">Selection Follows Focus</option>
   <option value="multiple">Multiple</option>
-  <option value="">No Selection</option>
+  <option value="none">No Selection</option>
 </select>
-<TreeView v-bind="argsWithoutValue" v-model="modelValue" :selection-mode="normalizedSelectionMode" ref="treeViewRef" />
+<TreeView v-bind="argsWithoutValue" v-model="modelValue" :selection-mode="selectionMode" ref="treeViewRef" />
 <section class="selected-nodes">
   <button type="button" style="margin-top: 1rem" @click="refreshSelectedList">What's selected?</button>
   <ul id="selectedList">
@@ -29,14 +30,9 @@ const Template = (args) => ({
     return {
       argsWithoutValue: rest,
       modelValue,
-      selectionMode: "single",
+      selectionMode: SelectionMode.Single,
       selectedNodes: [],
     };
-  },
-  computed: {
-    normalizedSelectionMode() {
-      return this.selectionMode === "" ? null : this.selectionMode;
-    },
   },
   methods: {
     refreshSelectedList() {
@@ -49,7 +45,7 @@ export const Selection = Template.bind({});
 Selection.args = {
   modelValue: treeData,
   modelDefaults,
-  selectionMode: "single",
+  selectionMode: SelectionMode.Single,
 };
 
 const docSourceCode = `
@@ -120,7 +116,7 @@ function modelDefaults(node) {
           },
         },
         addChildCallback: function () {
-          var entry = prompt("Give it a string.", "");
+          const entry = prompt("Give it a string.", "");
           return Promise.resolve(
             entry ? { id: entry, label: entry, deletable: true, selectable: true } : null
           );
@@ -181,7 +177,7 @@ function modelDefaults(node) {
           selected: false,
         },
         addChildCallback: function () {
-          var entry = prompt("Give it a string.", "");
+          const entry = prompt("Give it a string.", "");
           return Promise.resolve(
             entry ? { id: entry, label: entry, deletable: true, selectable: true } : null
           );

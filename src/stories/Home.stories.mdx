@@ -131,19 +131,28 @@ To see it in action, try out the [demos](/docs/examples-treeview--basic#examples
 
 ## Tree Props
 
-| Prop              | Type     | Description                                                                                                               | Default value                     | Required |
-|:------------------|:---------|:--------------------------------------------------------------------------------------------------------------------------|:----------------------------------|:---------|
-| modelValue        | Array    | The data model containing a tree structure of node data; used with `v-model`                                              |                                   | Yes      |
-| customAriaKeyMap  | Object   | An object, the properties of which are arrays to keyCodes for various actions                                             | See [Aria](#setting-key-bindings) |          |
-| filterMethod      | Function | A boolean function against which nodes are evaluated to see if they should be included in the tree                        | `null` (no filtering)             |          |
-| loadNodesAsync    | Function | A function that is called on mount to asynchronously load the root data model (use with a `v-model` of `[]`)              | `null`                            |          |
-| modelDefaults     | Function | An function that returns the default metadata for a given data node from the `modelValue` (see [Model Data](#model-data)) | `() => {}`                        |          |
-| selectionMode     | String   | How selection should operate (see [Selection Mode](#selection-mode))                                                      | `null` (cannot select nodes)      |          |
-| skinClass         | String   | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins))                                      | `"grtv-default-skin"`             |          |
+| Prop              | Type                                | Description                                                                                                               | Default value                     | Required |
+|:------------------|:------------------------------------|:--------------------------------------------------------------------------------------------------------------------------|:----------------------------------|:---------|
+| modelValue        | Array                               | The data model containing a tree structure of node data; used with `v-model`                                              |                                   | Yes      |
+| customAriaKeyMap  | Object                              | An object, the properties of which are arrays to keyCodes for various actions                                             | See [Aria](#setting-key-bindings) |          |
+| filterMethod      | TreeViewFilterMethod                | A boolean function against which nodes are evaluated to see if they should be included in the tree                        | `null` (no filtering)             |          |
+| loadNodesAsync    | TreeViewLoadNodesAsyncMethod        | A function that is called on mount to asynchronously load the root data model (use with a `v-model` of `[]`)              | `null`                            |          |
+| modelDefaults     | TreeViewNodeMetaModelDefaultsMethod | An function that returns the default metadata for a given data node from the `modelValue` (see [Model Data](#model-data)) | `() => {}`                        |          |
+| selectionMode     | SelectionMode                       | How selection should operate (see [Selection Mode](#selection-mode))                                                      | `null` (cannot select nodes)      |          |
+| skinClass         | String                              | A class name to apply to the tree that specifies a skin to use (see [Skins](#skins))                                      | `"grtv-default-skin"`             |          |
 
 ## Selection Mode
 
-The `selectionMode` property defines how nodes should be selected within the tree view. Allowed values are `null`, `single`, `selectionFollowsFocus`, and `multiple`. Only nodes with the `selectable` model property set to `true` can be selected.
+The `selectionMode` property defines how nodes should be selected within the tree view. Only nodes with the `selectable` model property set to `true` can be selected. Allowed values follow the enum:
+
+```javascript
+export enum SelectionMode {
+  None = "none",
+  Single = "single",
+  Multiple = "multiple",
+  SelectionFollowsFocus = "selectionFollowsFocus",
+};
+```
 
 - If `null` (the default) then selection does not occur.
 - If `single` then one node is selected at a time when the user clicks the node or using the selection keyboard binding (`Enter` by default).
@@ -160,7 +169,7 @@ The data passed to the tree view's `v-model` or returned from `loadNodesAsync` s
 
 * Required: A property with a value that will be used as the node's ID (by default the node looks for a property named `id`)
 * Required: A property with a value that will be used as the node's label (by default the node looks for a property named `label`)
-* Optional: A property containing any subnodes (by default the node looks for a property named `children`)
+* Optional: A property containing any subnodes (by default the node looks for a property named `children`); an empty array is required if the children will be loaded asynchronously
 * Optional: Any other data you want on your node
 
 Meta data about a node in the tree is created when the node is initialized in the tree view, and can be customized using the `modelDefaults` property. The `modelDefaults` should be a method that takes the data for the node from the `v-model` and returns an object specifying any default tree node state related to that node. That returned value will be merged with the defaults to create the node meta data used by the tree view.
@@ -258,7 +267,7 @@ The `modelDefaults` property's return value contains any data about the node's c
 | focusable            | Boolean  | True to make the node the focus when the tree view is focused                             | See [Aria](#focusable) for details |          |
 | draggable            | Boolean  | True to make this node draggable                                                          | `false`                            |          |
 | allowDrop            | Boolean  | True to allow dropping TreeViewNode data onto this node                                   | `false`                            |          |
-| dataTransferEffectAllowed | String | One of the allowed [effectAllowed](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed) values (`copy`, `move`, `copyMove`, or `none`) | `copyMove` | |
+| dataTransferEffectAllowed | EffectAllowed | One of the allowed [effectAllowed](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed) values (`copy`, `move`, `copyMove`, or `none` are honored) | `copyMove` | |
 | expanderTitle        | String   | The text to use as the title for the expander button                                      | `null`                             |          |
 | addChildTitle        | String   | The text to use as the title for the Add Child button                                     | `null`                             |          |
 | deleteTitle          | String   | The text to use as the title for the Delete button                                        | `null`                             |          |
@@ -274,9 +283,9 @@ The `modelDefaults` property's return value contains any data about the node's c
 | state.input.value    | Boolean  | Contains the value of the input                                                           | `false` for checkbox, otherwise -  |          |
 | state.input.disabled | Boolean  | True if the node's input field is disabled                                                | `false`                            |          |
 | customizations       | Object   | A [customizations](#customizing-the-tree-view) object                                     | `{}`                               |          |
-| addChildCallback     | Function | An async function that resolves to a new node model (called by the add button). The function can take one argument, the model of the parent node. It should return the model of the new child node. | `null` | |
-| loadChildrenAsync    | Function | An async function that resolves to a node's children (called when the parent is expanded). The function can take one argument, the model of the parent node. It should return the models of the children nodes. | `null` | |
-| deleteNodeCallback   | Function | An async function that resolves to a boolean (called by the delete button). The function can take one argument, the model to delete. It should return a boolean indicating whether to delete the node. | `null` | |
+| addChildCallback     | TreeViewAddChildCallbackMethod | An async function that resolves to a new node model (called by the add button). The function can take one argument, the model of the parent node. It should return the model of the new child node. | `null` | |
+| loadChildrenAsync    | TreeViewLoadChildNodesAsyncMethod | An async function that resolves to a node's children (called when the parent is expanded). The function can take one argument, the model of the parent node. It should return the models of the children nodes. | `null` | |
+| deleteNodeCallback   | TreeViewDeleteNodeCallbackMethod | An async function that resolves to a boolean (called by the delete button). The function can take one argument, the model to delete. It should return a boolean indicating whether to delete the node. | `null` | |
 
 \* If `input.type` is not supplied, `input` is forced to `null`.
 
@@ -401,7 +410,7 @@ Sometimes the entire content of a node (_e.g._, the checkbox or text) needs cust
 |              |                                                             | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
 | expander     | Replaces the button and spacer used for expanding nodes     | metaModel - The TreeViewNode's metaModel                                                           |
 |              |                                                             | customClasses - Any custom classes specified in `treeNodeSpec.customizations`                      |
-|              |                                                             | expanderId - The ID for the expander buton 9as generated by the TreeViewNode)                      |
+|              |                                                             | expanderId - The ID for the expander button as generated by the TreeViewNode)                      |
 |              |                                                             | canExpand - The TreeViewNode's computed boolean indicating whether the node can expand             |
 |              |                                                             | toggleNodeExpanded - A method to toggle the expanded state of the node                             |
 

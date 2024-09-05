@@ -18,12 +18,12 @@ Async.args = {
 };
 let asyncChildCounter = 0;
 async function loadNodesCallback() {
-  return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: 'async-rootNode', label: 'Root Node' }]), 1000));
+  return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: 'async-rootNode', label: 'Root Node', children: [] }]), 1000));
 }
 async function loadChildrenCallback(parentModel) {
   asyncChildCounter++;
   let currentCounter = asyncChildCounter;
-  return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: `async-child-node${currentCounter}`, label: `Child ${currentCounter} from parent ${parentModel.data.id}` }]), 1000));
+  return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: `async-child-node${currentCounter}`, label: `Child ${currentCounter} from parent ${parentModel.data.id}`, children: [] }]), 1000));
 }
 
 const docSourceCode = `
@@ -38,12 +38,12 @@ const modelDefaults = () => ({ loadChildrenAsync: loadChildrenCallback });
 
 let asyncChildCounter = 0;
 async function loadNodesCallback() {
-  return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: 'async-rootNode', label: 'Root Node' }]), 1000));
+  return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: 'async-rootNode', label: 'Root Node', children: [] }]), 1000));
 }
 async function loadChildrenCallback(parentModel) {
   asyncChildCounter++;
   let currentCounter = asyncChildCounter;
-  return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: \`async-child-node\${currentCounter}\`, label: \`Child \${currentCounter} from parent \${parentModel.data.id}\` }]), 1000));
+  return new Promise(resolve => setTimeout(resolve.bind(null, [{ id: \`async-child-node\${currentCounter}\`, label: \`Child \${currentCounter} from parent \${parentModel.data.id}\`, children: [] }]), 1000));
 }
 </script>`;
 

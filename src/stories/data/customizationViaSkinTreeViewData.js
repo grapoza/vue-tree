@@ -6,6 +6,7 @@ export const treeData = [
       {
         id: "customization-skin-subNode",
         label: "Subnode",
+        children: [],
       },
     ],
   },
@@ -38,5 +39,6 @@ async function addChildCallback(parentModel) {
   return Promise.resolve({
     id: `customization-skin-child-node${this.childCounter}`,
     label: `Added Child ${this.childCounter} of ${parentModel.data.id}`,
+    children: [],
   });
 }

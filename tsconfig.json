@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "target": "esnext",
+    "module": "esnext",
+    "declaration": true,
+    "declarationDir": "dist",
+    "outDir": "dist",
+    "noImplicitAny": true,
+    "isolatedModules": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "useDefineForClassFields": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "lib": ["esnext", "dom"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@": ["./src"],
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "grapoza-tree-lib.ts",
+  ],
+}

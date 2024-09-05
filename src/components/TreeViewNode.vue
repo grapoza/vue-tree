@@ -51,7 +51,7 @@
                 v-if="canExpand"
                 aria-hidden="true"
                 tabindex="-1"
-                :title="metaModel.expanderTitle"
+                :title="metaModel.expanderTitle ?? undefined"
                 class="grtvn-self-expander"
                 :class="[customClasses.treeViewNodeSelfExpander,
                 metaModel.state.expanded ? 'grtvn-self-expanded' : '',
@@ -74,7 +74,7 @@
             :checkboxChangeHandler="onCheckboxChange">
 
         <label :for="inputId"
-               :title="metaModel.title"
+               :title="metaModel.title ?? undefined"
                class="grtvn-self-label"
                :class="customClasses.treeViewNodeSelfLabel">
 
@@ -101,7 +101,7 @@
             :radioChangeHandler="onRadioChange">
 
         <label :for="inputId"
-               :title="metaModel.title"
+               :title="metaModel.title ?? undefined"
                class="grtvn-self-label"
                :class="customClasses.treeViewNodeSelfLabel">
 
@@ -110,10 +110,10 @@
                  class="grtvn-self-input grtvn-self-radio"
                  :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfRadio]"
                  type="radio"
-                 :name="metaModel.input.name"
+                 :name="metaModel.input.name!"
                  :value="metaModel.input.value"
                  :disabled="metaModel.state.input.disabled"
-                 v-model="radioGroupValues[metaModel.input.name]"
+                 v-model="radioGroupValues[metaModel.input.name!]"
                  @change="onRadioChange" />
 
           {{ label }}
@@ -126,7 +126,7 @@
             :metaModel="metaModel"
             :customClasses="customClasses">
 
-        <span :title="metaModel.title"
+        <span :title="metaModel.title ?? undefined"
               class="grtvn-self-text"
               :class="customClasses.treeViewNodeSelfText">
           {{ label }}
@@ -139,7 +139,7 @@
               v-if="metaModel.addChildCallback"
               aria-hidden="true"
               tabindex="-1"
-              :title="metaModel.addChildTitle"
+              :title="metaModel.addChildTitle ?? undefined"
               class="grtvn-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfAddChild]"
               @click="addChild">
@@ -153,7 +153,7 @@
               v-if="metaModel.deletable"
               aria-hidden="true"
               tabindex="-1"
-              :title="metaModel.deleteTitle"
+              :title="metaModel.deleteTitle ?? undefined"
               class="grtvn-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfDelete]"
               @click="onDelete">
@@ -194,7 +194,7 @@
                       :selection-mode="selectionMode"
                       :tree-id="treeId"
                       :initial-radio-group-values="radioGroupValues"
-                      :aria-key-map="ariaKeyMap"
+                      :ariaKeyMap="ariaKeyMap"
                       :is-mounted="isMounted"
                       @treeNodeClick="(t, e)=>$emit(TreeEvent.Click, t, e)"
                       @treeNodeDblclick="(t, e)=>$emit(TreeEvent.DoubleClick, t, e)"
@@ -236,20 +236,22 @@
   </li>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
-import { computed, ref, toRef, watchEffect } from 'vue'
-import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer.js';
-import { useChildren } from '../composables/children/children.js';
-import { useTreeViewNodeChildren } from '../composables/children/treeViewNodeChildren.js';
-import { useTreeViewNodeDragAndDrop } from '../composables/dragDrop/treeViewNodeDragAndDrop.js';
-import { useFocus } from '../composables/focus/focus.js';
-import { useTreeViewNodeFocus } from '../composables/focus/treeViewNodeFocus.js';
-import { useTreeViewNodeSelection } from '../composables/selection/treeViewNodeSelection.js';
-import { useTreeViewNodeExpansion } from '../composables/expansion/treeViewNodeExpansion.js';
-import { useTreeViewNodeFilter } from '../composables/filter/treeViewNodeFilter.js';
-import SelectionMode from '../enums/selectionMode.js';
-import TreeEvent from '../enums/event.js';
+import { computed, PropType, Ref, ref, toRef, useTemplateRef, watchEffect } from 'vue'
+import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
+import { useChildren } from '../composables/children/children';
+import { useTreeViewNodeChildren } from '../composables/children/treeViewNodeChildren';
+import { useTreeViewNodeDragAndDrop } from '../composables/dragDrop/treeViewNodeDragAndDrop';
+import { useFocus } from '../composables/focus/focus';
+import { useTreeViewNodeFocus } from '../composables/focus/treeViewNodeFocus';
+import { useTreeViewNodeSelection } from '../composables/selection/treeViewNodeSelection';
+import { useTreeViewNodeExpansion } from '../composables/expansion/treeViewNodeExpansion';
+import { useTreeViewNodeFilter } from '../composables/filter/treeViewNodeFilter';
+import { SelectionMode } from '../types/selectionMode';
+import { TreeEvent } from '../types/event';
+import { TreeViewNodeMetaModelCustomizations, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaults, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeView';
+import { DropEventData } from 'types/dragDrop';
 
 // PROPS
 
@@ -263,7 +265,7 @@ const props = defineProps({
     required: true
   },
   initialRadioGroupValues: {
-    type: Object,
+    type: Object as PropType<Record<string, string>>,
     required: true
   },
   isMounted: {
@@ -271,14 +273,14 @@ const props = defineProps({
     required: true
   },
   modelDefaults: {
-    type: Function,
+    type: Function as PropType<TreeViewNodeMetaModelDefaultsMethod>,
     required: true
   },
   selectionMode: {
-    type: String,
+    type: String as PropType<SelectionMode>,
     required: false,
     default: SelectionMode.None,
-    validator: function (value) {
+    validator: function (value: SelectionMode) {
       return Object.values(SelectionMode).includes(value);
     }
   },
@@ -290,35 +292,68 @@ const props = defineProps({
 
 // EMITS
 
-const emit = defineEmits([
-  TreeEvent.Activate,
-  TreeEvent.Add,
-  TreeEvent.Click,
-  TreeEvent.CheckboxChange,
-  TreeEvent.ChildCheckboxChange,
-  TreeEvent.ChildrenLoad,
-  TreeEvent.Delete,
-  TreeEvent.DoubleClick,
-  TreeEvent.DragMove,
-  TreeEvent.Drop,
-  TreeEvent.ExpandedChange,
-  TreeEvent.FocusableChange,
-  TreeEvent.RadioChange,
-  TreeEvent.RequestFirstFocus,
-  TreeEvent.RequestLastFocus,
-  TreeEvent.RequestNextFocus,
-  TreeEvent.RequestParentFocus,
-  TreeEvent.RequestPreviousFocus,
-  TreeEvent.SelectedChange
-]);
+const emit = defineEmits({
+  [TreeEvent.Activate]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.Add]: (node: TreeViewNodeMetaModel, parent: TreeViewNodeMetaModel) => true,
+  [TreeEvent.CheckboxChange]: (node: TreeViewNodeMetaModel, event: Event) => true,
+  [TreeEvent.ChildCheckboxChange]: (node: TreeViewNodeMetaModel, child: TreeViewNodeMetaModel, event: Event) => true,
+  [TreeEvent.ChildrenLoad]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.Click]: (node: TreeViewNodeMetaModel, event: MouseEvent) => true,
+  [TreeEvent.Delete]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.DoubleClick]: (node: TreeViewNodeMetaModel, event: MouseEvent) => true,
+  [TreeEvent.DragMove]: (node: TreeViewNodeMetaModel, event: DragEvent) => true,
+  [TreeEvent.Drop]: (data: DropEventData, event: DragEvent) => true,
+  [TreeEvent.ExpandedChange]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.FocusableChange]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.RadioChange]: (node: TreeViewNodeMetaModel, event: Event) => true,
+  [TreeEvent.RequestFirstFocus]: (keepCurrentDomFocus?: boolean) => true,
+  [TreeEvent.RequestLastFocus]: () => true,
+  [TreeEvent.RequestNextFocus]: (node: TreeViewNodeMetaModel, keepCurrentDomFocus: boolean) => true,
+  [TreeEvent.RequestParentFocus]: () => true,
+  [TreeEvent.RequestPreviousFocus]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.SelectedChange]: (node: TreeViewNodeMetaModel) => true,
+});
+
+// SLOTS
+
+const slots = defineSlots<{
+  expander(props: {
+    metaModel: TreeViewNodeMetaModel,
+    customClasses: TreeViewNodeMetaModelCustomizations["classes"],
+    expanderId: string,
+    canExpand: boolean,
+    toggleNodeExpanded: () => boolean
+  }): void,
+  checkbox(props: {
+    metaModel: TreeViewNodeMetaModel,
+    customClasses: TreeViewNodeMetaModelCustomizations["classes"],
+    inputId: string,
+    checkboxChangeHandler: (event: Event) => void
+  }): void,
+  radio(props: {
+    metaModel: TreeViewNodeMetaModel,
+    customClasses: TreeViewNodeMetaModelCustomizations["classes"],
+    inputId: string,
+    radioGroupValues: Record<string, any>,
+    radioChangeHandler: (event: Event) => void
+  }): void,
+  text(props: {
+    metaModel: TreeViewNodeMetaModel,
+    customClasses: TreeViewNodeMetaModelCustomizations["classes"]
+  }): void,
+  loading(props: {
+    metaModel: TreeViewNodeMetaModel,
+    customClasses: TreeViewNodeMetaModelCustomizations["classes"]
+  }): void
+}>();
 
 // DATA
 
 const elementsThatIgnoreClicks = 'input, .grtvn-self-expander, .grtvn-self-expander *, .grtvn-self-action, .grtvn-self-action *';
-const metaModel = defineModel({ required: true });
+const metaModel = defineModel({ required: true, type: Object as PropType<TreeViewNodeMetaModel> });
 
 const radioGroupValues = ref(props.initialRadioGroupValues);
-const nodeElement = ref(null); // template ref
+const nodeElement = useTemplateRef("nodeElement");
 
 // COMPUTED
 
@@ -350,8 +385,8 @@ const treeId = computed(() => props.treeId);
 
 // COMPOSABLES
 
-const { createMetaModel, normalizeNodeData } = useNodeDataNormalizer(metaModel, props.modelDefaults, radioGroupValues);
-normalizeNodeData(metaModel);
+const { createMetaModel, normalizeNodeData } = useNodeDataNormalizer(metaModel as Ref<TreeViewNodeMetaModelDefaults>, props.modelDefaults, radioGroupValues);
+normalizeNodeData();
 
 const {
   getChildren,
@@ -424,7 +459,7 @@ watchEffect(() => {
     if (index !== metaIndex) {
       // Otherwise, if the node is not in the meta children, add it.
       if (metaIndex === -1) {
-        metaChildren.splice(index, 0, createMetaModel(node));
+        metaChildren.splice(index, 0, createMetaModel(node) as TreeViewNodeMetaModel);
       }
       else {
         // If the node is in the meta children, but not in the right place, move it.
@@ -444,18 +479,18 @@ watchEffect(() => {
 /**
  * Pass the event for checkbox changes up from the node.
  * Emits a treeNodeCheckboxChange event
- * @param {Event} event The event that triggered the change
+ * @param event The event that triggered the change
  */
-function onCheckboxChange(event) {
+function onCheckboxChange(event: Event) {
   emit(TreeEvent.CheckboxChange, metaModel.value, event);
 }
 
 /**
  * Pass the event for radio button changes up from the node.
  * Emits a treeNodeRadioChange event
- * @param {Event} event The event that triggered the change
+ * @param event The event that triggered the change
  */
-function onRadioChange(event) {
+function onRadioChange(event: Event) {
   emit(TreeEvent.RadioChange, metaModel.value, event);
 }
 
@@ -463,11 +498,11 @@ function onRadioChange(event) {
  * Handles clicks on the node. It only performs actions if the click happened on an element
  * that does not have node clicks explicitly ingored (e.g., the expander button).
  * Emits a treeNodeClick event.
- * @param {Event} event The click event
+ * @param event The click event
  */
-function onClick(event) {
+function onClick(event: MouseEvent) {
   // Don't fire this if the target is an element which has its own events
-  if (!event.target.matches(elementsThatIgnoreClicks)) {
+  if (!(event.target as Element).matches(elementsThatIgnoreClicks)) {
     emit(TreeEvent.Click, metaModel.value, event);
     toggleNodeSelected();
   }
@@ -479,11 +514,11 @@ function onClick(event) {
  * Handles double clicks on the node. It only performs actions if the double click happened on an
  * element that does not have node clicks explicitly ingored (e.g., the expander button).
  * Emits a treeNodeDblclick event.
- * @param {Event} event The dblclick event
+ * @param event The dblclick event
  */
-function onDblclick(event) {
+function onDblclick(event: MouseEvent) {
   // Don't fire this if the target is an element which has its own events
-  if (!event.target.matches(elementsThatIgnoreClicks)) {
+  if (!(event.target as Element).matches(elementsThatIgnoreClicks)) {
     emit(TreeEvent.DoubleClick, metaModel.value, event);
   }
 }
@@ -491,9 +526,8 @@ function onDblclick(event) {
 /**
  * Handles node deletion eventing. A callback can be supplied in the metaModel to perform
  * and pre-processing of the node or to cancel the deletion entirely.
- * @param {Event} event The event that triggered this method call
  */
-async function onDelete(event) {
+async function onDelete() {
   if (metaModel.value.deletable && (await metaModel.value.deleteNodeCallback?.(metaModel.value) ?? true)) {
     emit(TreeEvent.Delete, metaModel.value);
   }
@@ -502,13 +536,13 @@ async function onDelete(event) {
 /**
  * Handles key events to trigger interactions such as selection, expansion,
  * or activation. Each interaction is detailed in the method body.
- * @param {Event} event The keydown event
+ * @param event The keydown event
  */
-function onKeyDown(event) {
+function onKeyDown(event: KeyboardEvent) {
   let eventHandled = true;
 
   // Do nothing when modifiers or shift are present.
-  if (event.altKey || event.ctrlKey || event.metaKey || event.shift) {
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
     return;
   }
 
@@ -517,8 +551,8 @@ function onKeyDown(event) {
     // Note that splitting activation and selection so explicitly differs from
     // https://www.w3.org/TR/wai-aria-practices-1.1/#keyboard-interaction-22 (Enter description, and Selection in multi-select trees)
     if (metaModel.value.input && !metaModel.value.state.input.disabled) {
-      let tvns = nodeElement.value.querySelector('.grtvn-self');
-      let target = tvns.querySelector('.grtvn-self-input') || tvns.querySelector('input');
+      let tvns = nodeElement.value!.querySelector('.grtvn-self');
+      let target = tvns!.querySelector('.grtvn-self-input') ?? tvns!.querySelector('input');
 
       if (target) {
         // Note: until there's a need, this just dumbly clicks the .t-v-n-s-i or first input if it exists.
@@ -585,7 +619,7 @@ function onKeyDown(event) {
   else if (props.ariaKeyMap.deleteItem.includes(event.keyCode)) {
     // Trigger deletion of the current node if allowed.
     // Focus is moved to the previous node if available, or the next node.
-    onDelete(event);
+    onDelete();
   }
   else {
     eventHandled = false;
@@ -602,9 +636,9 @@ function onKeyDown(event) {
  * Note that only the node that was deleted fires these, not any subnode, so
  * this comes from a request from the child node for this node to delete it.
  * This emits the treeNodeDelete event.
- * @param {Object} metaNode The node to remove
+ * @param metaNode The node to remove
  */
-function handleChildDeletion(metaNode) {
+function handleChildDeletion(metaNode: TreeViewNodeMetaModel) {
   // Remove the node from the array of children if this is an immediate child.
   // Note that only the node that was deleted fires these, not any subnode.
   let targetIndex = filteredChildren.value.indexOf(metaNode);
@@ -627,10 +661,10 @@ function handleChildDeletion(metaNode) {
 /**
  * Emits the treeNodeCheckboxChange event, and if the event is for
  * a direct child then it also emits the treeNodeChildCheckboxChange event.
- * @param {Object} metaNode The meta node on which the checkbox changed
- * @param {Event} event The event that triggered the change
+ * @param metaNode The meta node on which the checkbox changed
+ * @param event The event that triggered the change
  */
-function handleCheckboxChange(metaNode, event) {
+function handleCheckboxChange(metaNode: TreeViewNodeMetaModel, event: Event) {
   emit(TreeEvent.CheckboxChange, metaNode, event);
 
   if (children.value.includes(metaNode)) {
