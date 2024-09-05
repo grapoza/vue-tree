@@ -110,7 +110,7 @@ export function modelDefaults(node) {
           selected: false,
         },
         addChildCallback: function () {
-          var entry = prompt("Give it a string.", "");
+          const entry = prompt("Give it a string.", "");
           return Promise.resolve(
             entry ? { id: entry, label: entry, deletable: true, selectable: true } : null
           );

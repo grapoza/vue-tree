@@ -2,6 +2,7 @@ export const treeData = [
   {
     id: 'addremove-rootNode',
     label: 'Root Node',
+    children: [],
   }
 ];
 
@@ -28,6 +29,7 @@ function addChildCallback(parentModel) {
   return Promise.resolve({
     id: `child-node${addRemoveChildCounter}`,
     label: `Added Child ${addRemoveChildCounter} from parent ${parentModel.data.id}`,
+    children: [],
   });
 }
 function deleteNodeCallback(model) {

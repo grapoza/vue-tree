@@ -9,7 +9,7 @@
     <ul class="grtv" role="tree" :aria-multiselectable="ariaMultiselectable" v-if="areNodesLoaded">
       <TreeViewNode v-for="(nodeMetaModel, index) in metaModel"
         :key="nodeMetaModel.data[nodeMetaModel?.idProperty ?? 'id']"
-        :aria-key-map="ariaKeyMap"
+        :ariaKeyMap="ariaKeyMap"
         :depth="0"
         :model-defaults="modelDefaults"
         v-model="metaModel[index]"
@@ -17,22 +17,22 @@
         :tree-id="uniqueId"
         :is-mounted="isMounted"
         :initial-radio-group-values="radioGroupValues"
-        @treeNodeClick="(t, e)=>$emit(TreeEvent.Click, t, e)"
-        @treeNodeDblclick="(t, e)=>$emit(TreeEvent.DoubleClick, t, e)"
-        @treeNodeCheckboxChange="(t, e)=>$emit(TreeEvent.CheckboxChange, t, e)"
-        @treeNodeChildCheckboxChange="(t, c, e)=>$emit(TreeEvent.ChildCheckboxChange, t, c, e)"
-        @treeNodeRadioChange="(t, e)=>$emit(TreeEvent.RadioChange, t, e)"
-        @treeNodeExpandedChange="(t)=>$emit(TreeEvent.ExpandedChange, t)"
-        @treeNodeChildrenLoad="(t)=>$emit(TreeEvent.ChildrenLoad, t)"
+        @treeNodeClick="(t: TreeViewNodeMetaModel, e: MouseEvent)=>$emit(TreeEvent.Click, t, e)"
+        @treeNodeDblclick="(t: TreeViewNodeMetaModel, e: MouseEvent)=>$emit(TreeEvent.DoubleClick, t, e)"
+        @treeNodeCheckboxChange="(t: TreeViewNodeMetaModel, e: Event)=>$emit(TreeEvent.CheckboxChange, t, e)"
+        @treeNodeChildCheckboxChange="(t: TreeViewNodeMetaModel, c: TreeViewNodeMetaModel, e: Event)=>$emit(TreeEvent.ChildCheckboxChange, t, c, e)"
+        @treeNodeRadioChange="(t: TreeViewNodeMetaModel, e: Event)=>$emit(TreeEvent.RadioChange, t, e)"
+        @treeNodeExpandedChange="(t: TreeViewNodeMetaModel)=>$emit(TreeEvent.ExpandedChange, t)"
+        @treeNodeChildrenLoad="(t: TreeViewNodeMetaModel)=>$emit(TreeEvent.ChildrenLoad, t)"
         @treeNodeSelectedChange="handleNodeSelectedChange"
-        @treeNodeActivate="(t)=>$emit(TreeEvent.Activate, t)"
-        @treeNodeAdd="(t, p)=>$emit(TreeEvent.Add, t, p)"
+        @treeNodeActivate="(t: TreeViewNodeMetaModel)=>$emit(TreeEvent.Activate, t)"
+        @treeNodeAdd="(t: TreeViewNodeMetaModel, p: TreeViewNodeMetaModel)=>$emit(TreeEvent.Add, t, p)"
         @treeNodeDelete="handleChildDeletion"
         @treeNodeAriaFocusableChange="handleFocusableChange"
-        @treeNodeAriaRequestFirstFocus="(keepCurrentDomFocus) => focusFirst(metaModel, keepCurrentDomFocus)"
+        @treeNodeAriaRequestFirstFocus="(keepCurrentDomFocus?: boolean) => focusFirst(metaModel, keepCurrentDomFocus)"
         @treeNodeAriaRequestLastFocus="focusLast(metaModel)"
-        @treeNodeAriaRequestPreviousFocus="(t) => focusPrevious(metaModel, t)"
-        @treeNodeAriaRequestNextFocus="(t, f) => focusNext(metaModel, t, f)"
+        @treeNodeAriaRequestPreviousFocus="(t: TreeViewNodeMetaModel) => focusPrevious(metaModel, t)"
+        @treeNodeAriaRequestNextFocus="(t: TreeViewNodeMetaModel, f: boolean) => focusNext(metaModel, t, f)"
         @treeNodeDragMove="dragMoveNode"
         @treeNodeDrop="drop">
 
@@ -56,22 +56,23 @@
   </div>
 </template>
 
-<script setup>
-import { computed, nextTick, ref, readonly, onMounted, provide, toRef, watchEffect } from 'vue'
-import SelectionMode from '../enums/selectionMode.js';
-import { useIdGeneration } from '../composables/idGeneration.js'
-import { useTreeViewTraversal } from '../composables/treeViewTraversal.js'
-import { useFocus } from '../composables/focus/focus.js';
-import { useTreeViewFocus } from '../composables/focus/treeViewFocus.js';
-import { useSelection } from '../composables/selection/selection.js';
-import { useTreeViewFilter } from '../composables/filter/treeViewFilter.js';
-import { useTreeViewSelection } from '../composables/selection/treeViewSelection.js';
-import { useTreeViewDragAndDrop } from '../composables/dragDrop/treeViewDragAndDrop.js';
-import { useTreeViewConvenienceMethods } from '../composables/treeViewConvenienceMethods.js';
-import { useTreeViewDataUpdates } from '../composables/treeViewDataUpdates.js';
-import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer.js';
+<script setup lang="ts">
+import { computed, nextTick, ref, readonly, onMounted, provide, toRef, watchEffect, Ref, useTemplateRef, PropType } from 'vue'
+import { SelectionMode } from '../types/selectionMode';
+import { useIdGeneration } from '../composables/idGeneration'
+import { useTreeViewTraversal } from '../composables/treeViewTraversal'
+import { useFocus } from '../composables/focus/focus';
+import { useTreeViewFocus } from '../composables/focus/treeViewFocus';
+import { useSelection } from '../composables/selection/selection';
+import { useTreeViewFilter } from '../composables/filter/treeViewFilter';
+import { useTreeViewSelection } from '../composables/selection/treeViewSelection';
+import { useTreeViewDragAndDrop } from '../composables/dragDrop/treeViewDragAndDrop';
+import { useTreeViewConvenienceMethods } from '../composables/treeViewConvenienceMethods';
+import { useTreeViewDataUpdates } from '../composables/treeViewDataUpdates';
+import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
 import TreeViewNode from './TreeViewNode.vue';
-import TreeEvent from '../enums/event.js';
+import { TreeEvent } from '../types/event';
+import { TreeViewFilterMethod, TreeViewLoadNodesAsyncMethod, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeView';
 
 // PROPS
 
@@ -80,7 +81,7 @@ const props = defineProps({
     type: Object,
     required: false,
     default: function () { return {}; },
-    validator: function (value) {
+    validator: function (value: { [key: string]: any }) {
       // All properties must be non-empty arrays of numbers
       for (const prop in value) {
         if (!Array.isArray(value[prop]) || value[prop].some((e) => !Number.isInteger(e))) {
@@ -93,25 +94,25 @@ const props = defineProps({
     }
   },
   filterMethod: {
-    type: Function,
+    type: Function as PropType<TreeViewFilterMethod>,
     required: false,
     default: null
   },
   loadNodesAsync: {
-    type: Function,
+    type: Function as PropType<TreeViewLoadNodesAsyncMethod>,
     required: false,
     default: null
   },
   modelDefaults: {
-    type: Function,
+    type: Function as PropType<TreeViewNodeMetaModelDefaultsMethod>,
     required: false,
     default() { return {}; }
   },
   selectionMode: {
-    type: String,
+    type: String as PropType<SelectionMode>,
     required: false,
     default: SelectionMode.None,
-    validator: function (value) {
+    validator: function (value: SelectionMode) {
       return Object.values(SelectionMode).includes(value);
     }
   },
@@ -119,30 +120,31 @@ const props = defineProps({
     type: String,
     required: false,
     default: 'grtv-default-skin',
-    validator: function (value) {
+    validator: function (value: string | null) {
       return value === null || !value.match(/\s/);
     }
   }
 });
 
-const model = defineModel({ type: Array, required: true });
+const model = defineModel<object[]>({ type: Array, required: true });
 
 // EMITS
 
-const emit = defineEmits([
-  TreeEvent.Activate,
-  TreeEvent.Add,
-  TreeEvent.CheckboxChange,
-  TreeEvent.ChildrenLoad,
-  TreeEvent.ChildCheckboxChange,
-  TreeEvent.Click,
-  TreeEvent.Delete,
-  TreeEvent.DoubleClick,
-  TreeEvent.ExpandedChange,
-  TreeEvent.RadioChange,
-  TreeEvent.RootNodesLoad,
-  TreeEvent.SelectedChange
-]);
+const emit = defineEmits({
+  [TreeEvent.Activate]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.Add]: (node: TreeViewNodeMetaModel, parent: TreeViewNodeMetaModel) => true,
+  [TreeEvent.CheckboxChange]: (node: TreeViewNodeMetaModel, event: Event) => true,
+  [TreeEvent.ChildrenLoad]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.ChildCheckboxChange]: (node: TreeViewNodeMetaModel, child: TreeViewNodeMetaModel, event: Event) => true,
+  [TreeEvent.Click]: (node: TreeViewNodeMetaModel, event: MouseEvent) => true,
+  [TreeEvent.Delete]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.DoubleClick]: (node: TreeViewNodeMetaModel, event: MouseEvent) => true,
+  [TreeEvent.ExpandedChange]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.RadioChange]: (node: TreeViewNodeMetaModel, event: Event) => true,
+  [TreeEvent.RootNodesLoad]: (nodes: object[]) => true,
+  [TreeEvent.SelectedChange]: (node: TreeViewNodeMetaModel) => true,
+});
+
 
 // CONSTANTS
 const defaultAriaKeyMap = readonly({
@@ -160,22 +162,24 @@ const defaultAriaKeyMap = readonly({
 
 // DATA
 
-const metaModel = ref([]);
+const metaModel = ref<TreeViewNodeMetaModel[]>([]);
 const areNodesAsyncLoaded = ref(false);
 const isMounted = ref(false);
 const radioGroupValues = ref({});
 const uniqueId = ref('');
-const treeElement = ref(null); // ref in template
+const treeElement = useTemplateRef("treeElement");
 
 const { createMetaModel } = useNodeDataNormalizer();
 
 // Initialize the tree state model with an object for each root node. The nodes
 // will do the same for their subnodes during normalization.
 model.value.forEach((node) => {
-  metaModel.value.push(createMetaModel(node));
+  metaModel.value.push(createMetaModel(node) as TreeViewNodeMetaModel);
 });
 
 // COMPOSABLES
+
+const selectionModeRef = toRef(props, "selectionMode") as Ref<SelectionMode>;
 
 const { generateUniqueId } = useIdGeneration();
 
@@ -200,13 +204,13 @@ const {
   ariaMultiselectable,
   enforceSelectionMode,
   handleNodeSelectedChange,
-} = useTreeViewSelection(metaModel, toRef(props, "selectionMode"), focusableNodeMetaModel, emit);
+} = useTreeViewSelection(metaModel, selectionModeRef, focusableNodeMetaModel, emit);
 
 const {
   isSelectable,
   isSelected,
   select,
-} = useSelection(toRef(props, "selectionMode"));
+} = useSelection();
 
 const {
   findById,
@@ -215,7 +219,7 @@ const {
   getMatching,
   getSelected,
   removeById,
-} = useTreeViewConvenienceMethods(model, metaModel, radioGroupValues, toRef(props, "selectionMode"));
+} = useTreeViewConvenienceMethods(model, metaModel, radioGroupValues, selectionModeRef);
 
 const { dragMoveNode, drop } = useTreeViewDragAndDrop(model, metaModel, uniqueId, findById, removeById);
 
@@ -225,14 +229,14 @@ useTreeViewFilter(metaModel);
 
 // Watch the model to make sure the metamodel is kept in sync
 watchEffect(() => {
-  model.value.forEach((node, index) => {
+  model.value.forEach((node: { [key: string]: any }, index) => {
     const metaIndex = metaModel.value.findIndex((m) => m.data[m.idProperty] === node[m.idProperty]);
 
     // If the indexes match, then the meta node is already in place and we can skip it.
     if (index !== metaIndex) {
       // Otherwise, if the node is not in the meta children, add it.
       if (metaIndex === -1) {
-        metaModel.value.splice(index, 0, createMetaModel(node));
+        metaModel.value.splice(index, 0, createMetaModel(node) as TreeViewNodeMetaModel);
       }
       else {
         // If the node is in the meta children, but not in the right place, move it.
@@ -274,7 +278,8 @@ onMounted(async () => {
     // Walk the model looking for focusable attributes.
     // If none are found, set to true for the first root, or the first selected node if one exists.
     // If one is found, set any subsequent to false.
-    let firstSelectedNode = null;
+    let firstSelectedNode: TreeViewNodeMetaModel | null = null;
+
     depthFirstTraverse((metaNode) => {
       if (isFocused(metaNode)) {
         if (focusableNodeMetaModel.value) {
@@ -288,22 +293,25 @@ onMounted(async () => {
         firstSelectedNode = metaNode;
       }
     });
+
     if (!focusableNodeMetaModel.value) {
       focusableNodeMetaModel.value = firstSelectedNode || metaModel.value[0];
-      focus(focusableNodeMetaModel);
+      focus(focusableNodeMetaModel as Ref<TreeViewNodeMetaModel>);
     }
 
     // Also default the selection to the focused node if no selected node was found
     // and the selection mode is selectionFollowsFocus.
-    if (firstSelectedNode === null && isSelectable(focusableNodeMetaModel) && props.selectionMode === SelectionMode.SelectionFollowsFocus) {
-      select(focusableNodeMetaModel);
+    if (firstSelectedNode === null
+        && isSelectable(focusableNodeMetaModel as Ref<TreeViewNodeMetaModel>)
+        && props.selectionMode === SelectionMode.SelectionFollowsFocus) {
+      select(focusableNodeMetaModel as Ref<TreeViewNodeMetaModel>);
     }
 
     enforceSelectionMode();
   }
 
   // Set isMounted in a nextTick so the focusable watcher
-  // in treeViewNodeSelection.js fires before isMounted is set.
+  // in treeViewNodeFocus fires before isMounted is set.
   // Otherwise, it steals focus when the tree is mounted.
   // Also wait to enforce single selection mode in case root
   // nodes load asynchronously so their create hooks fire.
@@ -324,7 +332,7 @@ onMounted(async () => {
 async function performInitialNodeLoad() {
   // If nodes need to be loaded asynchronously, load them.
   if (!areNodesLoaded.value) {
-    var nodesResult = await props.loadNodesAsync();
+    const nodesResult = await props.loadNodesAsync();
 
     if (nodesResult) {
       areNodesAsyncLoaded.value = true;
@@ -339,9 +347,9 @@ async function performInitialNodeLoad() {
  * Note that only the node that was deleted fires these, not any subnode, so
  * this comes from a request from the child node for this node to delete it.
  * This emits the treeNodeDelete event.
- * @param {TreeViewNode} metaNode The meta node to remove
+ * @param metaNode The meta node to remove
  */
-function handleChildDeletion(metaNode) {
+function handleChildDeletion(metaNode: TreeViewNodeMetaModel) {
   let targetIndex = metaModel.value.indexOf(metaNode);
   if (targetIndex > -1) {
     handleNodeDeletion(metaNode);
@@ -354,9 +362,9 @@ function handleChildDeletion(metaNode) {
 /**
  * Handles setting the focusable node in the tree when the
  * currently focuable node is deleted.
- * @param {TreeViewNode} metaNode The meta node that was deleted
+ * @param metaNode The meta node that was deleted
  */
-function handleNodeDeletion(metaNode) {
+function handleNodeDeletion(metaNode: TreeViewNodeMetaModel) {
   if (isFocused(metaNode)) {
     if (metaModel.value.indexOf(metaNode) === 0) {
       if (metaModel.value.length > 0) {

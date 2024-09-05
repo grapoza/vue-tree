@@ -37,6 +37,7 @@ const treeData = [
       {
         id: "customization-class-subNode",
         label: "Subnode",
+        children: [],
       },
     ],
   },
@@ -66,6 +67,7 @@ async function addChildCallback(parentModel) {
   return Promise.resolve({
     id: \`customization-class-child-node\${classChildCounter}\`,
     label: \`Added Child \${classChildCounter} of \${parentModel.data.id}\`,
+    children: [],
   });
 }
 </script>`;
