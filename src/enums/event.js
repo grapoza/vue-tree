@@ -11,6 +11,7 @@ const events = Object.freeze({
     ExpandedChange: 'treeNodeExpandedChange',
     ChildrenLoad: 'treeNodeChildrenLoad',
     SelectedChange: 'treeNodeSelectedChange',
+    Activate: 'treeNodeActivate',
 
     // Focus
     FocusableChange: 'treeNodeAriaFocusableChange',

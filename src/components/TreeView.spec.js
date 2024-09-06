@@ -648,6 +648,19 @@ describe('TreeView.vue', () => {
     });
   });
 
+  describe('when a node fires a treeNodeActivate event', () => {
+
+    beforeEach(async () => {
+      const { nodes, modelDefaults } = generateNodes(['es']);
+      wrapper = await createWrapper({ modelValue: nodes, modelDefaults, selectionMode: SelectionMode.Multiple });
+      wrapper.findComponent(TreeViewNode).vm.$emit("treeNodeActivate", wrapper.vm.metaModel[0]);
+    });
+
+    it('should emit a treeNodeActivate event', () => {
+      expect(wrapper.emitted('treeNodeActivate').length).to.equal(1);
+    });
+  });
+
   describe('when created with nodes that do not contain an explicit id property', () => {
 
     it('should fall back to the id property (note: this test is testing implementation [v-for iteration key for nodes] and not functionality)', async () => {
