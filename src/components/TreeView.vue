@@ -25,6 +25,7 @@
         @treeNodeExpandedChange="(t)=>$emit(TreeEvent.ExpandedChange, t)"
         @treeNodeChildrenLoad="(t)=>$emit(TreeEvent.ChildrenLoad, t)"
         @treeNodeSelectedChange="handleNodeSelectedChange"
+        @treeNodeActivate="(t)=>$emit(TreeEvent.Activate, t)"
         @treeNodeAdd="(t, p)=>$emit(TreeEvent.Add, t, p)"
         @treeNodeDelete="handleChildDeletion"
         @treeNodeAriaFocusableChange="handleFocusableChange"
@@ -129,6 +130,7 @@ const model = defineModel({ type: Array, required: true });
 // EMITS
 
 const emit = defineEmits([
+  TreeEvent.Activate,
   TreeEvent.Add,
   TreeEvent.CheckboxChange,
   TreeEvent.ChildrenLoad,

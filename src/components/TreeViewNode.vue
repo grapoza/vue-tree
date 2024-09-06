@@ -204,6 +204,7 @@
                       @treeNodeExpandedChange="(t)=>$emit(TreeEvent.ExpandedChange, t)"
                       @treeNodeChildrenLoad="(t)=>$emit(TreeEvent.ChildrenLoad, t)"
                       @treeNodeSelectedChange="(t)=>$emit(TreeEvent.SelectedChange, t)"
+                      @treeNodeActivate="(t)=>$emit(TreeEvent.Activate, t)"
                       @treeNodeAdd="(t, p)=>$emit(TreeEvent.Add, t, p)"
                       @treeNodeDelete="handleChildDeletion"
                       @treeNodeAriaFocusableChange="(t)=>$emit(TreeEvent.FocusableChange, t)"
@@ -290,6 +291,7 @@ const props = defineProps({
 // EMITS
 
 const emit = defineEmits([
+  TreeEvent.Activate,
   TreeEvent.Add,
   TreeEvent.Click,
   TreeEvent.CheckboxChange,
@@ -524,6 +526,9 @@ function onKeyDown(event) {
         target.dispatchEvent(clickEvent);
       }
     }
+
+    // Bubble activation out so users can apply handling for any kind of node
+    emit(TreeEvent.Activate, metaModel.value);
   }
   else if (props.ariaKeyMap.selectItem.includes(event.keyCode)) {
     // Toggles selection for the focused node.

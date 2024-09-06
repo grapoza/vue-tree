@@ -1762,7 +1762,7 @@ describe('TreeViewNode.vue', () => {
         });
       });
 
-      describe('and the node does not have an input', () => {
+      describe('always', () => {
 
         beforeEach(async () => {
           let defaultProps = getDefaultPropsData();
@@ -1770,9 +1770,9 @@ describe('TreeViewNode.vue', () => {
           await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
         });
 
-        it('should not fire any custom events', () => {
-          expect(Object.getOwnPropertyNames(wrapper.emitted()).length).to.equal(1);
-          expect(Object.getOwnPropertyNames(wrapper.emitted())[0]).to.equal('keydown');
+        it('should emit a treeNodeActivate event', () => {
+          expect(wrapper.emitted().treeNodeActivate).to.be.an("array").that.has.length(1);
+          expect(wrapper.emitted().treeNodeActivate[0][0]).to.equal(wrapper.vm.metaModel);
         });
       });
     });
