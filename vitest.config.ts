@@ -1,4 +1,4 @@
-import { configDefaults, defineConfig } from 'vite'
+import { coverageConfigDefaults, defineConfig } from 'vitest/config'
 import Vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
@@ -6,9 +6,11 @@ export default defineConfig({
   test: {
     coverage: {
       include: ["src/**/*"],
-      exclude: ["src/stories/**/*", "src/**/*.spec.*", ...configDefaults.exclude],
+      exclude: ["src/stories/**/*", "src/**/*.spec.*", ...coverageConfigDefaults.exclude],
       all: true,
-      statements: 90,
+      thresholds: {
+        statements: 90,
+      },
     },
     environment: "jsdom",
     globals: true,
