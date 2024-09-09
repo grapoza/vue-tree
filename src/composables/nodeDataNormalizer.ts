@@ -9,9 +9,9 @@ const { isProbablyObject } = useObjectMethods();
 const allowedEffectAllowedValues = [EffectAllowed.Copy, EffectAllowed.Move, EffectAllowed.CopyMove, EffectAllowed.None];
 
 export function useNodeDataNormalizer(
-  metaModel: Ref<TreeViewNodeMetaModelDefaults>,
-  modelDefaults: TreeViewNodeMetaModelDefaultsMethod,
-  radioGroupValues: Ref<{ [key: string]: any }>
+  metaModel?: Ref<TreeViewNodeMetaModelDefaults>,
+  modelDefaults?: TreeViewNodeMetaModelDefaultsMethod,
+  radioGroupValues?: Ref<{ [key: string]: any }>
 ) {
   /**
    * Creates a new metadata model object. The object will get normalized
@@ -29,9 +29,9 @@ export function useNodeDataNormalizer(
    * Normalizes the data model to the format consumable by TreeViewNode.
    */
   function normalizeNodeData() {
-    const rawMetaModel = unref(metaModel);
+    const rawMetaModel = unref(metaModel!);
 
-    assignDefaultProps(unref(modelDefaults)(rawMetaModel.data), rawMetaModel);
+    assignDefaultProps(unref(modelDefaults!)(rawMetaModel.data), rawMetaModel);
 
     // Set expected properties if not provided
     if (typeof rawMetaModel.idProperty !== "string") {
@@ -112,7 +112,7 @@ export function useNodeDataNormalizer(
     normalizeNodeStateData(rawMetaModel);
     normalizeNodeChildrenData(rawMetaModel);
 
-    metaModel.value = rawMetaModel;
+    metaModel!.value = rawMetaModel;
   }
 
   /**
@@ -179,11 +179,11 @@ export function useNodeDataNormalizer(
         if (typeof input.value !== "string" || input.value.trim().length === 0) {
           input.value = rawMetaModel.data![rawMetaModel.labelProperty!].replace(/[\s&<>"'\/]/g, "");
         }
-        if (!radioGroupValues.value.hasOwnProperty(input.name)) {
-          radioGroupValues.value[input.name] = "";
+        if (!radioGroupValues!.value.hasOwnProperty(input.name)) {
+          radioGroupValues!.value[input.name] = "";
         }
         if (input.isInitialRadioGroupValue === true) {
-          radioGroupValues.value[input.name] = input.value;
+          radioGroupValues!.value[input.name] = input.value;
         }
       }
     }

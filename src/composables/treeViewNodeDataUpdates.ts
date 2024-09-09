@@ -1,3 +1,4 @@
+import { TreeViewNodeMetaModel } from "types/treeViewNode";
 import { useChildren } from "./children/children";
 import { useNodeDataNormalizer } from "./nodeDataNormalizer";
 
@@ -8,16 +9,16 @@ import { useNodeDataNormalizer } from "./nodeDataNormalizer";
  * in a node of the tree.
  * @param {Object} metaModel The metadata model
  */
-export function useTreeViewNodeDataUpdates(metaModel) {
+export function useTreeViewNodeDataUpdates(metaModel: TreeViewNodeMetaModel) {
 
-  const { createMetaModel } = useNodeDataNormalizer(metaModel);
+  const { createMetaModel } = useNodeDataNormalizer();
 
-  function spliceChildNodeList(index, deleteCount, ...newItems) {
+  function spliceChildNodeList(index: number, deleteCount: number, ...newItems: object[]) {
     getChildren(metaModel).splice(index, deleteCount, ...newItems);
    return getMetaChildren(metaModel).splice(index, deleteCount, ...newItems.map(createMetaModel));
   }
 
-  function pushChildNode(node) {
+  function pushChildNode(node: object) {
     getChildren(metaModel).push(node);
     return getMetaChildren(metaModel).push(createMetaModel(node));
   }

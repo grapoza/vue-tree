@@ -1,7 +1,7 @@
 import { useTreeViewTraversal } from './treeViewTraversal'
 import { useSelection } from './selection/selection.js';
 import { useTreeViewDataUpdates } from './treeViewDataUpdates.js';
-import { useTreeViewNodeDataUpdates } from './treeViewNodeDataUpdates.js';
+import { useTreeViewNodeDataUpdates } from './treeViewNodeDataUpdates';
 import { useChildren } from './children/children';
 import InputType from '../enums/inputType.js';
 import SelectionMode from '../enums/selectionMode.js';

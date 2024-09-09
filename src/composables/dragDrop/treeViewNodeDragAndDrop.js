@@ -7,7 +7,7 @@ import TvEvent from '../../enums/event.js';
 import { useDomMethods } from '../domMethods'
 import { useFocus } from '../focus/focus.js';
 import { useChildren } from "../children/children";
-import { useTreeViewNodeDataUpdates } from '../treeViewNodeDataUpdates.js';
+import { useTreeViewNodeDataUpdates } from '../treeViewNodeDataUpdates';
 
 const { closest } = useDomMethods();
 

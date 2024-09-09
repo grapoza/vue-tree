@@ -2,7 +2,8 @@ import { InputType } from '../../src/types/inputType';
 import type { TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaults, TreeViewNodeMetaModelDefaultsMethod } from "../../src/types/treeViewNode";
 
 type NodeSpec = Array<string|NodeSpec>;
-type TestTreeViewNode = {
+
+export type TestTreeViewNode = {
   id: string;
   label: string;
   children: TestTreeViewNode[];
