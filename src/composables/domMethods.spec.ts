@@ -1,12 +1,12 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
-import { useDomMethods } from './domMethods.js';
+import { useDomMethods } from './domMethods';
 
 describe('domMethods.js', () => {
 
   describe('when finding the closest node', () => {
 
-    let root = null;
-    let subnode = null;
+    let root: Element | null = null;
+    let subnode: Element | null = null;
 
     beforeEach(async () => {
       root = document.createElement('div');
@@ -19,24 +19,24 @@ describe('domMethods.js', () => {
     });
 
     afterEach(() => {
-      document.body.removeChild(root);
+      document.body.removeChild(root!);
     });
 
     it('should return the closest matching node', () => {
       const { closest } = useDomMethods();
-      expect(closest(subnode, '#root')).to.equal(root);
+      expect(closest(subnode!, '#root')).to.equal(root);
     });
 
     it('should return null if a closest node is not found', () => {
       const { closest } = useDomMethods();
-      expect(closest(subnode, '#unfound')).to.be.null;
+      expect(closest(subnode!, '#unfound')).to.be.null;
     });
 
     describe('and the starting node is a text node', () => {
 
       it('should find the closest matching node from the parent', () => {
         const { closest } = useDomMethods();
-        expect(closest(subnode.childNodes[0], '#root')).to.equal(root);
+        expect(closest(subnode!.childNodes[0], '#root')).to.equal(root);
       });
     });
   });

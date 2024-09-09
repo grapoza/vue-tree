@@ -1,6 +1,6 @@
 import { computed, unref, watch } from 'vue'
 import { useFocus } from './focus.js';
-import { useChildren } from '../children/children.js';
+import { useChildren } from '../children/children';
 import TreeEvent from '../../enums/event.js';
 
 /**

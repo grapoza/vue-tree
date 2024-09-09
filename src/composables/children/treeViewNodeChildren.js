@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { useChildren } from './children.js';
+import { useChildren } from './children';
 import { useTreeViewNodeDataUpdates } from '../treeViewNodeDataUpdates.js';
 import TreeEvent from '../../enums/event.js';
 

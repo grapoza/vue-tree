@@ -1,8 +1,8 @@
-import { useTreeViewTraversal } from './treeViewTraversal.js'
+import { useTreeViewTraversal } from './treeViewTraversal'
 import { useSelection } from './selection/selection.js';
 import { useTreeViewDataUpdates } from './treeViewDataUpdates.js';
 import { useTreeViewNodeDataUpdates } from './treeViewNodeDataUpdates.js';
-import { useChildren } from './children/children.js';
+import { useChildren } from './children/children';
 import InputType from '../enums/inputType.js';
 import SelectionMode from '../enums/selectionMode.js';
 

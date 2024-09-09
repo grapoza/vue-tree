@@ -1,6 +1,5 @@
-import { unref } from "vue";
-import { useChildren } from "./children/children.js";
-import { useNodeDataNormalizer } from "./nodeDataNormalizer.js";
+import { useChildren } from "./children/children";
+import { useNodeDataNormalizer } from "./nodeDataNormalizer";
 
  const { getChildren, getMetaChildren } = useChildren();
 

@@ -1,7 +1,7 @@
 import { expect, describe, it, beforeEach } from 'vitest';
 import { ref } from 'vue';
 import { useTreeViewFocus } from './treeViewFocus.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.js';
+import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
 
 describe('treeViewFocus.js', () => {
 

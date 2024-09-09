@@ -1,6 +1,6 @@
 import { expect, describe, it, beforeEach } from 'vitest';
 import { useFocus } from './focus.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.js';
+import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
 
 const {
   focus,

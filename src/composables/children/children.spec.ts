@@ -1,6 +1,6 @@
 import { expect, describe, it } from 'vitest';
-import { useChildren } from './children.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.js';
+import { useChildren } from './children';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
 
 const { getChildren, getMetaChildren } = useChildren();
 
@@ -21,13 +21,13 @@ describe('children.js', () => {
       });
     });
 
-    describe('and the node model does not have a specified childrenProperty', () => {
+    describe('and the node does not have a prop for the specified childrenProperty', () => {
 
-      it('should get the children from the children property', () => {
+      it('should get an empty set of children', () => {
         const node = generateMetaNodes(['e', ['e', 'e']])[0];
-        delete node.childrenProperty;
+        node.childrenProperty = 'asdf';
         const children = getChildren(node);
-        expect(children.length).to.equal(node.data.children.length);
+        expect(children.length).to.equal(0);
       });
     });
   });

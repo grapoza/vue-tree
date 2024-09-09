@@ -4,9 +4,9 @@ import {
   targetZone as TargetZone
 } from '../../enums/dragDrop.js';
 import TvEvent from '../../enums/event.js';
-import { useDomMethods } from '../domMethods.js'
+import { useDomMethods } from '../domMethods'
 import { useFocus } from '../focus/focus.js';
-import { useChildren } from "../children/children.js";
+import { useChildren } from "../children/children";
 import { useTreeViewNodeDataUpdates } from '../treeViewNodeDataUpdates.js';
 
 const { closest } = useDomMethods();

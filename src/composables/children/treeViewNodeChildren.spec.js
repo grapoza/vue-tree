@@ -1,7 +1,7 @@
 import { beforeEach, expect, describe, it, vi } from 'vitest';
 import { ref } from 'vue';
 import { useTreeViewNodeChildren } from './treeViewNodeChildren.js';
-import { generateMetaNodes, generateNodes } from '../../../tests/data/node-generator.js';
+import { generateMetaNodes, generateNodes } from '../../../tests/data/node-generator.ts';
 import TreeEvent from '../../enums/event.js';
 
 let emit;

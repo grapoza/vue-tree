@@ -59,8 +59,8 @@
 <script setup>
 import { computed, nextTick, ref, readonly, onMounted, provide, toRef, watch } from 'vue'
 import SelectionMode from '../enums/selectionMode.js';
-import { useIdGeneration } from '../composables/idGeneration.js'
-import { useTreeViewTraversal } from '../composables/treeViewTraversal.js'
+import { useIdGeneration } from '../composables/idGeneration'
+import { useTreeViewTraversal } from '../composables/treeViewTraversal'
 import { useFocus } from '../composables/focus/focus.js';
 import { useTreeViewFocus } from '../composables/focus/treeViewFocus.js';
 import { useSelection } from '../composables/selection/selection.js';
@@ -69,7 +69,7 @@ import { useTreeViewSelection } from '../composables/selection/treeViewSelection
 import { useTreeViewDragAndDrop } from '../composables/dragDrop/treeViewDragAndDrop.js';
 import { useTreeViewConvenienceMethods } from '../composables/treeViewConvenienceMethods.js';
 import { useTreeViewDataUpdates } from '../composables/treeViewDataUpdates.js';
-import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer.js';
+import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
 import TreeViewNode from './TreeViewNode.vue';
 import TreeEvent from '../enums/event.js';
 

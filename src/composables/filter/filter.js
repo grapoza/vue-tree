@@ -1,5 +1,5 @@
 import { unref } from 'vue';
-import { useChildren } from '../children/children.js';
+import { useChildren } from '../children/children';
 
 /**
  * Composable dealing with filter handling on an arbitrary node.

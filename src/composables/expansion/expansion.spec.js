@@ -1,7 +1,7 @@
 import { expect, describe, it } from 'vitest';
 import { ref } from 'vue';
 import { useExpansion } from './expansion.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.js';
+import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
 
 describe('expansion.js', () => {
 

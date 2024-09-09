@@ -2,7 +2,7 @@ import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import TreeView from './TreeView.vue';
 import TreeViewNode from './TreeViewNode.vue';
-import { generateNodes } from '../../tests/data/node-generator.js';
+import { generateNodes } from '../../tests/data/node-generator.ts';
 import SelectionMode from '../enums/selectionMode';
 
 async function createWrapper(customPropsData, customAttrs, slotsData) {

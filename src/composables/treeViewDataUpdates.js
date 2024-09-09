@@ -1,5 +1,5 @@
 import { unref } from 'vue';
-import { useNodeDataNormalizer } from './nodeDataNormalizer.js';
+import { useNodeDataNormalizer } from './nodeDataNormalizer';
 
 /**
  * Provides method which keep the data model updates in sync with the metadata model
@@ -9,7 +9,7 @@ import { useNodeDataNormalizer } from './nodeDataNormalizer.js';
  */
 export function useTreeViewDataUpdates(model, metaModel) {
 
-  const { createMetaModel } = useNodeDataNormalizer(metaModel);
+  const { createMetaModel } = useNodeDataNormalizer();
 
   function spliceNodeList(index, deleteCount, ...newItems) {
     unref(model).splice(index, deleteCount, ...newItems);

@@ -1,11 +1,12 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 import { ref } from 'vue';
-import { useTreeViewTraversal } from './treeViewTraversal.js';
-import { generateMetaNodes } from '../../tests/data/node-generator.js';
+import { useTreeViewTraversal } from './treeViewTraversal';
+import { generateMetaNodes } from '../../tests/data/node-generator';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
 describe('treeViewTraversal.js', () => {
 
-  let metaNodes;
+  let metaNodes: TreeViewNodeMetaModel[];
 
   beforeEach(() => {
     metaNodes = generateMetaNodes(['e', ['e','e'], 'e']);
@@ -15,8 +16,8 @@ describe('treeViewTraversal.js', () => {
 
     it('should process each node in depth-first order', () => {
       const { depthFirstTraverse } = useTreeViewTraversal(ref(metaNodes));
-      let result = [];
-      depthFirstTraverse((node) => {
+      let result: TreeViewNodeMetaModel[] = [];
+      depthFirstTraverse((node: TreeViewNodeMetaModel) => {
         result.push(node.data.id);
       });
 
@@ -31,8 +32,8 @@ describe('treeViewTraversal.js', () => {
 
       it('should short-circuit the traversal', () => {
         const { depthFirstTraverse } = useTreeViewTraversal(ref(metaNodes));
-        let result = [];
-        depthFirstTraverse((node) => {
+        let result: TreeViewNodeMetaModel[] = [];
+        depthFirstTraverse((node: TreeViewNodeMetaModel) => {
           result.push(node.data.id);
           return false;
         });
@@ -47,8 +48,8 @@ describe('treeViewTraversal.js', () => {
 
     it('should process each node in breadth-first order', () => {
       const { breadthFirstTraverse } = useTreeViewTraversal(ref(metaNodes));
-      let result = [];
-      breadthFirstTraverse((node) => {
+      let result: TreeViewNodeMetaModel[] = [];
+      breadthFirstTraverse((node: TreeViewNodeMetaModel) => {
         result.push(node.data.id);
       });
 
@@ -63,8 +64,8 @@ describe('treeViewTraversal.js', () => {
 
       it('should short-circuit the traversal', () => {
         const { breadthFirstTraverse } = useTreeViewTraversal(ref(metaNodes));
-        let result = [];
-        breadthFirstTraverse((node) => {
+        let result: TreeViewNodeMetaModel[] = [];
+        breadthFirstTraverse((node: TreeViewNodeMetaModel) => {
           result.push(node.data.id);
           return false;
         });

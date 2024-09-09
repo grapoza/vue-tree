@@ -1,11 +1,11 @@
 import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import TreeViewNode from '../../components/TreeViewNode.vue';
-import { generateMetaNodes } from '../../../tests/data/node-generator.js';
+import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
 import { dropEffect as DropEffect, effectAllowed as EffectAllowed } from '../../enums/dragDrop.js';
 import MimeType from '../../enums/mimeType.js';
 
-const serializedNodeData = '{"data":{"id":"n0","label":"Node 0","children":[]},"_":{"dragging":false,"state":{"areChildrenLoaded":true,"areChildrenLoading":false,"matchesFilter":true,"subnodeMatchesFilter":false}},"childMetaModels":[],"childrenProperty":"children","idProperty":"id","labelProperty":"label","loadChildrenAsync":null,"expandable":false,"selectable":true,"deletable":false,"focusable":false,"input":{"type":"checkbox","name":"n0-cbx"},"state":{"expanded":false,"selected":false,"input":{"disabled":false,"value":false}},"addChildCallback":null,"draggable":false,"allowDrop":false,"dataTransferEffectAllowed":"copyMove","deleteNodeCallback":null,"title":null,"expanderTitle":null,"addChildTitle":null,"deleteTitle":null,"customizations":{}}';
+const serializedNodeData = '{"data":{"id":"n0","label":"Node 0","children":[]},"childMetaModels":[],"_":{"dragging":false,"state":{"areChildrenLoaded":true,"areChildrenLoading":false,"matchesFilter":true,"subnodeMatchesFilter":false}},"childrenProperty":"children","idProperty":"id","labelProperty":"label","loadChildrenAsync":null,"expandable":false,"selectable":true,"deletable":false,"focusable":false,"input":{"type":"checkbox","name":"n0-cbx"},"state":{"expanded":false,"selected":false,"input":{"disabled":false,"value":false}},"addChildCallback":null,"draggable":false,"allowDrop":false,"dataTransferEffectAllowed":"copyMove","deleteNodeCallback":null,"title":null,"expanderTitle":null,"addChildTitle":null,"deleteTitle":null,"customizations":{}}';
 
 const getDefaultPropsData = function () {
   return {

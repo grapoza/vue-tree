@@ -1,7 +1,7 @@
 import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import TreeViewNode from './TreeViewNode.vue';
-import { generateNodes, generateMetaNodes } from '../../tests/data/node-generator.js';
+import { generateNodes, generateMetaNodes } from '../../tests/data/node-generator.ts';
 import SelectionMode from '../enums/selectionMode';
 import TreeEvent from '../../src/enums/event.js';
 

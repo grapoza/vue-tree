@@ -1,4 +1,12 @@
-import InputType from '../../src/enums/inputType';
+import { InputType } from '../../src/types/inputType';
+import type { TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaults, TreeViewNodeMetaModelDefaultsMethod } from "../../src/types/treeViewNode";
+
+type NodeSpec = Array<string|NodeSpec>;
+type TestTreeViewNode = {
+  id: string;
+  label: string;
+  children: TestTreeViewNode[];
+};
 
 /**
  * Generates nodes, one per array element that is not itself an array.
@@ -19,16 +27,21 @@ import InputType from '../../src/enums/inputType';
  * A node that allows adds will use the addChildCallback function passed to generateNodes.
  * A node that loads children asynchronously will use the loadChildrenAsync function passed to generateNodes.
  *
- * @param {Array<String|Array>} nodeSpec The node specification array.
- * @param {String} baseId The base string used in the node IDs.
- * @param {Function} addChildCallback A method that returns a Promise that resolves to the node data to add as a subnode.
- * @param {Function} loadChildrenAsync A method that returns a Promise that resolves to child nodes to set as the children.
- * @returns {TreeViewNode[], Function} The requested nodes and a function to define model defaults. These can be used as the v-model and modelDefaults props of the TreeView component.
+ * @param nodeSpec The node specification array.
+ * @param baseId The base string used in the node IDs.
+ * @param addChildCallback A method that returns a Promise that resolves to the node data to add as a subnode.
+ * @param loadChildrenAsync A method that returns a Promise that resolves to child nodes to set as the children.
+ * @returns The requested nodes and a function to define model defaults. These can be used as the v-model and modelDefaults props of the TreeView component.
  */
-export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, loadChildrenAsync = null) {
-  let nodes = [];
-  let prevNode = null;
-  let modelDefaultMap = new Map();
+export function generateNodes(
+  nodeSpec: NodeSpec,
+  baseId: string = "",
+  addChildCallback: Function | null = null,
+  loadChildrenAsync: Function | null = null
+) {
+  let nodes: TestTreeViewNode[] = [];
+  let prevNode: TestTreeViewNode | null = null;
+  let modelDefaultMap: Map<string, TreeViewNodeMetaModelDefaults> = new Map();
 
   nodeSpec.forEach(function (item, index) {
     if (Array.isArray(item)) {
@@ -39,25 +52,24 @@ export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, lo
       const result = generateNodes(item, prevNode.id, addChildCallback);
       prevNode.children = result.nodes;
       result.modelDefaultMap.forEach((value, key) => modelDefaultMap.set(key, value));
-    }
-    else {
+    } else {
       let lowerItem = item.toLowerCase();
-      let idString = baseId + 'n' + index;
+      let idString = baseId + "n" + index;
 
       prevNode = {
         id: idString,
-        label: 'Node ' + index,
+        label: "Node " + index,
         children: [],
       };
 
-      const prevMeta = {
+      const prevMeta: TreeViewNodeMetaModelDefaults = {
         _: {
+          dragging: false,
           state: {
             areChildrenLoaded: loadChildrenAsync === null,
             matchesFilter: true,
           },
         },
-        childMetaModels: [],
         childrenProperty: "children",
         idProperty: "id",
         labelProperty: "label",
@@ -84,19 +96,18 @@ export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, lo
 
       // Set up input state if needed
       if (prevMeta.input) {
-
         // Disable inputs
-        prevMeta.state.input = {
+        prevMeta.state!.input = {
           disabled: item.includes("!"),
         };
 
         // Set up checkbox state
-        if (lowerItem.includes('c')) {
-          prevMeta.state.input.value = item.includes("C");
+        if (lowerItem.includes("c")) {
+          prevMeta.state!.input.value = item.includes("C");
         }
 
         // Set up the radiobutton state in the radioState
-        if (item.includes('R')) {
+        if (item.includes("R")) {
           prevMeta.input.isInitialRadioGroupValue = true;
         }
       }
@@ -106,28 +117,47 @@ export function generateNodes(nodeSpec, baseId = "", addChildCallback = null, lo
     }
   });
 
-  return { nodes, modelDefaultMap, modelDefaults: (node) => modelDefaultMap.get(node.id) };
+  const modelDefaults: TreeViewNodeMetaModelDefaultsMethod = (node: TestTreeViewNode) => modelDefaultMap.get(node.id) ?? {} as TreeViewNodeMetaModelDefaults;
+  return { nodes, modelDefaultMap, modelDefaults };
 }
 
-export function generateMetaNodes(nodeSpec, baseId = "", addChildCallback = null, loadChildrenAsync = null) {
+export function generateMetaNodes(
+  nodeSpec: NodeSpec,
+  baseId: string = "",
+  addChildCallback: Function | null = null,
+  loadChildrenAsync: Function | null = null
+) {
   const { nodes, modelDefaults } = generateNodes(nodeSpec, baseId, addChildCallback, loadChildrenAsync);
   return generateMetaNodesForList(nodes, modelDefaults);
 }
 
-export function generateNodesAndMetaNodes(nodeSpec, baseId = "", addChildCallback = null, loadChildrenAsync = null) {
-  const { nodes, modelDefaults } = generateNodes(nodeSpec, baseId, addChildCallback, loadChildrenAsync);
+export function generateNodesAndMetaNodes(
+  nodeSpec: NodeSpec,
+  baseId: string = "",
+  addChildCallback: Function | null = null,
+  loadChildrenAsync: Function | null = null
+) {
+  const { nodes, modelDefaults } = generateNodes(
+    nodeSpec,
+    baseId,
+    addChildCallback,
+    loadChildrenAsync
+  );
   return { nodes, metaNodes: generateMetaNodesForList(nodes, modelDefaults) };
 }
 
-function generateMetaNodesForList(nodes, modelDefaults) {
-  let metaNodes = [];
+function generateMetaNodesForList(
+  nodes: TestTreeViewNode[],
+  modelDefaults: TreeViewNodeMetaModelDefaultsMethod
+) {
+  let metaNodes: TreeViewNodeMetaModel[] = [];
 
   nodes.forEach(function (item) {
-    const metaNode = {
+    const metaNode: TreeViewNodeMetaModel = {
       data: item,
-      ...modelDefaults(item),
-    };
-    metaNode.childMetaModels.splice(0, 0, ...generateMetaNodesForList(item.children, modelDefaults)),
+      childMetaModels: generateMetaNodesForList(item.children, modelDefaults),
+      ...modelDefaults(item)!,
+    } as TreeViewNodeMetaModel;
 
     metaNodes.push(metaNode);
   });

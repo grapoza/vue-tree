@@ -2,7 +2,7 @@ import { beforeEach, expect, describe, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
 import { useTreeViewNodeExpansion } from './treeViewNodeExpansion.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.js';
+import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
 import TreeEvent from '../../enums/event.js';
 
 let emit;

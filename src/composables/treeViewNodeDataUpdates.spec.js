@@ -1,7 +1,7 @@
 import { expect, describe, it, beforeEach } from "vitest";
 import { ref } from "vue";
 import { useTreeViewNodeDataUpdates } from "./treeViewNodeDataUpdates.js";
-import { generateNodesAndMetaNodes } from "../../tests/data/node-generator.js";
+import { generateNodesAndMetaNodes } from "../../tests/data/node-generator.ts";
 
 describe("treeViewDataUpdates.js", () => {
   describe("when spliceChildNodeList() is called", () => {

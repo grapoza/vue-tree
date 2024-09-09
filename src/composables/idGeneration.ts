@@ -1,3 +1,4 @@
+import { TreeViewNodeMetaModel } from "types/treeViewNode";
 import { useChildren } from "./children/children";
 
 const { getChildren, getMetaChildren } = useChildren();
@@ -22,10 +23,10 @@ export function useIdGeneration() {
 
   /**
    * Checks for and resolves any ID conflicts for the given node.
-   * @param {Object} metaModel The tree meta node data to check for conflicts
-   * @param {String} treeId The ID of the node's tree
+   * @param metaModel The tree meta node data to check for conflicts
+   * @param treeId The ID of the node's tree
    */
-  function resolveNodeIdConflicts(metaModel, treeId) {
+  function resolveNodeIdConflicts(metaModel: TreeViewNodeMetaModel, treeId: string) {
 
     const idProp = metaModel.idProperty;
     const nodeId = metaModel.data[idProp];

@@ -239,8 +239,8 @@
 <script setup>
 
 import { computed, ref, toRef, watch } from 'vue'
-import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer.js';
-import { useChildren } from '../composables/children/children.js';
+import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
+import { useChildren } from '../composables/children/children';
 import { useTreeViewNodeChildren } from '../composables/children/treeViewNodeChildren.js';
 import { useTreeViewNodeDragAndDrop } from '../composables/dragDrop/treeViewNodeDragAndDrop.js';
 import { useFocus } from '../composables/focus/focus.js';
