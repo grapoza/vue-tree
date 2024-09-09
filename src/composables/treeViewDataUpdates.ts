@@ -1,17 +1,18 @@
-import { unref } from 'vue';
+import { MaybeRef, unref } from 'vue';
 import { useNodeDataNormalizer } from './nodeDataNormalizer';
+import { TreeViewNodeMetaModelDefaults } from 'types/treeViewNode';
 
 /**
  * Provides method which keep the data model updates in sync with the metadata model
  * at the root level of the tree.
- * @param {TreeViewNode[]} model The data model
- * @param {Object[]} metaModel The metadata model
+ * @param model The data model
+ * @param metaModel The metadata model
  */
-export function useTreeViewDataUpdates(model, metaModel) {
+export function useTreeViewDataUpdates(model: MaybeRef<object[]>, metaModel: MaybeRef<TreeViewNodeMetaModelDefaults[]>) {
 
   const { createMetaModel } = useNodeDataNormalizer();
 
-  function spliceNodeList(index, deleteCount, ...newItems) {
+  function spliceNodeList(index: number, deleteCount: number, ...newItems: object[]) {
     unref(model).splice(index, deleteCount, ...newItems);
     return unref(metaModel).splice(index, deleteCount, ...newItems.map(createMetaModel));
   }

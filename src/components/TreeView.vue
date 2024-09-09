@@ -68,7 +68,7 @@ import { useTreeViewFilter } from '../composables/filter/treeViewFilter.js';
 import { useTreeViewSelection } from '../composables/selection/treeViewSelection.js';
 import { useTreeViewDragAndDrop } from '../composables/dragDrop/treeViewDragAndDrop.js';
 import { useTreeViewConvenienceMethods } from '../composables/treeViewConvenienceMethods.js';
-import { useTreeViewDataUpdates } from '../composables/treeViewDataUpdates.js';
+import { useTreeViewDataUpdates } from '../composables/treeViewDataUpdates';
 import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
 import TreeViewNode from './TreeViewNode.vue';
 import TreeEvent from '../enums/event.js';

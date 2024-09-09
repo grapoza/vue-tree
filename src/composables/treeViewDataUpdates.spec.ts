@@ -1,13 +1,14 @@
 import { expect, describe, it, beforeEach } from "vitest";
 import { ref } from "vue";
-import { useTreeViewDataUpdates } from "./treeViewDataUpdates.js";
-import { generateNodesAndMetaNodes } from "../../tests/data/node-generator.ts";
+import { useTreeViewDataUpdates } from "./treeViewDataUpdates";
+import { generateNodesAndMetaNodes, TestTreeViewNode } from "../../tests/data/node-generator";
+import { TreeViewNodeMetaModelDefaults } from "types/treeViewNode";
 
 describe("treeViewDataUpdates.js", () => {
   describe("when spliceNodeList() is called", () => {
-    let spliceNodeList;
-    let nodeModels;
-    let metaModels;
+    let spliceNodeList: ReturnType<typeof useTreeViewDataUpdates>["spliceNodeList"];
+    let nodeModels: TestTreeViewNode[];
+    let metaModels: TreeViewNodeMetaModelDefaults[];
 
     beforeEach(() => {
       const { nodes, metaNodes } = generateNodesAndMetaNodes(["es", "ES"]);
@@ -22,7 +23,7 @@ describe("treeViewDataUpdates.js", () => {
       expect(nodeModels.length).to.equal(2);
       expect(nodeModels[0].id).to.equal("new");
       expect(metaModels.length).to.equal(2);
-      expect(metaModels[0].data.id).to.equal("new");
+      expect(metaModels[0]!.data!.id).to.equal("new");
     });
   });
 });
