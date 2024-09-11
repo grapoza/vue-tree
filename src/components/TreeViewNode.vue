@@ -243,7 +243,7 @@ import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
 import { useChildren } from '../composables/children/children';
 import { useTreeViewNodeChildren } from '../composables/children/treeViewNodeChildren.js';
 import { useTreeViewNodeDragAndDrop } from '../composables/dragDrop/treeViewNodeDragAndDrop.js';
-import { useFocus } from '../composables/focus/focus.js';
+import { useFocus } from '../composables/focus/focus';
 import { useTreeViewNodeFocus } from '../composables/focus/treeViewNodeFocus.js';
 import { useTreeViewNodeSelection } from '../composables/selection/treeViewNodeSelection.js';
 import { useTreeViewNodeExpansion } from '../composables/expansion/treeViewNodeExpansion.js';

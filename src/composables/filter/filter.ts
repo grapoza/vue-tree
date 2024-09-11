@@ -1,9 +1,10 @@
-import { unref } from 'vue';
+import { MaybeRef, unref } from 'vue';
 import { useChildren } from '../children/children';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
 /**
  * Composable dealing with filter handling on an arbitrary node.
- * @returns {Object} Methods to deal with filtering of arbitrary nodes
+ * @returns Methods to deal with filtering of arbitrary nodes
  */
 export function useFilter() {
 
@@ -11,11 +12,11 @@ export function useFilter() {
     getMetaChildren
   } = useChildren();
 
-  function getFilteredChildren(metaModel) {
+  function getFilteredChildren(metaModel: TreeViewNodeMetaModel) {
     return getFilteredNodes(getMetaChildren(metaModel));
   }
 
-  function getFilteredNodes(metaModels) {
+  function getFilteredNodes(metaModels: MaybeRef<TreeViewNodeMetaModel[]>) {
     return unref(metaModels).filter(c => c._?.state?.matchesFilter || c._?.state?.subnodeMatchesFilter);
   }
 

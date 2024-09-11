@@ -1,4 +1,5 @@
-import { unref } from 'vue'
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { MaybeRef, unref } from 'vue'
 
 /**
  * Composable dealing with selection handling on an arbitrary node.
@@ -6,23 +7,23 @@ import { unref } from 'vue'
  */
 export function useSelection() {
 
-  function select(metaModel) {
+  function select(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
     unref(metaModel).state.selected = true;
   }
 
-  function deselect(metaModel) {
+  function deselect(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
     unref(metaModel).state.selected = false;
   }
 
-  function setSelected(metaModel, newValue) {
+  function setSelected(metaModel: MaybeRef<TreeViewNodeMetaModel>, newValue: boolean) {
     unref(metaModel).state.selected = newValue;
   }
 
-  function isSelectable(metaModel) {
+  function isSelectable(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
     return unref(metaModel).selectable === true;
   }
 
-  function isSelected(metaModel) {
+  function isSelected(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
     return unref(metaModel).state.selected === true;
   }
 

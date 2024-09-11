@@ -1,16 +1,17 @@
 import { beforeEach, expect, describe, it } from 'vitest';
-import { useFilter } from './filter.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
+import { useFilter } from './filter';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
-describe('filter.js', () => {
+describe('filter', () => {
 
-  let nodes;
+  let nodes: TreeViewNodeMetaModel[];
 
   beforeEach(() => {
     nodes = generateMetaNodes(['e', ['e', ['e'], 'es', ['e'], 'e', ['es']]]);
     //mimic filter matching the sectable nodes
-    nodes[0]._.state.matchesFilter = false;
-    nodes[0]._.state.subnodeMatchesFilter = true;
+    nodes[0]._.state!.matchesFilter = false;
+    nodes[0]._.state!.subnodeMatchesFilter = true;
     nodes[0].childMetaModels[0]._.state.matchesFilter = false;
     nodes[0].childMetaModels[0]._.state.subnodeMatchesFilter = false;
     nodes[0].childMetaModels[0].childMetaModels[0]._.state.matchesFilter = false;

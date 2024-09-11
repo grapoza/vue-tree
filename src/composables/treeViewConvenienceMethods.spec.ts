@@ -1,14 +1,15 @@
 import { expect, describe, it, beforeEach } from 'vitest';
 import { ref } from 'vue';
-import { useTreeViewConvenienceMethods } from './treeViewConvenienceMethods.js';
-import { generateNodesAndMetaNodes } from '../../tests/data/node-generator.ts';
-import SelectionMode from '../enums/selectionMode';
+import { useTreeViewConvenienceMethods } from './treeViewConvenienceMethods';
+import { generateNodesAndMetaNodes, TestTreeViewNode } from '../../tests/data/node-generator';
+import { SelectionMode } from '../types/selectionMode';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
 describe('treeViewConvenienceMethods.js', () => {
 
   describe('when getMatching() is called', () => {
 
-    let getMatching;
+    let getMatching: ReturnType<typeof useTreeViewConvenienceMethods>['getMatching'];
 
     describe('and there are nodes present', () => {
 
@@ -32,7 +33,7 @@ describe('treeViewConvenienceMethods.js', () => {
 
       beforeEach(() => {
         const { nodes, metaNodes } = generateNodesAndMetaNodes([]);
-        ({ getMatching } = useTreeViewConvenienceMethods(ref(nodes), ref(metaNodes), ref(SelectionMode.Single)));
+        ({ getMatching } = useTreeViewConvenienceMethods(ref(nodes), ref(metaNodes), ref({}), ref(SelectionMode.Single)));
       });
 
       it('should return an empty array', () => {
@@ -57,7 +58,7 @@ describe('treeViewConvenienceMethods.js', () => {
 
   describe('when getCheckedCheckboxes() is called', () => {
 
-    let getCheckedCheckboxes;
+    let getCheckedCheckboxes: ReturnType<typeof useTreeViewConvenienceMethods>['getCheckedCheckboxes'];
 
     beforeEach(() => {
       const { nodes, metaNodes } = generateNodesAndMetaNodes(['ecs', 'eCs', ['eCs', 'ecs']]);
@@ -72,13 +73,13 @@ describe('treeViewConvenienceMethods.js', () => {
 
   describe('when getCheckedRadioButtons() is called', () => {
 
-    let getCheckedRadioButtons;
+    let getCheckedRadioButtons: ReturnType<typeof useTreeViewConvenienceMethods>['getCheckedRadioButtons'];
 
     beforeEach(() => {
       const { nodes, metaNodes } = generateNodesAndMetaNodes(['ers', 'eRs', ['eRs', 'ers']]);
-      let radioGroupValues = {};
-      radioGroupValues[metaNodes[1].input.name] = metaNodes[1].input.value;
-      radioGroupValues[metaNodes[1].childMetaModels[0].input.name] = metaNodes[1].childMetaModels[0].input.value;
+      let radioGroupValues: { [key: string]: any } = {};
+      radioGroupValues[metaNodes[1].input!.name!] = metaNodes[1].input!.value;
+      radioGroupValues[metaNodes[1].childMetaModels[0].input!.name!] = metaNodes[1].childMetaModels[0].input!.value;
 
       ({ getCheckedRadioButtons } = useTreeViewConvenienceMethods(ref(nodes), ref(metaNodes), ref(radioGroupValues), ref(SelectionMode.Single)));
     });
@@ -91,8 +92,8 @@ describe('treeViewConvenienceMethods.js', () => {
 
   describe('when findById() is called', () => {
 
-    let findById;
-    let targetNode;
+    let findById: ReturnType<typeof useTreeViewConvenienceMethods>["findById"];
+    let targetNode: TreeViewNodeMetaModel;
 
     beforeEach(() => {
       const { nodes, metaNodes } = generateNodesAndMetaNodes(['es', 'eS', ['es', 'eS']]);
@@ -101,14 +102,14 @@ describe('treeViewConvenienceMethods.js', () => {
     });
 
     it('should return the node with the given ID', () => {
-      let node = findById(targetNode.data.id);
+      let node = findById(targetNode.data.id)!;
       expect(node.data.id).to.equal(targetNode.data.id);
     });
   });
 
   describe('when getSelected() is called', () => {
 
-    let getSelected;
+    let getSelected: ReturnType<typeof useTreeViewConvenienceMethods>['getSelected'];
 
     describe('and selection mode is not None', () => {
 
@@ -139,8 +140,8 @@ describe('treeViewConvenienceMethods.js', () => {
 
   describe('when removeById() is called', () => {
 
-    let nodeModels;
-    let removeById;
+    let removeById: ReturnType<typeof useTreeViewConvenienceMethods>['removeById'];
+    let nodeModels: TestTreeViewNode[];
 
     beforeEach(() => {
       const { nodes, metaNodes } = generateNodesAndMetaNodes(['es', 'es', ['es', 'es']]);
@@ -154,7 +155,7 @@ describe('treeViewConvenienceMethods.js', () => {
     });
 
     it('should return the removed node', () => {
-      let node = removeById('n1n0');
+      let node = removeById('n1n0') as TreeViewNodeMetaModel;
       expect(node.data.id).to.equal('n1n0');
     });
 

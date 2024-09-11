@@ -1,9 +1,9 @@
 import { expect, describe, it } from 'vitest';
 import { ref } from 'vue';
-import { useExpansion } from './expansion.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
+import { useExpansion } from './expansion';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
 
-describe('expansion.js', () => {
+describe('expansion', () => {
 
   describe('when checking if the node is expandable', () => {
 

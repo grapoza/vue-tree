@@ -1,13 +1,14 @@
-import { watch } from 'vue';
-import { useFilter } from './filter.js';
-import { useFocus } from '../focus/focus.js';
+import { Ref, watch } from 'vue';
+import { useFilter } from './filter';
+import { useFocus } from '../focus/focus';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
 /**
  * Composable dealing with filter handling at the top level of the tree view.
- * @param {Ref<Object[]>} metaModel A Ref to the top level meta model of the tree
- * @returns {Object} Methods to deal with tree view level filtering
+ * @param metaModel A Ref to the top level meta model of the tree
+ * @returns Methods to deal with tree view level filtering
  */
-export function useTreeViewFilter(metaModel) {
+export function useTreeViewFilter(metaModel: Ref<TreeViewNodeMetaModel[]>) {
 
   const { getFilteredNodes } = useFilter();
 

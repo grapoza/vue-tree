@@ -1,5 +1,5 @@
 import { computed, watch } from 'vue'
-import { useSelection } from './selection.js';
+import { useSelection } from './selection';
 import SelectionMode from '../../enums/selectionMode.js';
 import TreeEvent from '../../enums/event.js';
 
@@ -11,24 +11,26 @@ import TreeEvent from '../../enums/event.js';
  * @returns {Object} Methods to deal with tree view node level selection
  */
 export function useTreeViewNodeSelection(metaModel, selectionMode, emit) {
+  // emit: ComponentPublicInstance<typeof TreeView>["emits"]
 
-  const {
-    deselect,
-    isSelectable,
-    isSelected,
-    setSelected,
-    select } = useSelection();
+  const { deselect, isSelectable, isSelected, setSelected, select } = useSelection();
 
-  watch(() => metaModel.value.state.selected, () => {
-    emit(TreeEvent.SelectedChange, metaModel.value);
-  });
-
-  watch(() => metaModel.value.focusable, function (newValue) {
-    // In selectionFollowsFocus selection mode, this focus watch is responsible for updating selection.
-    if (isNodeSelectable() && selectionMode.value === SelectionMode.SelectionFollowsFocus) {
-      setNodeSelected(newValue);
+  watch(
+    () => metaModel.value.state.selected,
+    () => {
+      emit(TreeEvent.SelectedChange, metaModel.value);
     }
-  });
+  );
+
+  watch(
+    () => metaModel.value.focusable,
+    function (newValue) {
+      // In selectionFollowsFocus selection mode, this focus watch is responsible for updating selection.
+      if (isNodeSelectable() && selectionMode.value === SelectionMode.SelectionFollowsFocus) {
+        setNodeSelected(newValue);
+      }
+    }
+  );
 
   function selectNode() {
     select(metaModel);
@@ -48,7 +50,10 @@ export function useTreeViewNodeSelection(metaModel, selectionMode, emit) {
    * "model.treeNodeSpec.focusable" watcher method above.
    */
   function toggleNodeSelected() {
-    if (isSelectable(metaModel) && [SelectionMode.Single, SelectionMode.Multiple].includes(selectionMode.value)) {
+    if (
+      isSelectable(metaModel) &&
+      [SelectionMode.Single, SelectionMode.Multiple].includes(selectionMode.value)
+    ) {
       setSelected(metaModel, !isNodeSelected());
     }
   }
@@ -89,5 +94,5 @@ export function useTreeViewNodeSelection(metaModel, selectionMode, emit) {
     setNodeSelected,
     selectNode,
     toggleNodeSelected,
-  }
+  };
 }

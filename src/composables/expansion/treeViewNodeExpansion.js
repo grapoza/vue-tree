@@ -1,5 +1,5 @@
 import { computed, watch } from 'vue';
-import { useExpansion } from './expansion.js';
+import { useExpansion } from './expansion';
 import { useTreeViewNodeChildren } from '../children/treeViewNodeChildren.js';
 import { useTreeViewNodeFilter } from '../filter/treeViewNodeFilter.js';
 import TreeEvent from '../../enums/event.js';

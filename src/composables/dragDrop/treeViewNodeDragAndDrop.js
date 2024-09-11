@@ -5,7 +5,7 @@ import {
 } from '../../enums/dragDrop.js';
 import TvEvent from '../../enums/event.js';
 import { useDomMethods } from '../domMethods'
-import { useFocus } from '../focus/focus.js';
+import { useFocus } from '../focus/focus';
 import { useChildren } from "../children/children";
 import { useTreeViewNodeDataUpdates } from '../treeViewNodeDataUpdates';
 

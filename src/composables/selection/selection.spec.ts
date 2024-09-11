@@ -1,6 +1,6 @@
 import { expect, describe, it } from 'vitest';
-import { useSelection } from './selection.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
+import { useSelection } from './selection';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
 
 const {
   select,
@@ -9,7 +9,7 @@ const {
   isSelectable,
   isSelected } = useSelection();
 
-describe('selection.js', () => {
+describe('selection', () => {
 
   describe('when selecting a node', () => {
 

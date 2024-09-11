@@ -15,12 +15,12 @@ export function useTreeViewNodeDataUpdates(metaModel: TreeViewNodeMetaModel) {
 
   function spliceChildNodeList(index: number, deleteCount: number, ...newItems: object[]) {
     getChildren(metaModel).splice(index, deleteCount, ...newItems);
-   return getMetaChildren(metaModel).splice(index, deleteCount, ...newItems.map(createMetaModel));
+   return getMetaChildren(metaModel).splice(index, deleteCount, ...newItems.map(createMetaModel) as TreeViewNodeMetaModel[]);
   }
 
   function pushChildNode(node: object) {
     getChildren(metaModel).push(node);
-    return getMetaChildren(metaModel).push(createMetaModel(node));
+    return getMetaChildren(metaModel).push(createMetaModel(node) as TreeViewNodeMetaModel);
   }
 
   return {

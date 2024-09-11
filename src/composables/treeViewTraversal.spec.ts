@@ -4,7 +4,7 @@ import { useTreeViewTraversal } from './treeViewTraversal';
 import { generateMetaNodes } from '../../tests/data/node-generator';
 import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
-describe('treeViewTraversal.js', () => {
+describe('treeViewTraversal', () => {
 
   let metaNodes: TreeViewNodeMetaModel[];
 

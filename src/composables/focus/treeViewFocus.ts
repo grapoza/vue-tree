@@ -1,9 +1,10 @@
-import { ref } from 'vue'
+import { MaybeRef, ref } from 'vue'
 import { useFocus } from './focus';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
 /**
  * Composable dealing with focus handling at the top level of the tree view.
- * @returns {Object} Methods to deal with tree view level focus
+ * @returns Methods to deal with tree view level focus
  */
 export function useTreeViewFocus() {
 
@@ -12,19 +13,19 @@ export function useTreeViewFocus() {
   /**
    * Stores the currently focusable node meta model
    */
-  const focusableNodeMetaModel = ref(null);
+  const focusableNodeMetaModel = ref<TreeViewNodeMetaModel | null>(null);
 
   /**
    * Handles changes to the node on which the focusable property is true.
    * A tree can only have one focusable node; that is, one node to which
    * focus is given when the treeview as a whole is given focus, e.g., by
    * tabbing into it.
-   * @param {TreeViewNode} newMetaModel The newly focusable meta node
+   * @param newMetaModel The newly focusable meta node
    */
-  function handleFocusableChange(newMetaModel) {
+  function handleFocusableChange(newMetaModel: TreeViewNodeMetaModel) {
     if (focusableNodeMetaModel.value !== newMetaModel) {
       if (focusableNodeMetaModel.value) {
-        unfocus(focusableNodeMetaModel);
+        unfocus(focusableNodeMetaModel as MaybeRef<TreeViewNodeMetaModel>);
       }
 
       focusableNodeMetaModel.value = newMetaModel;

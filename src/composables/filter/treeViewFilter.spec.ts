@@ -1,10 +1,10 @@
-import { beforeEach, expect, describe, it } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, ref } from 'vue';
-import { useTreeViewFilter } from './treeViewFilter.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
+import { defineComponent, Ref, ref } from 'vue';
+import { useTreeViewFilter } from './treeViewFilter';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
-function createTestComponent(nodes) {
+function createTestComponent(nodes: Ref<TreeViewNodeMetaModel[]>) {
   const TestComponent = defineComponent({
     template: "<div></div>",
     setup() { return useTreeViewFilter(nodes) }
@@ -21,10 +21,10 @@ function createTestComponent(nodes) {
   return wrapper;
 }
 
-describe('treeViewFilter.js', () => {
+describe('treeViewFilter', () => {
 
-  let nodes;
-  let wrapper;
+  let nodes: Ref<TreeViewNodeMetaModel[]>;
+  let wrapper: ReturnType<typeof createTestComponent>;
 
   beforeEach(() => {
     nodes = ref(generateMetaNodes(['e', 'ef']));

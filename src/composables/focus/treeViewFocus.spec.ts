@@ -1,15 +1,14 @@
-import { expect, describe, it, beforeEach } from 'vitest';
-import { ref } from 'vue';
-import { useTreeViewFocus } from './treeViewFocus.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
+import { useTreeViewFocus } from './treeViewFocus';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
-describe('treeViewFocus.js', () => {
+describe('treeViewFocus', () => {
 
   describe('when handling a focus change', () => {
 
-    let nodes;
-    let handleFocusableChange;
-    let focusableNodeMetaModel;
+    let nodes: TreeViewNodeMetaModel[];
+    let handleFocusableChange: ReturnType<typeof useTreeViewFocus>['handleFocusableChange'];
+    let focusableNodeMetaModel: ReturnType<typeof useTreeViewFocus>['focusableNodeMetaModel'];
 
     beforeEach(async () => {
       nodes = generateMetaNodes(['ecsf', 'eCs']);
@@ -25,7 +24,7 @@ describe('treeViewFocus.js', () => {
     });
 
     it('should set the new node as the focusableNodeMetaModel', () => {
-      expect(nodes[1].id).to.equal(focusableNodeMetaModel.value.id);
+      expect(nodes[1].id).to.equal(focusableNodeMetaModel.value!.id);
     });
   });
 });

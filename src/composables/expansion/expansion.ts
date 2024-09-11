@@ -1,4 +1,5 @@
-import { unref } from 'vue'
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { MaybeRef, unref } from 'vue'
 
 /**
  * Composable dealing with expansion on an arbitrary node.
@@ -6,11 +7,11 @@ import { unref } from 'vue'
  */
 export function useExpansion() {
 
-  function isExpandable(metaModel) {
+  function isExpandable(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
     return unref(metaModel).expandable === true;
   }
 
-  function isExpanded(metaModel) {
+  function isExpanded(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
     return unref(metaModel).state.expanded === true;
   }
 

@@ -1,6 +1,6 @@
 import { computed, unref, watch } from 'vue'
 import { useTreeViewTraversal } from '../treeViewTraversal'
-import { useSelection } from './selection.js';
+import { useSelection } from './selection';
 import SelectionMode from '../../enums/selectionMode.js';
 import TreeEvent from '../../enums/event';
 

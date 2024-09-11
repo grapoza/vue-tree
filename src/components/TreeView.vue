@@ -61,13 +61,13 @@ import { computed, nextTick, ref, readonly, onMounted, provide, toRef, watch } f
 import SelectionMode from '../enums/selectionMode.js';
 import { useIdGeneration } from '../composables/idGeneration'
 import { useTreeViewTraversal } from '../composables/treeViewTraversal'
-import { useFocus } from '../composables/focus/focus.js';
-import { useTreeViewFocus } from '../composables/focus/treeViewFocus.js';
-import { useSelection } from '../composables/selection/selection.js';
-import { useTreeViewFilter } from '../composables/filter/treeViewFilter.js';
+import { useFocus } from '../composables/focus/focus';
+import { useTreeViewFocus } from '../composables/focus/treeViewFocus';
+import { useSelection } from '../composables/selection/selection';
+import { useTreeViewFilter } from '../composables/filter/treeViewFilter';
 import { useTreeViewSelection } from '../composables/selection/treeViewSelection.js';
 import { useTreeViewDragAndDrop } from '../composables/dragDrop/treeViewDragAndDrop.js';
-import { useTreeViewConvenienceMethods } from '../composables/treeViewConvenienceMethods.js';
+import { useTreeViewConvenienceMethods } from '../composables/treeViewConvenienceMethods';
 import { useTreeViewDataUpdates } from '../composables/treeViewDataUpdates';
 import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
 import TreeViewNode from './TreeViewNode.vue';

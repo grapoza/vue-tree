@@ -2,7 +2,7 @@ import { dropEffect as DropEffect, targetZone as TargetZone } from '../../enums/
 import { useObjectMethods } from '../objectMethods';
 import { useIdGeneration } from '../idGeneration'
 import { useTreeViewDataUpdates } from '../treeViewDataUpdates';
-import { useFocus } from '../focus/focus.js';
+import { useFocus } from '../focus/focus';
 
 const { resolveNodeIdConflicts } = useIdGeneration();
 const { cheapCopyObject } = useObjectMethods();

@@ -1,7 +1,7 @@
 import { computed, inject, unref, watchEffect } from "vue";
 import { useTreeViewNodeChildren } from '../children/treeViewNodeChildren.js';
-import { useFilter } from "./filter.js";
-import { useFocus } from "../focus/focus.js";
+import { useFilter } from "./filter";
+import { useFocus } from "../focus/focus";
 import TreeEvent from '../../enums/event.js';
 
 /**

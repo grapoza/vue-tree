@@ -1,6 +1,7 @@
 import { expect, describe, it, beforeEach } from 'vitest';
-import { useFocus } from './focus.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
+import { useFocus } from './focus';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
 const {
   focus,
@@ -12,7 +13,7 @@ const {
   unfocus,
 } = useFocus();
 
-describe('focus.js', () => {
+describe('focus', () => {
 
   describe('when focusing a node', () => {
 
@@ -53,7 +54,7 @@ describe('focus.js', () => {
 
   describe('when focusing the first node', () => {
 
-    let nodes;
+    let nodes: TreeViewNodeMetaModel[];
 
     beforeEach(() => {
       nodes = generateMetaNodes(['ecs', 'eCsf']);
@@ -111,7 +112,7 @@ describe('focus.js', () => {
 
     describe('and the current node has expanded children', () => {
 
-      let nodes;
+      let nodes: TreeViewNodeMetaModel[];
 
       beforeEach(() => {
         nodes = generateMetaNodes(['Ecsf', ['ecs', 'ecs'], 'ecs']);
