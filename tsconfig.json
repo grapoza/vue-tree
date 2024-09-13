@@ -30,6 +30,6 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "lib/**/*.ts", "src/composables/selection/treeViewNodeSelection.js",
+    "lib/**/*.ts",
   ],
 }

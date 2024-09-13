@@ -1,16 +1,20 @@
-import { computed } from 'vue';
+import { ComponentPublicInstance, computed, Ref } from 'vue';
 import { useChildren } from './children';
 import { useTreeViewNodeDataUpdates } from '../treeViewNodeDataUpdates';
-import TreeEvent from '../../enums/event.js';
+import { TreeEvent } from '../../types/event';
+import { TreeViewNode } from "../../components/TreeViewNode";
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
 /**
  * Composable dealing with children handling at the tree view node.
- * @param {Object} metaModel A Ref to the metadata model of the node
- * @param {Function} emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
+ * @param metaModel A Ref to the metadata model of the node
+ * @param emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
  * @returns {Object} Methods to deal with a tree view node's children
  */
-export function useTreeViewNodeChildren(metaModel, emit) {
-
+export function useTreeViewNodeChildren(
+  metaModel: Ref<TreeViewNodeMetaModel>,
+  emit: ComponentPublicInstance<typeof TreeViewNode>["emits"]
+) {
   const {
     getMetaChildren
   } = useChildren();
@@ -65,7 +69,7 @@ export function useTreeViewNodeChildren(metaModel, emit) {
    * This emits the treeNodeDelete event.
    * @param {Object} metaNode The meta node to remove
    */
-  function deleteChild(metaNode) {
+  function deleteChild(metaNode: TreeViewNodeMetaModel) {
     // Remove the node from the array of children if it is an immediate child.
     let targetIndex = children.value.indexOf(metaNode);
     if (targetIndex > -1) {

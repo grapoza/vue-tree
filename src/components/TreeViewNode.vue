@@ -110,10 +110,10 @@
                  class="grtvn-self-input grtvn-self-radio"
                  :class="[customClasses.treeViewNodeSelfInput, customClasses.treeViewNodeSelfRadio]"
                  type="radio"
-                 :name="metaModel.input.name"
+                 :name="metaModel.input.name!"
                  :value="metaModel.input.value"
                  :disabled="metaModel.state.input.disabled"
-                 v-model="radioGroupValues[metaModel.input.name]"
+                 v-model="radioGroupValues[metaModel.input.name!]"
                  @change="onRadioChange" />
 
           {{ label }}
@@ -194,7 +194,7 @@
                       :selection-mode="selectionMode"
                       :tree-id="treeId"
                       :initial-radio-group-values="radioGroupValues"
-                      :aria-key-map="ariaKeyMap"
+                      :ariaKeyMap="ariaKeyMap"
                       :is-mounted="isMounted"
                       @treeNodeClick="(t, e)=>$emit(TreeEvent.Click, t, e)"
                       @treeNodeDblclick="(t, e)=>$emit(TreeEvent.DoubleClick, t, e)"
@@ -236,20 +236,21 @@
   </li>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, PropType, ref, toRef, useTemplateRef, watch } from 'vue'
 import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
 import { useChildren } from '../composables/children/children';
-import { useTreeViewNodeChildren } from '../composables/children/treeViewNodeChildren.js';
-import { useTreeViewNodeDragAndDrop } from '../composables/dragDrop/treeViewNodeDragAndDrop.js';
+import { useTreeViewNodeChildren } from '../composables/children/treeViewNodeChildren';
+import { useTreeViewNodeDragAndDrop } from '../composables/dragDrop/treeViewNodeDragAndDrop';
 import { useFocus } from '../composables/focus/focus';
-import { useTreeViewNodeFocus } from '../composables/focus/treeViewNodeFocus.js';
-import { useTreeViewNodeSelection } from '../composables/selection/treeViewNodeSelection.js';
-import { useTreeViewNodeExpansion } from '../composables/expansion/treeViewNodeExpansion.js';
-import { useTreeViewNodeFilter } from '../composables/filter/treeViewNodeFilter.js';
-import SelectionMode from '../enums/selectionMode.js';
-import TreeEvent from '../enums/event.js';
+import { useTreeViewNodeFocus } from '../composables/focus/treeViewNodeFocus';
+import { useTreeViewNodeSelection } from '../composables/selection/treeViewNodeSelection';
+import { useTreeViewNodeExpansion } from '../composables/expansion/treeViewNodeExpansion';
+import { useTreeViewNodeFilter } from '../composables/filter/treeViewNodeFilter';
+import { SelectionMode } from '../types/selectionMode';
+import { TreeEvent } from '../types/event';
+import { TreeViewMetaModelCustomizations, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeViewNode';
 
 // PROPS
 
@@ -263,7 +264,7 @@ const props = defineProps({
     required: true
   },
   initialRadioGroupValues: {
-    type: Object,
+    type: Object, // TODO Should this be Record<string, string>?
     required: true
   },
   isMounted: {
@@ -271,14 +272,14 @@ const props = defineProps({
     required: true
   },
   modelDefaults: {
-    type: Function,
+    type: Function as PropType<TreeViewNodeMetaModelDefaultsMethod>,
     required: true
   },
   selectionMode: {
-    type: String,
+    type: SelectionMode,
     required: false,
     default: SelectionMode.None,
-    validator: function (value) {
+    validator: function (value: SelectionMode) {
       return Object.values(SelectionMode).includes(value);
     }
   },
@@ -312,13 +313,46 @@ const emit = defineEmits([
   TreeEvent.SelectedChange
 ]);
 
+// SLOTS
+
+const slots = defineSlots<{
+  expander(props: {
+    metaModel: TreeViewNodeMetaModel,
+    customClasses: TreeViewMetaModelCustomizations["classes"],
+    expanderId: string,
+    canExpand: boolean,
+    toggleNodeExpanded: () => boolean
+  }): void,
+  checkbox(props: {
+    metaModel: TreeViewNodeMetaModel,
+    customClasses: TreeViewMetaModelCustomizations["classes"],
+    inputId: string,
+    checkboxChangeHandler: (event: Event) => void
+  }): void,
+  radio(props: {
+    metaModel: TreeViewNodeMetaModel,
+    customClasses: TreeViewMetaModelCustomizations["classes"],
+    inputId: string,
+    radioGroupValues: Record<string, any>,
+    radioChangeHandler: (event: Event) => void
+  }): void,
+  text(props: {
+    metaModel: TreeViewNodeMetaModel,
+    customClasses: TreeViewMetaModelCustomizations["classes"]
+  }): void,
+  loading(props: {
+    metaModel: TreeViewNodeMetaModel,
+    customClasses: TreeViewMetaModelCustomizations["classes"]
+  }): void
+}>();
+
 // DATA
 
 const elementsThatIgnoreClicks = 'input, .grtvn-self-expander, .grtvn-self-expander *, .grtvn-self-action, .grtvn-self-action *';
-const metaModel = defineModel({ required: true });
+const metaModel = defineModel({ required: true, type: Object as PropType<TreeViewNodeMetaModel> });
 
 const radioGroupValues = ref(props.initialRadioGroupValues);
-const nodeElement = ref(null); // template ref
+const nodeElement = useTemplateRef("nodeElement");
 
 // COMPUTED
 
@@ -351,7 +385,7 @@ const treeId = computed(() => props.treeId);
 // COMPOSABLES
 
 const { createMetaModel, normalizeNodeData } = useNodeDataNormalizer(metaModel, props.modelDefaults, radioGroupValues);
-normalizeNodeData(metaModel);
+normalizeNodeData();
 
 const {
   getChildren,
@@ -446,7 +480,7 @@ watch([getChildren(metaModel), () => getChildren(metaModel)], () => {
  * Emits a treeNodeCheckboxChange event
  * @param {Event} event The event that triggered the change
  */
-function onCheckboxChange(event) {
+function onCheckboxChange(event: Event) {
   emit(TreeEvent.CheckboxChange, metaModel.value, event);
 }
 
@@ -455,7 +489,7 @@ function onCheckboxChange(event) {
  * Emits a treeNodeRadioChange event
  * @param {Event} event The event that triggered the change
  */
-function onRadioChange(event) {
+function onRadioChange(event: Event) {
   emit(TreeEvent.RadioChange, metaModel.value, event);
 }
 
@@ -465,7 +499,7 @@ function onRadioChange(event) {
  * Emits a treeNodeClick event.
  * @param {Event} event The click event
  */
-function onClick(event) {
+function onClick(event: MouseEvent) {
   // Don't fire this if the target is an element which has its own events
   if (!event.target.matches(elementsThatIgnoreClicks)) {
     emit(TreeEvent.Click, metaModel.value, event);

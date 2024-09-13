@@ -1,8 +1,11 @@
-import { dropEffect as DropEffect, targetZone as TargetZone } from '../../enums/dragDrop.js';
+import { DropEffect, DropEventData, TargetZone } from '../../types/dragDrop';
 import { useObjectMethods } from '../objectMethods';
 import { useIdGeneration } from '../idGeneration'
 import { useTreeViewDataUpdates } from '../treeViewDataUpdates';
 import { useFocus } from '../focus/focus';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { Ref } from 'vue';
+import { useTreeViewConvenienceMethods } from 'composables/treeViewConvenienceMethods';
 
 const { resolveNodeIdConflicts } = useIdGeneration();
 const { cheapCopyObject } = useObjectMethods();
@@ -10,14 +13,20 @@ const { unfocus } = useFocus();
 
 /**
  * Composable dealing with drag-and-drop handling at the top level of the tree view.
- * @param {Ref<TreeViewNode[]>} treeModel A Ref to the top level model of the tree
- * @param {Ref<Object[]>} metaModel A Ref to the top level metadata model of the tree
- * @param {Ref<string>} uniqueId A Ref to the unique ID for the tree.
- * @param {Function} findById A function to find a node by ID
- * @param {Function} removeById A function to remove a node by ID
- * @returns {Object} Methods to deal with tree view level drag-and-drop
+ * @param treeModel A Ref to the top level model of the tree
+ * @param metaModel A Ref to the top level metadata model of the tree
+ * @param uniqueId A Ref to the unique ID for the tree.
+ * @param findById A function to find a node by ID
+ * @param removeById A function to remove a node by ID
+ * @returns Methods to deal with tree view level drag-and-drop
  */
-export function useTreeViewDragAndDrop(treeModel, metaModel, uniqueId, findById, removeById) {
+export function useTreeViewDragAndDrop(
+  treeModel: Ref<TreeViewNodeMetaModel[]>,
+  metaModel: Ref<object[]>,
+  uniqueId: Ref<string>,
+  findById: ReturnType<typeof useTreeViewConvenienceMethods>['findById'],
+  removeById: ReturnType<typeof useTreeViewConvenienceMethods>['removeById']
+) {
 
   const { spliceNodeList } = useTreeViewDataUpdates(treeModel, metaModel);
 
@@ -26,7 +35,7 @@ export function useTreeViewDragAndDrop(treeModel, metaModel, uniqueId, findById,
    * after a drag-and-drop move operation between trees.
    * @param {Object} metaNode The data for the moved node
    */
-  function dragMoveNode(metaNode) {
+  function dragMoveNode(metaNode: TreeViewNodeMetaModel) {
     const targetIndex = metaModel.value.indexOf(metaNode);
     if (targetIndex > -1) {
       spliceNodeList(targetIndex, 1);
@@ -37,7 +46,7 @@ export function useTreeViewDragAndDrop(treeModel, metaModel, uniqueId, findById,
    * Handles a meta node getting dropped into this tree.
    * @param {Object} eventData The data about a drop event
    */
-  function drop(eventData) {
+  function drop(eventData: DropEventData) {
 
     let metaNode = eventData.droppedModel;
 
@@ -46,7 +55,7 @@ export function useTreeViewDragAndDrop(treeModel, metaModel, uniqueId, findById,
 
       if (eventData.dropEffect === DropEffect.Move) {
         // Find and remove the actual dropped node from its current position.
-        metaNode = removeById(metaNode.data[metaNode.idProperty]);
+        metaNode = removeById(metaNode.data[metaNode.idProperty])!;
 
         // Mark the node as moved within the tree so $_grtvnDnd_onDragend
         // knows not to remove it.
@@ -54,7 +63,7 @@ export function useTreeViewDragAndDrop(treeModel, metaModel, uniqueId, findById,
       }
       else {
         let originalNode = findById(metaNode.data[metaNode.idProperty]);
-        metaNode = cheapCopyObject(originalNode);
+        metaNode = cheapCopyObject(originalNode!);
         resolveNodeIdConflicts(metaNode, uniqueId.value);
 
         // Force the copied node to not be focusable, in case the dragged node was.

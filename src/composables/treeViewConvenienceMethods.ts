@@ -83,16 +83,16 @@ export function useTreeViewConvenienceMethods(
    * @returns The meta node with the given ID if found, or null
    */
   function findById(targetId: string | null) {
-    let node = null;
+    let node: TreeViewNodeMetaModel | null = null;
 
     if (typeof targetId === "string") {
       // Do a quick check to see if it's at the root level
-      node = treeMetaModel.value.find((n) => n.data[n.idProperty] === targetId);
+      node = treeMetaModel.value.find((n) => n.data[n.idProperty] === targetId) ?? null;
 
       if (!node) {
         depthFirstTraverse((current) => {
           let children = getMetaChildren(current);
-          node = children.find((n) => n.data[n.idProperty] === targetId);
+          node = children.find((n) => n.data[n.idProperty] === targetId) ?? null;
           if (node) {
             return false;
           }
@@ -125,7 +125,7 @@ export function useTreeViewConvenienceMethods(
       // Do a quick check to see if it's at the root level
       let nodeIndex = treeMetaModel.value.findIndex((n) => n.data[n.idProperty] === targetId);
       if (nodeIndex > -1) {
-        node = spliceNodeList(nodeIndex, 1)[0];
+        node = spliceNodeList(nodeIndex, 1)[0] as TreeViewNodeMetaModel;
       } else {
         depthFirstTraverse((current) => {
           // See if this node has a child that matches

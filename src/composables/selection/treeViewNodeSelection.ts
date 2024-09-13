@@ -1,17 +1,22 @@
-import { computed, watch } from 'vue'
+import { ComponentPublicInstance, computed, Ref, watch } from 'vue'
 import { useSelection } from './selection';
-import SelectionMode from '../../enums/selectionMode.js';
-import TreeEvent from '../../enums/event.js';
+import { SelectionMode } from '../../types/selectionMode';
+import { TreeEvent } from '../../types/event';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNode } from "../../components/TreeViewNode";
 
 /**
  * Composable dealing with selection handling at the tree view node.
- * @param {Ref<Object>} metaModel A Ref to the meta model of the node
- * @param {Ref<SelectionMode>} selectionMode A Ref to the selection mode in use for the tree
- * @param {Function} emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
- * @returns {Object} Methods to deal with tree view node level selection
+ * @param metaModel A Ref to the meta model of the node
+ * @param selectionMode A Ref to the selection mode in use for the tree
+ * @param emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
+ * @returns Methods to deal with tree view node level selection
  */
-export function useTreeViewNodeSelection(metaModel, selectionMode, emit) {
-  // emit: ComponentPublicInstance<typeof TreeView>["emits"]
+export function useTreeViewNodeSelection(
+  metaModel: Ref<TreeViewNodeMetaModel>,
+  selectionMode: Ref<SelectionMode>,
+  emit: ComponentPublicInstance<typeof TreeViewNode>["emits"]
+) {
 
   const { deselect, isSelectable, isSelected, setSelected, select } = useSelection();
 
@@ -40,7 +45,7 @@ export function useTreeViewNodeSelection(metaModel, selectionMode, emit) {
     deselect(metaModel);
   }
 
-  function setNodeSelected(newValue) {
+  function setNodeSelected(newValue: boolean) {
     setSelected(metaModel, newValue);
   }
 
@@ -70,14 +75,14 @@ export function useTreeViewNodeSelection(metaModel, selectionMode, emit) {
     // If selection isn't allowed, don't add an aria-selected attribute.
     // If the tree contains nodes that are not selectable, those nodes do not have the aria-selected state.
     if (selectionMode.value === SelectionMode.None || !isNodeSelectable()) {
-      return null;
+      return undefined;
     }
 
     // https://www.w3.org/TR/wai-aria-practices-1.1/#tree_roles_states_props
     // If the tree does not support multiple selection, aria-selected is set to true
     // for the selected node and it is not present on any other node in the tree.
     if (selectionMode.value !== SelectionMode.Multiple) {
-      return isNodeSelected() ? true : null;
+      return isNodeSelected() ? true : undefined;
     }
 
     // If the tree supports multiple selection:

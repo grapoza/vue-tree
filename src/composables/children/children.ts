@@ -1,5 +1,5 @@
 import { TreeViewNodeMetaModel } from 'types/treeViewNode';
-import { unref } from 'vue';
+import { MaybeRef, unref } from 'vue';
 
 /**
  * Composable dealing with children on an arbitrary node.
@@ -7,11 +7,11 @@ import { unref } from 'vue';
  */
 export function useChildren() {
 
-  function getChildren(metaModel: TreeViewNodeMetaModel) {
-    return unref(metaModel).data[unref(metaModel).childrenProperty] ?? [];
+  function getChildren(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
+    return (unref(metaModel).data[unref(metaModel).childrenProperty] ?? []) as object[];
   }
 
-  function getMetaChildren(metaModel: TreeViewNodeMetaModel) {
+  function getMetaChildren(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
     return unref(metaModel).childMetaModels;
   }
 

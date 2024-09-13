@@ -14,7 +14,7 @@ export function useObjectMethods() {
    * @param {Object} toCopy The object to copy
    * @returns {Object} The copy
    */
-  function cheapCopyObject(toCopy: any): object {
+  function cheapCopyObject<T extends { [key: string]: any }>(toCopy: T): T {
     // Use a copy of the source, since the props can be fubar'd by the assigns
     let target = JSON.parse(JSON.stringify(toCopy));
 

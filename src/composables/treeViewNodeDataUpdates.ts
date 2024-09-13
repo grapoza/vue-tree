@@ -1,6 +1,7 @@
 import { TreeViewNodeMetaModel } from "types/treeViewNode";
 import { useChildren } from "./children/children";
 import { useNodeDataNormalizer } from "./nodeDataNormalizer";
+import { MaybeRef } from "vue";
 
  const { getChildren, getMetaChildren } = useChildren();
 
@@ -9,7 +10,7 @@ import { useNodeDataNormalizer } from "./nodeDataNormalizer";
  * in a node of the tree.
  * @param {Object} metaModel The metadata model
  */
-export function useTreeViewNodeDataUpdates(metaModel: TreeViewNodeMetaModel) {
+export function useTreeViewNodeDataUpdates(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
 
   const { createMetaModel } = useNodeDataNormalizer();
 

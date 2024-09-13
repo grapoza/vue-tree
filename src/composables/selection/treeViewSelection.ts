@@ -1,19 +1,25 @@
-import { computed, unref, watch } from 'vue'
+import { ComponentPublicInstance, computed, Ref, unref, watch } from 'vue'
 import { useTreeViewTraversal } from '../treeViewTraversal'
 import { useSelection } from './selection';
-import SelectionMode from '../../enums/selectionMode.js';
-import TreeEvent from '../../enums/event';
+import { SelectionMode } from '../../types/selectionMode';
+import { TreeEvent } from '../../types/event';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeView } from "../../components/TreeView";
 
 /**
  * Composable dealing with selection handling at the top level of the tree view.
- * @param {Ref<Object[]>} metaModel A Ref to the top level meta model of the tree
- * @param {Ref<SelectionMode>} selectionMode A Ref to the selection mode in use for the tree.
- * @param {Ref<Object>} focusableNodeMetaModel A Ref to the currently focusable node meta model for the tree
- * @param {Function} emit The TreeView's emit function, used to emit selection events on the tree's behalf
- * @returns {Object} Methods to deal with tree view level selection
+ * @param metaModel A Ref to the top level meta model of the tree
+ * @param selectionMode A Ref to the selection mode in use for the tree.
+ * @param focusableNodeMetaModel A Ref to the currently focusable node meta model for the tree
+ * @param emit The TreeView's emit function, used to emit selection events on the tree's behalf
+ * @returns Methods to deal with tree view level selection
  */
-export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMetaModel, emit) {
-
+export function useTreeViewSelection(
+  metaModel: Ref<TreeViewNodeMetaModel[]>,
+  selectionMode: Ref<SelectionMode>,
+  focusableNodeMetaModel: Ref<TreeViewNodeMetaModel | null>,
+  emit: ComponentPublicInstance<typeof TreeView>["emits"]
+) {
   const { depthFirstTraverse } = useTreeViewTraversal(metaModel);
   const { deselect, isSelectable, isSelected, select } = useSelection();
 
@@ -21,7 +27,7 @@ export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMeta
 
   watch(focusableNodeMetaModel, (metaNode) => {
     if (unref(selectionMode) === SelectionMode.SelectionFollowsFocus) {
-      exclusivelySelectNode(metaNode);
+      exclusivelySelectNode(metaNode!);
     }
   });
 
@@ -31,7 +37,9 @@ export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMeta
   const ariaMultiselectable = computed(() => {
     // If there's no selectionMode, return null so aria-multiselectable isn't included.
     // Otherwise, return either true or false as the attribute's value.
-    return selectionMode.value === SelectionMode.None ? null : selectionMode.value === SelectionMode.Multiple;
+    return selectionMode.value === SelectionMode.None
+      ? undefined
+      : selectionMode.value === SelectionMode.Multiple;
   });
 
   /**
@@ -41,8 +49,7 @@ export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMeta
   function enforceSelectionMode() {
     if (unref(selectionMode) === SelectionMode.Single) {
       enforceSingleSelectionMode();
-    }
-    else if (unref(selectionMode) === SelectionMode.SelectionFollowsFocus) {
+    } else if (unref(selectionMode) === SelectionMode.SelectionFollowsFocus) {
       enforceSelectionFollowsFocusMode();
     }
   }
@@ -58,8 +65,7 @@ export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMeta
       if (metaNode.state && isSelected(metaNode)) {
         if (alreadyFoundSelected) {
           deselect(metaNode);
-        }
-        else {
+        } else {
           alreadyFoundSelected = true;
         }
       }
@@ -70,13 +76,12 @@ export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMeta
     // Make sure the actual focusable item is selected if the mode changes, and deselect all others
     depthFirstTraverse((metaNode) => {
       let idPropName = metaNode.idProperty;
-      let focusableIdPropName = focusableNodeMetaModel.value.idProperty;
-      if (metaNode.data[idPropName] === focusableNodeMetaModel.value.data[focusableIdPropName]) {
+      let focusableIdPropName = focusableNodeMetaModel.value!.idProperty;
+      if (metaNode.data[idPropName] === focusableNodeMetaModel.value!.data[focusableIdPropName]) {
         if (isSelectable(metaNode)) {
           select(metaNode);
         }
-      }
-      else if (isSelected(metaNode)) {
+      } else if (isSelected(metaNode)) {
         deselect(metaNode);
       }
     });
@@ -89,7 +94,7 @@ export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMeta
    * In all cases this emits treeNodeSelectedChange for the node parameter.
    * @param {Object} metaNode The meta node for which selection changed
    */
-  function handleNodeSelectedChange(metaNode) {
+  function handleNodeSelectedChange(metaNode: TreeViewNodeMetaModel) {
     if (unref(selectionMode) === SelectionMode.Single && isSelected(metaNode)) {
       exclusivelySelectNode(metaNode);
     }
@@ -101,7 +106,7 @@ export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMeta
    * This is used only when one node at a time can be selected (Single/SelectionFollowsFocus).
    * @param {Object} metaNode The meta node that should remain selected
    */
-  function exclusivelySelectNode(metaNode) {
+  function exclusivelySelectNode(metaNode: TreeViewNodeMetaModel) {
     const nodeId = metaNode.data[metaNode.idProperty];
 
     depthFirstTraverse((current) => {
@@ -117,5 +122,5 @@ export function useTreeViewSelection(metaModel, selectionMode, focusableNodeMeta
     ariaMultiselectable,
     enforceSelectionMode,
     handleNodeSelectedChange,
-  }
+  };
 }

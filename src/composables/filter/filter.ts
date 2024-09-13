@@ -12,7 +12,7 @@ export function useFilter() {
     getMetaChildren
   } = useChildren();
 
-  function getFilteredChildren(metaModel: TreeViewNodeMetaModel) {
+  function getFilteredChildren(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
     return getFilteredNodes(getMetaChildren(metaModel));
   }
 

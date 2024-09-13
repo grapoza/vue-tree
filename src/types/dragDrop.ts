@@ -1,3 +1,5 @@
+import { TreeViewNodeMetaModel } from "./treeViewNode";
+
 // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/dropEffect
 export enum DropEffect {
   None = "none",
@@ -23,4 +25,21 @@ export enum TargetZone {
   Before = 0,
   After = 1,
   Child = 2,
+};
+
+export interface DragPayload {
+  treeId: string;
+  data: TreeViewNodeMetaModel;
+};
+
+export interface DropEventData {
+  isSameTree: boolean;
+  droppedModel: TreeViewNodeMetaModel;
+  targetModel: TreeViewNodeMetaModel;
+  siblingNodeSets: {
+    nodes: { [key: string]: any }[];
+    metaNodes: TreeViewNodeMetaModel[];
+  } | null;
+  dropEffect: DropEffect;
+  targetZone: TargetZone;
 };
