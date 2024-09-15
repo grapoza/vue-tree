@@ -71,7 +71,7 @@ import { useTreeViewConvenienceMethods } from '../composables/treeViewConvenienc
 import { useTreeViewDataUpdates } from '../composables/treeViewDataUpdates';
 import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
 import TreeViewNode from './TreeViewNode.vue';
-import { TreeEvent } from '../types/event.js';
+import { TreeEvent } from '../types/event';
 import { TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeViewNode';
 
 // PROPS
@@ -130,20 +130,20 @@ const model = defineModel<object[]>({ type: Array, required: true });
 
 // EMITS
 
-const emit = defineEmits<{
-  [TreeEvent.Activate]: [node: TreeViewNodeMetaModel],
-  [TreeEvent.Add]: [node: TreeViewNodeMetaModel, parent: TreeViewNodeMetaModel],
-  [TreeEvent.CheckboxChange]: [node: TreeViewNodeMetaModel, event: Event],
-  [TreeEvent.ChildrenLoad]: [node: TreeViewNodeMetaModel],
-  [TreeEvent.ChildCheckboxChange]: [node: TreeViewNodeMetaModel, child: TreeViewNodeMetaModel, event: Event],
-  [TreeEvent.Click]: [node: TreeViewNodeMetaModel, event: MouseEvent],
-  [TreeEvent.Delete]: [node: TreeViewNodeMetaModel],
-  [TreeEvent.DoubleClick]: [node: TreeViewNodeMetaModel, event: MouseEvent],
-  [TreeEvent.ExpandedChange]: [node: TreeViewNodeMetaModel],
-  [TreeEvent.RadioChange]: [node: TreeViewNodeMetaModel, event: Event],
-  [TreeEvent.RootNodesLoad]: [nodes: object[]],
-  [TreeEvent.SelectedChange]: [node: TreeViewNodeMetaModel, selected: boolean],
-}>();
+const emit = defineEmits({
+  [TreeEvent.Activate]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.Add]: (node: TreeViewNodeMetaModel, parent: TreeViewNodeMetaModel) => true,
+  [TreeEvent.CheckboxChange]: (node: TreeViewNodeMetaModel, event: Event) => true,
+  [TreeEvent.ChildrenLoad]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.ChildCheckboxChange]: (node: TreeViewNodeMetaModel, child: TreeViewNodeMetaModel, event: Event) => true,
+  [TreeEvent.Click]: (node: TreeViewNodeMetaModel, event: MouseEvent) => true,
+  [TreeEvent.Delete]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.DoubleClick]: (node: TreeViewNodeMetaModel, event: MouseEvent) => true,
+  [TreeEvent.ExpandedChange]: (node: TreeViewNodeMetaModel) => true,
+  [TreeEvent.RadioChange]: (node: TreeViewNodeMetaModel, event: Event) => true,
+  [TreeEvent.RootNodesLoad]: (nodes: object[]) => true,
+  [TreeEvent.SelectedChange]: (node: TreeViewNodeMetaModel, selected: boolean) => true,
+});
 
 
 // CONSTANTS

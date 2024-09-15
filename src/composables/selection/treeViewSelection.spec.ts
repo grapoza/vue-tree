@@ -1,14 +1,15 @@
-import { expect, describe, it, beforeEach, vi } from 'vitest';
-import { ref } from 'vue';
-import { useTreeViewSelection } from './treeViewSelection.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
-import SelectionMode from '../../enums/selectionMode.js';
-import TreeEvent from '../../enums/event.js';
+import { ComponentPublicInstance, ref } from 'vue';
+import { useTreeViewSelection } from './treeViewSelection';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
+import { SelectionMode } from '../../types/selectionMode';
+import { TreeEvent } from '../../types/event';
+import { TreeViewNodeMetaModel } from '../../types/treeViewNode';
+import { Mock } from 'vitest';
 
 describe('treeViewSelection.js', () => {
 
-  let nodes;
-  let emit;
+  let nodes: TreeViewNodeMetaModel[];
+  let emit: Mock<ComponentPublicInstance['$emit']>;
 
   beforeEach(() => {
     emit = vi.fn();
@@ -75,7 +76,7 @@ describe('treeViewSelection.js', () => {
         const selectionMode = ref(SelectionMode.None);
         const focusableNodeMetaModel = ref(nodes[0]);
         const { ariaMultiselectable } = useTreeViewSelection(ref(nodes), selectionMode, focusableNodeMetaModel, emit);
-        expect(ariaMultiselectable.value).to.be.null;
+        expect(ariaMultiselectable.value).to.be.undefined;
       });
     });
 

@@ -1,8 +1,8 @@
-import { useObjectMethods } from './objectMethods.js';
+import { useObjectMethods } from './objectMethods';
 
 const { isProbablyObject, cheapCopyObject } = useObjectMethods();
 
-describe('objectMethods.js', () => {
+describe('objectMethods', () => {
 
   describe('isProbablyObject', () => {
 
