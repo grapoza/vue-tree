@@ -1,12 +1,12 @@
-import { beforeEach, expect, describe, it, vi } from 'vitest';
-import { ref } from 'vue';
-import { useTreeViewNodeChildren } from './treeViewNodeChildren.js';
-import { generateMetaNodes, generateNodes } from '../../../tests/data/node-generator.ts';
-import TreeEvent from '../../enums/event.js';
+import { Mock } from 'vitest';
+import { ComponentPublicInstance, ref } from 'vue';
+import { useTreeViewNodeChildren } from './treeViewNodeChildren';
+import { generateMetaNodes, generateNodes } from '../../../tests/data/node-generator';
+import { TreeEvent } from '../../types/event';
 
-let emit;
+let emit: Mock<ComponentPublicInstance["$emit"]>;
 
-describe('treeViewNodeChildren.js', () => {
+describe('treeViewNodeChildren', () => {
 
   beforeEach(() => {
     emit = vi.fn();
@@ -91,7 +91,7 @@ describe('treeViewNodeChildren.js', () => {
 
       it('should return the value of the `children` property', () => {
         const node = ref(generateMetaNodes(['es', ['es', 'es']])[0]);
-        delete node.value.childrenProperty;
+        node.value.childrenProperty = "";
         const { children } = useTreeViewNodeChildren(node, emit);
         expect(children.value[0].data).to.equal(node.value.data.children[0]);
         expect(children.value[1].data).to.equal(node.value.data.children[1]);
@@ -208,14 +208,14 @@ describe('treeViewNodeChildren.js', () => {
     describe('and the callback returns a child node', () => {
 
       it('should modify the children list', async () => {
-        const node = ref(generateMetaNodes(['es'], null, async () => Promise.resolve(generateNodes(['es']).nodes[0]))[0]);
+        const node = ref(generateMetaNodes(['es'], undefined, async () => Promise.resolve(generateNodes(['es']).nodes[0]))[0]);
         const { children, addChild } = useTreeViewNodeChildren(node, emit);
         await addChild();
         expect(children.value).toHaveLength(1);
       });
 
       it('should emit the children added event', async () => {
-        const node = ref(generateMetaNodes(['es'], null, async () => Promise.resolve(generateNodes(["es"]).nodes[0]))[0]);
+        const node = ref(generateMetaNodes(['es'], undefined, async () => Promise.resolve(generateNodes(["es"]).nodes[0]))[0]);
         const { children, addChild } = useTreeViewNodeChildren(node, emit);
         await addChild();
         expect(emit).toHaveBeenCalledWith(TreeEvent.Add, children.value[0], node.value);
@@ -225,7 +225,7 @@ describe('treeViewNodeChildren.js', () => {
     describe('and the callback does not return a node', () => {
 
       it('should not modify the children list', async () => {
-        const node = ref(generateMetaNodes(['es'], null, async () => Promise.resolve(null))[0]);
+        const node = ref(generateMetaNodes(['es'], undefined, async () => Promise.resolve(null))[0]);
         const { children, addChild } = useTreeViewNodeChildren(node, emit);
         await addChild();
         expect(children.value).toHaveLength(0);
