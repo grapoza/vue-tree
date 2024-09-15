@@ -21,13 +21,12 @@ const { unfocus } = useFocus();
  * @returns Methods to deal with tree view level drag-and-drop
  */
 export function useTreeViewDragAndDrop(
-  treeModel: Ref<TreeViewNodeMetaModel[]>,
-  metaModel: Ref<object[]>,
+  treeModel: Ref<object[]>,
+  metaModel: Ref<TreeViewNodeMetaModel[]>,
   uniqueId: Ref<string>,
-  findById: ReturnType<typeof useTreeViewConvenienceMethods>['findById'],
-  removeById: ReturnType<typeof useTreeViewConvenienceMethods>['removeById']
+  findById: ReturnType<typeof useTreeViewConvenienceMethods>["findById"],
+  removeById: ReturnType<typeof useTreeViewConvenienceMethods>["removeById"]
 ) {
-
   const { spliceNodeList } = useTreeViewDataUpdates(treeModel, metaModel);
 
   /**
@@ -47,7 +46,6 @@ export function useTreeViewDragAndDrop(
    * @param {Object} eventData The data about a drop event
    */
   function drop(eventData: DropEventData) {
-
     let metaNode = eventData.droppedModel;
 
     if (eventData.isSameTree) {
@@ -60,8 +58,7 @@ export function useTreeViewDragAndDrop(
         // Mark the node as moved within the tree so $_grtvnDnd_onDragend
         // knows not to remove it.
         metaNode._.dragMoved = true;
-      }
-      else {
+      } else {
         let originalNode = findById(metaNode.data[metaNode.idProperty]);
         metaNode = cheapCopyObject(originalNode!);
         resolveNodeIdConflicts(metaNode, uniqueId.value);
@@ -69,8 +66,7 @@ export function useTreeViewDragAndDrop(
         // Force the copied node to not be focusable, in case the dragged node was.
         unfocus(metaNode);
       }
-    }
-    else {
+    } else {
       // Resolve node ID conflicts to prevent duplicate node IDs between existing
       // nodes in this tree and the copied node.
       resolveNodeIdConflicts(metaNode, uniqueId.value);
@@ -109,6 +105,6 @@ export function useTreeViewDragAndDrop(
 
   return {
     dragMoveNode,
-    drop
-  }
+    drop,
+  };
 }

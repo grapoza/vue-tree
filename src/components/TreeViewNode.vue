@@ -51,7 +51,7 @@
                 v-if="canExpand"
                 aria-hidden="true"
                 tabindex="-1"
-                :title="metaModel.expanderTitle"
+                :title="metaModel.expanderTitle ?? undefined"
                 class="grtvn-self-expander"
                 :class="[customClasses.treeViewNodeSelfExpander,
                 metaModel.state.expanded ? 'grtvn-self-expanded' : '',
@@ -74,7 +74,7 @@
             :checkboxChangeHandler="onCheckboxChange">
 
         <label :for="inputId"
-               :title="metaModel.title"
+               :title="metaModel.title ?? undefined"
                class="grtvn-self-label"
                :class="customClasses.treeViewNodeSelfLabel">
 
@@ -101,7 +101,7 @@
             :radioChangeHandler="onRadioChange">
 
         <label :for="inputId"
-               :title="metaModel.title"
+               :title="metaModel.title ?? undefined"
                class="grtvn-self-label"
                :class="customClasses.treeViewNodeSelfLabel">
 
@@ -126,7 +126,7 @@
             :metaModel="metaModel"
             :customClasses="customClasses">
 
-        <span :title="metaModel.title"
+        <span :title="metaModel.title ?? undefined"
               class="grtvn-self-text"
               :class="customClasses.treeViewNodeSelfText">
           {{ label }}
@@ -139,7 +139,7 @@
               v-if="metaModel.addChildCallback"
               aria-hidden="true"
               tabindex="-1"
-              :title="metaModel.addChildTitle"
+              :title="metaModel.addChildTitle ?? undefined"
               class="grtvn-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfAddChild]"
               @click="addChild">
@@ -153,7 +153,7 @@
               v-if="metaModel.deletable"
               aria-hidden="true"
               tabindex="-1"
-              :title="metaModel.deleteTitle"
+              :title="metaModel.deleteTitle ?? undefined"
               class="grtvn-self-action"
               :class="[customClasses.treeViewNodeSelfAction, customClasses.treeViewNodeSelfDelete]"
               @click="onDelete">
@@ -238,7 +238,7 @@
 
 <script setup lang="ts">
 
-import { computed, PropType, ref, toRef, useTemplateRef, watch } from 'vue'
+import { computed, PropType, Ref, ref, toRef, useTemplateRef, watch } from 'vue'
 import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
 import { useChildren } from '../composables/children/children';
 import { useTreeViewNodeChildren } from '../composables/children/treeViewNodeChildren';
@@ -250,7 +250,7 @@ import { useTreeViewNodeExpansion } from '../composables/expansion/treeViewNodeE
 import { useTreeViewNodeFilter } from '../composables/filter/treeViewNodeFilter';
 import { SelectionMode } from '../types/selectionMode';
 import { TreeEvent } from '../types/event';
-import { TreeViewMetaModelCustomizations, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeViewNode';
+import { TreeViewMetaModelCustomizations, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaults, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeViewNode';
 
 // PROPS
 
@@ -276,7 +276,7 @@ const props = defineProps({
     required: true
   },
   selectionMode: {
-    type: SelectionMode,
+    type: String as PropType<SelectionMode>,
     required: false,
     default: SelectionMode.None,
     validator: function (value: SelectionMode) {
@@ -384,7 +384,7 @@ const treeId = computed(() => props.treeId);
 
 // COMPOSABLES
 
-const { createMetaModel, normalizeNodeData } = useNodeDataNormalizer(metaModel, props.modelDefaults, radioGroupValues);
+const { createMetaModel, normalizeNodeData } = useNodeDataNormalizer(metaModel as Ref<TreeViewNodeMetaModelDefaults>, props.modelDefaults, radioGroupValues);
 normalizeNodeData();
 
 const {
@@ -458,7 +458,7 @@ watch([getChildren(metaModel), () => getChildren(metaModel)], () => {
     if (index !== metaIndex) {
       // Otherwise, if the node is not in the meta children, add it.
       if (metaIndex === -1) {
-        metaChildren.splice(index, 0, createMetaModel(node));
+        metaChildren.splice(index, 0, createMetaModel(node) as TreeViewNodeMetaModel);
       }
       else {
         // If the node is in the meta children, but not in the right place, move it.
@@ -501,7 +501,7 @@ function onRadioChange(event: Event) {
  */
 function onClick(event: MouseEvent) {
   // Don't fire this if the target is an element which has its own events
-  if (!event.target.matches(elementsThatIgnoreClicks)) {
+  if (!(event.target as Element).matches(elementsThatIgnoreClicks)) {
     emit(TreeEvent.Click, metaModel.value, event);
     toggleNodeSelected();
   }
@@ -513,11 +513,11 @@ function onClick(event: MouseEvent) {
  * Handles double clicks on the node. It only performs actions if the double click happened on an
  * element that does not have node clicks explicitly ingored (e.g., the expander button).
  * Emits a treeNodeDblclick event.
- * @param {Event} event The dblclick event
+ * @param event The dblclick event
  */
-function onDblclick(event) {
+function onDblclick(event: MouseEvent) {
   // Don't fire this if the target is an element which has its own events
-  if (!event.target.matches(elementsThatIgnoreClicks)) {
+  if (!(event.target as Element).matches(elementsThatIgnoreClicks)) {
     emit(TreeEvent.DoubleClick, metaModel.value, event);
   }
 }
@@ -525,9 +525,8 @@ function onDblclick(event) {
 /**
  * Handles node deletion eventing. A callback can be supplied in the metaModel to perform
  * and pre-processing of the node or to cancel the deletion entirely.
- * @param {Event} event The event that triggered this method call
  */
-async function onDelete(event) {
+async function onDelete() {
   if (metaModel.value.deletable && (await metaModel.value.deleteNodeCallback?.(metaModel.value) ?? true)) {
     emit(TreeEvent.Delete, metaModel.value);
   }
@@ -538,11 +537,11 @@ async function onDelete(event) {
  * or activation. Each interaction is detailed in the method body.
  * @param {Event} event The keydown event
  */
-function onKeyDown(event) {
+function onKeyDown(event: KeyboardEvent) {
   let eventHandled = true;
 
   // Do nothing when modifiers or shift are present.
-  if (event.altKey || event.ctrlKey || event.metaKey || event.shift) {
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
     return;
   }
 
@@ -551,8 +550,8 @@ function onKeyDown(event) {
     // Note that splitting activation and selection so explicitly differs from
     // https://www.w3.org/TR/wai-aria-practices-1.1/#keyboard-interaction-22 (Enter description, and Selection in multi-select trees)
     if (metaModel.value.input && !metaModel.value.state.input.disabled) {
-      let tvns = nodeElement.value.querySelector('.grtvn-self');
-      let target = tvns.querySelector('.grtvn-self-input') || tvns.querySelector('input');
+      let tvns = nodeElement.value!.querySelector('.grtvn-self');
+      let target = tvns!.querySelector('.grtvn-self-input') ?? tvns!.querySelector('input');
 
       if (target) {
         // Note: until there's a need, this just dumbly clicks the .t-v-n-s-i or first input if it exists.
@@ -619,7 +618,7 @@ function onKeyDown(event) {
   else if (props.ariaKeyMap.deleteItem.includes(event.keyCode)) {
     // Trigger deletion of the current node if allowed.
     // Focus is moved to the previous node if available, or the next node.
-    onDelete(event);
+    onDelete();
   }
   else {
     eventHandled = false;
@@ -636,9 +635,9 @@ function onKeyDown(event) {
  * Note that only the node that was deleted fires these, not any subnode, so
  * this comes from a request from the child node for this node to delete it.
  * This emits the treeNodeDelete event.
- * @param {Object} metaNode The node to remove
+ * @param metaNode The node to remove
  */
-function handleChildDeletion(metaNode) {
+function handleChildDeletion(metaNode: TreeViewNodeMetaModel) {
   // Remove the node from the array of children if this is an immediate child.
   // Note that only the node that was deleted fires these, not any subnode.
   let targetIndex = filteredChildren.value.indexOf(metaNode);
@@ -664,7 +663,7 @@ function handleChildDeletion(metaNode) {
  * @param {Object} metaNode The meta node on which the checkbox changed
  * @param {Event} event The event that triggered the change
  */
-function handleCheckboxChange(metaNode, event) {
+function handleCheckboxChange(metaNode: TreeViewNodeMetaModel, event: InputEvent) {
   emit(TreeEvent.CheckboxChange, metaNode, event);
 
   if (children.value.includes(metaNode)) {

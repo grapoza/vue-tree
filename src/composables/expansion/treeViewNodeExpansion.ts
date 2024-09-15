@@ -4,7 +4,7 @@ import { useTreeViewNodeChildren } from '../children/treeViewNodeChildren';
 import { useTreeViewNodeFilter } from '../filter/treeViewNodeFilter';
 import { TreeEvent } from '../../types/event';
 import { TreeViewNodeMetaModel } from 'types/treeViewNode';
-import { TreeViewNode } from "../../components/TreeViewNode";
+import TreeViewNode from "../../components/TreeViewNode.vue";
 
 /**
  * Composable dealing with expansion handling at the tree view node.

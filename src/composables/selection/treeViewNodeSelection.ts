@@ -3,7 +3,7 @@ import { useSelection } from './selection';
 import { SelectionMode } from '../../types/selectionMode';
 import { TreeEvent } from '../../types/event';
 import { TreeViewNodeMetaModel } from 'types/treeViewNode';
-import { TreeViewNode } from "../../components/TreeViewNode";
+import TreeViewNode from "../../components/TreeViewNode.vue";
 
 /**
  * Composable dealing with selection handling at the tree view node.

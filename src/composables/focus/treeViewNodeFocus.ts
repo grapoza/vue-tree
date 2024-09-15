@@ -3,7 +3,7 @@ import { useFocus } from './focus';
 import { useChildren } from '../children/children';
 import { TreeEvent } from '../../types/event';
 import { TreeViewNodeMetaModel } from 'types/treeViewNode';
-import { TreeViewNode } from "../../components/TreeViewNode";
+import TreeViewNode from "../../components/TreeViewNode.vue";
 
 /**
  * Composable dealing with focus handling at the tree view node.
@@ -82,7 +82,7 @@ export function useTreeViewNodeFocus(
    * this node should gain focus in that case, or the parent node if there is no next sibling.
    * @param keepCurrentDomFocus If true, does not try to focus the node's element in the DOM
    */
-  function focusNextNode(childMetaNode: TreeViewNodeMetaModel, ignoreChild: boolean, keepCurrentDomFocus = false) {
+  function focusNextNode(childMetaNode: TreeViewNodeMetaModel, ignoreChild?: boolean, keepCurrentDomFocus = false) {
     // Call focusNext and see if it succeeds in focusing.
     // If not, punt this up to this node's parent.
     if (!focusNext(metaModelChildren.value, childMetaNode, ignoreChild, keepCurrentDomFocus)) {

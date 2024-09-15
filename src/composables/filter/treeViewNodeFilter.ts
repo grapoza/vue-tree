@@ -4,7 +4,7 @@ import { useFilter } from "./filter";
 import { useFocus } from "../focus/focus";
 import { TreeEvent } from '../../types/event';
 import { TreeViewNodeMetaModel } from "types/treeViewNode.js";
-import { TreeViewNode } from "../../components/TreeViewNode";
+import TreeViewNode from "../../components/TreeViewNode.vue";
 
 /**
  * Composable dealing with filtering at the tree view node.

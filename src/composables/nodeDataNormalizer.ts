@@ -164,7 +164,7 @@ export function useNodeDataNormalizer(
     if (
       input === null ||
       typeof input !== "object" ||
-      !Object.values(InputType).includes(input.type)
+      !Object.values(InputType).includes(input.type!)
     ) {
       rawMetaModel.input = null;
     } else {

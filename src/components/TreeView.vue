@@ -9,7 +9,7 @@
     <ul class="grtv" role="tree" :aria-multiselectable="ariaMultiselectable" v-if="areNodesLoaded">
       <TreeViewNode v-for="(nodeMetaModel, index) in metaModel"
         :key="nodeMetaModel.data[nodeMetaModel?.idProperty ?? 'id']"
-        :aria-key-map="ariaKeyMap"
+        :ariaKeyMap="ariaKeyMap"
         :depth="0"
         :model-defaults="modelDefaults"
         v-model="metaModel[index]"
@@ -57,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, readonly, onMounted, provide, toRef, watch, Ref, useTemplateRef } from 'vue'
+import { computed, nextTick, ref, readonly, onMounted, provide, toRef, watch, Ref, useTemplateRef, PropType } from 'vue'
 import { SelectionMode } from '../types/selectionMode';
 import { useIdGeneration } from '../composables/idGeneration'
 import { useTreeViewTraversal } from '../composables/treeViewTraversal'
@@ -70,9 +70,9 @@ import { useTreeViewDragAndDrop } from '../composables/dragDrop/treeViewDragAndD
 import { useTreeViewConvenienceMethods } from '../composables/treeViewConvenienceMethods';
 import { useTreeViewDataUpdates } from '../composables/treeViewDataUpdates';
 import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
-import { TreeViewNode } from './TreeViewNode.vue';
+import TreeViewNode from './TreeViewNode.vue';
 import { TreeEvent } from '../types/event.js';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeViewNode';
 
 // PROPS
 
@@ -104,12 +104,12 @@ const props = defineProps({
     default: null
   },
   modelDefaults: {
-    type: Function,
+    type: Function as PropType<TreeViewNodeMetaModelDefaultsMethod>,
     required: false,
     default() { return {}; }
   },
   selectionMode: {
-    type: String,
+    type: String as PropType<SelectionMode>,
     required: false,
     default: SelectionMode.None,
     validator: function (value: SelectionMode) {

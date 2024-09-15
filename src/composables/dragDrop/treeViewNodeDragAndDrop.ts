@@ -7,7 +7,7 @@ import { useChildren } from "../children/children";
 import { useTreeViewNodeDataUpdates } from '../treeViewNodeDataUpdates';
 import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 import { ComponentPublicInstance, Ref } from 'vue';
-import { TreeViewNode } from "../../components/TreeViewNode";
+import TreeViewNode from "../../components/TreeViewNode.vue";
 
 const { closest } = useDomMethods();
 

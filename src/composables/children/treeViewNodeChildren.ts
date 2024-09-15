@@ -2,7 +2,7 @@ import { ComponentPublicInstance, computed, Ref } from 'vue';
 import { useChildren } from './children';
 import { useTreeViewNodeDataUpdates } from '../treeViewNodeDataUpdates';
 import { TreeEvent } from '../../types/event';
-import { TreeViewNode } from "../../components/TreeViewNode";
+import TreeViewNode from "../../components/TreeViewNode.vue";
 import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
 /**
@@ -36,7 +36,7 @@ export function useTreeViewNodeChildren(
     if (!spec._.state.areChildrenLoaded && !spec._.state.areChildrenLoading) {
 
       spec._.state.areChildrenLoading = true;
-      var childrenResult = await spec.loadChildrenAsync(metaModel.value);
+      var childrenResult = await spec.loadChildrenAsync!(metaModel.value);
 
       if (childrenResult) {
         spec._.state.areChildrenLoaded = true;

@@ -40,7 +40,7 @@ describe('objectMethods.js', () => {
     describe('when the argument is null', () => {
 
       it('should return null', () => {
-        expect(cheapCopyObject(null)).to.be.null;
+        expect(cheapCopyObject(null as unknown as { [key: string]: any })).to.be.null;
       });
     });
 
@@ -49,8 +49,8 @@ describe('objectMethods.js', () => {
       it('should return a copy of that argument', () => {
         const arr = [1, 2, 3];
         expect(cheapCopyObject(arr)).to.eql(arr);
-        expect(cheapCopyObject("string")).to.equal("string");
-        expect(cheapCopyObject(1)).to.equal(1);
+        expect(cheapCopyObject("string" as unknown as { [key: string]: any })).to.equal("string");
+        expect(cheapCopyObject(1 as unknown as { [key: string]: any })).to.equal(1);
       });
     });
 

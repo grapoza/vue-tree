@@ -1,8 +1,8 @@
 import { InputType } from '../types/inputType';
 import { EffectAllowed } from './dragDrop';
 
-export type TreeViewMetaModelCustomizationsDefaults = {
-  classes?: {
+export type TreeViewMetaModelCustomizations = {
+  classes: {
     treeViewNode?: string;
     treeViewNodeSelf?: string;
     treeViewNodeSelfSelected?: string;
@@ -25,74 +25,84 @@ export type TreeViewMetaModelCustomizationsDefaults = {
     treeViewNodeLoading?: string;
   };
 };
-export type TreeViewMetaModelCustomizations = Required<TreeViewMetaModelCustomizationsDefaults>;
+export type TreeViewMetaModelCustomizationsDefaults = Partial<TreeViewMetaModelCustomizations>;
 
-export type TreeViewMetaModelInputDefaults = {
+export type TreeViewMetaModelInput = {
   type: InputType;
   name: string | null;
-  value?: string;
-  isInitialRadioGroupValue?: boolean;
+  value: string;
+  isInitialRadioGroupValue: boolean;
 };
-export type TreeViewMetaModelInput = Required<TreeViewMetaModelInputDefaults>;
+export type TreeViewMetaModelInputDefaults = Partial<TreeViewMetaModelInput>;
 
-export type TreeViewMetaModelStateDefaults = {
-  expanded?: boolean;
-  selected?: boolean;
-  input?: {
+export type TreeViewMetaModelState = {
+  expanded: boolean;
+  selected: boolean;
+  input: {
     disabled?: boolean;
     value?: boolean;
   };
 };
-export type TreeViewMetaModelState = Required<TreeViewMetaModelStateDefaults>;
+export type TreeViewMetaModelStateDefaults = Partial<TreeViewMetaModelState>;
 
-export type TreeViewMetaModelInternalDefaults = {
-  dragging?: boolean;
-  dragMoved?: boolean;
-  isDropTarget?: boolean;
-  isPrevDropTarget?: boolean;
-  isNextDropTarget?: boolean;
-  isChildDropTarget?: boolean;
-  keepCurrentDomFocus?: boolean;
-  state?: {
+export type TreeViewMetaModelInternal = {
+  dragging: boolean;
+  dragMoved: boolean;
+  isDropTarget: boolean;
+  isPrevDropTarget: boolean;
+  isNextDropTarget: boolean;
+  isChildDropTarget: boolean;
+  keepCurrentDomFocus: boolean;
+  state: {
     areChildrenLoading?: boolean;
     areChildrenLoaded?: boolean;
     matchesFilter?: boolean;
     subnodeMatchesFilter?: boolean;
   };
 };
-export type TreeViewMetaModelInternal = Required<TreeViewMetaModelInternalDefaults>;
+export type TreeViewMetaModelInternalDefaults = Partial<TreeViewMetaModelInternal>;
 
 /**
- * The default values for a TreeViewNodeMetaModel, which may end up getting merged with
- * other TreeviewNodeMetaModels and/or filled in with data on the fly. This is the
- * format that the TreeViewNodeMetaModel will be in when it is created, usually by casting
- * a completed TreeViewNodeMetaModelDefaults to a TreeViewNodeMetaModel.
+ * A base type shared by both TreeViewNodeMetaModel and TreeViewNodeMetaModelDefaults,
+ * which contains the properties that are shared between the two types and vary only
+ * by whether they are required or optional.
  */
-export type TreeViewNodeMetaModelDefaults = {
+type BaseTreeViewNodeMetaModel = {
   [key: string]: any;
-  data?: { [key: string]: any };
-  childMetaModels?: TreeViewNodeMetaModelDefaults[];
-  idProperty?: string;
-  labelProperty?: string;
-  childrenProperty?: string;
-  title?: string | null;
-  expanderTitle?: string | null;
-  addChildTitle?: string | null;
-  deleteTitle?: string | null;
-  loadChildrenAsync?: Function | null;
-  addChildCallback?: Function | null;
-  deleteNodeCallback?: Function | null;
-  expandable?: boolean;
-  selectable?: boolean;
-  deletable?: boolean;
-  focusable?: boolean;
-  draggable?: boolean;
-  allowDrop?: boolean;
-  dataTransferEffectAllowed?: EffectAllowed;
-  customizations?: TreeViewMetaModelCustomizationsDefaults | null;
-  input?: TreeViewMetaModelInputDefaults | null;
-  state?: TreeViewMetaModelStateDefaults | null;
-  _?: TreeViewMetaModelInternalDefaults;
+  data: { [key: string]: any };
+  idProperty: string;
+  labelProperty: string;
+  childrenProperty: string;
+  title: string | null;
+  expanderTitle: string | null;
+  addChildTitle: string | null;
+  deleteTitle: string | null;
+  loadChildrenAsync: Function | null;
+  addChildCallback: Function | null;
+  deleteNodeCallback: Function | null;
+  expandable: boolean;
+  selectable: boolean;
+  deletable: boolean;
+  focusable: boolean;
+  draggable: boolean;
+  allowDrop: boolean;
+  dataTransferEffectAllowed: EffectAllowed;
+};
+
+type TreeViewNodeMetaModelUniqueProperties = {
+  childMetaModels: TreeViewNodeMetaModel[];
+  customizations: TreeViewMetaModelCustomizations | null;
+  input: TreeViewMetaModelInput | null;
+  state: TreeViewMetaModelState;
+  _: TreeViewMetaModelInternal;
+};
+
+type TreeViewMetaModelDefaultsUniqueProperties = {
+  childMetaModels: TreeViewNodeMetaModelDefaults[];
+  customizations: TreeViewMetaModelCustomizationsDefaults;
+  input: TreeViewMetaModelInputDefaults | null;
+  state: TreeViewMetaModelStateDefaults;
+  _: TreeViewMetaModelInternalDefaults;
 };
 
 /**
@@ -100,24 +110,15 @@ export type TreeViewNodeMetaModelDefaults = {
  * represent a node in the tree view. This is the format that the TreeViewNodeMetaModel
  * will be in when it is used in the tree view.
  */
-// So why isn't this union getting picked up?
-type TvnmmRequiredOmit = Required<Omit<TreeViewNodeMetaModelDefaults, "childMetaModels" | "customizations" | "input" | "state" | "_">>;
-type TvnmmReplaced = {
-  childMetaModels: TreeViewNodeMetaModel[];
-  customizations: TreeViewMetaModelCustomizations;
-  input: TreeViewMetaModelInput | null;
-  state: TreeViewMetaModelState;
-  _: TreeViewMetaModelInternal;
-};
-export type TreeViewNodeMetaModel = TvnmmRequiredOmit & TvnmmReplaced;
+export type TreeViewNodeMetaModel = BaseTreeViewNodeMetaModel & TreeViewNodeMetaModelUniqueProperties;
 
-// export type TreeViewNodeMetaModel = Required<Omit<TreeViewNodeMetaModelDefaults, "childMetaModels" | "customizations" | "input" | "state" | "_">> & {
-//   childMetaModels: TreeViewNodeMetaModel[];
-//   customizations: TreeViewMetaModelCustomizations;
-//   input: TreeViewMetaModelInput | null;
-//   state: TreeViewMetaModelState;
-//   _: TreeViewMetaModelInternal;
-// };
+/**
+ * The default values for a TreeViewNodeMetaModel, which may end up getting merged with
+ * other TreeviewNodeMetaModels and/or filled in with data on the fly. This is the
+ * format that the TreeViewNodeMetaModel will be in when it is created, usually by casting
+ * a completed TreeViewNodeMetaModelDefaults to a TreeViewNodeMetaModel.
+ */
+export type TreeViewNodeMetaModelDefaults = Partial<BaseTreeViewNodeMetaModel & TreeViewMetaModelDefaultsUniqueProperties>;
 
 // TODO Fix this so it requires an object type
 export type TreeViewNodeMetaModelDefaultsMethod = (node: any) => TreeViewNodeMetaModelDefaults;

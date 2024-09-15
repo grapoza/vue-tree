@@ -8,7 +8,7 @@ import { MaybeRef, unref } from 'vue';
 export function useChildren() {
 
   function getChildren(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
-    return (unref(metaModel).data[unref(metaModel).childrenProperty] ?? []) as object[];
+    return (unref(metaModel).data[unref(metaModel).childrenProperty] ?? []) as { [key: string]: any }[];
   }
 
   function getMetaChildren(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
