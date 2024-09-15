@@ -1,11 +1,13 @@
-import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import TreeViewNode from '../../components/TreeViewNode.vue';
-import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
-import { dropEffect as DropEffect, effectAllowed as EffectAllowed } from '../../enums/dragDrop.js';
-import MimeType from '../../enums/mimeType.js';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
+import { DropEffect, EffectAllowed } from '../../types/dragDrop';
+import { MimeType } from '../../types/mimeType';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
 const serializedNodeData = '{"data":{"id":"n0","label":"Node 0","children":[]},"childMetaModels":[],"_":{"dragging":false,"state":{"areChildrenLoaded":true,"areChildrenLoading":false,"matchesFilter":true,"subnodeMatchesFilter":false}},"childrenProperty":"children","idProperty":"id","labelProperty":"label","loadChildrenAsync":null,"expandable":false,"selectable":true,"deletable":false,"focusable":false,"input":{"type":"checkbox","name":"n0-cbx"},"state":{"expanded":false,"selected":false,"input":{"disabled":false,"value":false}},"addChildCallback":null,"draggable":false,"allowDrop":false,"dataTransferEffectAllowed":"copyMove","deleteNodeCallback":null,"title":null,"expanderTitle":null,"addChildTitle":null,"deleteTitle":null,"customizations":{}}';
+
+let wrapper: ReturnType<typeof mount<typeof TreeViewNode>>;
 
 const getDefaultPropsData = function () {
   return {
@@ -22,7 +24,7 @@ const getDefaultPropsData = function () {
       deleteItem: [46] // Delete
     },
     modelValue: generateMetaNodes(["csf"])[0],
-    'update:modelValue': (e) => wrapper.setProps({ modelValue: e }),
+    'update:modelValue': (e: TreeViewNodeMetaModel) => wrapper!.setProps({ modelValue: e }),
     modelDefaults: () => ({}),
     depth: 0,
     treeId: 'tree-id',
@@ -31,9 +33,9 @@ const getDefaultPropsData = function () {
   }
 };
 
-let elem;
+let elem: HTMLDivElement;
 
-function createWrapper(customPropsData, customAttrs) {
+function createWrapper(customPropsData?: object, customAttrs?: Record<string, unknown>) {
   // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
   elem = document.createElement('div');
   if (document.body) {
@@ -55,28 +57,24 @@ function createWrapper(customPropsData, customAttrs) {
 
 describe('TreeViewNode.vue (Drag and Drop)', () => {
 
-  let wrapper = null;
-  let eventData = null;
+  let eventData: { dataTransfer: { [key: string]: any } };
 
   beforeEach(() => {
     eventData = {
       dataTransfer: {
         dropEffect: DropEffect.Move,
-        getData: function (mime) { return this.privateData[mime]; },
-        setData: function (mime, value) {
+        getData: function (mime: MimeType) { return this.privateData[mime]; },
+        setData: function (mime: MimeType, value: any) {
           this.privateData[mime] = value;
           this.types.push(mime);
         },
-        types: [],
-        privateData: {}
-      }
+        types: [] as MimeType[],
+        privateData: {} as { [key: string]: any },
+      },
     };
   });
 
   afterEach(() => {
-    wrapper = null;
-    eventData = null;
-
     elem.remove();
   });
 
@@ -149,7 +147,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
 
       beforeEach(() => {
         const nodeModel = generateMetaNodes(['ecs', ['ecs']])[0];
-        nodeModel.dataTransferEffectAllowed = 'cow';
+        nodeModel.dataTransferEffectAllowed = 'cow' as EffectAllowed;
         wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
           modelValue: nodeModel
         }));
@@ -173,7 +171,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
     describe('and the node is a valid drop target', () => {
 
       beforeEach(() => {
-        wrapper.vm.metaModel.allowDrop = true;
+        wrapper.vm.modelValue.allowDrop = true;
       });
 
       it('should mark the node as a drop target', async () => {
@@ -246,7 +244,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
     describe('and the node is a valid drop target', () => {
 
       beforeEach(() => {
-        wrapper.vm.metaModel.allowDrop = true;
+        wrapper.vm.modelValue.allowDrop = true;
       });
 
       it('should mark the node as a drop target', async () => {
@@ -313,7 +311,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
 
     beforeEach(() => {
       wrapper = createWrapper();
-      wrapper.vm.metaModel.allowDrop = true;
+      wrapper.vm.modelValue.allowDrop = true;
       eventData.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"tree-id","data":${serializedNodeData}}`);
     });
 
@@ -364,7 +362,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
 
     beforeEach(() => {
       wrapper = createWrapper();
-      wrapper.vm.metaModel.allowDrop = true;
+      wrapper.vm.modelValue.allowDrop = true;
       eventData.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"tree-id","data":${serializedNodeData}}`);
     });
 
@@ -382,15 +380,15 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should include the dropped model data in the treeNodeDrop event', () => {
-        expect(wrapper.emitted().treeNodeDrop[0][0].droppedModel).to.eql(JSON.parse(serializedNodeData));
+        expect((wrapper.emitted().treeNodeDrop as any)[0][0].droppedModel).to.eql(JSON.parse(serializedNodeData));
       });
 
       it('should include the target model in the treeNodeDrop event', () => {
-        expect(wrapper.emitted().treeNodeDrop[0][0].targetModel).to.eql(wrapper.vm.metaModel);
+        expect((wrapper.emitted().treeNodeDrop as any)[0][0].targetModel).to.eql(wrapper.vm.modelValue);
       });
 
       it('should include the drop effect in the treeNodeDrop event', () => {
-        expect(wrapper.emitted().treeNodeDrop[0][0].dropEffect).to.eql(eventData.dataTransfer.dropEffect);
+        expect((wrapper.emitted().treeNodeDrop as any)[0][0].dropEffect).to.eql(eventData.dataTransfer.dropEffect);
       });
 
       it('should unmark the node as a drop target', () => {
@@ -407,7 +405,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should have isSameTree === true in the treeNodeDrop event', () => {
-        expect(wrapper.emitted().treeNodeDrop[0][0].isSameTree).to.be.true;
+        expect((wrapper.emitted().treeNodeDrop as any)[0][0].isSameTree).to.be.true;
       });
     });
 
@@ -421,7 +419,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should have isSameTree === false in the treeNodeDrop event', () => {
-        expect(wrapper.emitted().treeNodeDrop[0][0].isSameTree).to.be.false;
+        expect((wrapper.emitted().treeNodeDrop as any)[0][0].isSameTree).to.be.false;
       });
     });
 
@@ -435,9 +433,9 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should include the children of the current node as the sibling node set in the treeNodeDrop event', () => {
-        expect(wrapper.emitted().treeNodeDrop[0][0].siblingNodeSets).to.eql({
-          nodes: wrapper.vm.metaModel.data.children,
-          metaNodes: wrapper.vm.metaModel.childMetaModels,
+        expect((wrapper.emitted().treeNodeDrop as any)[0][0].siblingNodeSets).to.eql({
+          nodes: wrapper.vm.modelValue.data.children,
+          metaNodes: wrapper.vm.modelValue.childMetaModels,
         });
       });
 
@@ -456,7 +454,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should have a null sibling node set in the treeNodeDrop event', () => {
-        expect(wrapper.emitted().treeNodeDrop[0][0].siblingNodeSets).to.be.null;
+        expect((wrapper.emitted().treeNodeDrop as any)[0][0].siblingNodeSets).to.be.null;
       });
 
       it('should unmark the prev drop target as an affected drop target', () => {
@@ -474,7 +472,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should have a null sibling node set in the treeNodeDrop event', () => {
-        expect(wrapper.emitted().treeNodeDrop[0][0].siblingNodeSets).to.be.null;
+        expect((wrapper.emitted().treeNodeDrop as any)[0][0].siblingNodeSets).to.be.null;
       });
 
       it('should unmark the next drop target as an affected drop target', () => {
@@ -495,7 +493,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
 
         beforeEach(() => {
           wrapper = createWrapper();
-          wrapper.vm.metaModel._.dragMoved = true;
+          wrapper.vm.modelValue._.dragMoved = true;
           let node = wrapper.find('.grtvn-self');
           node.trigger('dragend', eventData);
         });
@@ -515,7 +513,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
 
         it('should emit a treeViewNodeDragMove', () => {
           expect(wrapper.emitted().treeNodeDragMove.length).to.equal(1);
-          expect(wrapper.emitted().treeNodeDragMove[0][0]).to.eql(wrapper.vm.metaModel);
+          expect((wrapper.emitted().treeNodeDragMove as any)[0][0]).to.eql(wrapper.vm.modelValue);
         });
       });
     });
@@ -549,11 +547,11 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       }));
 
       let node = wrapper.findAllComponents(TreeViewNode)[0];
-      node.vm.$emit('treeNodeDragMove', node.vm.metaModel);
+      node.vm.$emit('treeNodeDragMove', node.vm.modelValue);
     });
 
     it('should remove that node from the list of children', () => {
-      expect(wrapper.vm.metaModel.data.children.length).to.equal(0);
+      expect(wrapper.vm.modelValue.data.children.length).to.equal(0);
     });
   });
 
@@ -565,7 +563,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
           modelValue: generateMetaNodes(['ecs', ['ecs']])[0]
         }));
-        wrapper.vm.metaModel.allowDrop = true;
+        wrapper.vm.modelValue.allowDrop = true;
         eventData.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"tree-id","data":${serializedNodeData}}`);
 
         let node = wrapper.findAllComponents(TreeViewNode)[0].find('.grtvn-self');
@@ -583,7 +581,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
         wrapper = createWrapper(Object.assign(getDefaultPropsData(), {
           modelValue: generateMetaNodes(['ecs', ['ecs']])[0]
         }));
-        wrapper.vm.metaModel.allowDrop = true;
+        wrapper.vm.modelValue.allowDrop = true;
         eventData.dataTransfer.setData(MimeType.TreeViewNode, `{"treeId":"tree-id","data":${serializedNodeData}}`);
 
         let node = wrapper.findAllComponents(TreeViewNode)[0].find('.grtvn-self-prev-target');
@@ -591,9 +589,9 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should populate the sibling node set with its children', () => {
-        expect(wrapper.emitted().treeNodeDrop[0][0].siblingNodeSets).to.eql({
-          nodes: wrapper.vm.metaModel.data.children,
-          metaNodes: wrapper.vm.metaModel.childMetaModels,
+        expect((wrapper.emitted().treeNodeDrop as any)[0][0].siblingNodeSets).to.eql({
+          nodes: wrapper.vm.modelValue.data.children,
+          metaNodes: wrapper.vm.modelValue.childMetaModels,
         });
       });
     });

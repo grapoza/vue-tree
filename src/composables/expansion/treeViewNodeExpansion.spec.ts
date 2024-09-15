@@ -1,13 +1,14 @@
-import { beforeEach, expect, describe, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, ref } from 'vue';
-import { useTreeViewNodeExpansion } from './treeViewNodeExpansion.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
-import TreeEvent from '../../enums/event.js';
+import { ComponentPublicInstance, defineComponent, Ref, ref } from 'vue';
+import { useTreeViewNodeExpansion } from './treeViewNodeExpansion';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
+import { TreeEvent } from '../../types/event';
+import { Mock } from 'vitest';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
-let emit;
+let emit: Mock<ComponentPublicInstance['$emit']>;
 
-function createTestComponent(node) {
+function createTestComponent(node: Ref<TreeViewNodeMetaModel>) {
   const TestComponent = defineComponent({
     template: "<div></div>",
     setup() { return useTreeViewNodeExpansion(node, emit) }
@@ -34,10 +35,10 @@ describe('treeViewNodeExpansion.js', () => {
 
     describe('and the node is not expandable', () => {
 
-      it('should return null', () => {
+      it('should return undefined', () => {
         const node = ref(generateMetaNodes(["s"])[0]);
         const wrapper = createTestComponent(node);
-        expect(wrapper.vm.ariaExpanded).to.be.null;
+        expect(wrapper.vm.ariaExpanded).to.be.undefined;
       })
     });
 
