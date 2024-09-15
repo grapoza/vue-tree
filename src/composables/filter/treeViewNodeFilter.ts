@@ -3,19 +3,19 @@ import { useTreeViewNodeChildren } from '../children/treeViewNodeChildren';
 import { useFilter } from "./filter";
 import { useFocus } from "../focus/focus";
 import { TreeEvent } from '../../types/event';
-import { TreeViewNodeMetaModel } from "types/treeViewNode.js";
+import { TreeViewFilterMethod, TreeViewNodeMetaModel } from "types/treeViewNode.js";
 import TreeViewNode from "../../components/TreeViewNode.vue";
 
 /**
  * Composable dealing with filtering at the tree view node.
- * @param {Ref<Object>} metaModel A Ref to the metadata model of the node
- * @returns {Object} Methods to deal with filtering for a tree view node
+ * @param metaModel A Ref to the metadata model of the node
+ * @returns Methods to deal with filtering for a tree view node
  */
 export function useTreeViewNodeFilter(
   metaModel: Ref<TreeViewNodeMetaModel>,
   emit: ComponentPublicInstance<typeof TreeViewNode>["emits"]
 ) {
-  const filterMethod = inject<MaybeRef<(metaModel: TreeViewNodeMetaModel) => boolean>>("filterMethod");
+  const filterMethod = inject<MaybeRef<TreeViewFilterMethod>>("filterMethod");
 
   const { isFocused, unfocus } = useFocus();
 

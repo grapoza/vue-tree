@@ -72,7 +72,7 @@ import { useTreeViewDataUpdates } from '../composables/treeViewDataUpdates';
 import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
 import TreeViewNode from './TreeViewNode.vue';
 import { TreeEvent } from '../types/event';
-import { TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeViewNode';
+import { TreeViewFilterMethod, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeViewNode';
 
 // PROPS
 
@@ -94,7 +94,7 @@ const props = defineProps({
     }
   },
   filterMethod: {
-    type: Function,
+    type: Function as PropType<TreeViewFilterMethod>,
     required: false,
     default: null
   },

@@ -1,36 +1,38 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ref } from 'vue';
-import { useTreeViewNodeFocus } from './treeViewNodeFocus.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
-import TreeEvent from '../../enums/event.js';
+import { ComponentPublicInstance, ref } from 'vue';
+import { useTreeViewNodeFocus } from './treeViewNodeFocus';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
+import { TreeEvent } from '../../types/event';
+import { Mock } from 'vitest';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
 const isMountedRef = ref(true);
 
 describe('treeViewNodeFocus.js', () => {
 
-  let nodeElement = null;
-  let emit;
+  let nodeElement: HTMLLIElement | null = null;
+  let emit: Mock<ComponentPublicInstance['$emit']>;
 
   beforeEach(() => {
     // Create an element to use as the node element
-    nodeElement = document.createElement('input')
+    nodeElement = document.createElement('li');
+    nodeElement.tabIndex = 0;
     document.body.appendChild(nodeElement);
     emit = vi.fn();
   });
 
   afterEach(() => {
-    document.body.removeChild(nodeElement);
+    document.body.removeChild(nodeElement!);
   });
 
   describe('when handling a focus change', () => {
 
-    let nodes;
+    let nodes: TreeViewNodeMetaModel[];
 
     beforeEach(async () => {
       // Calling the use sets up the watcher
       nodes = generateMetaNodes(['ecsf', 'eCs']);
       let nodeRef = ref(nodes[1]);
-      useTreeViewNodeFocus(nodeRef, ref(nodeElement), emit, isMountedRef);
+      useTreeViewNodeFocus(nodeRef, ref(nodeElement!), emit, isMountedRef);
       nodeRef.value.focusable = true;
     });
 
@@ -155,7 +157,7 @@ describe('treeViewNodeFocus.js', () => {
 
     describe('and the current child node has expanded children', () => {
 
-      let node;
+      let node: TreeViewNodeMetaModel;
 
       beforeEach(() => {
         node = generateMetaNodes(['Es', ['Ecsf', ['ecs', 'ecs'], 'ecs']])[0];

@@ -1,13 +1,14 @@
-import { expect, describe, it, beforeEach, vi } from 'vitest';
-import { ref } from 'vue';
-import { useTreeViewNodeSelection } from './treeViewNodeSelection.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
-import SelectionMode from '../../enums/selectionMode.js';
-import TreeEvent from '../../enums/event.js';
+import { ComponentPublicInstance, Ref, ref } from 'vue';
+import { useTreeViewNodeSelection } from './treeViewNodeSelection';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
+import { SelectionMode } from '../../types/selectionMode';
+import { TreeEvent } from '../../types/event';
+import { Mock } from 'vitest';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
 describe('useTreeViewNodeSelection.js', () => {
 
-  let emit;
+  let emit: Mock<ComponentPublicInstance['$emit']>;
 
   beforeEach(() => {
     emit = vi.fn();
@@ -15,7 +16,7 @@ describe('useTreeViewNodeSelection.js', () => {
 
   describe('when handling a selection change', () => {
 
-    let node;
+    let node: Ref<TreeViewNodeMetaModel>;
 
     beforeEach(() => {
       // Calling the use sets up the watcher
@@ -31,7 +32,7 @@ describe('useTreeViewNodeSelection.js', () => {
 
   describe('when handling a focusable change', () => {
 
-    let node;
+    let node: Ref<TreeViewNodeMetaModel>;
 
     describe('and the selection mode is not selection follows focus', () => {
 
@@ -205,19 +206,19 @@ describe('useTreeViewNodeSelection.js', () => {
 
     describe('and the selection mode is None', () => {
 
-      it('should return null', () => {
+      it('should return undefined', () => {
         let node = ref(generateMetaNodes(['es'])[0]);
         const { ariaSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.None), emit);
-        expect(ariaSelected.value).to.be.null;
+        expect(ariaSelected.value).to.be.undefined;
       });
     });
 
     describe('and the node is not selectable', () => {
 
-      it('should return null', () => {
+      it('should return undefined', () => {
         let node = ref(generateMetaNodes(['e'])[0]);
         const { ariaSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
-        expect(ariaSelected.value).to.be.null;
+        expect(ariaSelected.value).to.be.undefined;
       });
     });
 
@@ -234,10 +235,10 @@ describe('useTreeViewNodeSelection.js', () => {
 
       describe('and the node is not selected', () => {
 
-        it('should return null', () => {
+        it('should return undefinedd', () => {
           let node = ref(generateMetaNodes(['es'])[0]);
           const { ariaSelected } = useTreeViewNodeSelection(node, ref(SelectionMode.Single), emit);
-          expect(ariaSelected.value).to.be.null;
+          expect(ariaSelected.value).to.be.undefined;
         });
       });
     });

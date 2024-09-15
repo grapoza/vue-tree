@@ -71,7 +71,7 @@ describe('treeViewSelection.js', () => {
 
     describe('and the selection mode is None', () => {
 
-      it('should return null', () => {
+      it('should return undefined', () => {
         nodes = generateMetaNodes(['sf']);
         const selectionMode = ref(SelectionMode.None);
         const focusableNodeMetaModel = ref(nodes[0]);

@@ -1,40 +1,43 @@
-import { beforeEach, expect, describe, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, ref } from 'vue';
-import { useTreeViewNodeFilter } from './treeViewNodeFilter.js';
-import { generateMetaNodes } from '../../../tests/data/node-generator.ts';
-import TreeEvent from '../../enums/event.js';
+import { ComponentPublicInstance, defineComponent, Ref, ref } from 'vue';
+import { useTreeViewNodeFilter } from './treeViewNodeFilter';
+import { generateMetaNodes } from '../../../tests/data/node-generator';
+import { TreeEvent } from '../../types/event';
+import { Mock } from 'vitest';
+import { TreeViewFilterMethod, TreeViewNodeMetaModel } from 'types/treeViewNode';
 
-let emit;
+let emit: Mock<ComponentPublicInstance['$emit']>;
 
-function createTestComponent(node, filterMethod) {
+function createTestComponent(node: Ref<TreeViewNodeMetaModel>, filterMethod: TreeViewFilterMethod | null) {
   const TestComponent = defineComponent({
     template: "<div></div>",
-    setup() { return useTreeViewNodeFilter(node, emit) }
+    setup() {
+      return useTreeViewNodeFilter(node, emit);
+    },
   });
 
   const wrapper = mount(TestComponent, {
     global: {
       provide: {
-        'filterMethod': filterMethod
-      }
-    }
+        filterMethod: filterMethod,
+      },
+    },
   });
 
   return wrapper;
 }
 
-function setChildFilteredState(child, forNode, forSubnodes) {
+function setChildFilteredState(child: TreeViewNodeMetaModel, forNode: boolean, forSubnodes: boolean) {
   // The composable only filters for the current node; in a real tree, each node would have its own watch.
   // Simulate the subnodes states here.
   child._.state.matchesFilter = forNode;
   child._.state.subnodeMatchesFilter = forSubnodes;
 }
 
-describe('treeViewNodeFilter.js', () => {
+describe('treeViewNodeFilter', () => {
 
-  let node;
-  let wrapper;
+  let node: Ref<TreeViewNodeMetaModel>;
+  let wrapper: ReturnType<typeof createTestComponent>;
 
   beforeEach(() => {
     emit = vi.fn();
