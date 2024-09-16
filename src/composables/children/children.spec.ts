@@ -1,10 +1,9 @@
-import { expect, describe, it } from 'vitest';
 import { useChildren } from './children';
 import { generateMetaNodes } from '../../../tests/data/node-generator';
 
 const { getChildren, getMetaChildren } = useChildren();
 
-describe('children.js', () => {
+describe('children', () => {
 
   describe('when getting children', () => {
 

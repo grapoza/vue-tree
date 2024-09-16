@@ -1,11 +1,10 @@
-import { expect, describe, it, beforeEach } from 'vitest';
 import { ref } from 'vue';
 import { useTreeViewConvenienceMethods } from './treeViewConvenienceMethods';
 import { generateNodesAndMetaNodes, TestTreeViewNode } from '../../tests/data/node-generator';
 import { SelectionMode } from '../types/selectionMode';
 import { TreeViewNodeMetaModel } from 'types/treeViewNode';
 
-describe('treeViewConvenienceMethods.js', () => {
+describe('treeViewConvenienceMethods', () => {
 
   describe('when getMatching() is called', () => {
 

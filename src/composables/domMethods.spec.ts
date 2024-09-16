@@ -1,4 +1,3 @@
-import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 import { useDomMethods } from './domMethods';
 
 describe('domMethods.js', () => {

@@ -1,11 +1,10 @@
-import { expect, describe, it, beforeEach } from 'vitest';
 import { ref } from 'vue';
 import { useNodeDataNormalizer } from './nodeDataNormalizer';
 import { generateNodes } from '../../tests/data/node-generator';
 import { InputType } from "../types/inputType";
 import { TreeViewNodeMetaModelDefaults } from 'types/treeViewNode';
 
-describe('nodeDataNormalizer.js', () => {
+describe('nodeDataNormalizer', () => {
 
   describe('when given minimal model data', () => {
 

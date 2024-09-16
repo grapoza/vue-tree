@@ -1,4 +1,3 @@
-import { expect, describe, it } from 'vitest';
 import { ref } from 'vue';
 import { useExpansion } from './expansion';
 import { generateMetaNodes } from '../../../tests/data/node-generator';

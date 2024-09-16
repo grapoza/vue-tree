@@ -1,4 +1,3 @@
-import { expect, describe, it, beforeEach } from 'vitest';
 import { useFocus } from './focus';
 import { generateMetaNodes } from '../../../tests/data/node-generator';
 import { TreeViewNodeMetaModel } from 'types/treeViewNode';

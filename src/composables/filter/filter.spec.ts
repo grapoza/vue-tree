@@ -1,4 +1,3 @@
-import { beforeEach, expect, describe, it } from 'vitest';
 import { useFilter } from './filter';
 import { generateMetaNodes } from '../../../tests/data/node-generator';
 import { TreeViewNodeMetaModel } from 'types/treeViewNode';

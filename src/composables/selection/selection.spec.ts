@@ -1,4 +1,3 @@
-import { expect, describe, it } from 'vitest';
 import { useSelection } from './selection';
 import { generateMetaNodes } from '../../../tests/data/node-generator';
 
