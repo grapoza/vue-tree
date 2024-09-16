@@ -1,9 +1,12 @@
-import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
-import { mount, flushPromises } from '@vue/test-utils';
+import { mount, flushPromises, DOMWrapper } from '@vue/test-utils';
 import TreeViewNode from './TreeViewNode.vue';
-import { generateNodes, generateMetaNodes } from '../../tests/data/node-generator.ts';
-import SelectionMode from '../enums/selectionMode';
-import TreeEvent from '../../src/enums/event.js';
+import { generateNodes, generateMetaNodes, TestTreeViewNode } from '../../tests/data/node-generator';
+import { SelectionMode } from '../types/selectionMode';
+import { TreeEvent } from '../types/event';
+import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { Mock } from 'vitest';
+
+let wrapper: Awaited<ReturnType<typeof createWrapper>>;
 
 const getDefaultPropsData = function () {
   return {
@@ -20,7 +23,7 @@ const getDefaultPropsData = function () {
       deleteItem: [46] // Delete
     },
     modelValue: generateMetaNodes(['ces'])[0],
-    "update:modelValue": (e) => wrapper.setProps({ modelValue: e }),
+    "update:modelValue": (e: TreeViewNodeMetaModel): Promise<void> => wrapper.setProps({ modelValue: e }),
     modelDefaults: () => ({}),
     depth: 0,
     treeId: 'tree-id',
@@ -30,7 +33,7 @@ const getDefaultPropsData = function () {
   }
 };
 
-async function createWrapper(customPropsData, slotsData) {
+async function createWrapper(customPropsData?: object, slotsData?: any) {
   var w = mount(TreeViewNode, {
     sync: false,
     props: Object.assign(getDefaultPropsData(), customPropsData ?? {}),
@@ -48,12 +51,11 @@ async function createWrapper(customPropsData, slotsData) {
   return w;
 }
 
-async function triggerKeydown(wrapper, keyCode) {
-  var e = new Event('keydown');
-  e.keyCode = keyCode;
+async function triggerKeydown(wrapper: ReturnType<typeof mount<typeof TreeViewNode>>, keyCode: number) {
+  var e = new KeyboardEvent("keydown", { keyCode: keyCode });
 
-  vi.spyOn(e, 'stopPropagation');
-  vi.spyOn(e, 'preventDefault');
+  vi.spyOn(e, "stopPropagation");
+  vi.spyOn(e, "preventDefault");
 
   wrapper.vm.$refs.nodeElement.dispatchEvent(e);
   await wrapper.vm.$nextTick();
@@ -62,8 +64,7 @@ async function triggerKeydown(wrapper, keyCode) {
 
 describe('TreeViewNode.vue', () => {
 
-  let wrapper = null;
-  let root = null;
+  let root: HTMLDivElement;
 
   beforeEach(async () => {
     // Create an element to which the component will be mounted.
@@ -73,7 +74,6 @@ describe('TreeViewNode.vue', () => {
   });
 
   afterEach(() => {
-    wrapper = null;
     document.body.removeChild(root);
   });
 
@@ -84,17 +84,17 @@ describe('TreeViewNode.vue', () => {
     })
 
     it('should have an ARIA role of treeitem', () => {
-      expect(wrapper.vm.$refs.nodeElement.attributes.role.value).to.equal('treeitem');
+      expect(wrapper.vm.$refs.nodeElement.role).to.equal('treeitem');
     });
 
     it('should have a tabindex of 0 if focusable', async () => {
-      wrapper.vm.metaModel.focusable = true;
+      wrapper.vm.modelValue.focusable = true;
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.$refs.nodeElement.attributes.tabindex.value).to.equal('0');
+      expect(wrapper.vm.$refs.nodeElement.tabIndex).to.equal(0);
     });
 
     it('should have a tabindex of -1 if not focusable', () => {
-      expect(wrapper.vm.$refs.nodeElement.attributes.tabindex.value).to.equal('-1');
+      expect(wrapper.vm.$refs.nodeElement.tabIndex).to.equal(-1);
     });
   });
 
@@ -140,24 +140,24 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should have a nodeId made of the tree ID and the model[idPropName] property', () => {
-      expect(wrapper.vm.nodeId).to.equal(wrapper.vm.treeId + '-' + wrapper.vm.metaModel.data.id);
+      expect((wrapper.vm as any).nodeId).to.equal(wrapper.vm.treeId + '-' + wrapper.vm.modelValue.data.id);
     });
 
     it('should have an expanderId made of the node ID and -exp', () => {
-      expect(wrapper.vm.expanderId).to.equal(wrapper.vm.nodeId + '-exp');
+      expect((wrapper.vm as any).expanderId).to.equal((wrapper.vm as any).nodeId + '-exp');
     });
 
     describe('and the node has an input', () => {
 
       it('should have an inputId made of the node ID and -input', () => {
-        expect(wrapper.vm.inputId).to.equal(wrapper.vm.nodeId + '-input');
+        expect((wrapper.vm as any).inputId).to.equal((wrapper.vm as any).nodeId + '-input');
       });
     });
   });
 
   describe('when there is not an addChildCallback method', () => {
 
-    let addChildButton = null;
+    let addChildButton: DOMWrapper<Element>;
 
     beforeEach(async () => {
       wrapper = await createWrapper({
@@ -170,7 +170,7 @@ describe('TreeViewNode.vue', () => {
         isMounted: false
       });
 
-      addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
+      addChildButton = wrapper.find('#' + (wrapper.vm as any).nodeId + '-add-child');
     });
 
     it('should not include an add button', async () => {
@@ -180,7 +180,7 @@ describe('TreeViewNode.vue', () => {
 
   describe('when there is an addChildCallback method in the model', () => {
 
-    let addChildButton = null;
+    let addChildButton: DOMWrapper<Element>;
 
     beforeEach(async () => {
       let addChildCallback = () => {
@@ -197,7 +197,7 @@ describe('TreeViewNode.vue', () => {
         isMounted: false
       });
 
-      addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
+      addChildButton = wrapper.find('#' + (wrapper.vm as any).nodeId + '-add-child');
     });
 
     it('should include an add button', async () => {
@@ -207,7 +207,7 @@ describe('TreeViewNode.vue', () => {
 
   describe('when there is an addChildCallback method in the model defaults', () => {
 
-    let addChildButton = null;
+    let addChildButton: DOMWrapper<Element>;
 
     beforeEach(async () => {
       let addChildCallback = () => {
@@ -224,7 +224,7 @@ describe('TreeViewNode.vue', () => {
         isMounted: false
       });
 
-      addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
+      addChildButton = wrapper.find('#' + (wrapper.vm as any).nodeId + '-add-child');
     });
 
     it('should include an add button', async () => {
@@ -249,8 +249,8 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should have a disabled input', () => {
-      let input = wrapper.find('#' + wrapper.vm.inputId);
-      expect(input.element.disabled).to.be.true;
+      let input = wrapper.find('#' + (wrapper.vm as any).inputId);
+      expect((input.element as HTMLInputElement).disabled).to.be.true;
     });
   });
 
@@ -261,8 +261,8 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should have an enabled input', () => {
-      let input = wrapper.find('#' + wrapper.vm.inputId);
-      expect(input.element.disabled).to.be.false;
+      let input = wrapper.find('#' + (wrapper.vm as any).inputId);
+      expect((input.element as HTMLInputElement).disabled).to.be.false;
     });
   });
 
@@ -303,7 +303,7 @@ describe('TreeViewNode.vue', () => {
         });
 
         it('should have an aria-expanded attribute value of false', () => {
-          expect(wrapper.vm.$refs.nodeElement.attributes['aria-expanded'].value).to.equal('false');
+          expect(wrapper.vm.$refs.nodeElement.ariaExpanded).to.equal('false');
         });
       });
 
@@ -335,7 +335,7 @@ describe('TreeViewNode.vue', () => {
         });
 
         it('should have an aria-expanded attribute value of true', () => {
-          expect(wrapper.vm.$refs.nodeElement.attributes['aria-expanded'].value).to.equal('true');
+          expect(wrapper.vm.$refs.nodeElement.ariaExpanded).to.equal('true');
         });
       });
     });
@@ -387,7 +387,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should not have an aria-expanded attribute', () => {
-      expect(wrapper.vm.$refs.nodeElement.attributes['aria-expanded']).to.be.undefined;
+      expect(wrapper.vm.$refs.nodeElement.ariaExpanded).to.be.null;
     });
   });
 
@@ -410,7 +410,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should not have an aria-selected attribute', () => {
-      expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected']).to.be.undefined;
+      expect(wrapper.vm.$refs.nodeElement.ariaSelected).to.be.null;
     });
   });
 
@@ -433,7 +433,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should not have an aria-selected attribute', () => {
-      expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected']).to.be.undefined;
+      expect(wrapper.vm.$refs.nodeElement.ariaSelected).to.be.null;
     });
   });
 
@@ -458,7 +458,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an aria-selected attribute of true', () => {
-        expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected'].value).to.equal('true');
+        expect(wrapper.vm.$refs.nodeElement.ariaSelected).to.equal('true');
       });
     });
 
@@ -481,7 +481,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should not have an aria-selected attribute', () => {
-        expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected']).to.be.undefined;
+        expect(wrapper.vm.$refs.nodeElement.ariaSelected).to.be.null;
       });
     });
   });
@@ -507,7 +507,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an aria-selected attribute of true', () => {
-        expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected'].value).to.equal('true');
+        expect(wrapper.vm.$refs.nodeElement.ariaSelected).to.equal('true');
       });
     });
 
@@ -532,7 +532,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should not have an aria-selected attribute', () => {
-        expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected']).to.be.undefined;
+        expect(wrapper.vm.$refs.nodeElement.ariaSelected).to.be.null;
       });
     });
   });
@@ -558,7 +558,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an aria-selected attribute of true', () => {
-        expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected'].value).to.equal('true');
+        expect(wrapper.vm.$refs.nodeElement.ariaSelected).to.equal('true');
       });
     });
 
@@ -581,7 +581,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an aria-selected attribute of false', () => {
-        expect(wrapper.vm.$refs.nodeElement.attributes['aria-selected'].value).to.equal('false');
+        expect(wrapper.vm.$refs.nodeElement.ariaSelected).to.equal('false');
       });
     });
   });
@@ -590,7 +590,7 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       wrapper = await createWrapper();
-      wrapper.vm.metaModel.state.selected = true;
+      wrapper.vm.modelValue.state.selected = true;
       await wrapper.vm.$nextTick();
     });
 
@@ -603,16 +603,16 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       wrapper = await createWrapper();
-      wrapper.vm.metaModel.idProperty = 'label';
+      wrapper.vm.modelValue.idProperty = 'label';
       await wrapper.vm.$nextTick();
     });
 
     it('should have an idPropName matching the idProperty', () => {
-      expect(wrapper.vm.idPropName).to.equal('label');
+      expect((wrapper.vm as any).idPropName).to.equal('label');
     });
 
     it('should have a nodeId made of the tree ID and the model[idPropName] property', () => {
-      expect(wrapper.vm.nodeId).to.equal(wrapper.vm.treeId + '-' + wrapper.vm.metaModel.data.label);
+      expect((wrapper.vm as any).nodeId).to.equal(wrapper.vm.treeId + '-' + wrapper.vm.modelValue.data.label);
     });
   });
 
@@ -620,16 +620,16 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       wrapper = await createWrapper();
-      wrapper.vm.metaModel.idProperty = null;
+      wrapper.vm.modelValue.idProperty = null as unknown as string;
       await wrapper.vm.$nextTick();
     });
 
     it('should have an idPropName of id', () => {
-      expect(wrapper.vm.idPropName).to.equal('id');
+      expect((wrapper.vm as any).idPropName).to.equal('id');
     });
 
     it('should have a nodeId made of the tree ID and the model.id property', () => {
-      expect(wrapper.vm.nodeId).to.equal(wrapper.vm.treeId + '-' + wrapper.vm.metaModel.data.id);
+      expect((wrapper.vm as any).nodeId).to.equal(wrapper.vm.treeId + '-' + wrapper.vm.modelValue.data.id);
     });
   });
 
@@ -651,7 +651,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should log an error', () => {
-      expect(console.error.mock.calls[0][0])
+      expect((console.error as Mock).mock.calls[0][0])
         .to.equal('modelValue id is required and must be a number or string. Expected prop id to exist on the model.');
     });
   });
@@ -660,16 +660,16 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       wrapper = await createWrapper();
-      wrapper.vm.metaModel.labelProperty = 'id';
+      wrapper.vm.modelValue.labelProperty = 'id';
       await wrapper.vm.$nextTick();
     });
 
     it('should have a labelPropName matching the labelProperty', () => {
-      expect(wrapper.vm.labelPropName).to.equal('id');
+      expect((wrapper.vm as any).labelPropName).to.equal('id');
     });
 
     it('should have a label of the  model[labelPropName] property', () => {
-      expect(wrapper.text()).to.equal(wrapper.vm.metaModel.data.id + '');
+      expect(wrapper.text()).to.equal(wrapper.vm.modelValue.data.id + '');
     });
   });
 
@@ -677,16 +677,16 @@ describe('TreeViewNode.vue', () => {
 
     beforeEach(async () => {
       wrapper = await createWrapper();
-      wrapper.vm.metaModel.labelProperty = null;
+      wrapper.vm.modelValue.labelProperty = null as unknown as string;
       await wrapper.vm.$nextTick();
     });
 
     it('should have a labelPropName of label', () => {
-      expect(wrapper.vm.labelPropName).to.equal('label');
+      expect((wrapper.vm as any).labelPropName).to.equal('label');
     });
 
     it('should have a label of the  model.label property', () => {
-      expect(wrapper.text()).to.equal(wrapper.vm.metaModel.data.label + '');
+      expect(wrapper.text()).to.equal(wrapper.vm.modelValue.data.label + '');
     });
   });
 
@@ -708,7 +708,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should log an error', () => {
-      expect(console.error.mock.calls[0][0])
+      expect((console.error as Mock).mock.calls[0][0])
         .to.equal('modelValue label is required and must be a string. Expected prop label to exist on the model.');
     });
   });
@@ -720,12 +720,12 @@ describe('TreeViewNode.vue', () => {
       wrapper = await createWrapper(Object.assign(defaultProps, {
         modelValue: generateMetaNodes(['sf', ['s', 's']])[0]
       }));
-      wrapper.vm.metaModel.childrenProperty = 'children';
+      wrapper.vm.modelValue.childrenProperty = 'children';
       await wrapper.vm.$nextTick();
     });
 
     it('should have a children property of the expected values', () => {
-      expect(wrapper.vm.metaModel.data.children.length).to.equal(2);
+      expect(wrapper.vm.modelValue.data.children.length).to.equal(2);
     });
   });
 
@@ -1038,7 +1038,7 @@ describe('TreeViewNode.vue', () => {
           }
         );
 
-        wrapper.find('#' + wrapper.vm.expanderId).trigger('click');
+        wrapper.find('#' + (wrapper.vm as any).expanderId).trigger('click');
       });
 
       it('should render the slot template', () => {
@@ -1101,7 +1101,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
         wrapper = await createWrapper();
-        nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .grtvn-self`);
+        nodeBody = wrapper.find(`#${(wrapper.vm as any).nodeId} .grtvn-self`);
         nodeBody.trigger('click');
       });
 
@@ -1114,12 +1114,12 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
         wrapper = await createWrapper();
-        nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .grtvn-self`);
+        nodeBody = wrapper.find(`#${(wrapper.vm as any).nodeId} .grtvn-self`);
         nodeBody.trigger('click');
       });
 
       it('should toggle the selected state', () => {
-        expect(wrapper.vm.metaModel.state.selected).to.be.true;
+        expect(wrapper.vm.modelValue.state.selected).to.be.true;
       });
     });
 
@@ -1127,23 +1127,23 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
         wrapper = await createWrapper(Object.assign(getDefaultPropsData(), { selectionMode: SelectionMode.None }));
-        nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .grtvn-self`);
+        nodeBody = wrapper.find(`#${(wrapper.vm as any).nodeId} .grtvn-self`);
         nodeBody.trigger('click');
       });
 
       it('should not toggle the selected state', () => {
-        expect(wrapper.vm.metaModel.state.selected).to.be.false;
+        expect(wrapper.vm.modelValue.state.selected).to.be.false;
       });
     });
   });
 
   describe('when the node\'s body is double clicked', () => {
 
-    let nodeBody = null;
+    let nodeBody: DOMWrapper<Element>;
 
     beforeEach(async () => {
       wrapper = await createWrapper();
-      nodeBody = wrapper.find(`#${wrapper.vm.nodeId} .grtvn-self`);
+      nodeBody = wrapper.find(`#${(wrapper.vm as any).nodeId} .grtvn-self`);
     });
 
     it('should emit the treeNodeDblclick event', () => {
@@ -1154,7 +1154,7 @@ describe('TreeViewNode.vue', () => {
 
   describe('when the node\'s expander is toggled', () => {
 
-    let expander = null;
+    let expander: DOMWrapper<Element>;
 
     describe('always', () => {
 
@@ -1169,12 +1169,12 @@ describe('TreeViewNode.vue', () => {
           isMounted: false
         });
 
-        expander = wrapper.find('#' + wrapper.vm.expanderId);
+        expander = wrapper.find('#' + (wrapper.vm as any).expanderId);
       });
 
       it('should toggle the expanded state', () => {
         expander.trigger('click');
-        expect(wrapper.vm.metaModel.state.expanded).to.be.true;
+        expect(wrapper.vm.modelValue.state.expanded).to.be.true;
       });
 
       it('should emit the treeNodeExpandedChange event', async () => {
@@ -1213,7 +1213,7 @@ describe('TreeViewNode.vue', () => {
 
         vi.useFakeTimers();
 
-        wrapper.find('#' + wrapper.vm.expanderId).trigger('click');
+        wrapper.find('#' + (wrapper.vm as any).expanderId).trigger('click');
       });
 
       afterEach(() => {
@@ -1248,25 +1248,25 @@ describe('TreeViewNode.vue', () => {
 
   describe('when the node\'s checkbox is toggled', () => {
 
-    let checkbox = null;
+    let checkbox: DOMWrapper<Element>;
 
     beforeEach(async () => {
       wrapper = await createWrapper();
-      checkbox = wrapper.find('#' + wrapper.vm.inputId);
+      checkbox = wrapper.find('#' + (wrapper.vm as any).inputId);
     });
 
     it('should toggle the input value state', () => {
-      checkbox.setChecked();
-      expect(wrapper.vm.metaModel.state.input.value).to.be.true;
+      (checkbox as any).setChecked();
+      expect(wrapper.vm.modelValue.state.input.value).to.be.true;
     });
 
     it('should emit the treeNodeCheckboxChange event', () => {
-      checkbox.setChecked();
+      (checkbox as any).setChecked();
       expect(wrapper.emitted().treeNodeCheckboxChange.length).to.equal(1);
     });
 
     it('should not emit the treeNodeClick event', () => {
-      checkbox.setChecked();
+      (checkbox as any).setChecked();
       expect(wrapper.emitted().treeNodeClick).to.be.undefined;
     });
 
@@ -1278,7 +1278,7 @@ describe('TreeViewNode.vue', () => {
 
   describe('when a child node\'s checkbox is toggled', () => {
 
-    let checkbox = null;
+    let checkbox: DOMWrapper<Element>;
 
     beforeEach(async () => {
       wrapper = await createWrapper({
@@ -1292,18 +1292,18 @@ describe('TreeViewNode.vue', () => {
       });
 
       const childWrapper = wrapper.find('.grtvn-children').findComponent(TreeViewNode);
-      checkbox = childWrapper.find('#' + childWrapper.vm.inputId);
+      checkbox = childWrapper.find('#' + (childWrapper.vm as any).inputId);
     });
 
     it('should emit the treeNodeChildCheckboxChange event', () => {
-      checkbox.setChecked();
+      (checkbox as any).setChecked();
       expect(wrapper.emitted().treeNodeCheckboxChange.length).to.equal(1);
     });
   });
 
   describe('when the node\'s radiobutton is toggled', () => {
 
-    let radioButton = null;
+    let radioButton: DOMWrapper<Element>;
 
     beforeEach(async () => {
       wrapper = await createWrapper({
@@ -1316,22 +1316,22 @@ describe('TreeViewNode.vue', () => {
         isMounted: false
       });
 
-      radioButton = wrapper.find('#' + wrapper.vm.inputId);
+      radioButton = wrapper.find('#' + (wrapper.vm as any).inputId);
     });
 
     it('should toggle the input value state', () => {
-      radioButton.setChecked();
-      let metaModel = wrapper.vm.metaModel;
-      expect(wrapper.vm.radioGroupValues[metaModel.input.name]).to.equal(metaModel.input.value);
+      (radioButton as any).setChecked();
+      let metaModel = wrapper.vm.modelValue;
+      expect((wrapper.vm as any).radioGroupValues[metaModel.input!.name!]).to.equal(metaModel.input!.value);
     });
 
     it('should emit the treeNodeRadioChange event', () => {
-      radioButton.setChecked();
+      (radioButton as any).setChecked();
       expect(wrapper.emitted().treeNodeRadioChange.length).to.equal(1);
     });
 
     it('should not emit the treeNodeClick event', () => {
-      radioButton.setChecked();
+      (radioButton as any).setChecked();
       expect(wrapper.emitted().treeNodeClick).to.be.undefined;
     });
 
@@ -1343,7 +1343,7 @@ describe('TreeViewNode.vue', () => {
 
   describe('when a node\'s delete button is clicked', () => {
 
-    let deleteButton = null;
+    let deleteButton: DOMWrapper<Element>;
 
     describe('and a deleteNodeCallback is not provided', () => {
 
@@ -1359,7 +1359,7 @@ describe('TreeViewNode.vue', () => {
         });
 
         let childNode = wrapper.findAllComponents(TreeViewNode)[0];
-        deleteButton = wrapper.find('#' + childNode.vm.nodeId + '-delete');
+        deleteButton = wrapper.find('#' + (childNode.vm as any).nodeId + '-delete');
       });
 
       it('should emit the treeNodeDelete event', async () => {
@@ -1373,7 +1373,7 @@ describe('TreeViewNode.vue', () => {
         deleteButton.trigger('click');
         await flushPromises();
 
-        expect(wrapper.vm.metaModel.childMetaModels.length).to.equal(0);
+        expect(wrapper.vm.modelValue.childMetaModels.length).to.equal(0);
       });
     });
 
@@ -1393,7 +1393,7 @@ describe('TreeViewNode.vue', () => {
           });
 
           let childNode = wrapper.findAllComponents(TreeViewNode)[0];
-          deleteButton = wrapper.find('#' + childNode.vm.nodeId + '-delete');
+          deleteButton = wrapper.find('#' + (childNode.vm as any).nodeId + '-delete');
         });
 
         it('should emit the treeNodeDelete event', async () => {
@@ -1407,7 +1407,7 @@ describe('TreeViewNode.vue', () => {
           deleteButton.trigger('click');
           await flushPromises();
 
-          expect(wrapper.vm.metaModel.childMetaModels.length).to.equal(0);
+          expect(wrapper.vm.modelValue.childMetaModels.length).to.equal(0);
         });
       });
 
@@ -1425,7 +1425,7 @@ describe('TreeViewNode.vue', () => {
           });
 
           let childNode = wrapper.findAllComponents(TreeViewNode)[0];
-          deleteButton = wrapper.find('#' + childNode.vm.nodeId + '-delete');
+          deleteButton = wrapper.find('#' + (childNode.vm as any).nodeId + '-delete');
         });
 
         it('should not emit the treeNodeDelete event', async () => {
@@ -1439,7 +1439,7 @@ describe('TreeViewNode.vue', () => {
           deleteButton.trigger('click');
           await flushPromises();
 
-          expect(wrapper.vm.metaModel.childMetaModels.length).to.equal(1);
+          expect(wrapper.vm.modelValue.childMetaModels.length).to.equal(1);
         });
       });
     });
@@ -1447,7 +1447,7 @@ describe('TreeViewNode.vue', () => {
 
   describe('when a node\'s add child button is clicked', () => {
 
-    let addChildButton = null;
+    let addChildButton: DOMWrapper<Element>;
 
     describe('and the callback resolves to node data', () => {
 
@@ -1466,7 +1466,7 @@ describe('TreeViewNode.vue', () => {
           isMounted: false
         });
 
-        addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
+        addChildButton = wrapper.find('#' + (wrapper.vm as any).nodeId + '-add-child');
       });
 
       it('should emit the treeNodeAdd event', async () => {
@@ -1480,14 +1480,14 @@ describe('TreeViewNode.vue', () => {
         addChildButton.trigger('click');
         await flushPromises();
 
-        expect(wrapper.emitted().treeNodeAdd[0][0].data.id).to.equal('newId');
+        expect((wrapper.emitted().treeNodeAdd as any)[0][0].data.id).to.equal('newId');
       });
 
       it('should add a subnode to the target node from the model', async () => {
         addChildButton.trigger('click');
         await flushPromises();
 
-        expect(wrapper.vm.metaModel.childMetaModels.length).to.equal(1);
+        expect(wrapper.vm.modelValue.childMetaModels.length).to.equal(1);
       });
     });
 
@@ -1508,7 +1508,7 @@ describe('TreeViewNode.vue', () => {
           isMounted: false
         });
 
-        addChildButton = wrapper.find('#' + wrapper.vm.nodeId + '-add-child');
+        addChildButton = wrapper.find('#' + (wrapper.vm as any).nodeId + '-add-child');
       });
 
       it('should not emit the treeNodeAdd event', async () => {
@@ -1522,7 +1522,7 @@ describe('TreeViewNode.vue', () => {
         addChildButton.trigger('click');
         await flushPromises();
 
-        expect(wrapper.vm.metaModel.childMetaModels.length).to.equal(0);
+        expect(wrapper.vm.modelValue.childMetaModels.length).to.equal(0);
       });
     });
   });
@@ -1535,7 +1535,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should have an ARIA role of group on the child list', () => {
-      expect(wrapper.find('.grtvn-children').element.attributes.role.value).to.equal('group');
+      expect(wrapper.find('.grtvn-children').element.role).to.equal('group');
     });
   });
 
@@ -1556,7 +1556,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should have a boolean focusable property on the model', () => {
-      expect(wrapper.vm.metaModel.focusable).to.be.a('boolean');
+      expect(wrapper.vm.modelValue.focusable).to.be.a('boolean');
     });
   });
 
@@ -1565,14 +1565,14 @@ describe('TreeViewNode.vue', () => {
     beforeEach(async () => {
       wrapper = await createWrapper(Object.assign(getDefaultPropsData(), { modelValue: generateMetaNodes(['Es', ['sf']])[0] }));
 
-      expect(wrapper.vm.metaModel.focusable).to.be.false;
+      expect(wrapper.vm.modelValue.focusable).to.be.false;
       const innerNode = wrapper.findAllComponents(TreeViewNode)[0];
       innerNode.vm.$emit(TreeEvent.RequestParentFocus);
       await wrapper.vm.$nextTick();
     });
 
     it('should have focusable set to true', () => {
-      expect(wrapper.vm.metaModel.focusable).to.be.true;
+      expect(wrapper.vm.modelValue.focusable).to.be.true;
     });
 
     it('should focus the node', () => {
@@ -1581,7 +1581,7 @@ describe('TreeViewNode.vue', () => {
 
     it('should emit a treeViewNodeAriaFocusableChange event', () => {
       expect(wrapper.emitted().treeNodeAriaFocusableChange).to.be.an('array').that.has.length(1);
-      expect(wrapper.emitted().treeNodeAriaFocusableChange[0][0]).to.equal(wrapper.vm.metaModel);
+      expect((wrapper.emitted().treeNodeAriaFocusableChange as any)[0][0]).to.equal(wrapper.vm.modelValue);
     });
   });
 
@@ -1594,7 +1594,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should have focusable set to true', () => {
-      expect(wrapper.vm.metaModel.focusable).to.be.true;
+      expect(wrapper.vm.modelValue.focusable).to.be.true;
     });
   });
 
@@ -1607,7 +1607,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should have state.selected set to true', () => {
-      expect(wrapper.vm.metaModel.state.selected).to.be.true;
+      expect(wrapper.vm.modelValue.state.selected).to.be.true;
     });
   });
 
@@ -1620,7 +1620,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should have state.selected set to true', () => {
-      expect(wrapper.vm.metaModel.state.selected).to.be.true;
+      expect(wrapper.vm.modelValue.state.selected).to.be.true;
     });
   });
 
@@ -1630,9 +1630,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
         wrapper = await createWrapper();
-        var e = new Event('keydown');
-        e.shift = true;
-        e.keyCode = wrapper.vm.ariaKeyMap.focusPreviousItem[0];
+        var e = new KeyboardEvent('keydown', { shiftKey: true, keyCode: wrapper.vm.ariaKeyMap.focusPreviousItem[0] });
         wrapper.vm.$refs.nodeElement.dispatchEvent(e);
         await wrapper.vm.$nextTick();
       });
@@ -1646,9 +1644,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
         wrapper = await createWrapper();
-        var e = new Event('keydown');
-        e.altKey = true;
-        e.keyCode = wrapper.vm.ariaKeyMap.focusPreviousItem[0];
+        var e = new KeyboardEvent('keydown', { altKey: true, keyCode: wrapper.vm.ariaKeyMap.focusPreviousItem[0] });
         wrapper.vm.$refs.nodeElement.dispatchEvent(e);
         await wrapper.vm.$nextTick();
       });
@@ -1662,9 +1658,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
         wrapper = await createWrapper();
-        var e = new Event('keydown');
-        e.ctrlKey = true;
-        e.keyCode = wrapper.vm.ariaKeyMap.focusPreviousItem[0];
+        var e = new KeyboardEvent('keydown', { ctrlKey: true, keyCode: wrapper.vm.ariaKeyMap.focusPreviousItem[0] });
         wrapper.vm.$refs.nodeElement.dispatchEvent(e);
         await wrapper.vm.$nextTick();
       });
@@ -1678,9 +1672,7 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
         wrapper = await createWrapper();
-        var e = new Event('keydown');
-        e.metaKey = true;
-        e.keyCode = wrapper.vm.ariaKeyMap.focusPreviousItem[0];
+        var e = new KeyboardEvent('keydown', { metaKey: true, keyCode: wrapper.vm.ariaKeyMap.focusPreviousItem[0] });
         wrapper.vm.$refs.nodeElement.dispatchEvent(e);
         await wrapper.vm.$nextTick();
       });
@@ -1704,12 +1696,12 @@ describe('TreeViewNode.vue', () => {
 
           beforeEach(async () => {
             wrapper = await createWrapper();
-            window = null; // HACK TODO - Work around for what may be an webidl2js issue in JSDOM usage? Err: Failed to construct 'MouseEvent': member view is not of type Window.
+            window = null as unknown as Window & typeof globalThis; // HACK TODO - Work around for what may be an webidl2js issue in JSDOM usage? Err: Failed to construct 'MouseEvent': member view is not of type Window.
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
           });
 
           it('should perform the default action on the node', () => {
-            expect(wrapper.find('input[type="checkbox"]').element.checked).to.be.true;
+            expect((wrapper.find('input[type="checkbox"]').element as HTMLInputElement).checked).to.be.true;
           });
         });
 
@@ -1717,12 +1709,12 @@ describe('TreeViewNode.vue', () => {
 
           beforeEach(async () => {
             wrapper = await createWrapper();
-            wrapper.vm.metaModel.state.input.disabled = true;
+            wrapper.vm.modelValue.state.input.disabled = true;
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
           });
 
           it('should perform no action on the node', () => {
-            expect(wrapper.find('input[type="checkbox"]').element.checked).to.be.false;
+            expect((wrapper.find('input[type="checkbox"]').element as HTMLInputElement).checked).to.be.false;
           });
         });
 
@@ -1752,12 +1744,12 @@ describe('TreeViewNode.vue', () => {
               }
             );
 
-            window = null; // HACK TODO - Work around for what may be an webidl2js issue in JSDOM usage? Err: Failed to construct 'MouseEvent': member view is not of type Window.
+            window = null as unknown as Window & typeof globalThis; // HACK TODO - Work around for what may be an webidl2js issue in JSDOM usage? Err: Failed to construct 'MouseEvent': member view is not of type Window.
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.activateItem[0]);
           });
 
           it('should perform the default action on the node', () => {
-            expect(wrapper.find('input[type="checkbox"]').element.checked).to.be.true;
+            expect((wrapper.find('input[type="checkbox"]').element as HTMLInputElement).checked).to.be.true;
           });
         });
       });
@@ -1772,7 +1764,7 @@ describe('TreeViewNode.vue', () => {
 
         it('should emit a treeNodeActivate event', () => {
           expect(wrapper.emitted().treeNodeActivate).to.be.an("array").that.has.length(1);
-          expect(wrapper.emitted().treeNodeActivate[0][0]).to.equal(wrapper.vm.metaModel);
+          expect((wrapper.emitted() as any).treeNodeActivate[0][0]).to.equal(wrapper.vm.modelValue);
         });
       });
     });
@@ -1790,7 +1782,7 @@ describe('TreeViewNode.vue', () => {
         });
 
         it('should not toggle state.selected', () => {
-          expect(wrapper.vm.metaModel.state.selected).to.be.false;
+          expect(wrapper.vm.modelValue.state.selected).to.be.false;
         });
       });
 
@@ -1804,7 +1796,7 @@ describe('TreeViewNode.vue', () => {
         });
 
         it('should toggle state.selected', () => {
-          expect(wrapper.vm.metaModel.state.selected).to.be.true;
+          expect(wrapper.vm.modelValue.state.selected).to.be.true;
         });
       });
     });
@@ -1823,7 +1815,7 @@ describe('TreeViewNode.vue', () => {
 
           it('should not expand the node', () => {
             expect(wrapper.emitted().treeNodeExpandedChange).to.be.an('array').that.has.length(1);
-            expect(wrapper.vm.metaModel.state.expanded).to.be.true;
+            expect(wrapper.vm.modelValue.state.expanded).to.be.true;
           });
         });
 
@@ -1837,7 +1829,7 @@ describe('TreeViewNode.vue', () => {
 
           it('should focus the first child', () => {
             expect(wrapper.emitted().treeNodeAriaFocusableChange).to.be.an('array').that.has.length(1);
-            expect(wrapper.vm.metaModel.childMetaModels[0].focusable).to.be.true;
+            expect(wrapper.vm.modelValue.childMetaModels[0].focusable).to.be.true;
           });
         });
       });
@@ -1871,7 +1863,7 @@ describe('TreeViewNode.vue', () => {
 
           it('should focus the parent node', async () => {
             expect(wrapper.findAllComponents(TreeViewNode)[0].emitted().treeNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
-            expect(wrapper.vm.metaModel.focusable).to.be.true;
+            expect(wrapper.vm.modelValue.focusable).to.be.true;
           });
         });
 
@@ -1885,7 +1877,7 @@ describe('TreeViewNode.vue', () => {
 
           it('should collapse the node', () => {
             expect(wrapper.emitted().treeNodeExpandedChange).to.be.an('array').that.has.length(1);
-            expect(wrapper.vm.metaModel.focusable).to.be.true;
+            expect(wrapper.vm.modelValue.focusable).to.be.true;
           });
         });
       });
@@ -1900,7 +1892,7 @@ describe('TreeViewNode.vue', () => {
 
         it('should focus the parent node', () => {
           expect(wrapper.findAllComponents(TreeViewNode)[0].emitted().treeNodeAriaRequestParentFocus).to.be.an('array').that.has.length(1);
-          expect(wrapper.vm.metaModel.focusable).to.be.true;
+          expect(wrapper.vm.modelValue.focusable).to.be.true;
         });
       });
     });
@@ -1978,7 +1970,7 @@ describe('TreeViewNode.vue', () => {
 
         it('should add a child to the current node', () => {
           expect(wrapper.emitted().treeNodeAdd).to.be.an('array').that.has.length(1);
-          expect(wrapper.vm.metaModel.childMetaModels.length).to.equal(1);
+          expect(wrapper.vm.modelValue.childMetaModels.length).to.equal(1);
         });
       });
     });
@@ -2011,7 +2003,7 @@ describe('TreeViewNode.vue', () => {
             // wrapper will emit the event as it bubbles up the tree; the child node
             // originated it, but is deleted by this point so we can't check it here.
             expect(wrapper.emitted().treeNodeDelete).to.be.an('array').that.has.length(1);
-            expect(wrapper.vm.metaModel.childMetaModels.length).to.equal(0);
+            expect(wrapper.vm.modelValue.childMetaModels.length).to.equal(0);
           });
         });
 
@@ -2024,7 +2016,7 @@ describe('TreeViewNode.vue', () => {
           });
 
           it('should focus the next node', () => {
-            expect(wrapper.vm.metaModel.childMetaModels[0].focusable).to.be.true;
+            expect(wrapper.vm.modelValue.childMetaModels[0].focusable).to.be.true;
           });
         });
 
@@ -2037,7 +2029,7 @@ describe('TreeViewNode.vue', () => {
           });
 
           it('should focus the previous node', () => {
-            expect(wrapper.vm.metaModel.childMetaModels[1].focusable).to.be.true;
+            expect(wrapper.vm.modelValue.childMetaModels[1].focusable).to.be.true;
           });
         });
       });
@@ -2045,7 +2037,7 @@ describe('TreeViewNode.vue', () => {
 
     describe('and an unhandled key is pressed', () => {
 
-      let event;
+      let event: KeyboardEvent;
 
       beforeEach(async () => {
         wrapper = await createWrapper();
@@ -2055,8 +2047,8 @@ describe('TreeViewNode.vue', () => {
       it('should do nothing', () => {
         expect(Object.getOwnPropertyNames(wrapper.emitted()).length).to.equal(1);
         expect(Object.getOwnPropertyNames(wrapper.emitted())[0]).to.equal('keydown');
-        expect(event.stopPropagation.mock.calls.length).to.equal(0);
-        expect(event.preventDefault.mock.calls.length).to.equal(0);
+        expect((event.stopPropagation as Mock).mock.calls.length).to.equal(0);
+        expect((event.preventDefault as Mock).mock.calls.length).to.equal(0);
       });
     });
   });
@@ -2071,12 +2063,12 @@ describe('TreeViewNode.vue', () => {
       beforeEach(async () => {
         modelValue = generateMetaNodes(['Es', ['esf']])[0];
         wrapper = await createWrapper({ modelValue });
-        wrapper.vm.focusPreviousNode(modelValue.childMetaModels[0]);
+        (wrapper.vm as any).focusPreviousNode(modelValue.childMetaModels[0]);
         await wrapper.vm.$nextTick();
       });
 
       it('should set this node as focusable', () => {
-        expect(wrapper.vm.metaModel.focusable).to.be.true;
+        expect(wrapper.vm.modelValue.focusable).to.be.true;
       });
     });
 
@@ -2085,12 +2077,12 @@ describe('TreeViewNode.vue', () => {
       beforeEach(async () => {
         modelValue = generateMetaNodes(['Es', ['Es', ['s', 's'], 'sf']])[0];
         wrapper = await createWrapper({ modelValue });
-        wrapper.vm.focusPreviousNode(modelValue.childMetaModels[1]);
+        (wrapper.vm as any).focusPreviousNode(modelValue.childMetaModels[1]);
         await wrapper.vm.$nextTick();
       });
 
       it('should set the last child of the previous sibling node as focusable', () => {
-        expect(wrapper.vm.metaModel.childMetaModels[0].childMetaModels[1].focusable).to.be.true;
+        expect(wrapper.vm.modelValue.childMetaModels[0].childMetaModels[1].focusable).to.be.true;
       });
     });
 
@@ -2099,12 +2091,12 @@ describe('TreeViewNode.vue', () => {
       beforeEach(async () => {
         modelValue = generateMetaNodes(['Es', ['es', ['s', 's'], 'sf']])[0];
         wrapper = await createWrapper({ modelValue });
-        wrapper.vm.focusPreviousNode(modelValue.childMetaModels[1]);
+        (wrapper.vm as any).focusPreviousNode(modelValue.childMetaModels[1]);
         await wrapper.vm.$nextTick();
       });
 
       it('should set the previous sibling node as focusable', () => {
-        expect(wrapper.vm.metaModel.childMetaModels[0].focusable).to.be.true;
+        expect(wrapper.vm.modelValue.childMetaModels[0].focusable).to.be.true;
       });
     });
   });
@@ -2121,12 +2113,12 @@ describe('TreeViewNode.vue', () => {
         beforeEach(async () => {
           modelValue = generateMetaNodes(['Es', ['Esf', ['s', 's'], 's']])[0];
           wrapper = await createWrapper({ modelValue });
-          wrapper.vm.focusNextNode(modelValue.childMetaModels[0], false);
+          (wrapper.vm as any).focusNextNode(modelValue.childMetaModels[0], false);
           await wrapper.vm.$nextTick();
         });
 
         it('should set its first child as focusable', () => {
-          expect(wrapper.vm.metaModel.childMetaModels[0].childMetaModels[0].focusable).to.be.true;
+          expect(wrapper.vm.modelValue.childMetaModels[0].childMetaModels[0].focusable).to.be.true;
         });
       });
 
@@ -2137,12 +2129,12 @@ describe('TreeViewNode.vue', () => {
           beforeEach(async () => {
             modelValue = generateMetaNodes(['Es', ['Esf', ['s', 's'], 's']])[0];
             wrapper = await createWrapper({ modelValue });
-            wrapper.vm.focusNextNode(modelValue.childMetaModels[0], true);
+            (wrapper.vm as any).focusNextNode(modelValue.childMetaModels[0], true);
             await wrapper.vm.$nextTick();
           });
 
           it('should set the next sibling as focusable', () => {
-            expect(wrapper.vm.metaModel.childMetaModels[1].focusable).to.be.true;
+            expect(wrapper.vm.modelValue.childMetaModels[1].focusable).to.be.true;
           });
         });
 
@@ -2151,13 +2143,13 @@ describe('TreeViewNode.vue', () => {
           beforeEach(async () => {
             modelValue = generateMetaNodes(['Es', ['Esf', ['s', 's']]])[0];
             wrapper = await createWrapper({ modelValue });
-            wrapper.vm.focusNextNode(modelValue.childMetaModels[0], true);
+            (wrapper.vm as any).focusNextNode(modelValue.childMetaModels[0], true);
             await wrapper.vm.$nextTick();
           });
 
           it('should pass up the chain to this node\'s parent, ignoring children', () => {
             expect(wrapper.emitted().treeNodeAriaRequestNextFocus).to.be.an('array').that.has.length(1);
-            expect(wrapper.emitted().treeNodeAriaRequestNextFocus[0][1]).to.be.true;
+            expect((wrapper.emitted().treeNodeAriaRequestNextFocus as any)[0][1]).to.be.true;
           });
         });
       });
@@ -2170,12 +2162,12 @@ describe('TreeViewNode.vue', () => {
         beforeEach(async () => {
           modelValue = generateMetaNodes(['Es', ['esf', ['s', 's'], 's']])[0];
           wrapper = await createWrapper({ modelValue });
-          wrapper.vm.focusNextNode(modelValue.childMetaModels[0], false);
+          (wrapper.vm as any).focusNextNode(modelValue.childMetaModels[0], false);
           await wrapper.vm.$nextTick();
         });
 
         it('should set the next sibling as focusable', () => {
-          expect(wrapper.vm.metaModel.childMetaModels[1].focusable).to.be.true;
+          expect(wrapper.vm.modelValue.childMetaModels[1].focusable).to.be.true;
         });
       });
 
@@ -2184,13 +2176,13 @@ describe('TreeViewNode.vue', () => {
         beforeEach(async () => {
           modelValue = generateMetaNodes(['Es', ['esf', ['s', 's']]])[0];
           wrapper = await createWrapper({ modelValue });
-          wrapper.vm.focusNextNode(modelValue.childMetaModels[0], false);
+          (wrapper.vm as any).focusNextNode(modelValue.childMetaModels[0], false);
           await wrapper.vm.$nextTick();
         });
 
         it('should pass up the chain to this node\'s parent, ignoring children', () => {
           expect(wrapper.emitted().treeNodeAriaRequestNextFocus).to.be.an('array').that.has.length(1);
-          expect(wrapper.emitted().treeNodeAriaRequestNextFocus[0][1]).to.be.true;
+          expect((wrapper.emitted().treeNodeAriaRequestNextFocus as any)[0][1]).to.be.true;
         });
       });
     });
@@ -2205,7 +2197,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should emit a treeNodeClick event', () => {
-      expect(wrapper.emitted('treeNodeClick').length).to.equal(1);
+      expect(wrapper.emitted('treeNodeClick')!.length).to.equal(1);
     });
   });
 
@@ -2218,7 +2210,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should emit a treeNodeDblclick event', () => {
-      expect(wrapper.emitted('treeNodeDblclick').length).to.equal(1);
+      expect(wrapper.emitted('treeNodeDblclick')!.length).to.equal(1);
     });
   });
 
@@ -2231,7 +2223,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should emit a treeNodeChildCheckboxChange event', () => {
-      expect(wrapper.emitted('treeNodeChildCheckboxChange').length).to.equal(1);
+      expect(wrapper.emitted('treeNodeChildCheckboxChange')!.length).to.equal(1);
     });
   });
 
@@ -2244,7 +2236,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should emit a treeNodeRadioChange event', () => {
-      expect(wrapper.emitted('treeNodeRadioChange').length).to.equal(1);
+      expect(wrapper.emitted('treeNodeRadioChange')!.length).to.equal(1);
     });
   });
 
@@ -2257,7 +2249,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should emit a treeNodeExpandedChange event', () => {
-      expect(wrapper.emitted('treeNodeExpandedChange').length).to.equal(1);
+      expect(wrapper.emitted('treeNodeExpandedChange')!.length).to.equal(1);
     });
   });
 
@@ -2270,7 +2262,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should emit a treeNodeChildrenLoad event', () => {
-      expect(wrapper.emitted('treeNodeChildrenLoad').length).to.equal(1);
+      expect(wrapper.emitted('treeNodeChildrenLoad')!.length).to.equal(1);
     });
   });
 
@@ -2283,7 +2275,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should emit a treeNodeAdd event', () => {
-      expect(wrapper.emitted('treeNodeAdd').length).to.equal(1);
+      expect(wrapper.emitted('treeNodeAdd')!.length).to.equal(1);
     });
   });
 
@@ -2296,7 +2288,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should emit a treeNodeAriaRequestFirstFocus event', () => {
-      expect(wrapper.emitted('treeNodeAriaRequestFirstFocus').length).to.equal(1);
+      expect(wrapper.emitted('treeNodeAriaRequestFirstFocus')!.length).to.equal(1);
     });
   });
 
@@ -2309,7 +2301,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should emit a treeNodeAriaRequestLastFocus event', () => {
-      expect(wrapper.emitted('treeNodeAriaRequestLastFocus').length).to.equal(1);
+      expect(wrapper.emitted('treeNodeAriaRequestLastFocus')!.length).to.equal(1);
     });
   });
 
@@ -2317,7 +2309,7 @@ describe('TreeViewNode.vue', () => {
 
     describe('and a node is added', () => {
 
-      let newNode;
+      let newNode: TestTreeViewNode;
 
       beforeEach(async () => {
         newNode = generateNodes(["es"]).nodes[0];
@@ -2330,7 +2322,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should add a metaNode for the new node', () => {
-        expect(wrapper.vm.metaModel.data.children[2]).to.eql(newNode);
+        expect(wrapper.vm.modelValue.data.children[2]).to.eql(newNode);
       });
     });
 
@@ -2346,7 +2338,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should add a metaNode for the new node', () => {
-        expect(wrapper.vm.metaModel.data.children.length).to.equal(1);
+        expect(wrapper.vm.modelValue.data.children.length).to.equal(1);
       });
     });
 
@@ -2363,7 +2355,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should update the metaModel', () => {
-        expect(wrapper.vm.metaModel.data.children[0].id).to.equal('n0n1');
+        expect(wrapper.vm.modelValue.data.children[0].id).to.equal('n0n1');
       });
     });
   });
