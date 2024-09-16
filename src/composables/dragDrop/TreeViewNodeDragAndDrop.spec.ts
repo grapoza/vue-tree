@@ -419,7 +419,7 @@ describe('TreeViewNode.vue (Drag and Drop)', () => {
       });
 
       it('should have isSameTree === false in the treeNodeDrop event', () => {
-        expect((wrapper.emitted(treeNodeDrop as any)[0][0].isSameTree).to.be.false;
+        expect((wrapper.emitted().treeNodeDrop as any)[0][0].isSameTree).to.be.false;
       });
     });
 
