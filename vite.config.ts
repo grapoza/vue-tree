@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [vue()],
   build: {
     lib: {
-      entry: path.resolve(__dirname, "lib/entry.js"),
+      entry: path.resolve(__dirname, "lib/entry.ts"),
       name: "grapozaTreeLib",
       fileName: (format) => `grapoza-tree-lib.${format}.js`,
     },
