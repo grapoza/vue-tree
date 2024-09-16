@@ -8,7 +8,7 @@ import { MaybeRef } from "vue";
 /**
  * Provides method which keep the data model updates in sync with the metadata model
  * in a node of the tree.
- * @param {Object} metaModel The metadata model
+ * @param metaModel The metadata model
  */
 export function useTreeViewNodeDataUpdates(metaModel: MaybeRef<TreeViewNodeMetaModel>) {
 

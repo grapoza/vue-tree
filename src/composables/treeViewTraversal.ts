@@ -24,7 +24,7 @@ export function useTreeViewTraversal(treeMetaModel: Ref<TreeViewNodeMetaModel[]>
 
   /**
    * Traverses the tree depth-first and performs a callback action against each node.
-   * @param {Function} nodeActionCallback The action to call against each node, taking that node as a parameter
+   * @param nodeActionCallback The action to call against each node, taking that node as a parameter
    */
   function depthFirstTraverse(nodeActionCallback: (current: TreeViewNodeMetaModel) => boolean | void) {
     traverse(nodeActionCallback, true);

@@ -11,8 +11,8 @@ export function useObjectMethods() {
   /**
    * Deeply (or deeply enough) copies the given object into a new object.
    * Note that this is "cheap" as in budget-value, not efficiency.
-   * @param {Object} toCopy The object to copy
-   * @returns {Object} The copy
+   * @param toCopy The object to copy
+   * @returns The copy
    */
   function cheapCopyObject<T extends { [key: string]: any }>(toCopy: T): T {
     // Use a copy of the source, since the props can be fubar'd by the assigns

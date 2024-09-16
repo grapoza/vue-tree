@@ -55,8 +55,8 @@ export function useTreeViewNodeDragAndDrop(
    * are the sets of nodes and metas that contains the drop target, so if no lower
    * node has set it through this handler then the target must be this
    * node's child.
-   * @param {Object} data The custom treeNodeDrop event data
-   * @param {DragEvent} event The original DOM drop event
+   * @param data The custom treeNodeDrop event data
+   * @param event The original DOM drop event
    */
   function drop(data: DropEventData, event: DragEvent) {
     data.siblingNodeSets = data.siblingNodeSets || {
@@ -75,7 +75,7 @@ export function useTreeViewNodeDragAndDrop(
    * an object containing both the node data and the ID of the tree from
    * which the node originates. That ID is used when dropping to determine
    * whether a drop occurred in the origin tree or a different tree.
-   * @param {DragEvent} event The original DOM dragStart event
+   * @param event The original DOM dragStart event
    */
   function onDragstart(event: DragEvent) {
     event.stopPropagation();
@@ -97,7 +97,7 @@ export function useTreeViewNodeDragAndDrop(
 
   /**
    * Checks whether this node can accept the drop and updates the model accordingly.
-   * @param {DragEvent} event The original DOM dragEnter event
+   * @param event The original DOM dragEnter event
    */
   function onDragenter(event: DragEvent) {
     if (isValidDropTargetForEvent(event)) {
@@ -108,7 +108,7 @@ export function useTreeViewNodeDragAndDrop(
 
   /**
    * Checks whether this node can accept the drop and updates the model accordingly.
-   * @param {DragEvent} event The original DOM dragOver event
+   * @param event The original DOM dragOver event
    */
   function onDragover(event: DragEvent) {
     if (isValidDropTargetForEvent(event)) {
@@ -119,7 +119,7 @@ export function useTreeViewNodeDragAndDrop(
 
   /**
    * Checks whether this node can accept the drop and updates the model accordingly.
-   * @param {DragEvent} event The original DOM dragLeave event
+   * @param event The original DOM dragLeave event
    */
   function onDragleave(event: DragEvent) {
     if (isValidDropTargetForEvent(event)) {
@@ -132,7 +132,7 @@ export function useTreeViewNodeDragAndDrop(
    * kind of action should occur, crafting eventData, and emitting
    * the treeNodeDrop event so it can bubble up to the TreeView
    * for handling.
-   * @param {DragEvent} event The original DOM drop event
+   * @param event The original DOM drop event
    */
   function onDrop(event: DragEvent) {
 

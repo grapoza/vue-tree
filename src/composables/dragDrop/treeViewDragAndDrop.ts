@@ -32,7 +32,7 @@ export function useTreeViewDragAndDrop(
   /**
    * Removes the given node from this node's children
    * after a drag-and-drop move operation between trees.
-   * @param {Object} metaNode The data for the moved node
+   * @param metaNode The data for the moved node
    */
   function dragMoveNode(metaNode: TreeViewNodeMetaModel) {
     const targetIndex = metaModel.value.indexOf(metaNode);
@@ -43,7 +43,7 @@ export function useTreeViewDragAndDrop(
 
   /**
    * Handles a meta node getting dropped into this tree.
-   * @param {Object} eventData The data about a drop event
+   * @param eventData The data about a drop event
    */
   function drop(eventData: DropEventData) {
     let metaNode = eventData.droppedModel;

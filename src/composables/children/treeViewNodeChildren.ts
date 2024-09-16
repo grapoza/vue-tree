@@ -9,7 +9,7 @@ import { TreeViewNodeMetaModel } from 'types/treeViewNode';
  * Composable dealing with children handling at the tree view node.
  * @param metaModel A Ref to the metadata model of the node
  * @param emit The TreeViewNode's emit function, used to emit selection events on the node's behalf
- * @returns {Object} Methods to deal with a tree view node's children
+ * @returns Methods to deal with a tree view node's children
  */
 export function useTreeViewNodeChildren(
   metaModel: Ref<TreeViewNodeMetaModel>,
@@ -67,7 +67,7 @@ export function useTreeViewNodeChildren(
   /**
    * Removes the given node from the array of children if found.
    * This emits the treeNodeDelete event.
-   * @param {Object} metaNode The meta node to remove
+   * @param metaNode The meta node to remove
    */
   function deleteChild(metaNode: TreeViewNodeMetaModel) {
     // Remove the node from the array of children if it is an immediate child.

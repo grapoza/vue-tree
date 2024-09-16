@@ -478,7 +478,7 @@ watch([getChildren(metaModel), () => getChildren(metaModel)], () => {
 /**
  * Pass the event for checkbox changes up from the node.
  * Emits a treeNodeCheckboxChange event
- * @param {Event} event The event that triggered the change
+ * @param event The event that triggered the change
  */
 function onCheckboxChange(event: Event) {
   emit(TreeEvent.CheckboxChange, metaModel.value, event);
@@ -487,7 +487,7 @@ function onCheckboxChange(event: Event) {
 /**
  * Pass the event for radio button changes up from the node.
  * Emits a treeNodeRadioChange event
- * @param {Event} event The event that triggered the change
+ * @param event The event that triggered the change
  */
 function onRadioChange(event: Event) {
   emit(TreeEvent.RadioChange, metaModel.value, event);
@@ -497,7 +497,7 @@ function onRadioChange(event: Event) {
  * Handles clicks on the node. It only performs actions if the click happened on an element
  * that does not have node clicks explicitly ingored (e.g., the expander button).
  * Emits a treeNodeClick event.
- * @param {Event} event The click event
+ * @param event The click event
  */
 function onClick(event: MouseEvent) {
   // Don't fire this if the target is an element which has its own events
@@ -535,7 +535,7 @@ async function onDelete() {
 /**
  * Handles key events to trigger interactions such as selection, expansion,
  * or activation. Each interaction is detailed in the method body.
- * @param {Event} event The keydown event
+ * @param event The keydown event
  */
 function onKeyDown(event: KeyboardEvent) {
   let eventHandled = true;
@@ -660,8 +660,8 @@ function handleChildDeletion(metaNode: TreeViewNodeMetaModel) {
 /**
  * Emits the treeNodeCheckboxChange event, and if the event is for
  * a direct child then it also emits the treeNodeChildCheckboxChange event.
- * @param {Object} metaNode The meta node on which the checkbox changed
- * @param {Event} event The event that triggered the change
+ * @param metaNode The meta node on which the checkbox changed
+ * @param event The event that triggered the change
  */
 function handleCheckboxChange(metaNode: TreeViewNodeMetaModel, event: InputEvent) {
   emit(TreeEvent.CheckboxChange, metaNode, event);

@@ -92,7 +92,7 @@ export function useTreeViewSelection(
    * For selectionFollowsFocus mode for TreeView, selection state is handled in
    * the focus watcher in treeViewNodeSelection.js.
    * In all cases this emits treeNodeSelectedChange for the node parameter.
-   * @param {Object} metaNode The meta node for which selection changed
+   * @param metaNode The meta node for which selection changed
    */
   function handleNodeSelectedChange(metaNode: TreeViewNodeMetaModel) {
     if (unref(selectionMode) === SelectionMode.Single && isSelected(metaNode)) {
@@ -104,7 +104,7 @@ export function useTreeViewSelection(
   /**
    * Given a node that should remain selected, deselect another selected node.
    * This is used only when one node at a time can be selected (Single/SelectionFollowsFocus).
-   * @param {Object} metaNode The meta node that should remain selected
+   * @param metaNode The meta node that should remain selected
    */
   function exclusivelySelectNode(metaNode: TreeViewNodeMetaModel) {
     const nodeId = metaNode.data[metaNode.idProperty];
