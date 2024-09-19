@@ -3,7 +3,7 @@ import { useTreeViewTraversal } from '../treeViewTraversal'
 import { useSelection } from './selection';
 import { SelectionMode } from '../../types/selectionMode';
 import { TreeEvent } from '../../types/event';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 import TreeView from "../../components/TreeView.vue";
 
 /**

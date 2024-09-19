@@ -1,6 +1,6 @@
 import { useFocus } from './focus';
 import { generateMetaNodes } from '../../../tests/data/node-generator';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 const {
   focus,

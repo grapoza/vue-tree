@@ -1,6 +1,6 @@
 import { useFilter } from './filter';
 import { generateMetaNodes } from '../../../tests/data/node-generator';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 describe('filter', () => {
 

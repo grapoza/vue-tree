@@ -1,4 +1,4 @@
-import { InputType } from '../types/inputType';
+import { InputType } from './inputType';
 import { EffectAllowed } from './dragDrop';
 
 export type TreeViewMetaModelCustomizations = {
@@ -77,9 +77,9 @@ type BaseTreeViewNodeMetaModel = {
   expanderTitle: string | null;
   addChildTitle: string | null;
   deleteTitle: string | null;
-  loadChildrenAsync: Function | null;
-  addChildCallback: Function | null;
-  deleteNodeCallback: Function | null;
+  loadChildrenAsync: TreeViewLoadChildNodesAsyncMethod | null;
+  addChildCallback: TreeViewAddChildCallbackMethod | null;
+  deleteNodeCallback: TreeViewDeleteNodeCallback | null;
   expandable: boolean;
   selectable: boolean;
   deletable: boolean;
@@ -124,3 +124,11 @@ export type TreeViewNodeMetaModelDefaults = Partial<BaseTreeViewNodeMetaModel & 
 export type TreeViewNodeMetaModelDefaultsMethod = (node: any) => TreeViewNodeMetaModelDefaults;
 
 export type TreeViewFilterMethod = (node: TreeViewNodeMetaModel) => boolean;
+
+export type TreeViewLoadNodesAsyncMethod = () => Promise<object[]>;
+
+export type TreeViewLoadChildNodesAsyncMethod = (parentNode: TreeViewNodeMetaModel) => Promise<object[]>;
+
+export type TreeViewAddChildCallbackMethod = (parentNode: TreeViewNodeMetaModel) => Promise<object | null>;
+
+export type TreeViewDeleteNodeCallback = (node: TreeViewNodeMetaModel) => Promise<boolean>;

@@ -4,7 +4,7 @@ import TreeView from './TreeView.vue';
 import TreeViewNode from './TreeViewNode.vue';
 import { generateNodes } from '../../tests/data/node-generator';
 import { SelectionMode } from '../types/selectionMode';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 async function createWrapper(customPropsData?: object, customAttrs?: Record<string, unknown>, slotsData?: any) {
   let wrapper = mount(TreeView, {

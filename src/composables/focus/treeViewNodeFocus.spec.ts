@@ -3,7 +3,7 @@ import { useTreeViewNodeFocus } from './treeViewNodeFocus';
 import { generateMetaNodes } from '../../../tests/data/node-generator';
 import { TreeEvent } from '../../types/event';
 import { Mock } from 'vitest';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 const isMountedRef = ref(true);
 

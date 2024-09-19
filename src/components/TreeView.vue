@@ -72,7 +72,7 @@ import { useTreeViewDataUpdates } from '../composables/treeViewDataUpdates';
 import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer';
 import TreeViewNode from './TreeViewNode.vue';
 import { TreeEvent } from '../types/event';
-import { TreeViewFilterMethod, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeViewNode';
+import { TreeViewFilterMethod, TreeViewLoadNodesAsyncMethod, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeView';
 
 // PROPS
 
@@ -99,7 +99,7 @@ const props = defineProps({
     default: null
   },
   loadNodesAsync: {
-    type: Function,
+    type: Function as PropType<TreeViewLoadNodesAsyncMethod>,
     required: false,
     default: null
   },

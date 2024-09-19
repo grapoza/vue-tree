@@ -3,7 +3,7 @@ import { useExpansion } from './expansion';
 import { useTreeViewNodeChildren } from '../children/treeViewNodeChildren';
 import { useTreeViewNodeFilter } from '../filter/treeViewNodeFilter';
 import { TreeEvent } from '../../types/event';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 import TreeViewNode from "../../components/TreeViewNode.vue";
 
 /**

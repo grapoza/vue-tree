@@ -3,7 +3,7 @@ import { useTreeViewSelection } from './treeViewSelection';
 import { generateMetaNodes } from '../../../tests/data/node-generator';
 import { SelectionMode } from '../../types/selectionMode';
 import { TreeEvent } from '../../types/event';
-import { TreeViewNodeMetaModel } from '../../types/treeViewNode';
+import { TreeViewNodeMetaModel } from '../../types/treeView';
 import { Mock } from 'vitest';
 
 describe('treeViewSelection.js', () => {

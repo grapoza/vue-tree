@@ -1,6 +1,6 @@
 import { MaybeRef, unref } from 'vue';
 import { useChildren } from '../children/children';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 /**
  * Composable dealing with filter handling on an arbitrary node.

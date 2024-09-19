@@ -3,7 +3,7 @@ import { useObjectMethods } from '../objectMethods';
 import { useIdGeneration } from '../idGeneration'
 import { useTreeViewDataUpdates } from '../treeViewDataUpdates';
 import { useFocus } from '../focus/focus';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 import { Ref } from 'vue';
 import { useTreeViewConvenienceMethods } from 'composables/treeViewConvenienceMethods';
 

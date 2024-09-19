@@ -6,7 +6,7 @@ import { useChildren } from './children/children';
 import { InputType } from '../types/inputType';
 import { SelectionMode } from '../types/selectionMode';
 import { Ref } from 'vue';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 /**
  * Composable dealing with convenience methods at the top level of the tree view.

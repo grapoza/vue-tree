@@ -2,7 +2,7 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, Ref, ref } from 'vue';
 import { useTreeViewFilter } from './treeViewFilter';
 import { generateMetaNodes } from '../../../tests/data/node-generator';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 function createTestComponent(nodes: Ref<TreeViewNodeMetaModel[]>) {
   const TestComponent = defineComponent({

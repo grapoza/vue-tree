@@ -2,7 +2,7 @@ import { ref } from 'vue';
 import { useTreeViewConvenienceMethods } from './treeViewConvenienceMethods';
 import { generateNodesAndMetaNodes, TestTreeViewNode } from '../../tests/data/node-generator';
 import { SelectionMode } from '../types/selectionMode';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 describe('treeViewConvenienceMethods', () => {
 

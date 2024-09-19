@@ -1,4 +1,4 @@
-import { TreeViewNodeMetaModel } from "./treeViewNode";
+import { TreeViewNodeMetaModel } from "./treeView";
 
 // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/dropEffect
 export enum DropEffect {

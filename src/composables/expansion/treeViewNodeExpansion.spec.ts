@@ -4,7 +4,7 @@ import { useTreeViewNodeExpansion } from './treeViewNodeExpansion';
 import { generateMetaNodes } from '../../../tests/data/node-generator';
 import { TreeEvent } from '../../types/event';
 import { Mock } from 'vitest';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 let emit: Mock<ComponentPublicInstance['$emit']>;
 

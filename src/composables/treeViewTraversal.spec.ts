@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { useTreeViewTraversal } from './treeViewTraversal';
 import { generateMetaNodes } from '../../tests/data/node-generator';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 describe('treeViewTraversal', () => {
 

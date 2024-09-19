@@ -1,4 +1,4 @@
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 import { MaybeRef, unref } from 'vue';
 
 /**

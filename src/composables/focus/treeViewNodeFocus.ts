@@ -2,7 +2,7 @@ import { ComponentPublicInstance, computed, Ref, unref, watch } from 'vue'
 import { useFocus } from './focus';
 import { useChildren } from '../children/children';
 import { TreeEvent } from '../../types/event';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 import TreeViewNode from "../../components/TreeViewNode.vue";
 
 /**

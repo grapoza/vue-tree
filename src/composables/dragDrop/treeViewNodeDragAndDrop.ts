@@ -5,7 +5,7 @@ import { useDomMethods } from '../domMethods'
 import { useFocus } from '../focus/focus';
 import { useChildren } from "../children/children";
 import { useTreeViewNodeDataUpdates } from '../treeViewNodeDataUpdates';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 import { ComponentPublicInstance, Ref } from 'vue';
 import TreeViewNode from "../../components/TreeViewNode.vue";
 

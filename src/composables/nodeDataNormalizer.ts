@@ -2,7 +2,7 @@ import { Ref, unref } from 'vue';
 import { EffectAllowed } from '../types/dragDrop';
 import { InputType } from '../types/inputType';
 import { useObjectMethods } from './objectMethods';
-import { TreeViewNodeMetaModelDefaults, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeViewNode';
+import { TreeViewNodeMetaModelDefaults, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeView';
 
 const { isProbablyObject } = useObjectMethods();
 

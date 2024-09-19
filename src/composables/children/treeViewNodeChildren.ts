@@ -3,7 +3,7 @@ import { useChildren } from './children';
 import { useTreeViewNodeDataUpdates } from '../treeViewNodeDataUpdates';
 import { TreeEvent } from '../../types/event';
 import TreeViewNode from "../../components/TreeViewNode.vue";
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 /**
  * Composable dealing with children handling at the tree view node.

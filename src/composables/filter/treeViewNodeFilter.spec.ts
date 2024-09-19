@@ -4,7 +4,7 @@ import { useTreeViewNodeFilter } from './treeViewNodeFilter';
 import { generateMetaNodes } from '../../../tests/data/node-generator';
 import { TreeEvent } from '../../types/event';
 import { Mock } from 'vitest';
-import { TreeViewFilterMethod, TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewFilterMethod, TreeViewNodeMetaModel } from 'types/treeView';
 
 let emit: Mock<ComponentPublicInstance['$emit']>;
 
@@ -147,7 +147,7 @@ describe('treeViewNodeFilter', () => {
 
       beforeEach(async () => {
         node = ref(generateMetaNodes(['fe'])[0]);
-        node.value.loadChildrenAsync = () => { };
+        node.value.loadChildrenAsync = (n) => Promise.resolve([]);
         node.value._.state.areChildrenLoaded = false;
         wrapper = createTestComponent(node, (n) => n.expandable);
         await flushPromises();

@@ -250,7 +250,7 @@ import { useTreeViewNodeExpansion } from '../composables/expansion/treeViewNodeE
 import { useTreeViewNodeFilter } from '../composables/filter/treeViewNodeFilter';
 import { SelectionMode } from '../types/selectionMode';
 import { TreeEvent } from '../types/event';
-import { TreeViewMetaModelCustomizations, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaults, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeViewNode';
+import { TreeViewMetaModelCustomizations, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaults, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeView';
 
 // PROPS
 

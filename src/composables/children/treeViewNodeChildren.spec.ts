@@ -143,7 +143,7 @@ describe('treeViewNodeChildren', () => {
     describe('and the nodes children are not loaded yet', () => {
 
       it('should return true', () => {
-        const node = ref(generateMetaNodes([''], '', null, () => Promise.resolve({}))[0]);
+        const node = ref(generateMetaNodes([''], '', null, (n) => Promise.resolve([]))[0]);
         node.value._.state.areChildrenLoaded = false;
         const { mayHaveChildren } = useTreeViewNodeChildren(node, emit);
         expect(mayHaveChildren.value).to.be.true;

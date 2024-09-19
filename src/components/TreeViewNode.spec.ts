@@ -3,7 +3,7 @@ import TreeViewNode from './TreeViewNode.vue';
 import { generateNodes, generateMetaNodes, TestTreeViewNode } from '../../tests/data/node-generator';
 import { SelectionMode } from '../types/selectionMode';
 import { TreeEvent } from '../types/event';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 import { Mock } from 'vitest';
 
 let wrapper: Awaited<ReturnType<typeof createWrapper>>;
@@ -757,7 +757,7 @@ describe('TreeViewNode.vue', () => {
     };
 
     beforeEach(async () => {
-      let modelValue = generateMetaNodes(['cEdS', ['res', 'esa']], "", () => Promise.resolve())[0];
+      let modelValue = generateMetaNodes(['cEdS', ['res', 'esa']], "", () => Promise.resolve(null))[0];
 
       wrapper = await createWrapper({
         ariaKeyMap: {},
@@ -1020,7 +1020,7 @@ describe('TreeViewNode.vue', () => {
       const customClasses = { treeViewNode: 'customnodeclass' };
 
       beforeEach(async () => {
-        let loadChildrenAsync = () => new Promise(resolve => setTimeout(resolve.bind(null, []), 1000));
+        let loadChildrenAsync = () => new Promise(resolve => setTimeout(resolve.bind(null, []), 1000)) as Promise<object[]>;
         let modelValue = generateMetaNodes(['e'], "baseId", null, loadChildrenAsync)[0];
 
         wrapper = await createWrapper(
@@ -1198,7 +1198,8 @@ describe('TreeViewNode.vue', () => {
 
       beforeEach(async () => {
 
-        let loadChildrenAsync = () => new Promise(resolve => setTimeout(resolve.bind(null, generateNodes(['', '']).nodes), 1000));
+        let loadChildrenAsync = (n: TreeViewNodeMetaModel) =>
+          new Promise((resolve) => setTimeout(resolve.bind(null, generateNodes(["", ""]).nodes), 1000)) as Promise<object[]>;
         let modelValue = generateMetaNodes(['ces'], '', null, loadChildrenAsync)[0];
 
         wrapper = await createWrapper({

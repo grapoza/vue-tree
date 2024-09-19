@@ -1,6 +1,6 @@
 import { MaybeRef, ref } from 'vue'
 import { useFocus } from './focus';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 /**
  * Composable dealing with focus handling at the top level of the tree view.

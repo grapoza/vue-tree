@@ -1,5 +1,5 @@
 import { InputType } from '../../src/types/inputType';
-import type { TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaults, TreeViewNodeMetaModelDefaultsMethod } from "../../src/types/treeViewNode";
+import type { TreeViewAddChildCallbackMethod, TreeViewLoadChildNodesAsyncMethod, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaults, TreeViewNodeMetaModelDefaultsMethod } from "../../src/types/treeView";
 
 type NodeSpec = Array<string|NodeSpec>;
 
@@ -37,8 +37,8 @@ export type TestTreeViewNode = {
 export function generateNodes(
   nodeSpec: NodeSpec,
   baseId: string = "",
-  addChildCallback: Function | null = null,
-  loadChildrenAsync: Function | null = null
+  addChildCallback: TreeViewAddChildCallbackMethod | null = null,
+  loadChildrenAsync: TreeViewLoadChildNodesAsyncMethod | null = null
 ) {
   let nodes: TestTreeViewNode[] = [];
   let prevNode: TestTreeViewNode | null = null;
@@ -118,25 +118,31 @@ export function generateNodes(
     }
   });
 
-  const modelDefaults: TreeViewNodeMetaModelDefaultsMethod = (node: TestTreeViewNode) => modelDefaultMap.get(node.id) ?? {} as TreeViewNodeMetaModelDefaults;
+  const modelDefaults: TreeViewNodeMetaModelDefaultsMethod = (node: TestTreeViewNode) =>
+    modelDefaultMap.get(node.id) ?? ({} as TreeViewNodeMetaModelDefaults);
   return { nodes, modelDefaultMap, modelDefaults };
 }
 
 export function generateMetaNodes(
   nodeSpec: NodeSpec,
   baseId: string = "",
-  addChildCallback: Function | null = null,
-  loadChildrenAsync: Function | null = null
+  addChildCallback: TreeViewAddChildCallbackMethod | null = null,
+  loadChildrenAsync: TreeViewLoadChildNodesAsyncMethod | null = null
 ) {
-  const { nodes, modelDefaults } = generateNodes(nodeSpec, baseId, addChildCallback, loadChildrenAsync);
+  const { nodes, modelDefaults } = generateNodes(
+    nodeSpec,
+    baseId,
+    addChildCallback,
+    loadChildrenAsync
+  );
   return generateMetaNodesForList(nodes, modelDefaults);
 }
 
 export function generateNodesAndMetaNodes(
   nodeSpec: NodeSpec,
   baseId: string = "",
-  addChildCallback: Function | null = null,
-  loadChildrenAsync: Function | null = null
+  addChildCallback: TreeViewAddChildCallbackMethod | null = null,
+  loadChildrenAsync: TreeViewLoadChildNodesAsyncMethod | null = null
 ) {
   const { nodes, modelDefaults } = generateNodes(
     nodeSpec,

@@ -2,7 +2,7 @@ import { ref } from 'vue';
 import { useNodeDataNormalizer } from './nodeDataNormalizer';
 import { generateNodes } from '../../tests/data/node-generator';
 import { InputType } from "../types/inputType";
-import { TreeViewNodeMetaModelDefaults } from 'types/treeViewNode';
+import { TreeViewNodeMetaModelDefaults } from 'types/treeView';
 
 describe('nodeDataNormalizer', () => {
 

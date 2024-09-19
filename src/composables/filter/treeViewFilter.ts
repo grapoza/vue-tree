@@ -1,7 +1,7 @@
 import { Ref, watch } from 'vue';
 import { useFilter } from './filter';
 import { useFocus } from '../focus/focus';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 /**
  * Composable dealing with filter handling at the top level of the tree view.

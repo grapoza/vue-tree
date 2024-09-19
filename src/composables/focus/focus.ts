@@ -1,7 +1,7 @@
 import { MaybeRef, unref } from 'vue';
 import { useExpansion } from '../expansion/expansion';
 import { useFilter } from '../filter/filter';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 /**
  * Composable dealing with focus handling on an arbitrary node.

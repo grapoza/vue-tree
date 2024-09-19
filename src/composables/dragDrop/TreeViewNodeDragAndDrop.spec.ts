@@ -3,7 +3,7 @@ import TreeViewNode from '../../components/TreeViewNode.vue';
 import { generateMetaNodes } from '../../../tests/data/node-generator';
 import { DropEffect, EffectAllowed } from '../../types/dragDrop';
 import { MimeType } from '../../types/mimeType';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 
 const serializedNodeData = '{"data":{"id":"n0","label":"Node 0","children":[]},"childMetaModels":[],"_":{"dragging":false,"state":{"areChildrenLoaded":true,"areChildrenLoading":false,"matchesFilter":true,"subnodeMatchesFilter":false}},"childrenProperty":"children","idProperty":"id","labelProperty":"label","loadChildrenAsync":null,"expandable":false,"selectable":true,"deletable":false,"focusable":false,"input":{"type":"checkbox","name":"n0-cbx"},"state":{"expanded":false,"selected":false,"input":{"disabled":false,"value":false}},"addChildCallback":null,"draggable":false,"allowDrop":false,"dataTransferEffectAllowed":"copyMove","deleteNodeCallback":null,"title":null,"expanderTitle":null,"addChildTitle":null,"deleteTitle":null,"customizations":{}}';
 

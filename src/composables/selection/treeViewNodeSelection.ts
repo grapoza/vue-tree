@@ -2,7 +2,7 @@ import { ComponentPublicInstance, computed, Ref, watch } from 'vue'
 import { useSelection } from './selection';
 import { SelectionMode } from '../../types/selectionMode';
 import { TreeEvent } from '../../types/event';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 import TreeViewNode from "../../components/TreeViewNode.vue";
 
 /**

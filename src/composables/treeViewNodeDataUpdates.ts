@@ -1,4 +1,4 @@
-import { TreeViewNodeMetaModel } from "types/treeViewNode";
+import { TreeViewNodeMetaModel } from "types/treeView";
 import { useChildren } from "./children/children";
 import { useNodeDataNormalizer } from "./nodeDataNormalizer";
 import { MaybeRef } from "vue";

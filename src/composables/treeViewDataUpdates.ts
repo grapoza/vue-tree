@@ -1,6 +1,6 @@
 import { MaybeRef, unref } from 'vue';
 import { useNodeDataNormalizer } from './nodeDataNormalizer';
-import { TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaults } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaults } from 'types/treeView';
 
 /**
  * Provides method which keep the data model updates in sync with the metadata model

@@ -1,5 +1,5 @@
 import { useIdGeneration } from './idGeneration';
-import { TreeViewNodeMetaModel } from 'types/treeViewNode';
+import { TreeViewNodeMetaModel } from 'types/treeView';
 import { generateMetaNodes } from "../../tests/data/node-generator";
 
 describe('idGeneration', () => {
