@@ -23,7 +23,7 @@ export function useFocus() {
    */
   function focus(metaModel: MaybeRef<TreeViewNodeMetaModel>, keepCurrentDomFocus: boolean = false) {
     unref(metaModel)._.keepCurrentDomFocus = keepCurrentDomFocus;
-    unref(metaModel).focusable = true;
+    setTimeout(() => unref(metaModel).focusable = true);
   }
 
   /**

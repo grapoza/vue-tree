@@ -18,10 +18,12 @@ describe('treeViewNodeFocus.js', () => {
     nodeElement.tabIndex = 0;
     document.body.appendChild(nodeElement);
     emit = vi.fn();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
     document.body.removeChild(nodeElement!);
+    vi.restoreAllMocks();
   });
 
   describe('when handling a focus change', () => {
@@ -34,6 +36,7 @@ describe('treeViewNodeFocus.js', () => {
       let nodeRef = ref(nodes[1]);
       useTreeViewNodeFocus(nodeRef, ref(nodeElement!), emit, isMountedRef);
       nodeRef.value.focusable = true;
+      vi.runAllTimers();
     });
 
     it('should emit the treeNodeAriaFocusableChange event', () => {
@@ -52,6 +55,7 @@ describe('treeViewNodeFocus.js', () => {
       const { focusNode } =
         useTreeViewNodeFocus(ref(node), ref(nodeElement), emit, isMountedRef);
       focusNode();
+      vi.runAllTimers();
       expect(node.focusable).to.be.true;
     });
   });
@@ -97,6 +101,7 @@ describe('treeViewNodeFocus.js', () => {
       const { focusFirstChild } =
         useTreeViewNodeFocus(ref(node), ref(nodeElement), emit, isMountedRef);
       focusFirstChild();
+      vi.runAllTimers();
       expect(node.childMetaModels[0].focusable).to.be.true;
     });
   });
@@ -108,7 +113,7 @@ describe('treeViewNodeFocus.js', () => {
       const { focusLastChild } =
         useTreeViewNodeFocus(ref(node), ref(nodeElement), emit, isMountedRef);
       focusLastChild();
-
+      vi.runAllTimers();
       expect(node.childMetaModels[1].focusable).to.be.true;
     });
 
@@ -117,7 +122,7 @@ describe('treeViewNodeFocus.js', () => {
       const { focusLastChild } =
         useTreeViewNodeFocus(ref(node), ref(nodeElement), emit, isMountedRef);
       focusLastChild();
-
+      vi.runAllTimers();
       expect(node.childMetaModels[2].focusable).to.be.true;
     });
 
@@ -126,7 +131,7 @@ describe('treeViewNodeFocus.js', () => {
       const { focusLastChild } =
         useTreeViewNodeFocus(ref(node), ref(nodeElement), emit, isMountedRef);
       focusLastChild();
-
+      vi.runAllTimers();
       expect(node.childMetaModels[2].childMetaModels[0].focusable).to.be.true;
     });
   });
@@ -151,6 +156,7 @@ describe('treeViewNodeFocus.js', () => {
         const { focusNextNode } =
           useTreeViewNodeFocus(ref(node), ref(nodeElement), emit, isMountedRef);
         focusNextNode(node.childMetaModels[0]);
+        vi.runAllTimers();
         expect(node.childMetaModels[1].focusable).to.be.true;
       });
     });
@@ -167,6 +173,7 @@ describe('treeViewNodeFocus.js', () => {
         const { focusNextNode } =
           useTreeViewNodeFocus(ref(node), ref(nodeElement), emit, isMountedRef);
         focusNextNode(node.childMetaModels[0]);
+        vi.runAllTimers();
         expect(node.childMetaModels[0].childMetaModels[0].focusable).to.be.true;
       });
 
@@ -176,6 +183,7 @@ describe('treeViewNodeFocus.js', () => {
           const { focusNextNode } =
             useTreeViewNodeFocus(ref(node), ref(nodeElement), emit, isMountedRef);
           focusNextNode(node.childMetaModels[0], true);
+          vi.runAllTimers();
           expect(node.childMetaModels[1].focusable).to.be.true;
         });
       });

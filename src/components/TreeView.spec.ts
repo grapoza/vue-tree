@@ -21,7 +21,15 @@ async function createWrapper(customPropsData?: object, customAttrs?: Record<stri
 
 describe('TreeView.vue', () => {
 
-  let wrapper: Awaited<ReturnType<typeof createWrapper>>;;
+  let wrapper: Awaited<ReturnType<typeof createWrapper>>;
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
 
   describe('always', () => {
 
@@ -295,6 +303,7 @@ describe('TreeView.vue', () => {
       beforeEach(async () => {
         const { nodes, modelDefaults } = generateNodes(['ecs', 'eCs', ['eCs', 'ecs']]);
         wrapper = await createWrapper({ modelValue: nodes, modelDefaults, selectionMode: SelectionMode.Multiple });
+        vi.runAllTimers();
       });
 
       it('should set the first node as focusable', () => {
@@ -307,6 +316,7 @@ describe('TreeView.vue', () => {
       beforeEach(async () => {
         const { nodes, modelDefaults } = generateNodes(['ecs', 'eCs', ['eCS', 'ecs']]);
         wrapper = await createWrapper({ modelValue: nodes, modelDefaults, selectionMode: SelectionMode.Multiple });
+        vi.runAllTimers();
       });
 
       it('should set the first selected node as focusable', () => {
@@ -370,6 +380,7 @@ describe('TreeView.vue', () => {
         const { nodes, modelDefaults } = generateNodes(["ecsf", "eCs", "ecs"]);
         wrapper = await createWrapper({ modelValue: nodes, modelDefaults });
         (wrapper.vm as any).handleNodeDeletion(wrapper.vm.metaModel[0]);
+        vi.runAllTimers();
       });
 
       it('should set the next node as focusable', () => {
@@ -383,6 +394,7 @@ describe('TreeView.vue', () => {
         const { nodes, modelDefaults } = generateNodes(["ecs", "eCs", "ecsf"]);
         wrapper = await createWrapper({ modelValue: nodes, modelDefaults });
         (wrapper.vm as any).handleNodeDeletion(wrapper.vm.metaModel[2]);
+        vi.runAllTimers();
       });
 
       it('should set the previous node as focusable', () => {
@@ -586,6 +598,7 @@ describe('TreeView.vue', () => {
       const { nodes, modelDefaults } = generateNodes(['es']);
       wrapper = await createWrapper({ modelValue: nodes, modelDefaults, selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeAriaFocusableChange', wrapper.vm.metaModel[0]);
+      vi.runAllTimers();
     });
 
     it('should call the focus update handler', () => {
@@ -599,6 +612,7 @@ describe('TreeView.vue', () => {
       const { nodes, modelDefaults } = generateNodes(['es']);
       wrapper = await createWrapper({ modelValue: nodes, modelDefaults, selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeAriaRequestFirstFocus');
+      vi.runAllTimers();
     });
 
     it('should call the focus update handler', () => {
@@ -612,6 +626,7 @@ describe('TreeView.vue', () => {
       const { nodes, modelDefaults } = generateNodes(['es', 'es']);
       wrapper = await createWrapper({ modelValue: nodes, modelDefaults, selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeAriaRequestLastFocus');
+      vi.runAllTimers();
     });
 
     it('should call the focus update handler', () => {
@@ -625,6 +640,7 @@ describe('TreeView.vue', () => {
       const { nodes, modelDefaults } = generateNodes(['es', 'efs']);
       wrapper = await createWrapper({ modelValue: nodes, modelDefaults, selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeAriaRequestPreviousFocus', wrapper.vm.metaModel[1]);
+      vi.runAllTimers();
     });
 
     it('should call the focus update handler', () => {
@@ -638,6 +654,7 @@ describe('TreeView.vue', () => {
       const { nodes, modelDefaults } = generateNodes(['efs', 'es']);
       wrapper = await createWrapper({ modelValue: nodes, modelDefaults, selectionMode: SelectionMode.Multiple });
       wrapper.findComponent(TreeViewNode).vm.$emit('treeNodeAriaRequestNextFocus', wrapper.vm.metaModel[0], true);
+      vi.runAllTimers();
     });
 
     it('should call the focus update handler', () => {

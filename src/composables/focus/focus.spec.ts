@@ -16,9 +16,18 @@ describe('focus', () => {
 
   describe('when focusing a node', () => {
 
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
     it('should set the node as focused', () => {
       const node = generateMetaNodes(['es'])[0];
       focus(node);
+      vi.runAllTimers();
       expect(node.focusable).to.be.true;
     });
   });
@@ -58,6 +67,7 @@ describe('focus', () => {
     beforeEach(() => {
       nodes = generateMetaNodes(['ecs', 'eCsf']);
       focusFirst(nodes);
+      vi.runAllTimers();
     });
 
     it('should set the focusable attribute of the first node to true', () => {
@@ -70,21 +80,21 @@ describe('focus', () => {
     it('should focus the last visible node', () => {
       const nodes = generateMetaNodes(['ecsf', 'eCs']);
       focusLast(nodes);
-
+      vi.runAllTimers();
       expect(nodes[1].focusable).to.be.true;
     });
 
     it('should ignore non-expanded child nodes', () => {
       const nodes = generateMetaNodes(['ecsf', 'eCs', 'ecs', ['ecs']]);
       focusLast(nodes);
-
+      vi.runAllTimers();
       expect(nodes[2].focusable).to.be.true;
     });
 
     it('should focus the deepest last node', () => {
       const nodes = generateMetaNodes(['ecsf', 'eCs', 'Ecs', ['ecs']]);
       focusLast(nodes);
-
+      vi.runAllTimers();
       expect(nodes[2].childMetaModels[0].focusable).to.be.true;
     });
   });
@@ -105,6 +115,7 @@ describe('focus', () => {
       it('should set the next sibling node as focusable', () => {
         const nodes = generateMetaNodes(['ecsf', ['ecs', 'ecs'], 'ecs']);
         focusNext(nodes, nodes[0]);
+        vi.runAllTimers();
         expect(nodes[1].focusable).to.be.true;
       });
     });
@@ -119,6 +130,7 @@ describe('focus', () => {
 
       it('should set the first expanded child node as focusable', () => {
         focusNext(nodes, nodes[0]);
+        vi.runAllTimers();
         expect(nodes[0].childMetaModels[0].focusable).to.be.true;
       });
 
@@ -126,6 +138,7 @@ describe('focus', () => {
 
         it('sets the next sibling node as focusable', () => {
           focusNext(nodes, nodes[0], true);
+          vi.runAllTimers();
           expect(nodes[1].focusable).to.be.true;
         });
       });
@@ -148,6 +161,7 @@ describe('focus', () => {
       it('should set the previous node as focusable', () => {
         const nodes = generateMetaNodes(['ecs', ['ecs', 'ecs'], 'ecsf']);
         focusPrevious(nodes, nodes[1]);
+        vi.runAllTimers();
         expect(nodes[0].focusable).to.be.true;
       });
     });
@@ -157,6 +171,7 @@ describe('focus', () => {
       it('should set the last expanded previous node as focusable', () => {
         const nodes = generateMetaNodes(['Ecs', ['ecs', 'ecs'], 'ecsf']);
         focusPrevious(nodes, nodes[1]);
+        vi.runAllTimers();
         expect(nodes[0].childMetaModels[1].focusable).to.be.true;
       });
     });

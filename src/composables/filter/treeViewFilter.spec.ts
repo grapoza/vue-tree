@@ -34,6 +34,11 @@ describe('treeViewFilter', () => {
     nodes.value[1]._.state.matchesFilter = true;
     nodes.value[1]._.state.subnodeMatchesFilter = false;
     wrapper = createTestComponent(nodes);
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   describe('when all nodes are filtered', () => {
@@ -49,6 +54,7 @@ describe('treeViewFilter', () => {
       beforeEach(async () => {
         nodes.value[0]._.state.matchesFilter = true;
         await flushPromises();
+        vi.runAllTimers();
       });
 
       it('should set the first node as focusable', () => {

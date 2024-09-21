@@ -71,10 +71,13 @@ describe('TreeViewNode.vue', () => {
     root = document.createElement('div');
     root.id = "root";
     document.body.appendChild(root);
+
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
     document.body.removeChild(root);
+    vi.restoreAllMocks();
   });
 
   describe('always', () => {
@@ -1569,6 +1572,7 @@ describe('TreeViewNode.vue', () => {
       expect(wrapper.vm.modelValue.focusable).to.be.false;
       const innerNode = wrapper.findAllComponents(TreeViewNode)[0];
       innerNode.vm.$emit(TreeEvent.RequestParentFocus);
+      vi.runAllTimers();
       await wrapper.vm.$nextTick();
     });
 
@@ -1591,6 +1595,7 @@ describe('TreeViewNode.vue', () => {
     beforeEach(async () => {
       wrapper = await createWrapper();
       wrapper.find('.grtvn-self').trigger('click');
+      vi.runAllTimers();
       await wrapper.vm.$nextTick();
     });
 
@@ -1617,6 +1622,7 @@ describe('TreeViewNode.vue', () => {
     beforeEach(async () => {
       wrapper = await createWrapper(Object.assign(getDefaultPropsData(), { selectionMode: SelectionMode.SelectionFollowsFocus }));
       wrapper.find('.grtvn-self').trigger('click');
+      vi.runAllTimers();
       await wrapper.vm.$nextTick();
     });
 
@@ -1826,6 +1832,7 @@ describe('TreeViewNode.vue', () => {
             let defaultProps = getDefaultPropsData();
             wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateMetaNodes(['Esf', ['s', 's']])[0] }));
             await triggerKeydown(wrapper, wrapper.vm.ariaKeyMap.expandFocusedItem[0]);
+            vi.runAllTimers();
           });
 
           it('should focus the first child', () => {
@@ -1859,6 +1866,7 @@ describe('TreeViewNode.vue', () => {
             let defaultProps = getDefaultPropsData();
             wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateMetaNodes(['Es', ['esf', ['s']]])[0] }));
             await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[0], wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
+            vi.runAllTimers();
             await wrapper.vm.$nextTick();
           });
 
@@ -1889,6 +1897,7 @@ describe('TreeViewNode.vue', () => {
           let defaultProps = getDefaultPropsData();
           wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateMetaNodes(['Es', ['sf']])[0] }));
           await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[0], wrapper.vm.ariaKeyMap.collapseFocusedItem[0]);
+          vi.runAllTimers();
         });
 
         it('should focus the parent node', () => {
@@ -2014,6 +2023,7 @@ describe('TreeViewNode.vue', () => {
             let defaultProps = getDefaultPropsData();
             wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateMetaNodes(['Es', ['esdf', 'es']])[0] }));
             await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[0], wrapper.vm.ariaKeyMap.deleteItem[0]);
+            vi.runAllTimers();
           });
 
           it('should focus the next node', () => {
@@ -2027,6 +2037,7 @@ describe('TreeViewNode.vue', () => {
             let defaultProps = getDefaultPropsData();
             wrapper = await createWrapper(Object.assign(defaultProps, { modelValue: generateMetaNodes(['Es', ['es', 'es', 'esdf']])[0] }));
             await triggerKeydown(wrapper.findAllComponents(TreeViewNode)[2], wrapper.vm.ariaKeyMap.deleteItem[0]);
+            vi.runAllTimers();
           });
 
           it('should focus the previous node', () => {
@@ -2065,6 +2076,7 @@ describe('TreeViewNode.vue', () => {
         modelValue = generateMetaNodes(['Es', ['esf']])[0];
         wrapper = await createWrapper({ modelValue });
         (wrapper.vm as any).focusPreviousNode(modelValue.childMetaModels[0]);
+        vi.runAllTimers();
         await wrapper.vm.$nextTick();
       });
 
@@ -2079,6 +2091,7 @@ describe('TreeViewNode.vue', () => {
         modelValue = generateMetaNodes(['Es', ['Es', ['s', 's'], 'sf']])[0];
         wrapper = await createWrapper({ modelValue });
         (wrapper.vm as any).focusPreviousNode(modelValue.childMetaModels[1]);
+        vi.runAllTimers();
         await wrapper.vm.$nextTick();
       });
 
@@ -2093,6 +2106,7 @@ describe('TreeViewNode.vue', () => {
         modelValue = generateMetaNodes(['Es', ['es', ['s', 's'], 'sf']])[0];
         wrapper = await createWrapper({ modelValue });
         (wrapper.vm as any).focusPreviousNode(modelValue.childMetaModels[1]);
+        vi.runAllTimers();
         await wrapper.vm.$nextTick();
       });
 
@@ -2115,6 +2129,7 @@ describe('TreeViewNode.vue', () => {
           modelValue = generateMetaNodes(['Es', ['Esf', ['s', 's'], 's']])[0];
           wrapper = await createWrapper({ modelValue });
           (wrapper.vm as any).focusNextNode(modelValue.childMetaModels[0], false);
+          vi.runAllTimers();
           await wrapper.vm.$nextTick();
         });
 
@@ -2131,6 +2146,7 @@ describe('TreeViewNode.vue', () => {
             modelValue = generateMetaNodes(['Es', ['Esf', ['s', 's'], 's']])[0];
             wrapper = await createWrapper({ modelValue });
             (wrapper.vm as any).focusNextNode(modelValue.childMetaModels[0], true);
+            vi.runAllTimers();
             await wrapper.vm.$nextTick();
           });
 
@@ -2164,6 +2180,7 @@ describe('TreeViewNode.vue', () => {
           modelValue = generateMetaNodes(['Es', ['esf', ['s', 's'], 's']])[0];
           wrapper = await createWrapper({ modelValue });
           (wrapper.vm as any).focusNextNode(modelValue.childMetaModels[0], false);
+          vi.runAllTimers();
           await wrapper.vm.$nextTick();
         });
 
