@@ -1,4 +1,4 @@
-import { TreeViewNodeMetaModel } from "types/treeView.js";
+import { TreeViewNodeMetaModel } from "types/treeView";
 import { useFilter } from "./filter/filter";
 import { Ref } from "vue";
 

@@ -315,7 +315,7 @@ onMounted(async () => {
   }
 
   // Set isMounted in a nextTick so the focusable watcher
-  // in treeViewNodeSelection.js fires before isMounted is set.
+  // in treeViewNodeSelection fires before isMounted is set.
   // Otherwise, it steals focus when the tree is mounted.
   // Also wait to enforce single selection mode in case root
   // nodes load asynchronously so their create hooks fire.

@@ -3,7 +3,7 @@ import { useTreeViewNodeChildren } from '../children/treeViewNodeChildren';
 import { useFilter } from "./filter";
 import { useFocus } from "../focus/focus";
 import { TreeEvent } from '../../types/event';
-import { TreeViewFilterMethod, TreeViewNodeMetaModel } from "types/treeView.js";
+import { TreeViewFilterMethod, TreeViewNodeMetaModel } from "types/treeView";
 import TreeViewNode from "../../components/TreeViewNode.vue";
 
 /**

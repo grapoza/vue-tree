@@ -25,7 +25,7 @@ function createTestComponent(node: Ref<TreeViewNodeMetaModel>) {
   return wrapper;
 }
 
-describe('treeViewNodeExpansion.js', () => {
+describe('treeViewNodeExpansion', () => {
 
   beforeEach(() => {
     emit = vi.fn();

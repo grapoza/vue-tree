@@ -7,7 +7,7 @@ import { TreeViewNodeMetaModel } from 'types/treeView';
 
 const isMountedRef = ref(true);
 
-describe('treeViewNodeFocus.js', () => {
+describe('treeViewNodeFocus', () => {
 
   let nodeElement: HTMLLIElement | null = null;
   let emit: Mock<ComponentPublicInstance['$emit']>;

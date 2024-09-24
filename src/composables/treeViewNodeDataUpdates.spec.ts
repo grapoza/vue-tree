@@ -4,7 +4,7 @@ import { useTreeViewNodeDataUpdates } from "./treeViewNodeDataUpdates";
 import { generateNodesAndMetaNodes, TestTreeViewNode } from "../../tests/data/node-generator";
 import { TreeViewNodeMetaModel } from "types/treeView";
 
-describe("treeViewDataUpdates.js", () => {
+describe("treeViewDataUpdates", () => {
   describe("when spliceChildNodeList() is called", () => {
     let spliceChildNodeList: ReturnType<typeof useTreeViewNodeDataUpdates>["spliceChildNodeList"];
     let nodeModel: TestTreeViewNode;

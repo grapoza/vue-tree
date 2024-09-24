@@ -1,6 +1,6 @@
 import { useDomMethods } from './domMethods';
 
-describe('domMethods.js', () => {
+describe('domMethods', () => {
 
   describe('when finding the closest node', () => {
 

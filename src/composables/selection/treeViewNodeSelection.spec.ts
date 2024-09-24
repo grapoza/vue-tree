@@ -6,7 +6,7 @@ import { TreeEvent } from '../../types/event';
 import { Mock } from 'vitest';
 import { TreeViewNodeMetaModel } from 'types/treeView';
 
-describe('useTreeViewNodeSelection.js', () => {
+describe('useTreeViewNodeSelection', () => {
 
   let emit: Mock<ComponentPublicInstance['$emit']>;
 

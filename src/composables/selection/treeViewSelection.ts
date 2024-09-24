@@ -90,7 +90,7 @@ export function useTreeViewSelection(
   /**
    * For single selection mode, unselect any other selected node.
    * For selectionFollowsFocus mode for TreeView, selection state is handled in
-   * the focus watcher in treeViewNodeSelection.js.
+   * the focus watcher in treeViewNodeSelection.
    * In all cases this emits treeNodeSelectedChange for the node parameter.
    * @param metaNode The meta node for which selection changed
    */
