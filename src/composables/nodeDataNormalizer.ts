@@ -30,6 +30,7 @@ export function useNodeDataNormalizer(
    */
   function normalizeNodeData() {
     const rawMetaModel = unref(metaModel!);
+    rawMetaModel.data = rawMetaModel.data ?? {};
 
     assignDefaultProps(unref(modelDefaults!)(rawMetaModel.data), rawMetaModel);
 

@@ -120,7 +120,6 @@ export type TreeViewNodeMetaModel = BaseTreeViewNodeMetaModel & TreeViewNodeMeta
  */
 export type TreeViewNodeMetaModelDefaults = Partial<BaseTreeViewNodeMetaModel & TreeViewMetaModelDefaultsUniqueProperties>;
 
-// TODO Fix this so it requires an object type
 export type TreeViewNodeMetaModelDefaultsMethod = (node: any) => TreeViewNodeMetaModelDefaults;
 
 export type TreeViewFilterMethod = (node: TreeViewNodeMetaModel) => boolean;

@@ -264,7 +264,7 @@ const props = defineProps({
     required: true
   },
   initialRadioGroupValues: {
-    type: Object, // TODO Should this be Record<string, string>?
+    type: Object as PropType<Record<string, string>>,
     required: true
   },
   isMounted: {

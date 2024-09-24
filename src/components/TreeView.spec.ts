@@ -118,7 +118,6 @@ describe('TreeView.vue', () => {
       expect(wrapper.find('.grtv').element.ariaMultiSelectable).to.equal('false');
     });
 
-    // TODO Move this to the normalizer tests
     it('should only keep the selectable=true state for the first node with that in the initial model', () => {
       expect(wrapper.vm.metaModel[1].state.selected).to.be.true;
       expect(wrapper.vm.metaModel[1].childMetaModels[1].state.selected).to.be.false;
