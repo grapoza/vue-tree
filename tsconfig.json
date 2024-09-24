@@ -30,6 +30,6 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "lib/**/*.ts",
+    "grapoza-tree-lib.ts",
   ],
 }

@@ -1,7 +1,7 @@
 import { InputType } from './inputType';
 import { EffectAllowed } from './dragDrop';
 
-export type TreeViewMetaModelCustomizations = {
+export type TreeViewNodeMetaModelCustomizations = {
   classes: {
     treeViewNode?: string;
     treeViewNodeSelf?: string;
@@ -25,17 +25,17 @@ export type TreeViewMetaModelCustomizations = {
     treeViewNodeLoading?: string;
   };
 };
-export type TreeViewMetaModelCustomizationsDefaults = Partial<TreeViewMetaModelCustomizations>;
+type TreeViewNodeMetaModelCustomizationsDefaults = Partial<TreeViewNodeMetaModelCustomizations>;
 
-export type TreeViewMetaModelInput = {
+type TreeViewMetaModelInput = {
   type: InputType;
   name: string | null;
   value: string;
   isInitialRadioGroupValue: boolean;
 };
-export type TreeViewMetaModelInputDefaults = Partial<TreeViewMetaModelInput>;
+type TreeViewMetaModelInputDefaults = Partial<TreeViewMetaModelInput>;
 
-export type TreeViewMetaModelState = {
+type TreeViewMetaModelState = {
   expanded: boolean;
   selected: boolean;
   input: {
@@ -43,9 +43,9 @@ export type TreeViewMetaModelState = {
     value?: boolean;
   };
 };
-export type TreeViewMetaModelStateDefaults = Partial<TreeViewMetaModelState>;
+type TreeViewMetaModelStateDefaults = Partial<TreeViewMetaModelState>;
 
-export type TreeViewMetaModelInternal = {
+type TreeViewMetaModelInternal = {
   dragging: boolean;
   dragMoved: boolean;
   isDropTarget: boolean;
@@ -60,7 +60,7 @@ export type TreeViewMetaModelInternal = {
     subnodeMatchesFilter?: boolean;
   };
 };
-export type TreeViewMetaModelInternalDefaults = Partial<TreeViewMetaModelInternal>;
+type TreeViewMetaModelInternalDefaults = Partial<TreeViewMetaModelInternal>;
 
 /**
  * A base type shared by both TreeViewNodeMetaModel and TreeViewNodeMetaModelDefaults,
@@ -79,7 +79,7 @@ type BaseTreeViewNodeMetaModel = {
   deleteTitle: string | null;
   loadChildrenAsync: TreeViewLoadChildNodesAsyncMethod | null;
   addChildCallback: TreeViewAddChildCallbackMethod | null;
-  deleteNodeCallback: TreeViewDeleteNodeCallback | null;
+  deleteNodeCallback: TreeViewDeleteNodeCallbackMethod | null;
   expandable: boolean;
   selectable: boolean;
   deletable: boolean;
@@ -91,7 +91,7 @@ type BaseTreeViewNodeMetaModel = {
 
 type TreeViewNodeMetaModelUniqueProperties = {
   childMetaModels: TreeViewNodeMetaModel[];
-  customizations: TreeViewMetaModelCustomizations | null;
+  customizations: TreeViewNodeMetaModelCustomizations | null;
   input: TreeViewMetaModelInput | null;
   state: TreeViewMetaModelState;
   _: TreeViewMetaModelInternal;
@@ -99,7 +99,7 @@ type TreeViewNodeMetaModelUniqueProperties = {
 
 type TreeViewMetaModelDefaultsUniqueProperties = {
   childMetaModels: TreeViewNodeMetaModelDefaults[];
-  customizations: TreeViewMetaModelCustomizationsDefaults;
+  customizations: TreeViewNodeMetaModelCustomizationsDefaults;
   input: TreeViewMetaModelInputDefaults | null;
   state: TreeViewMetaModelStateDefaults;
   _: TreeViewMetaModelInternalDefaults;
@@ -131,4 +131,4 @@ export type TreeViewLoadChildNodesAsyncMethod = (parentNode: TreeViewNodeMetaMod
 
 export type TreeViewAddChildCallbackMethod = (parentNode: TreeViewNodeMetaModel) => Promise<object | null>;
 
-export type TreeViewDeleteNodeCallback = (node: TreeViewNodeMetaModel) => Promise<boolean>;
+export type TreeViewDeleteNodeCallbackMethod = (node: TreeViewNodeMetaModel) => Promise<boolean>;

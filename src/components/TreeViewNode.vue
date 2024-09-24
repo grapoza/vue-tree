@@ -250,7 +250,7 @@ import { useTreeViewNodeExpansion } from '../composables/expansion/treeViewNodeE
 import { useTreeViewNodeFilter } from '../composables/filter/treeViewNodeFilter';
 import { SelectionMode } from '../types/selectionMode';
 import { TreeEvent } from '../types/event';
-import { TreeViewMetaModelCustomizations, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaults, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeView';
+import { TreeViewNodeMetaModelCustomizations, TreeViewNodeMetaModel, TreeViewNodeMetaModelDefaults, TreeViewNodeMetaModelDefaultsMethod } from 'types/treeView';
 
 // PROPS
 
@@ -318,31 +318,31 @@ const emit = defineEmits([
 const slots = defineSlots<{
   expander(props: {
     metaModel: TreeViewNodeMetaModel,
-    customClasses: TreeViewMetaModelCustomizations["classes"],
+    customClasses: TreeViewNodeMetaModelCustomizations["classes"],
     expanderId: string,
     canExpand: boolean,
     toggleNodeExpanded: () => boolean
   }): void,
   checkbox(props: {
     metaModel: TreeViewNodeMetaModel,
-    customClasses: TreeViewMetaModelCustomizations["classes"],
+    customClasses: TreeViewNodeMetaModelCustomizations["classes"],
     inputId: string,
     checkboxChangeHandler: (event: Event) => void
   }): void,
   radio(props: {
     metaModel: TreeViewNodeMetaModel,
-    customClasses: TreeViewMetaModelCustomizations["classes"],
+    customClasses: TreeViewNodeMetaModelCustomizations["classes"],
     inputId: string,
     radioGroupValues: Record<string, any>,
     radioChangeHandler: (event: Event) => void
   }): void,
   text(props: {
     metaModel: TreeViewNodeMetaModel,
-    customClasses: TreeViewMetaModelCustomizations["classes"]
+    customClasses: TreeViewNodeMetaModelCustomizations["classes"]
   }): void,
   loading(props: {
     metaModel: TreeViewNodeMetaModel,
-    customClasses: TreeViewMetaModelCustomizations["classes"]
+    customClasses: TreeViewNodeMetaModelCustomizations["classes"]
   }): void
 }>();
 
