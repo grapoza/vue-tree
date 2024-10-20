@@ -17,7 +17,7 @@ before_build:
   - sh: yarn
 
 build_script:
-  - sh: yarn build
+  - sh: yarn build:package
 
 after_build:
   # Create a package file
