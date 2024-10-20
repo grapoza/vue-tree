@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, ref, readonly, onMounted, provide, toRef, watch } from 'vue'
+import { computed, nextTick, ref, readonly, onMounted, provide, toRef, watchEffect } from 'vue'
 import SelectionMode from '../enums/selectionMode.js';
 import { useIdGeneration } from '../composables/idGeneration.js'
 import { useTreeViewTraversal } from '../composables/treeViewTraversal.js'
@@ -224,11 +224,7 @@ const { spliceNodeList } = useTreeViewDataUpdates(model, metaModel);
 useTreeViewFilter(metaModel);
 
 // Watch the model to make sure the metamodel is kept in sync
-watch([model, model.value], () => {
-  // WARNINGS: For whatever reason, the Storybook stories don't fire this watch when model is updated unless the
-  // model.value is also included in the watch. This is a workaround for that issue. I have no idea why this is happening.
-  // However, it also (rightly) adds warnings in the console that model.value is not a valid watch source.
-
+watchEffect(() => {
   model.value.forEach((node, index) => {
     const metaIndex = metaModel.value.findIndex((m) => m.data[m.idProperty] === node[m.idProperty]);
 

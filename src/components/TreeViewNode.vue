@@ -238,7 +238,7 @@
 
 <script setup>
 
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, ref, toRef, watchEffect } from 'vue'
 import { useNodeDataNormalizer } from '../composables/nodeDataNormalizer.js';
 import { useChildren } from '../composables/children/children.js';
 import { useTreeViewNodeChildren } from '../composables/children/treeViewNodeChildren.js';
@@ -412,9 +412,9 @@ const {
 } = useTreeViewNodeDragAndDrop(metaModel, treeId, emit);
 
 // Watch the model children to make sure the metamodel is kept in sync
-watch([getChildren(metaModel), () => getChildren(metaModel)], () => {
+watchEffect(() => {
   // Patch the meta children to match the data children
-  const metaChildren = metaModel.value.childMetaModels;
+  const metaChildren = children.value;
   const dataChildren = getChildren(metaModel);
 
   dataChildren.forEach((node, index) => {
