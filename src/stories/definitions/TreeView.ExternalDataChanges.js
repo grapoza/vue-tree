@@ -20,6 +20,7 @@ const Template = (args) => ({
   <button type="button" @click="addNode">Add a node to the end of the model</button>
   <button type="button" @click="addChildNode" :disabled="modelValue.length === 0">Add a child node to the end of the first node's model</button>
   <button type="button" @click="removeNode" :disabled="modelValue.length === 0">Remove the first node from the model</button>
+  <button type="button" @click="removeFocusableNode">Remove the focused node from the model</button>
   <button type="button" @click="swapNodes" :disabled="modelValue.length < 2">Swap the first two nodes in the model</button>
   <button type="button" @click="toggleCheckNode">Toggle the first checkbox in the meta model</button>
 </section>
@@ -41,6 +42,27 @@ const Template = (args) => ({
         children: [],
       });
     },
+    removeFocusableNode() {
+      const focusedNode = this.$refs.treeViewRef.getMatching((n) => n.focusable)[0];
+
+      if (!focusedNode) {
+        return;
+      }
+
+      // Remove at the root
+      if (this.modelValue.some((n) => focusedNode.data.id === n.id)) {
+        this.modelValue.splice(this.modelValue.findIndex((n) => focusedNode.data.id === n.id), 1);
+      }
+      else {
+        // Remove from children
+        this.traverseTree((n) => {
+          if (n.children.some(n => focusedNode.data.id === n.id)) {
+            n.children.splice(n.children.findIndex(n => focusedNode.data.id === n.id), 1);
+            return false;
+          }
+        });
+      }
+    },
     removeNode() {
       this.modelValue.shift();
     },
@@ -53,6 +75,17 @@ const Template = (args) => ({
         checkNode.state.input.value = !checkNode.state.input.value;
       }
     },
+    traverseTree(nodeActionCallback) {
+      let nodeQueue = this.modelValue.slice();
+      let continueCallbacks = true;
+
+      while (nodeQueue.length > 0 && continueCallbacks !== false) {
+        const current = nodeQueue.shift();
+        const children = current.children ?? [];
+        nodeQueue = children.concat(nodeQueue);
+        continueCallbacks = nodeActionCallback(current) ?? true;
+      }
+    }
   },
 });
 

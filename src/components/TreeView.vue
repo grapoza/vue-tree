@@ -229,6 +229,12 @@ useTreeViewFilter(metaModel);
 
 // Watch the model to make sure the metamodel is kept in sync
 watchEffect(() => {
+  // if there were no nodes or the focusable node was a child, track it to
+  // make sure a focusable node is present after the model is updated.
+  const initialFocusableIndex = metaModel.value.length === 0
+    ? 0
+    : metaModel.value.findIndex((node) => node.focusable);
+
   model.value.forEach((node: { [key: string]: any }, index) => {
     const metaIndex = metaModel.value.findIndex((m) => m.data[m.idProperty] === node[m.idProperty]);
 
@@ -248,6 +254,19 @@ watchEffect(() => {
   // If there are more meta children than data children, remove the extra meta children.
   if (metaModel.value.length > model.value.length) {
     metaModel.value.splice(model.value.length);
+  }
+
+  // Check whether the focusable node was a removed child or if the model was empty and if so, set a new focusable node.
+  if (initialFocusableIndex > -1) {
+    if(metaModel.value.length > 0) {
+      const currentFocusableIndex = metaModel.value.findIndex((node) => node.focusable);
+      if (currentFocusableIndex === -1) {
+        focus(metaModel.value[Math.min(initialFocusableIndex, metaModel.value.length - 1)]);
+      }
+    }
+    else {
+      focusableNodeMetaModel.value = null;
+    }
   }
 });
 

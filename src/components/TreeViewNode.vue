@@ -452,6 +452,10 @@ watchEffect(() => {
   const metaChildren = children.value;
   const dataChildren = getChildren(metaModel);
 
+  // if the focusable node was a child, track it to
+  // make sure a focusable node is present after the model is updated.
+  const initialFocusableIndex =  metaChildren.findIndex((node) => node.focusable);
+
   dataChildren.forEach((node, index) => {
     const metaIndex = metaChildren.findIndex((m) => m.data[idPropName.value] === node[idPropName.value]);
 
@@ -471,6 +475,19 @@ watchEffect(() => {
   // If there are more meta children than data children, remove the extra meta children.
   if (metaChildren.length > dataChildren.length) {
     metaChildren.splice(dataChildren.length);
+  }
+
+  // Check whether the focusable node was a removed child and if so, set a new focusable node.
+  if (initialFocusableIndex > -1) {
+    if(metaChildren.length > 0) {
+      const currentFocusableIndex = metaChildren.findIndex((node) => node.focusable);
+      if (currentFocusableIndex === -1) {
+        focus(metaChildren[Math.min(initialFocusableIndex, metaChildren.length - 1)]);
+      }
+    }
+    else {
+      focus(metaModel.value);
+    }
   }
 });
 

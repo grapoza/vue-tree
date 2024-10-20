@@ -23,6 +23,7 @@ export function useNodeDataNormalizer(
   const createMetaModel = (nodeData: object): TreeViewNodeMetaModelDefaults => ({
     data: nodeData,
     childMetaModels: [] as TreeViewNodeMetaModelDefaults[],
+    _: {},
   });
 
   /**
