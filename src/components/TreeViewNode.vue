@@ -4,7 +4,7 @@
       for a description of the expected data format.
   -->
   <li :id="nodeId"
-      ref="nodeElement"
+      ref="nodeElementRef"
       class="grtvn"
       :class="[
         customClasses.treeViewNode,
@@ -353,7 +353,7 @@ const elementsThatIgnoreClicks = 'input, .grtvn-self-expander, .grtvn-self-expan
 const metaModel = defineModel({ required: true, type: Object as PropType<TreeViewNodeMetaModel> });
 
 const radioGroupValues = ref(props.initialRadioGroupValues);
-const nodeElement = useTemplateRef("nodeElement");
+const nodeElement = useTemplateRef("nodeElementRef");
 
 // COMPUTED
 

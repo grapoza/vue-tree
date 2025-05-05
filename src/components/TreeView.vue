@@ -1,5 +1,5 @@
 <template>
-  <div ref="treeElement" class="grtv-wrapper" :class="skinClass">
+  <div ref="treeElementRef" class="grtv-wrapper" :class="skinClass">
     <slot v-if="!areNodesLoaded" name="loading-root">
 
       <span class="grtv-loading">
@@ -167,7 +167,7 @@ const areNodesAsyncLoaded = ref(false);
 const isMounted = ref(false);
 const radioGroupValues = ref({});
 const uniqueId = ref('');
-const treeElement = useTemplateRef("treeElement");
+const treeElement = useTemplateRef("treeElementRef");
 
 const { createMetaModel } = useNodeDataNormalizer();
 
