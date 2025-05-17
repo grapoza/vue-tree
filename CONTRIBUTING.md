@@ -10,7 +10,7 @@ You can also submit an issue if you just have a question about the component. If
 
 ## Want to contribute a fix or implement a feature?
 
-Great! Here are the things you'll need to know in order to start hacking on the project. While this should cover the general flow, feel free to reach out if anything isn't clear or  you have any questions which are not covered here.
+Great! Here are the things you'll need to know in order to start hacking on the project. While this should cover the general flow, feel free to reach out if anything isn't clear or you have any questions which are not covered here.
 
 Before starting on any fix, make sure the issue itself is documented in the [issues list](https://github.com/grapoza/vue-tree/issues).
 
@@ -19,6 +19,16 @@ Before starting on any fix, make sure the issue itself is documented in the [iss
 You can start by forking the [grapoza/vue-tree](https://github.com/grapoza/vue-tree) repository and cloning that fork. If you're unfamiliar with forks, take a look at [GitHub's instructions on how to fork a repository](https://help.github.com/articles/fork-a-repo/). You'll do any development on your own fork and then issue a PR when you're ready for your code to undergo review.
 
 ### Get set up
+
+If you have Docker desktop installed and will develop using a tool that supports dev containers, this project includes a `.devcontainer` folder with a configuration for the container. This will set up the environment for you, including installing the prerequisites. If you don't have Docker desktop or prefer to set up your environment manually, you'll need to install the prerequisites and set up the project manually.
+
+To use Dev Containers, you'll need to have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed on your system and add the Dev Containers extension to VS Code (if that's the IDE you're using). You can find the Dev Containers extension [here](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+
+[![Open in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/grapoza/vue-tree)
+
+If you already have VS Code and Docker Desktop installed, you can click the badge above or [here](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/grapoza/vue-tree) to get started. Clicking these links will cause VS Code to automatically install the Dev Containers extension if needed, clone the source code into a container volume, and spin up a dev container for use. **Due to the [speed and hot reload issues](https://vitejs.dev/config/server-options.html#server-watch) associated with mounting a local windows file system, this is the preferred method of using a development container.**
+
+If you instead clone the solution to your local machine and open it in VS Code, it will prompt you to re-open the folder in a dev container. As mentioned previously, this development experience will be far less performant than using the links above if you are on a Windows file system.
 
 Prerequisites:
 
