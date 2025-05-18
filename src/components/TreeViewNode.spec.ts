@@ -57,7 +57,7 @@ async function triggerKeydown(wrapper: ReturnType<typeof mount<typeof TreeViewNo
   vi.spyOn(e, "stopPropagation");
   vi.spyOn(e, "preventDefault");
 
-  wrapper.vm.$refs.nodeElementRef.dispatchEvent(e);
+  (wrapper.vm.$refs.nodeElementRef as HTMLElement).dispatchEvent(e);
   await wrapper.vm.$nextTick();
   return e;
 }
@@ -87,17 +87,17 @@ describe('TreeViewNode.vue', () => {
     })
 
     it('should have an ARIA role of treeitem', () => {
-      expect(wrapper.vm.$refs.nodeElementRef.role).to.equal('treeitem');
+      expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).role).to.equal('treeitem');
     });
 
     it('should have a tabindex of 0 if focusable', async () => {
       wrapper.vm.modelValue.focusable = true;
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.$refs.nodeElementRef.tabIndex).to.equal(0);
+      expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).tabIndex).to.equal(0);
     });
 
     it('should have a tabindex of -1 if not focusable', () => {
-      expect(wrapper.vm.$refs.nodeElementRef.tabIndex).to.equal(-1);
+      expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).tabIndex).to.equal(-1);
     });
   });
 
@@ -306,7 +306,7 @@ describe('TreeViewNode.vue', () => {
         });
 
         it('should have an aria-expanded attribute value of false', () => {
-          expect(wrapper.vm.$refs.nodeElementRef.ariaExpanded).to.equal('false');
+          expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).ariaExpanded).to.equal('false');
         });
       });
 
@@ -338,7 +338,7 @@ describe('TreeViewNode.vue', () => {
         });
 
         it('should have an aria-expanded attribute value of true', () => {
-          expect(wrapper.vm.$refs.nodeElementRef.ariaExpanded).to.equal('true');
+          expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).ariaExpanded).to.equal('true');
         });
       });
     });
@@ -390,7 +390,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should not have an aria-expanded attribute', () => {
-      expect(wrapper.vm.$refs.nodeElementRef.ariaExpanded).to.be.null;
+      expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).ariaExpanded).to.be.null;
     });
   });
 
@@ -413,7 +413,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should not have an aria-selected attribute', () => {
-      expect(wrapper.vm.$refs.nodeElementRef.ariaSelected).to.be.null;
+      expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).ariaSelected).to.be.null;
     });
   });
 
@@ -436,7 +436,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should not have an aria-selected attribute', () => {
-      expect(wrapper.vm.$refs.nodeElementRef.ariaSelected).to.be.null;
+      expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).ariaSelected).to.be.null;
     });
   });
 
@@ -461,7 +461,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an aria-selected attribute of true', () => {
-        expect(wrapper.vm.$refs.nodeElementRef.ariaSelected).to.equal('true');
+        expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).ariaSelected).to.equal('true');
       });
     });
 
@@ -484,7 +484,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should not have an aria-selected attribute', () => {
-        expect(wrapper.vm.$refs.nodeElementRef.ariaSelected).to.be.null;
+        expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).ariaSelected).to.be.null;
       });
     });
   });
@@ -510,7 +510,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an aria-selected attribute of true', () => {
-        expect(wrapper.vm.$refs.nodeElementRef.ariaSelected).to.equal('true');
+        expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).ariaSelected).to.equal('true');
       });
     });
 
@@ -535,7 +535,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should not have an aria-selected attribute', () => {
-        expect(wrapper.vm.$refs.nodeElementRef.ariaSelected).to.be.null;
+        expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).ariaSelected).to.be.null;
       });
     });
   });
@@ -561,7 +561,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an aria-selected attribute of true', () => {
-        expect(wrapper.vm.$refs.nodeElementRef.ariaSelected).to.equal('true');
+        expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).ariaSelected).to.equal('true');
       });
     });
 
@@ -584,7 +584,7 @@ describe('TreeViewNode.vue', () => {
       });
 
       it('should have an aria-selected attribute of false', () => {
-        expect(wrapper.vm.$refs.nodeElementRef.ariaSelected).to.equal('false');
+        expect((wrapper.vm.$refs.nodeElementRef as HTMLElement).ariaSelected).to.equal('false');
       });
     });
   });
@@ -1581,7 +1581,7 @@ describe('TreeViewNode.vue', () => {
     });
 
     it('should focus the node', () => {
-      expect(wrapper.vm.$refs.nodeElementRef).to.equal(document.activeElement);
+      expect((wrapper.vm.$refs.nodeElementRef as HTMLElement)).to.equal(document.activeElement);
     });
 
     it('should emit a treeViewNodeAriaFocusableChange event', () => {
@@ -1638,7 +1638,7 @@ describe('TreeViewNode.vue', () => {
       beforeEach(async () => {
         wrapper = await createWrapper();
         const e =new KeyboardEvent('keydown', { shiftKey: true, keyCode: wrapper.vm.ariaKeyMap.focusPreviousItem[0] });
-        wrapper.vm.$refs.nodeElementRef.dispatchEvent(e);
+        (wrapper.vm.$refs.nodeElementRef as HTMLElement).dispatchEvent(e);
         await wrapper.vm.$nextTick();
       });
 
@@ -1652,7 +1652,7 @@ describe('TreeViewNode.vue', () => {
       beforeEach(async () => {
         wrapper = await createWrapper();
         const e =new KeyboardEvent('keydown', { altKey: true, keyCode: wrapper.vm.ariaKeyMap.focusPreviousItem[0] });
-        wrapper.vm.$refs.nodeElementRef.dispatchEvent(e);
+        (wrapper.vm.$refs.nodeElementRef as HTMLElement).dispatchEvent(e);
         await wrapper.vm.$nextTick();
       });
 
@@ -1666,7 +1666,7 @@ describe('TreeViewNode.vue', () => {
       beforeEach(async () => {
         wrapper = await createWrapper();
         const e =new KeyboardEvent('keydown', { ctrlKey: true, keyCode: wrapper.vm.ariaKeyMap.focusPreviousItem[0] });
-        wrapper.vm.$refs.nodeElementRef.dispatchEvent(e);
+        (wrapper.vm.$refs.nodeElementRef as HTMLElement).dispatchEvent(e);
         await wrapper.vm.$nextTick();
       });
 
@@ -1680,7 +1680,7 @@ describe('TreeViewNode.vue', () => {
       beforeEach(async () => {
         wrapper = await createWrapper();
         const e =new KeyboardEvent('keydown', { metaKey: true, keyCode: wrapper.vm.ariaKeyMap.focusPreviousItem[0] });
-        wrapper.vm.$refs.nodeElementRef.dispatchEvent(e);
+        (wrapper.vm.$refs.nodeElementRef as HTMLElement).dispatchEvent(e);
         await wrapper.vm.$nextTick();
       });
 
