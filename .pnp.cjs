@@ -11341,7 +11341,7 @@ const RAW_RUNTIME_STATE =
           ["browserify-rsa", "npm:4.1.0"],\
           ["create-hash", "npm:1.2.0"],\
           ["create-hmac", "npm:1.1.7"],\
-          ["elliptic", "npm:6.6.0"],\
+          ["elliptic", "npm:6.6.1"],\
           ["hash-base", "npm:3.0.4"],\
           ["inherits", "npm:2.0.4"],\
           ["parse-asn1", "npm:5.1.7"],\
@@ -12329,7 +12329,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["create-ecdh", "npm:4.0.4"],\
           ["bn.js", "npm:4.12.0"],\
-          ["elliptic", "npm:6.6.0"]\
+          ["elliptic", "npm:6.6.1"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -13134,10 +13134,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["elliptic", [\
-      ["npm:6.6.0", {\
-        "packageLocation": "./.yarn/cache/elliptic-npm-6.6.0-086c08cc28-27575b0403.zip/node_modules/elliptic/",\
+      ["npm:6.6.1", {\
+        "packageLocation": "./.yarn/cache/elliptic-npm-6.6.1-87bb857cbc-dc678c9feb.zip/node_modules/elliptic/",\
         "packageDependencies": [\
-          ["elliptic", "npm:6.6.0"],\
+          ["elliptic", "npm:6.6.1"],\
           ["bn.js", "npm:4.12.0"],\
           ["brorand", "npm:1.1.0"],\
           ["hash.js", "npm:1.1.7"],\
