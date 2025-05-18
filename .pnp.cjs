@@ -6658,7 +6658,7 @@ const RAW_RUNTIME_STATE =
           ["react", "npm:17.0.2"],\
           ["react-dom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:17.0.2"],\
           ["regenerator-runtime", "npm:0.13.11"],\
-          ["store2", "npm:2.14.3"],\
+          ["store2", "npm:2.14.4"],\
           ["telejson", "npm:5.3.3"],\
           ["ts-dedent", "npm:2.2.0"],\
           ["util-deprecate", "npm:1.0.2"]\
@@ -6692,7 +6692,7 @@ const RAW_RUNTIME_STATE =
           ["react", "npm:17.0.2"],\
           ["react-dom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:17.0.2"],\
           ["regenerator-runtime", "npm:0.13.11"],\
-          ["store2", "npm:2.14.3"],\
+          ["store2", "npm:2.14.4"],\
           ["telejson", "npm:6.0.8"],\
           ["ts-dedent", "npm:2.2.0"],\
           ["util-deprecate", "npm:1.0.2"]\
@@ -6726,7 +6726,7 @@ const RAW_RUNTIME_STATE =
           ["react", "npm:16.14.0"],\
           ["react-dom", "virtual:1a136acdb6b6a345ac99ef0b45bd672cfde94ac48abd72d8ef159f99b183823e6e75eb0af75f0151f3f285ebba1a1cc63d6936dd37c16c1ac866e12ea09f59f1#npm:16.14.0"],\
           ["regenerator-runtime", "npm:0.13.11"],\
-          ["store2", "npm:2.14.3"],\
+          ["store2", "npm:2.14.4"],\
           ["telejson", "npm:6.0.8"],\
           ["ts-dedent", "npm:2.2.0"],\
           ["util-deprecate", "npm:1.0.2"]\
@@ -6760,7 +6760,7 @@ const RAW_RUNTIME_STATE =
           ["react", null],\
           ["react-dom", null],\
           ["regenerator-runtime", "npm:0.13.11"],\
-          ["store2", "npm:2.14.3"],\
+          ["store2", "npm:2.14.4"],\
           ["telejson", "npm:6.0.8"],\
           ["ts-dedent", "npm:2.2.0"],\
           ["util-deprecate", "npm:1.0.2"]\
@@ -7024,7 +7024,7 @@ const RAW_RUNTIME_STATE =
           ["react", "npm:16.14.0"],\
           ["react-dom", "virtual:1a136acdb6b6a345ac99ef0b45bd672cfde94ac48abd72d8ef159f99b183823e6e75eb0af75f0151f3f285ebba1a1cc63d6936dd37c16c1ac866e12ea09f59f1#npm:16.14.0"],\
           ["regenerator-runtime", "npm:0.13.11"],\
-          ["store2", "npm:2.14.3"],\
+          ["store2", "npm:2.14.4"],\
           ["synchronous-promise", "npm:2.0.17"],\
           ["ts-dedent", "npm:2.2.0"],\
           ["util-deprecate", "npm:1.0.2"]\
@@ -7060,7 +7060,7 @@ const RAW_RUNTIME_STATE =
           ["react-dom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:17.0.2"],\
           ["regenerator-runtime", "npm:0.13.11"],\
           ["stable", "npm:0.1.8"],\
-          ["store2", "npm:2.14.3"],\
+          ["store2", "npm:2.14.4"],\
           ["ts-dedent", "npm:2.2.0"],\
           ["util-deprecate", "npm:1.0.2"]\
         ],\
@@ -7096,7 +7096,7 @@ const RAW_RUNTIME_STATE =
           ["react", "npm:17.0.2"],\
           ["react-dom", "virtual:1ea69fc489a67e7444ad8a80bbc2ca7361beb2b00f92c776829d7e842f2b0f290daa4d1ceae00726b316a9242535f4186004ea3ff5a9c48bba1c533ce3588513#npm:17.0.2"],\
           ["regenerator-runtime", "npm:0.13.11"],\
-          ["store2", "npm:2.14.3"],\
+          ["store2", "npm:2.14.4"],\
           ["synchronous-promise", "npm:2.0.17"],\
           ["ts-dedent", "npm:2.2.0"],\
           ["util-deprecate", "npm:1.0.2"]\
@@ -20949,10 +20949,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["store2", [\
-      ["npm:2.14.3", {\
-        "packageLocation": "./.yarn/cache/store2-npm-2.14.3-64e9376f31-f95f6fbacf.zip/node_modules/store2/",\
+      ["npm:2.14.4", {\
+        "packageLocation": "./.yarn/cache/store2-npm-2.14.4-a143d1924d-c92713e755.zip/node_modules/store2/",\
         "packageDependencies": [\
-          ["store2", "npm:2.14.3"]\
+          ["store2", "npm:2.14.4"]\
         ],\
         "linkType": "HARD"\
       }]\
