@@ -1,6 +1,6 @@
 {
   "name": "@grapoza/vue-tree",
-  "version": "7.0.2",
+  "version": "7.0.3",
   "description": "Tree components for Vue 3",
   "author": "Gregg Rapoza <grapoza@gmail.com>",
   "license": "MIT",
@@ -28,7 +28,8 @@
   "exports": {
     ".": {
       "import": "./dist/grapoza-tree-lib.es.js",
-      "require": "./dist/grapoza-tree-lib.umd.js"
+      "require": "./dist/grapoza-tree-lib.umd.js",
+      "types": "./dist/grapoza-tree-lib.d.ts"
     },
     "./css": "./dist/style.css"
   },
