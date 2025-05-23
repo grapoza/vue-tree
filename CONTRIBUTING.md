@@ -36,6 +36,8 @@ Prerequisites:
 
 Once you have the prerequisites and a local clone of the repository, open a shell to the root of the cloned repo and run `yarn` to install the packages. Once that's done, you can use `yarn build` to build. Other scripts are available in `package.json` for things like running tests or building documentation.
 
+In order to get Typescript behaving correctly, you may need to follow the [instructions provided by the Yarn team](https://yarnpkg.com/getting-started/editor-sdks#vscode) to get redirection working in your IDE.
+
 ### Implement changes
 
 The three main things you'll update are the code, the tests, and the documentation. How you choose to make these updates is up to you. When your changes are pushed and ready for a PR the expectation is that all changes to these areas are done.
