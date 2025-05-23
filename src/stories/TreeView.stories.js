@@ -4,7 +4,7 @@ import ExamplesDocs from './Examples.docs.mdx';
 // Default export to define the component =====================================
 
 export default {
-  title: 'Examples/TreeView',
+  title: '@grapoza vue-tree/Examples',
   component: TreeView,
   argTypes: {
     modelValue: {

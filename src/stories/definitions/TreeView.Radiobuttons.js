@@ -1,5 +1,5 @@
 import TreeView from '../../components/TreeView.vue';
-import { treeData, modelDefaults } from "../data/radiobuttonsTreeViewData";
+import { treeData, modelDefaults } from "../assets/data/radiobuttonsTreeViewData";
 
 const Template = (args) => ({
   components: { TreeView },

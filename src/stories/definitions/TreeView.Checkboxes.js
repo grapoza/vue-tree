@@ -1,5 +1,5 @@
 import TreeView from '../../components/TreeView.vue';
-import { treeData, modelDefaults } from "../data/checkboxesTreeViewData";
+import { treeData, modelDefaults } from "../assets/data/checkboxesTreeViewData";
 
 const Template = (args) => ({
   components: { TreeView },
