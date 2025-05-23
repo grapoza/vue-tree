@@ -7,3 +7,6 @@ sudo apt update -y
 
 # allow ** globs in bash
 shopt -s globstar
+
+# Disable some telemetry
+yarn config set --home enableTelemetry 0

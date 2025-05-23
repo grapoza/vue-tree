@@ -23,6 +23,7 @@
       "vscode": {
         // These are the extensions that are included in VS Code for the container
         "extensions": [
+          "arcanis.vscode-zipfs",
           "vitest.explorer",
           "Vue.volar"
         ]
