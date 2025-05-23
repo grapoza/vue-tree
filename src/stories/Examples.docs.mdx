@@ -1,9 +1,12 @@
-import { Canvas, Story } from '@storybook/addon-docs';
+import { Canvas, Meta, Story } from '@storybook/addon-docs';
 import TreeView from '../components/TreeView.vue';
-import './css/classbased.css';
-import './css/grayscale.css';
-import './css/fontawesome.min.css';
-import './css/solid.min.css';
+import * as TreeViewStories from './TreeView.stories.js';
+import './assets/css/classbased.css';
+import './assets/css/grayscale.css';
+import './assets/css/fontawesome.min.css';
+import './assets/css/solid.min.css';
+
+<Meta title="@grapoza vue-tree/Examples" of={TreeViewStories} />
 
 <style>{`
 /* Work around https://github.com/storybookjs/storybook/issues/16188 */
@@ -23,9 +26,7 @@ If you want more control over the model, you can specify a function for the `mod
 
 <a target="_blank" href="assets_data/basicTreeViewData.js">See the Model Data</a>
 
-<Canvas>
-<Story id="examples-treeview--basic" />
-</Canvas>
+<Canvas of={TreeViewStories.Basic} />
 
 ## A Static Tree View
 
@@ -33,17 +34,13 @@ If all you need is a static tree (no expanding subnodes) then set the `expandabl
 
 <a target="_blank" href="assets_data/staticTreeViewData.js">See the Model Data</a>
 
-<Canvas>
-<Story id="examples-treeview--static" />
-</Canvas>
+<Canvas of={TreeViewStories.Static} />
 
 ## Setting Defaults
 
 If there are common settings that should be used by all nodes, specific nodes, or even a single node, these can be given to the tree using the `modelDefaults` property. This allows you to customize things like what model props are used for the nodes' labels and whether all nodes are a certain type of input. Note that the expandable node below is expanded by default, as set from `modelDefaults`. The tree below uses the `identifier` and `description` properties of the node objects instead of  the defaults (`id` and `label`), and has all nodes expanded by default. These are set for all nodes at once by using `modelDefaults`. For more info, see [the docs](?path=/docs/grapoza-vue-tree-home--page#default-data).
 
-<Canvas>
-<Story id="examples-treeview--setting-defaults" />
-</Canvas>
+<Canvas of={TreeViewStories.SettingDefaults} />
 
 ## Adding and Removing Nodes
 
@@ -51,9 +48,7 @@ Any node can be marked as deletable or provide a callback used to create a new c
 
 <a target="_blank" href="assets_data/addRemoveTreeViewData.js">See the Model Data</a>
 
-<Canvas>
-<Story id="examples-treeview--add-remove" />
-</Canvas>
+<Canvas of={TreeViewStories.AddRemove} />
 
 ## Checkboxes
 
@@ -65,9 +60,7 @@ The convenience method `getCheckedCheckboxes` is exposed on the tree component t
 
 <a target="_blank" href="assets_data/checkboxesTreeViewData.js">See the Model Data</a>
 
-<Canvas>
-<Story id="examples-treeview--checkboxes" />
-</Canvas>
+<Canvas of={TreeViewStories.Checkboxes} />
 
 ## Radiobuttons
 
@@ -79,9 +72,7 @@ The convenience method `getCheckedRadioButtons` is exposed on the tree component
 
 <a target="_blank" href="assets_data/radiobuttonsTreeViewData.js">See the Model Data</a>
 
-<Canvas>
-<Story id="examples-treeview--radiobuttons" />
-</Canvas>
+<Canvas of={TreeViewStories.Radiobuttons} />
 
 ## Selection
 
@@ -91,9 +82,7 @@ The convenience method `getSelected` is exposed on the tree component to make it
 
 <a target="_blank" href="assets_data/selectionTreeViewData.js">See the Model Data</a>
 
-<Canvas>
-<Story id="examples-treeview--selection" />
-</Canvas>
+<Canvas of={TreeViewStories.Selection} />
 
 ## Slots
 
@@ -101,9 +90,7 @@ A tree view has slots available for replacing specific types of nodes. The `expa
 
 <a target="_blank" href="assets_data/slotsTreeViewData.js">See the Model Data</a>
 
-<Canvas>
-<Story id="examples-treeview--slots" />
-</Canvas>
+<Canvas of={TreeViewStories.Slots} />
 
 ## Asynchronous Loading
 
@@ -113,9 +100,7 @@ You can load root nodes asynchronously by providing a function to the `loadNodes
 
 You can load child nodes asynchronously by providing a function to the `loadChildrenAsync` property on the returned value for the node from `modelDefaults`. The function can take the parent node's meta data as an argument, and should return a Promise that resolves to an array of model data to add as children.
 
-<Canvas>
-<Story id="examples-treeview--async" />
-</Canvas>
+<Canvas of={TreeViewStories.Async} />
 
 ## Custom Styles
 
@@ -129,9 +114,7 @@ Some simple customizations can be done by applying custom classes to various par
 <br />
 <a target="_blank" href="assets_data/customizationViaClassesTreeViewData.js">See the Model Data</a>
 
-<Canvas>
-<Story id="examples-treeview--customization-via-classes" />
-</Canvas>
+<Canvas of={TreeViewStories.CustomizationViaClasses} />
 
 In the next example, a tree view has been given a `skin-class` prop value of `grayscale`. This effectively swaps out a class named `grtv-default-skin` on the TreeView for the one specified as the `skin-class`. This _completely removes_ the default styling. To provide new styles, a new stylesheet was created based on the default styles (copied right from the browser). This gives complete control of the styling, allowing for easier usage of things like Font Awesome as seen here.
 
@@ -139,9 +122,7 @@ In the next example, a tree view has been given a `skin-class` prop value of `gr
 <br />
 <a target="_blank" href="assets_data/customizationViaSkinTreeViewData.js">See the Model Data</a>
 
-<Canvas>
-<Story id="examples-treeview--customization-via-skin" />
-</Canvas>
+<Canvas of={TreeViewStories.CustomizationViaSkin} />
 
 ## Drag and Drop
 
@@ -149,9 +130,7 @@ You can drag a node that has the `draggable` property on the returned value for 
 
 <a target="_blank" href="assets_data/dragDropTreeViewData.js">See the Model Data</a>
 
-<Canvas>
-<Story id="examples-treeview--drag-drop" />
-</Canvas>
+<Canvas of={TreeViewStories.DragDrop} />
 
 ## Filtering
 
@@ -159,9 +138,7 @@ You can provide a method by which data should be filtered. Any node for which th
 
 <a target="_blank" href="assets_data/filteringTreeViewData.js">See the Model Data</a>
 
-<Canvas>
-<Story id="examples-treeview--filtering" />
-</Canvas>
+<Canvas of={TreeViewStories.Filtering} />
 
 ## External Model Changes
 
@@ -169,6 +146,4 @@ The tree is bound to your data model and should react to updates (and update the
 
 <a target="_blank" href="assets_data/externalDataChangesTreeViewData.js">See the Model Data</a>
 
-<Canvas>
-<Story id="examples-treeview--external-data-changes" />
-</Canvas>
+<Canvas of={TreeViewStories.ExternalDataChanges} />

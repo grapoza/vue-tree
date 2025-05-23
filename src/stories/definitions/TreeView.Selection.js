@@ -1,6 +1,6 @@
 import TreeView from '../../components/TreeView.vue';
 import { SelectionMode } from '../../types/selectionMode';
-import { treeData, modelDefaults } from "../data/selectionTreeViewData";
+import { treeData, modelDefaults } from "../assets/data/selectionTreeViewData";
 
 const selectionTemplateHtml = `<span>
 <label for="modeSelect">Selection Mode</label>

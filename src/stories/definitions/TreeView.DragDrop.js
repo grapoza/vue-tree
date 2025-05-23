@@ -1,5 +1,5 @@
 import TreeView from '../../components/TreeView.vue';
-import { tree1Data, tree2Data, modelDefaults } from "../data/dragDropTreeViewData";
+import { tree1Data, tree2Data, modelDefaults } from "../assets/data/dragDropTreeViewData";
 
 const dragDropTemplateHtml = `<span>
 <h2>Tree 1</h2>

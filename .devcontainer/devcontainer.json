@@ -24,6 +24,7 @@
         // These are the extensions that are included in VS Code for the container
         "extensions": [
           "arcanis.vscode-zipfs",
+          "unifiedjs.vscode-mdx",
           "vitest.explorer",
           "Vue.volar"
         ]

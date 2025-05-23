@@ -1,5 +1,5 @@
 import TreeView from "../../components/TreeView.vue";
-import { treeData, modelDefaults } from "../data/customizationViaSkinTreeViewData";
+import { treeData, modelDefaults } from "../assets/data/customizationViaSkinTreeViewData";
 
 const Template = (args) => ({
   components: { TreeView },
